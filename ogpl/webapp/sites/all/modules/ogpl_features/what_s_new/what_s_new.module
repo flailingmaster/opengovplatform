@@ -1,0 +1,3 @@
+<?php
+
+include_once('what_s_new.features.inc');

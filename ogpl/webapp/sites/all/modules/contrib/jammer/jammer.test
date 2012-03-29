@@ -1,0 +1,73 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ *
+ * Jammer simpletest test suite
+ */
+
+class JammerPreviewButtonTest extends DrupalWebTestCase {
+  function getInfo() {
+    return array(
+      'name' => 'Jammer Tests',
+      'description' => "This tests whether the preview button exists and then is properly removed",
+      'group' => 'Jammer'
+    );
+  }
+
+  function setUp() {
+    parent::setUp('jammer');
+    variable_set('jammer_preview_button_unset_node_types', array('jammerpreviewtest'));
+  }
+
+  function testPreviewButtonNoContentAccess() {
+    $this->drupalCreateContentType(array('type' => 'jammerpreviewtest'));
+    $user = $this->drupalCreateUser(array('access content'));
+    $this->drupalLogin($user);
+    $this->drupalGet('node/add/jammerpreviewtest');
+    $this->assertNoRaw('id="edit-preview"');
+  }
+
+  function testNoPreviewButtonWithContentAccess() {
+    $this->drupalCreateContentType(array('type' => 'jammerpreviewtest'));
+    $user = $this->drupalCreateUser(array('create jammerpreviewtest content'));
+    $this->drupalLogin($user);
+    $this->drupalGet('node/add/jammerpreviewtest');
+    $this->assertNoRaw('id="edit-preview"');
+  }
+
+  function testSettingsExists() {
+    $user = $this->drupalCreateUser(array('administer site configuration'));
+    $this->drupalLogin($user);
+    $url = url('admin/settings/jammer', array('absolute' => TRUE));
+    $this->drupalGet($url);
+    $this->assertNoText(t('Access denied'));
+    $this->assertText(t('Jammer'));
+  }
+
+  function testSettingsSecured() {
+    $user = $this->drupalCreateUser(array('access content'));
+    $this->drupalLogin($user);
+    $url = url('admin/settings/jammer', array('absolute' => TRUE));
+    $this->drupalGet($url);
+    $this->assertNoText(t('Jammer'));
+  }
+
+  function testUserDelete() {
+    $user = $this->drupalCreateUser(array('access user profiles', 'administer users'));
+    $user2 = $this->drupalCreateUser();
+    $this->drupalLogin($user);
+    variable_set('jammer_user_delete_hide_button', 0);
+    $this->drupalGet("user/$user2->uid/edit");
+    $this->assertRaw('id="edit-delete"', 'delete button visible');
+    variable_set('jammer_user_delete_hide_button', 1);
+    $this->drupalGet("user/$user2->uid/edit");
+    $this->assertNoRaw('id="edit-delete"', 'delete button hidden');
+  }
+
+  function tearDown() {
+    variable_del('jammer_preview_button_unset_node_types');
+    parent::tearDown();
+  }
+}

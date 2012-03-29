@@ -1,0 +1,67 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+<tocdata>
+<book name="Managing Feedback" url="managing_feedback.htm" >
+  <item name="Viewing the List of Feedback Received" url="viewing_the_list_of_feedback_received.htm" />
+  <item name="Filtering the List of Feedback" url="filtering_the_list_of_feedback.htm" />
+  <item name="Assigning a Feedback" url="assigning_a_feedback.htm" />
+  <item name="Replying to a Feedback" url="replying_to_a_feedback.htm" />
+  <item name="Forwarding a Feedback" url="forwarding_a_feedback.htm" />
+  <item name="Updating the Status for Various Feedback Simultaneously" url="updating_the_status_for_various_feedback_simultaneously.htm" />
+  <item name="Marking a Feedback as Irrelevant" url="marking_a_feedback_as_irrelevant.htm" />
+  <item name="Archiving a Feedback" url="archiving_a_feedback.htm" />
+  <item name="Reassigning a Feedback" url="reassigning_a_feedback.htm" />
+  <item name="Adding Notes to a Feedback" url="adding_notes_to_a_feedback.htm" />
+  <item name="Viewing the Reply for a Feedback" url="viewing_the_reply_for_a_feedback.htm" />
+  <item name="Adding a Feedback Review" url="adding_a_feedback_review_vrm_admin.htm" />
+  <item name="Closing a Feedback" url="closing_a_feedback.htm" />
+  <item name="Printing Feedback Details" url="poc_printing_feedback.htm" />
+  <item name="Viewing the Workflow History for Feedback" url="viewing_workflow_history_for_feeback.htm" />
+</book>
+<book name="Managing the Action Status for a Feedback" url="managing_the_action_status_for_a_feedback.htm" >
+  <item name="Adding a New Action Status" url="adding_a_new_action_status.htm" />
+  <item name="Updating an Action Status" url="updating_an_action_status_for_a_feedback.htm" />
+  <item name="Deleting an Action Status" url="deleting_an_action_status_for_a_feedback.htm" />
+  <item name="Tracking a Feedback Action Status" url="tracking_a_feedback_status.htm" />
+</book>
+<book name="Managing Feedback Category" url="managing_feedback_categories.htm" >
+  <item name="Adding a Feedback Category" url="adding_a_new_feedback_category.htm" />
+  <item name="Updating a Feedback Category" url="updating_a_feedback_category.htm" />
+  <item name="Deleting a Feedback Category" url="deleting_a_feedback_category.htm" />
+  <item name="Tracking a Feedback Category" url="tracking_a_feedback_category.htm" />
+</book>
+<book name="Managing Delay Time" url="managing_feedback_delay_time.htm" >
+  <item name="Setting the Feedback Delay Time" url="setting_the_feedback_delay_time.htm" />
+  <item name="Updating the Feedback Delay Time" url="updating_the_feedback_delay_time.htm" />
+  <item name="Tracking the Feedback Delay Time" url="tracking_the_feedback_delay_time.htm" />
+</book>
+<book name="Managing Feedback Status" url="managing_feedback_status.htm" >
+  <item name="Updating Information for a Feedback Status" url="updating_information_for_a_feedback_status.htm" />
+  <item name="Tracking a Feedback Status" url="tracking_a_feedback_status.htm#bc-1" />
+</book>
+<book name="Reports" url="viewing_reports.htm#bc-5" >
+  <book name="CMS Reports" url="cms_reports.htm#bc-5" >
+    <item name="Viewing the Access Denied Pages/Datasets Report" url="viewing_the_access_denied_pages_datasets_report.htm#bc-5" />
+    <item name="Viewing the Page Not Found Error Report" url="viewing_the_page_not_found_error_report.htm#bc-5" />
+    <item name="Viewing the Top Pages Report" url="viewing_the_top_pages_report.htm#bc-5" />
+    <item name="Viewing the Top Referrer Report" url="viewing_the_top_referrer_report.htm#bc-5" />
+    <item name="Viewing the Top Visitors Report" url="viewing_the_top_visitors_report.htm#bc-5" />
+    <item name="Viewing the Top Search Phrases Report" url="viewing_the_top_search_phrases_report.htm#bc-5" />
+  </book>
+  <book name="VRM Reports" url="vrm_reports.htm#bc-5" >
+    <item name="Viewing the VRM Action Metrics Report" url="viewing_the_vrm_action_metrics_report.htm#bc-5" />
+    <item name="Viewing the VRM Source Metrics Report" url="viewing_the_vrm_source_metrics_report.htm#bc-5" />
+    <item name="Viewing the VRM Status Metrics Report" url="viewing_the_vrm_status_metrics_report.htm#bc-5" />
+    <item name="Viewing the VRM Delay Analysis Report" url="viewing_the_vrm_delay_analysis_report.htm#bc-5" />
+    <item name="Viewing the Assignee Wise VRM Statistics Report" url="viewing_the_assignee_wise_vrm_statistics_report.htm#bc-5" />
+    <item name="Viewing the VRM Category Metrics Report" url="viewing_the_vrm_category_metrics_report.htm#bc-5" />
+  </book>
+</book>
+<book name="Reference Documents" >
+  <item name="Uploading Reference Documents" url="uploading_reference_documents.htm#bc-6" />
+</book>
+<book name="Support Information" url="contact_admin.htm#bc-4" >
+  <item name="Contacting the Super Administrator" url="contacting_super_administrator.htm#bc-4" />
+  <item name="Tracking Contact Admin Page Visits" url="tracking_contact_admin_page_visits.htm#bc-4" />
+</book>
+
+</tocdata>

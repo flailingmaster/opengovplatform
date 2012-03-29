@@ -1,0 +1,3 @@
+<?php
+
+include_once('node_expiry_alert.features.inc');

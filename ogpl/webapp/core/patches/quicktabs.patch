@@ -1,0 +1,35 @@
+Index: branches/qa/sites/all/modules/CMS/quicktabs/quicktabs.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/CMS/quicktabs/quicktabs.module	(revision )
++++ branches/qa/sites/all/modules/CMS/quicktabs/quicktabs.module	(revision 4540)
+@@ -378,7 +378,11 @@
+       if (module_exists('i18nstrings')) {
+         $tab['title'] = tt("quicktabs:tab:{$quicktabs['machine_name']}--$tabkey:title", $tab['title']);
+       }
++      if(trim($quicktabs['machine_name']) == 'catalog_tab'){
++        $output .= '<li'. $attributes_li .'>'. l('<span>'.$tab['title'].'</span>', $_GET['q'], $options) .'</li>';
++      } else {
+         $output .= '<li'. $attributes_li .'>'. l($tab['title'], $_GET['q'], $options) .'</li>';
++      }
+       $index++;
+     }
+   }
+@@ -413,11 +417,14 @@
+     'attributes' => array(
+       'id' => $id,
+       'class' => $class,
++	  'title'=>$quicktabs['tabs'][$tabkey]['title'],
+     ),
+     'query' => $query,
+     'fragment' => 'quicktabs-'. $qt_name,
+   );
+-
++  if(trim($quicktabs['machine_name']) == 'catalog_tab'){
++    $link_options['html'] = TRUE;
++  }
+   return $link_options;
+ }
+ 

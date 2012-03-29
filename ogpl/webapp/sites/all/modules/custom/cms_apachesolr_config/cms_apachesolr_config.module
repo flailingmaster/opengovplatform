@@ -1,0 +1,471 @@
+<?php
+/*
+function cms_apachesolr_config_boot() {
+ 
+  // check for search page
+  $search_path = 'search/apachesolr_search';
+  if (substr($_GET['q'], 0, strlen($search_path))==$search_path) {
+   
+    // get search phrase
+    $search_phrase = substr($_GET['q'], strlen($search_path)+1);
+   
+    // get filters
+    $filters = $_GET['filters'];
+   
+    // check if filters AND search phrase do not exist
+    if (empty($filters) && empty($search_phrase)) {
+         
+      // set fake filter
+      $_GET['filters'] = 1;
+     
+    }
+  }
+ 
+}
+function cms_apachesolr_config_form_alter(&$form, &$form_state, $form_id) {
+  // Remove the search form from the search result pages.
+  if ($form_id == 'search_form' && $_GET['q'] != 'search') {
+	 	
+	 unset($form['advanced']);
+	 
+  }
+}
+*/
+
+
+
+function cms_apachesolr_config_perm()
+{
+
+	return array('advanced search');
+
+}
+
+function cms_apachesolr_config_form_alter(&$form, &$form_state, $form_id) {
+  // Remove the search form from the search result pages.
+  if ($form_id == 'search_form' && $_GET['q'] != 'search') {
+	 //unset($form['basic']);
+      $form['basic']['inline']['submit'] = array(
+           '#type' => 'image_button',
+           '#src' => path_to_theme() . '/images/button.png',
+           '#attributes'=>array('alt'=>"Search",'title'=>"Search"),  
+           '#value' => t('Search'),
+           );	 
+	 unset($form['advanced']);
+	 $this_page = $_SERVER['REQUEST_URI'];
+	 if (!strlen(strstr($this_page,"filters=type%3Adataset"))>0) 
+	 {
+	  global $base_url;
+	  $form['advanced']=array( '#type'=>'item', '#prefix'=>'<div class="advanced-search-link"><a title="Advanced Search" href="'.$base_url.'/search/advancedsearch" >Advanced Search </a></div>');
+	  }
+  }
+}
+
+
+
+
+function cms_apachesolr_config_menu()
+{
+	$items = array();
+	 $items['search/advancedsearch'] = array(
+    'title' => t('Advanced Search'),
+    'description' => t('Use the options on this page to create a very specific search'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cms_apachesolr_config_advancedsearch'),
+    'access arguments' => array('advanced search'),
+    'type' => MENU_CALLBACK,
+	
+   );
+ return $items;
+}
+function cms_apachesolr_config_apachesolr_update_index(&$document, $node, $namespace) {
+    // Grab the votes for this node and index
+
+	$avg_rating=variable_get('average_rating',0);
+	$avg_votes=variable_get('average_votes',0);
+	$value=calculate_ratings($node->nid,$avg_rating,$avg_votes);
+		
+    $document->sis_ratings = empty($value) ? 0 : $value;
+	
+	
+	//popularity
+	$statistics = statistics_get($node->nid);
+	if($statistics==null)
+	$total_count=0;
+	else
+	$total_count=(int)$statistics['totalcount'];
+	
+	
+	$document->sis_popularity= empty($total_count) ? 0 : $total_count;
+	
+	
+	if (count($node->field_ds_file)) { 
+foreach ($node->field_ds_file as $file) {    
+$document->sm_field_ds_file= $file['filemime'];   
+} 
+} 
+	if (count($node->field_ds_sub_agency_name)) { 
+foreach ($node->field_ds_sub_agency_name as $sub) {    
+$document->sm_field_ds_sub_agency_name= trim($sub[0][value]);   
+} 
+} 
+
+if (count($node->field_ds_catlog_type)) { 
+	foreach ($node->field_ds_catlog_type as $catalog) {    
+	$document->sm_field_ds_catlog_type= $catalog[0]['value'];   
+	} 
+  }
+	if (count($node->field_upload)) { 
+foreach ($node->field_upload as $file) {    
+$document->sm_field_upload= $file['filemime'];   
+} 
+} 
+  
+}
+
+function cms_apachesolr_config_block($op = 'list', $delta = 0, $edit = array()) {
+  switch ($op) {
+    case 'list':
+      $enabled_facets = apachesolr_get_enabled_facets('cms_apachesolr_config');
+      $facets = cms_apachesolr_config_apachesolr_facets();
+      // Add the blocks
+      $blocks = array();
+      foreach ($enabled_facets as $delta => $facet_field) {
+        if (isset($facets[$delta])) {
+          $blocks[$delta] = $facets[$delta] + array('cache' => BLOCK_CACHE_PER_PAGE,);
+        }
+      }
+      return $blocks;
+
+    case 'view':
+      if (apachesolr_has_searched()) {
+        $response = apachesolr_static_response_cache();
+        if (empty($response)) {
+          return;
+        }
+        $query = apachesolr_current_query();
+
+        return apachesolr_facet_block($response, $query, 'modsolr', $delta, $delta, t('Ratings'), 'Ratings');
+      }
+      break;
+    case 'configure':
+      return apachesolr_facetcount_form('modsolr', $delta);
+    case 'save':
+      apachesolr_facetcount_save($edit);
+      break;
+  }
+}
+
+function cms_apachesolr_config_apachesolr_prepare_query(&$query, &$params) {
+ 
+ // Add the rating sort
+  $query->set_available_sort('changed', array('title' => t('Last Updated'), 'default' => 'desc'));
+  $query->set_available_sort('sis_ratings', array(
+        'title' => t('Rating'),
+        'default' => 'desc',
+  ));
+ 
+ $query->set_available_sort('comment_count', array('title' => t('Most Commented'), 'default' => 'desc'));
+ $query->set_available_sort('sis_popularity', array('title' => t('Most Accessed'), 'default' => 'desc'));
+ 
+ 
+ //$query->remove_available_sort('score');
+ //$query->remove_available_sort('sis_popularity');
+ $query->remove_available_sort('created');
+  $query->set_available_sort('created', array('title' => t('Most Recent'), 'default' => 'desc'));
+  
+ $query->remove_available_sort('sort_name');
+ if($_GET['pageop']=='1')
+	{
+		$_SESSION['rows']=$_GET['results'];
+	}
+   if(!isset($_SESSION['rows']))
+	{
+		$_SESSION['rows']=10;
+	}
+  $params['rows']=$_SESSION['rows'];
+  
+  $this_page = $_SERVER['REQUEST_URI'];
+  
+  $params['mm'] = 1;
+   
+  
+}
+
+function cms_apachesolr_config_apachesolr_modify_query(&$query, &$params, $caller) {
+  $params['fl'] .= ',sis_ratings,sis_popularity';
+}
+
+function cms_apachesolr_config_votingapi_results($cached, $content_type, $content_id) {
+  // Update ApacheSolr for ratings
+  if ($content_type == 'node' || $content_type == 'comment') {
+    apachesolr_mark_node($content_id);
+  }
+}
+
+function cms_apachesolr_config_apachesolr_facets() {
+    $facets = array();
+
+    $facet_list = array( 'sis_ratings' => array ('facet_field_title' => 'SOLR FIELD DESC') );
+    foreach ($facet_list as $facet_field => $info) {
+      $facets[$facet_field] = array(
+        'info' => t('Apache Solr Search: Filter by ' . $info['facet_field_title'] . ' (field: '.$facet_field.')'),
+        'facet_field' => $facet_field,
+      );
+    }
+   
+    return $facets;
+  }
+
+function cms_apachesolr_config_apachesolr_process_results(&$results) {
+foreach($results as &$result)
+ {
+	$result['star'] = $result[node]->content['fivestar_widget']['#value'];
+  }
+}
+
+/* ===========================================Advanced Search===================================== */
+
+function cms_apachesolr_config_advancedsearch()
+{
+$list=array('any'=>'any part in the page','title'=>'in the title of the page');
+$results_page=array('10'=>'10','20'=>'20','30'=>'30','40'=>'40','50'=>'50');
+$file_type=array('all'=>'All','pdf'=>'Adobe PDF','word'=>'Microsoft Word','ppt'=>'Microsoft Powerpoint','xls'=>'Microsoft Excel','txt'=>'Text');
+$form1=array();
+   $form1['all_words'] =array(
+   '#type' => 'textfield',
+    '#title' => t('All Of These Words'),
+    '#default_value' => '',
+    '#size' => 50,
+    '#maxlength' => 50,
+    
+  );
+ $form1['all_words_options']=array(
+			'#type' => 'select',
+			'#title' => t(''),
+			'#options' => $list,
+			'#default_value' =>$list[0],
+			//'#required' => true,
+            '#attributes'=>array('title'=>'Search for all of these words'),
+		);
+  $form1['exact_phrase'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Exact Phrase'),
+		'#default_value' => '',
+		'#size' => 50,
+		'#maxlength' => 50,
+	  );
+ $form1['exact_phrase_options']=array(
+			'#type' => 'select',
+			'#title' => t(''),
+			'#options' => $list,
+			'#default_value' =>$list[0],
+			//'#required' => true,
+            '#attributes'=>array('title'=>'Search for exact phrase'),
+		);
+  $form1['any_words'] =array(
+   '#type' => 'textfield',
+    '#title' => t('Any Of These Words'),
+	'#size' => 50,
+	'#maxlength' => 50,
+	);
+	$form1['any_words_options']=array(
+			'#type' => 'select',
+			'#title' => t(''),
+			'#options' => $list,
+			'#default_value' =>$list[0],
+			//'#required' => true,
+            '#attributes'=>array('title'=>'Search for any of these words'),
+		);
+  $form1['none_words'] =array(
+   '#type' => 'textfield',
+    '#title' => t('None Of These Words'),
+	'#size' => 50,
+	'#maxlength' => 50,
+	);
+$form1['none_words_options']=array(
+			'#type' => 'select',
+			'#title' => t(''),
+			'#options' => $list,
+			'#default_value' =>$list[0],
+			//'#required' => true,
+            '#attributes'=>array('title'=>'Search for none of these Words'),
+		);
+/* $form1['file_type']=array(
+			'#type' => 'select',
+			'#title' => t('File Type'),
+			'#options' => $file_type,
+			'#default_value'=>$file_type[0],
+			//'#required' => true,
+		);	*/
+$form1['results_per_page']=array(
+			'#type' => 'select',
+			'#title' => t('Results Per Page'),
+			'#options' => $results_page,
+			'#default_value'=>$results_page[0],
+			//'#required' => true,
+		);		
+  $form1['submit'] = array(
+  '#type' => 'submit',
+  '#value' => t('Search'),
+  '#attributes'=>array('title'=>'Search'), 
+);
+return $form1;
+}
+
+function cms_apachesolr_config_advancedsearch_submit($form, &$form_state)
+{	 $rows= $form_state['values']['results_per_page'];
+	 
+	$_SESSION['rows']=$rows;
+	
+	$query='';
+	$filter='filters=';
+	if($form_state['values']['all_words']!='')
+	{ if($form_state['values']['all_words_options']=='title')
+		{
+			$filter=$filter.'title%3A'.$form_state['values']['all_words'].' ';
+		}
+	  else
+		$query=$query.$form_state['values']['all_words'];
+		
+	}
+	if($form_state['values']['exact_phrase']!='')
+	{
+		if($form_state['values']['exact_phrase_options']=='title')
+		{
+			$filter=$filter.' title%3A"'.$form_state['values']['exact_phrase'].'" ';
+		}
+	else
+		$query=$query.' "'.$form_state['values']['exact_phrase'].'"';
+	}
+	if($form_state['values']['any_words']!='')
+	{
+		if($form_state['values']['any_words_options']=='title')
+		{
+			$filter=$filter.' title%3A'.$form_state['values']['any_words'].' ';
+		}
+	else
+	{	 $words=explode(" ",$form_state['values']['any_words']);
+		 $w=implode(" OR ",$words);
+		 
+		$query=$query.' '.$w.' ';
+	 }
+	}
+	/*
+	if($form_state['values']['file_type']!='all')
+	{
+		if($form_state['values']['file_type']=='pdf')
+		{
+			$filter=$filter.' sm_field_upload%3Aapplication/pdf';
+		}
+	    else if($form_state['values']['file_type']=='word')
+		{
+			$filter=$filter.' sm_field_upload%3Aapplication/vnd.openxmlformats-officedocument.wordprocessingml.document';
+		}
+		else if($form_state['values']['file_type']=='ppt')
+		{
+			$filter=$filter.' sm_field_upload%3Aapplication/vnd.ms-powerpoint';
+		}
+		else if($form_state['values']['file_type']=='xls')
+		{
+			$filter=$filter.' sm_field_upload%3Aapplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+		}
+		else if($form_state['values']['file_type']=='txt')
+		{
+			$filter=$filter.' sm_field_upload%3Atext/plain';
+		}
+
+	}
+	*/
+	if($form_state['values']['none_words']!='')
+	{
+	if($form_state['values']['none_words_options']=='title')
+		{
+			$filter=$filter.' -title%3A'.$form_state['values']['none_words'].' ';
+		}
+	else	
+	 $query=$query.' -'.$form_state['values']['none_words'];
+	}
+	  
+	  
+	 if($query==''&& $filter=='filters=')
+	 drupal_set_message(t('<ul><li><label>Please enter some keywords.</ul></li></label>'), $type = 'error');
+
+	 
+	 drupal_goto("$base_url"."search/apachesolr_search/".$query,$filter);
+	  
+	
+}
+
+
+/**
+* Implementation of hook_apachesolr_cck_field_mappings
+
+function cms_apachesolr_config_apachesolr_cck_field_mappings() {
+  $mappings = array();
+  
+  $mappings['filefield'] = array(
+      'callback' => 'cms_apachesolr_config_callback',
+      'index_type' => 'string',
+      'widget_types' => array('filefield_widget' => TRUE, 'imagefield_widget' => TRUE),
+	  'facet' => TRUE,
+
+  );
+  return $mappings;
+}
+
+*/
+//===================================cck file field dataset indexing==============================================
+function cms_apachesolr_config_apachesolr_cck_fields_alter(&$mappings) {
+  $mappings['per-field']['field_ds_file'] = array(
+    'callback' => 'cms_apachesolr_config_callback',
+    'index_type' => 'string',
+	'widget_types' => array('filefield_widget' => TRUE, 'imagefield_widget' => TRUE),
+	'facets'=>TRUE
+  );
+  
+ $mappings['per-field']['field_ds_catlog_type'] = array(
+    'callback' => 'cms_apachesolr_config_catalog_type',
+    'index_type' => 'string',
+	'widget_types' => array('flexifield_default_widget' => TRUE),
+	'facets'=>TRUE
+  );
+  
+  $mappings['per-field']['field_ds_sub_agency_name'] = array(
+    'callback' => 'cms_apachesolr_config_subagency_name',
+    'index_type' => 'string',
+	'widget_types' => array('flexifield_default_widget' => TRUE),
+	'facets'=>TRUE
+  );
+ 
+}
+function cms_apachesolr_config_subagency_name($node, $fieldname)
+{
+ $fields = array();
+  foreach ($node->$fieldname as $field) {
+     $val=trim($field['value']);
+    $fields[] = array('value' => $val);
+  }
+  return $fields;
+}
+
+function cms_apachesolr_config_catalog_type($node, $fieldname)
+{
+ $fields = array();
+  foreach ($node->$fieldname as $field) {
+   
+    $fields[] = array('value' => $field['type']);
+  }
+  return $fields;
+}
+
+function cms_apachesolr_config_callback($node, $fieldname) {
+  $fields = array();
+  foreach ($node->$fieldname as $field) {
+   
+    $fields[] = array('value' => $field['filemime']);
+  }
+  return $fields;
+}
+
+?>

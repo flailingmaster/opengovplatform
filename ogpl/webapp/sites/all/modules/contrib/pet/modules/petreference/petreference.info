@@ -1,0 +1,15 @@
+name = PET Reference
+description = Defines a field type for referencing pet template into node.
+dependencies[] = content
+dependencies[] = text
+dependencies[] = optionwidgets
+dependencies[] = pet
+package = Email
+core = 6.x
+
+; Information added by drupal.org packaging script on 2011-11-04
+version = "6.x-1.4"
+core = "6.x"
+project = "pet"
+datestamp = "1320423035"
+

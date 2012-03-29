@@ -1,0 +1,194 @@
+<?php
+/**
+ * @file
+ * Exposes a number of core Drupal elements as blocks.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function blockify_help($path, $arg) {
+  if ($path == 'admin/help#blockify') {
+    return '<p>' . t('This module exposes a number of core Drupal elements as blocks.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_menu()
+ */
+function blockify_menu() {
+  $items = array();
+
+  $items['admin/settings/blockify'] = array(
+    'title' => t('Blockify'),
+    'description' => t('Settings for the Blockify module.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('blockify_admin_settings'),
+    'access arguments' => array('administer blockify'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'blockify.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_perm().
+ */
+function blockify_perm() {
+  return array('administer blockify');
+}
+
+/**
+ * Implements hook_block().
+ */
+function blockify_block($op = 'list', $delta = 0, $edit = array()) {
+  switch ($op) {
+
+    case 'list':
+      $block_list = _blockify_get_blocks();
+      foreach($block_list as $block_delta => $block_name) {
+        if (_blockify_is_enabled($block_delta)) {
+          $blocks[$block_delta]['info'] = $block_name;
+        }
+      }
+      return $blocks;
+
+    case 'view':
+      $blocks = _blockify_get_blocks();
+      foreach ($blocks as $block_delta => $block_name) {
+        if ($delta == $block_delta && _blockify_is_enabled($block_delta)) {
+          $block['subject'] = '';
+          $block['content'] = blockify_get_content($delta);
+        }
+      }
+      return $block;
+  }
+}
+
+/**
+ * Provides individual block content.
+ */
+function blockify_get_content($delta) {
+  switch ($delta) {
+    case 'blockify-logo':
+      return theme('blockify_logo', theme_get_setting('logo'));
+
+    case 'blockify-site-name':
+      $site_name = filter_xss_admin(variable_get('site_name', 'Drupal'));
+      return theme('blockify_site_name', $site_name);
+
+    case 'blockify-site-slogan':
+      $site_slogan = filter_xss_admin(variable_get('site_slogan', ''));
+      return theme('blockify_site_slogan', $site_slogan);
+
+    case 'blockify-mission':
+      $site_mission = filter_xss_admin(variable_get('site_mission', ''));
+      return theme('blockify_mission', $site_mission);
+
+    case 'blockify-footer-message':
+      $site_footer = filter_xss_admin(variable_get('site_footer', ''));
+      return theme('blockify_footer_message', $site_footer);
+
+    case 'blockify-page-title':
+      return theme('blockify_page_title', drupal_get_title());
+
+    case 'blockify-breadcrumb':
+      return theme('blockify_breadcrumb', drupal_get_breadcrumb());
+
+    case 'blockify-messages-error':
+      return theme('status_messages', 'error');
+
+    case 'blockify-messages-warning':
+      return theme('status_messages', 'warning');
+
+    case 'blockify-messages-status':
+      return theme('status_messages', 'status');
+
+    case 'blockify-messages-all':
+      return theme('status_messages');
+
+    case 'blockify-help':
+      return theme('help');
+
+    case 'blockify-tabs':
+      return theme('menu_local_tasks');
+
+    case 'blockify-node':
+      if ($node = menu_get_object()) {
+        $user = user_load($node->uid);
+        return theme('blockify_node', $user, $node);
+      }
+  }
+}
+
+/**
+ * Provides a list of all (enabled) blockify blocks.
+ */
+function _blockify_get_blocks($enabled_blocks_only = TRUE) {
+  // TODO: return all blocks or enabled blocks only based on param
+  return array(
+    'blockify-logo' => t('Logo'),
+    'blockify-site-name' => t('Site name'),
+    'blockify-site-slogan' => t('Site slogan'),
+    'blockify-mission' => t('Mission'),
+    'blockify-footer-message' => t('Footer message'),
+    'blockify-page-title' => t('Page title'),
+    'blockify-breadcrumb' => t('Breadcrumb'),
+    'blockify-help' => t('Help'),
+    'blockify-tabs' => t('Tabs'),
+    'blockify-messages-error' => t('Messages (error)'),
+    'blockify-messages-warning' => t('Messages (warning)'),
+    'blockify-messages-status' => t('Messages (status)'),
+    'blockify-messages-all' => t('Messages (all)'),
+    'blockify-node' => t('Node'),
+  );
+}
+
+/**
+ * Verify if a given blockify block is enabled in the blockify admin settings.
+ */
+function _blockify_is_enabled($delta) {
+  $blocks = variable_get('blockify_blocks', array());
+  return $blocks[$delta];
+}
+
+/**
+ * Implements hook_theme().
+ */
+function blockify_theme() {
+  return array(
+    'blockify_logo' => array(
+      'arguments' => array('logo_path' => NULL),
+      'file' => 'blockify.theme.inc',
+    ),
+    'blockify_site_name' => array(
+      'arguments' => array('site_name' => NULL),
+      'file' => 'blockify.theme.inc',
+    ),
+    'blockify_site_slogan' => array(
+      'arguments' => array('site_slogan' => NULL),
+      'file' => 'blockify.theme.inc',
+    ),
+    'blockify_mission' => array(
+      'arguments' => array('site_mission' => NULL),
+      'file' => 'blockify.theme.inc',
+    ),
+    'blockify_footer_message' => array(
+      'arguments' => array('site_footer' => NULL),
+      'file' => 'blockify.theme.inc',
+    ),
+    'blockify_page_title' => array(
+      'arguments' => array('page_title' => NULL),
+      'file' => 'blockify.theme.inc',
+     ),
+    'blockify_breadcrumb' => array(
+      'arguments' => array('page_breadcrumb' => NULL),
+      'file' => 'blockify.theme.inc',
+    ),
+    'blockify_node' => array(
+      'arguments' => array('user' => NULL, 'node' => NULL),
+      'file' => 'blockify.theme.inc',
+    ),
+  );
+}

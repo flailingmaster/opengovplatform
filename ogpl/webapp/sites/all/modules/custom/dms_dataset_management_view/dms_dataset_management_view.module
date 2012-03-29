@@ -1,0 +1,3 @@
+<?php
+
+include_once('dms_dataset_management_view.features.inc');

@@ -1,0 +1,128 @@
+<?php
+// $Id: mass_change.module,v 1.1.2.2 2008/08/07 00:47:42 toddnienkerk Exp $
+
+/**
+ * @file
+ * Mass change the workflow and commenting status of nodes by content type.
+ */
+
+
+/**
+ * Implementation of hook_menu().
+ */
+function mass_change_menu() {
+  $items = array();
+
+  $items['admin/content/mass_change'] = array(
+    'title' => 'Mass Change',
+    'description' => 'Mass change the workflow and commenting status of nodes by content type.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mass_change_page_form'),
+    'access callback' => 'user_access',
+    'access arguments' => array('mass change nodes'),
+  );
+
+  return $items;
+}
+
+
+/**
+ * Implementation of hook_perm().
+ */
+function mass_change_perm() {
+  return array('mass change nodes');
+}
+
+
+function mass_change_page_form($form_state) {
+  $form = array();
+
+  $form['action'] = array(
+    '#type' => 'radios',
+    '#title' => t('Action'),
+    '#options' => array(
+      'publish' => t('Publish'),
+      'unpublish' => t('Unpublish'),
+      'promote' => t('Promote to front page'),
+      'unpromote' => t('Unpromote'),
+      'sticky' => t('Sticky'),
+      'unsticky' => t('Unsticky'),
+    ),
+    '#required' => TRUE,
+  );
+
+  if (module_exists('comment')) {
+    $form['action']['#options']['rwcomments'] = t('Commenting: Read/Write');
+    $form['action']['#options']['rocomments'] = t('Commenting: Read only');
+    $form['action']['#options']['nocomments'] = t('Commenting: Disabled');
+  }
+
+  $form['content_types'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Content types to mass change'),
+    '#options' => node_get_types('names'),
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Mass change nodes'),
+  );
+
+  return $form;
+}
+
+
+function mass_change_page_form_submit($form, &$form_state) {
+  $change = '';
+  $message = '';
+  $content_types = array();
+
+  if ($form_state['values']['action'] == 'publish') {
+    $change = 'status = 1';
+    $message = t('<strong>Published</strong>');
+  }
+  else if ($form_state['values']['action'] == 'unpublish') {
+    $change = 'status = 0';
+    $message = t('<strong>Unpublished</strong>');
+  }
+
+  else if ($form_state['values']['action'] == 'promote') {
+    $change = 'promote = 1';
+    $message = '<strong>Promoted</strong>';
+  }
+  else if ($form_state['values']['action'] == 'unpromote') {
+    $change = 'promote = 0';
+    $message = t('<strong>Unpromoted</strong>');
+  }
+
+  else if ($form_state['values']['action'] == 'sticky') {
+    $change = 'sticky = 1';
+    $message = t('<strong>Stickied</strong>');
+  }
+  else if ($form_state['values']['action'] == 'unsticky') {
+    $change = 'sticky = 0';
+    $message = t('<strong>Unstickied</strong>');
+  }
+
+  else if ($form_state['values']['action'] == 'rwcomments') {
+    $change = 'comment = 2';
+    $message = t('Set <strong>commenting status</strong> to <strong>read/write</strong> for');
+  }
+  else if ($form_state['values']['action'] == 'rocomments') {
+    $change = 'comment = 1';
+    $message = t('Set <strong>commenting status</strong> to <strong>read only</strong> for');
+  }
+  else if ($form_state['values']['action'] == 'nocomments') {
+    $change = 'comment = 0';
+    $message = t('Set <strong>commenting status</strong> to <strong>disabled</strong> for');
+  }
+
+  foreach ($form_state['values']['content_types'] as $content_type => $actionable) {
+    if ($actionable) {
+      $content_types[] = $content_type;
+      db_query('UPDATE {node} SET '. $change .' WHERE type = "%s"', $content_type);
+    }
+  }
+
+  drupal_set_message($message . t(' all nodes of the following content types: ') .'<strong>'. implode(', ', $content_types) .'</strong>');
+}

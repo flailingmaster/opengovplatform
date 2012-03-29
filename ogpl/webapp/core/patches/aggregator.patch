@@ -1,0 +1,100 @@
+? aggregator.patch
+Index: modules/aggregator/aggregator.admin.inc
+===================================================================
+RCS file: /cvs/drupal/drupal/modules/aggregator/aggregator.admin.inc,v
+retrieving revision 1.7.2.1
+diff -u -p -r1.7.2.1 aggregator.admin.inc
+--- modules/aggregator/aggregator.admin.inc	25 Apr 2008 21:11:57 -0000	1.7.2.1
++++ modules/aggregator/aggregator.admin.inc	4 Aug 2010 11:14:15 -0000
+@@ -210,7 +210,7 @@ function aggregator_admin_remove_feed_su
+  *   An associative array describing the feed to be refreshed.
+  */
+ function aggregator_admin_refresh_feed($feed) {
+-  aggregator_refresh($feed);
++  aggregator_refresh($feed, TRUE);
+   drupal_goto('admin/content/aggregator');
+ }
+ 
+Index: modules/aggregator/aggregator.module
+===================================================================
+RCS file: /cvs/drupal/drupal/modules/aggregator/aggregator.module,v
+retrieving revision 1.374.2.6
+diff -u -p -r1.374.2.6 aggregator.module
+--- modules/aggregator/aggregator.module	28 May 2010 16:06:59 -0000	1.374.2.6
++++ modules/aggregator/aggregator.module	4 Aug 2010 11:14:16 -0000
+@@ -580,8 +580,10 @@ function aggregator_element_data($parser
+  *
+  * @param $feed
+  *   An associative array describing the feed to be refreshed.
++ * @param $admin
++ *   TRUE if called from the aggregator admin page.
+  */
+-function aggregator_refresh($feed) {
++function aggregator_refresh($feed, $admin = FALSE) {
+   global $channel, $image;
+ 
+   // Generate conditional GET headers.
+@@ -600,7 +602,9 @@ function aggregator_refresh($feed) {
+   switch ($result->code) {
+     case 304:
+       db_query('UPDATE {aggregator_feed} SET checked = %d WHERE fid = %d', time(), $feed['fid']);
+-      drupal_set_message(t('There is no new syndicated content from %site.', array('%site' => $feed['title'])));
++      if ($admin) {
++        drupal_set_message(t('There is no new syndicated content from %site.', array('%site' => $feed['title'])));
++      }
+       break;
+     case 301:
+       $feed['url'] = $result->redirect_url;
+@@ -610,7 +614,7 @@ function aggregator_refresh($feed) {
+     case 302:
+     case 307:
+       // Filter the input data:
+-      if (aggregator_parse_feed($result->data, $feed)) {
++      if (aggregator_parse_feed($result->data, $feed, $admin)) {
+         $modified = empty($result->headers['Last-Modified']) ? 0 : strtotime($result->headers['Last-Modified']);
+ 
+         // Prepare the channel data.
+@@ -639,12 +643,16 @@ function aggregator_refresh($feed) {
+         cache_clear_all();
+ 
+         watchdog('aggregator', 'There is new syndicated content from %site.', array('%site' => $feed['title']));
+-        drupal_set_message(t('There is new syndicated content from %site.', array('%site' => $feed['title'])));
++        if ($admin) {
++          drupal_set_message(t('There is new syndicated content from %site.', array('%site' => $feed['title'])));
++        }
+       }
+       break;
+     default:
+       watchdog('aggregator', 'The feed from %site seems to be broken, due to "%error".', array('%site' => $feed['title'], '%error' => $result->code .' '. $result->error), WATCHDOG_WARNING);
+-      drupal_set_message(t('The feed from %site seems to be broken, because of error "%error".', array('%site' => $feed['title'], '%error' => $result->code .' '. $result->error)));
++      if ($admin) {
++        drupal_set_message(t('The feed from %site seems to be broken, because of error "%error".', array('%site' => $feed['title'], '%error' => $result->code .' '. $result->error)), 'error');
++      }
+   }
+ }
+ 
+@@ -694,10 +702,12 @@ function aggregator_parse_w3cdtf($date_s
+  *   The feed data.
+  * @param $feed
+  *   An associative array describing the feed to be parsed.
++ * @param $admin
++ *   TRUE if called from the aggregator admin page.
+  * @return
+  *   0 on error, 1 otherwise.
+  */
+-function aggregator_parse_feed(&$data, $feed) {
++function aggregator_parse_feed(&$data, $feed, $admin = FALSE) {
+   global $items, $image, $channel;
+ 
+   // Unset the global variables before we use them:
+@@ -713,7 +723,9 @@ function aggregator_parse_feed(&$data, $
+ 
+   if (!xml_parse($xml_parser, $data, 1)) {
+     watchdog('aggregator', 'The feed from %site seems to be broken, due to an error "%error" on line %line.', array('%site' => $feed['title'], '%error' => xml_error_string(xml_get_error_code($xml_parser)), '%line' => xml_get_current_line_number($xml_parser)), WATCHDOG_WARNING);
+-    drupal_set_message(t('The feed from %site seems to be broken, because of error "%error" on line %line.', array('%site' => $feed['title'], '%error' => xml_error_string(xml_get_error_code($xml_parser)), '%line' => xml_get_current_line_number($xml_parser))), 'error');
++    if ($admin) {
++      drupal_set_message(t('The feed from %site seems to be broken, because of error "%error" on line %line.', array('%site' => $feed['title'], '%error' => xml_error_string(xml_get_error_code($xml_parser)), '%line' => xml_get_current_line_number($xml_parser))), 'error');
++    }
+     return 0;
+   }
+   xml_parser_free($xml_parser);

@@ -1,0 +1,28 @@
+Index: branches/stage/sites/all/modules/contrib/views_bulk_operations/views_bulk_operations_plugin_style.inc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/stage/sites/all/modules/contrib/views_bulk_operations/views_bulk_operations_plugin_style.inc	(revision 4948)
++++ branches/stage/sites/all/modules/contrib/views_bulk_operations/views_bulk_operations_plugin_style.inc	(revision )
+@@ -204,7 +204,19 @@
+     else {
+       $form_suffix = 1;
+     }
++      global $user;
++      $roles = $user->roles;
++      $var = $this->view->result;
++      $name = $var[0]->view_name;
++      if (strlen($name) >= 21) {
++          if (isset($roles['15']) && substr_compare($name, 'VRM_all_feedback_list', 0, 21) == 0) //0,20
++          {
++              $form_suffix = $name[strlen($name) - 1];
++              $form_suffix = (int)$form_suffix - 4;
++          }
++      }
++
+-    $this->form_id = 'views_bulk_operations_form__' . $form_suffix;
++      $this->form_id = 'views_bulk_operations_form__' . $form_suffix;
+ 
+     // Populate hashed results for selection.
+     $this->result = array();

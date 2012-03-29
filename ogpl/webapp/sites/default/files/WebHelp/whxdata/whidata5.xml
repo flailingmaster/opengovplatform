@@ -1,0 +1,229 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+<indexdata>
+<key name="Reverting" >
+  <topic name="Reverting Feedback" url="reverting_feedback.htm" />
+  <topic name="Reverting a Feedback" url="reverting_a_feedback_pmo.htm" />
+  <topic name="Reverting a Feedback" url="reverting_a_feedback_poc.htm" />
+  <key name="Feedback" >
+    <topic name="Reverting Feedback" url="reverting_feedback.htm" />
+    <topic name="Reverting a Feedback" url="reverting_a_feedback_pmo.htm" />
+    <topic name="Reverting a Feedback" url="reverting_a_feedback_poc.htm" />
+  </key>
+</key>
+<key name="Revision History" >
+  <topic name="Viewing the Revision History of a Content" url="viewing_the_revision_history_of_a_content.htm" />
+  <topic name="Viewing Revision History" url="viewing_revision_history.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing the Revision History of a Content" url="viewing_the_revision_history_of_a_content.htm" />
+    <topic name="Viewing Revision History" url="viewing_revision_history.htm" />
+  </key>
+</key>
+<key name="Revisions" >
+  <topic name="Tracking the Revisions to the Content" url="tracking_the_revisions_to_the_content.htm" />
+  <key name="Tracking" >
+    <topic name="Tracking the Revisions to the Content" url="tracking_the_revisions_to_the_content.htm" />
+  </key>
+</key>
+<key name="Rotating Panel" >
+  <topic name="Updating Image for a Rotating Panel" url="updating_image_for_a_rotating_panel.htm" />
+  <topic name="Updating Rotating Panels" url="updating_rotating_panels.htm" />
+  <key name="Updating" >
+    <topic name="Updating Rotating Panels" url="updating_rotating_panels.htm" />
+  </key>
+</key>
+<key name="Search Fields" >
+  <topic name="Resetting the Weightage for Search Fields" url="resetting_the_weightage_for_search_fields.htm" />
+  <topic name="Specifying Weightage to the Search Fields" url="specifying_weightage_to_the_search_fields.htm" />
+</key>
+<key name="Search Filters" >
+  <topic name="Enabling the Search Filters" url="enabling_the_search_filters.htm" />
+  <key name="Enabling" >
+    <topic name="Enabling the Search Filters" url="enabling_the_search_filters.htm" />
+  </key>
+</key>
+<key name="Search Index" >
+  <topic name="Updating the Search Index" url="updating_the_search_index.htm" />
+  <topic name="Deleting the Search Index" url="deleting_the_search_index.htm" />
+  <key name="Deleting" >
+    <topic name="Deleting the Search Index" url="deleting_the_search_index.htm" />
+  </key>
+  <key name="Updating" >
+    <topic name="Updating the Search Index" url="updating_the_search_index.htm" />
+  </key>
+</key>
+<key name="Selecting" >
+  <topic name="Selecting Default Theme" url="selecting_default_theme.htm" />
+  <topic name="Selecting Action Status" url="selecting_action_status.htm" />
+  <key name="Action Status" >
+    <topic name="Selecting Action Status" url="selecting_action_status.htm" />
+  </key>
+  <key name="Default Theme" >
+    <topic name="Selecting Default Theme" url="selecting_default_theme.htm" />
+  </key>
+</key>
+<key name="Sending" >
+  <topic name="Sending Content for Approval" url="sending_content_for_approval.htm" />
+  <topic name="Sending the Content Back to the Content Creator" url="sending_the_content_back_to_the_content_creator.htm" />
+  <topic name="Sending Content Back in Workflow" url="sending_content_back_in_workflow.htm" />
+  <key name="Content" >
+    <topic name="Sending Content for Approval" url="sending_content_for_approval.htm" />
+  </key>
+  <key name="Content Back" >
+    <topic name="Sending the Content Back to the Content Creator" url="sending_the_content_back_to_the_content_creator.htm" />
+    <topic name="Sending Content Back in Workflow" url="sending_content_back_in_workflow.htm" />
+  </key>
+</key>
+<key name="Setting" >
+  <topic name="Setting User Permissions" url="setting_user_permissions.htm" />
+  <topic name="Setting the Contact Us Page View" url="setting_the_contact_us_page_view.htm" />
+  <topic name="Setting the Feedback Delay Time" url="setting_the_feedback_delay_time.htm" />
+  <key name="Contact Us Page View" >
+    <topic name="Setting the Contact Us Page View" url="setting_the_contact_us_page_view.htm" />
+  </key>
+  <key name="Feedback Delay Time" >
+    <topic name="Setting the Feedback Delay Time" url="setting_the_feedback_delay_time.htm" />
+  </key>
+  <key name="User Permissions" >
+    <topic name="Setting User Permissions" url="setting_user_permissions.htm" />
+  </key>
+</key>
+<key name="Site Information" >
+  <topic name="Configuring Site Information" url="configuring_site_information.htm" />
+  <topic name="Resetting Site Information" url="resetting_site_information.htm" />
+  <key name="Configuring" >
+    <topic name="Configuring Site Information" url="configuring_site_information.htm" />
+  </key>
+  <key name="Resetting" >
+    <topic name="Resetting Site Information" url="resetting_site_information.htm" />
+  </key>
+</key>
+<key name="Sorting" >
+  <topic name="Sorting Mini Panels List" url="sorting_mini_panels_list.htm" />
+  <key name="Mini Panels List" >
+    <topic name="Sorting Mini Panels List" url="sorting_mini_panels_list.htm" />
+  </key>
+</key>
+<key name="Specifying" >
+  <topic name="Specifying Weightage to the Search Fields" url="specifying_weightage_to_the_search_fields.htm" />
+  <key name="Weightage" >
+    <topic name="Specifying Weightage to the Search Fields" url="specifying_weightage_to_the_search_fields.htm" />
+  </key>
+</key>
+<key name="Super Administrator" >
+  <topic name="Contacting Super Administrator" url="contacting_super_administrator.htm" />
+  <topic name="Super Administrator" url="super_administrator.htm" />
+  <key name="Contacting" >
+    <topic name="Contacting Super Administrator" url="contacting_super_administrator.htm" />
+  </key>
+</key>
+<key name="Table" >
+  <topic name="Creating Pages" url="creating_pages.htm" />
+  <topic name="Creating Blocks" url="creating_blocks.htm" />
+</key>
+<key name="Text Resize Settings" >
+  <topic name="Configuring Text Resize Settings" url="configuring_text_resize_settings.htm" />
+  <topic name="Resetting Text Resize Settings" url="resetting_text_resize_settings.htm" />
+  <key name="Configuring" >
+    <topic name="Configuring Text Resize Settings" url="configuring_text_resize_settings.htm" />
+  </key>
+  <key name="Resetting" >
+    <topic name="Resetting Text Resize Settings" url="resetting_text_resize_settings.htm" />
+  </key>
+</key>
+<key name="Themes" >
+  <topic name="Enabling Themes" url="enabling_themes.htm" />
+  <topic name="Configuring Themes" url="configuring_themes.htm" />
+  <topic name="Viewing List of Themes" url="viewing_list_of_themes.htm" />
+  <topic name="Managing Themes" url="managing_themes.htm" />
+  <topic name="Configuring Global Settings for Themes" url="configuring_global_settings_for_themes.htm" />
+  <topic name="Resetting Themes" url="resetting_themes.htm" />
+  <key name="Configuring" >
+    <topic name="Configuring Themes" url="configuring_themes.htm" />
+  </key>
+  <key name="Enabling" >
+    <topic name="Enabling Themes" url="enabling_themes.htm" />
+  </key>
+  <key name="Managing" >
+    <topic name="Managing Themes" url="managing_themes.htm" />
+  </key>
+  <key name="Resetting" >
+    <topic name="Resetting Themes" url="resetting_themes.htm" />
+  </key>
+</key>
+<key name="Time Formats" >
+  <topic name="Configuring Date and Time Formats" url="configuring_date_and_time_formats.htm" />
+</key>
+<key name="Time Settings" >
+  <topic name="Configuring Date and Time Settings" url="configuring_date_and_time_settings.htm" />
+</key>
+<key name="Toc317675245" >
+  <topic name="OGPL Control Panel Overview" url="ogpl_control_panel_overview.htm" />
+</key>
+<key name="Top Pages Report" >
+  <topic name="Viewing the Top Pages Report" url="viewing_the_top_pages_report.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing the Top Pages Report" url="viewing_the_top_pages_report.htm" />
+  </key>
+</key>
+<key name="Top Referrer Report" >
+  <topic name="Viewing the Top Referrer Report" url="viewing_the_top_referrer_report.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing the Top Referrer Report" url="viewing_the_top_referrer_report.htm" />
+  </key>
+</key>
+<key name="Top Search Phrases Report" >
+  <topic name="Viewing the Top Search Phrases Report" url="viewing_the_top_search_phrases_report.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing the Top Search Phrases Report" url="viewing_the_top_search_phrases_report.htm" />
+  </key>
+</key>
+<key name="Top Visitors Report" >
+  <topic name="Viewing the Top Visitors Report" url="viewing_the_top_visitors_report.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing the Top Visitors Report" url="viewing_the_top_visitors_report.htm" />
+  </key>
+</key>
+<key name="Tracking" >
+  <topic name="Tracking Contact Admin Page Visits" url="tracking_contact_admin_page_visits.htm" />
+  <topic name="Tracking Content Revisions" url="tracking_content_revisions.htm" />
+  <topic name="Tracking the Revisions to the Content" url="tracking_the_revisions_to_the_content.htm" />
+  <topic name="Tracking the Feedback Delay Time" url="tracking_the_feedback_delay_time.htm" />
+  <topic name="Tracking a Feedback Status" url="tracking_a_feedback_status.htm" />
+  <topic name="Tracking Updates for an Action Status" url="tracking_updates_for_an_action_status.htm" />
+  <topic name="Tracking a Feedback Category" url="tracking_a_feedback_category.htm" />
+  <key name="Contact Admin Page Visits" >
+    <topic name="Tracking Contact Admin Page Visits" url="tracking_contact_admin_page_visits.htm" />
+  </key>
+  <key name="Content Revisions" >
+    <topic name="Tracking Content Revisions" url="tracking_content_revisions.htm" />
+  </key>
+  <key name="Feedback Category" >
+    <topic name="Tracking a Feedback Category" url="tracking_a_feedback_category.htm" />
+  </key>
+  <key name="Feedback Delay Time" >
+    <topic name="Tracking the Feedback Delay Time" url="tracking_the_feedback_delay_time.htm" />
+  </key>
+  <key name="Feedback Status" >
+    <topic name="Tracking a Feedback Status" url="tracking_a_feedback_status.htm" />
+  </key>
+  <key name="Revisions" >
+    <topic name="Tracking the Revisions to the Content" url="tracking_the_revisions_to_the_content.htm" />
+  </key>
+  <key name="Updates" >
+    <topic name="Tracking Updates for an Action Status" url="tracking_updates_for_an_action_status.htm" />
+  </key>
+</key>
+<key name="Understanding" >
+  <topic name="Understanding the Content Management System (CMS) Workflow" url="understanding_the_content_management_system_workflow_.htm" />
+  <key name="Content Management System" >
+    <topic name="Understanding the Content Management System (CMS) Workflow" url="understanding_the_content_management_system_workflow_.htm" />
+  </key>
+</key>
+<key name="Unpublish" >
+  <topic name="Unpublish a Content from the OGPL Web site" url="unpublish_a_content_from_the_ogpl_web_site.htm" />
+  <key name="Content" >
+    <topic name="Unpublish a Content from the OGPL Web site" url="unpublish_a_content_from_the_ogpl_web_site.htm" />
+  </key>
+</key>
+
+</indexdata>

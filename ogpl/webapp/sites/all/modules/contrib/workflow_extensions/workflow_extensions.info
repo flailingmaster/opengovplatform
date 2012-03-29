@@ -1,0 +1,13 @@
+name = Workflow extensions
+description = Various UI improvements for the Workflow module. In particular the replacement of the workflow radio buttons by either a drop-down or more intuitive single-action buttons with configurable labels. Also allow the automatic invocation of actions, like emailing reminders, when a workflow has NOT transitioned state for some time.
+core = 6.x
+package = Workflow
+
+version = 6.x-1.x-dev
+
+; Information added by drupal.org packaging script on 2011-11-25
+version = "6.x-1.7"
+core = "6.x"
+project = "workflow_extensions"
+datestamp = "1322258745"
+

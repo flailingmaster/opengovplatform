@@ -1,0 +1,11 @@
+; $Id: download_file.info,v 1.2.2.1 2010/09/07 07:10:21 xmattx Exp $
+name = DownloadFile
+description = "Module direct download files or images."
+dependencies[] = filefield
+core = 6.x
+; Information added by drupal.org packaging script on 2010-10-15
+version = "6.x-1.1"
+core = "6.x"
+project = "download_file"
+datestamp = "1287146182"
+

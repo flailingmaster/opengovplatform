@@ -1,0 +1,11 @@
+<?php
+function web_node_override_menu_alter(&$items) {
+  //disable the page at node
+  //$items['node']['access callback'] = FALSE;
+  //$items['node/add']['access callback'] = FALSE;
+  unset($items['node']);
+  unset($items['node/add']);
+}
+
+?>
+

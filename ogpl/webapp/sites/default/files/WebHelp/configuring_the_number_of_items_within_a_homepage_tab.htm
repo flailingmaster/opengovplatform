@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Adobe RoboHelp 9" />
+<title>Configuring the Number of Items Within a Homepage Tab</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="JavaScript">//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+        origWidth = innerWidth;
+        origHeight = innerHeight;
+        onresize = reDo;
+}
+onerror = null; 
+//]]></script>
+<script type="text/javascript" language="javascript1.2" src="./whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="./whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whtopic.js"></script>
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("Configuring the Number of Items Within a Homepage Tab<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<?rh-region_start id="header" style="width: 100%; position: relative;" ?>
+<p>&#160;</p>
+<?rh-region_end ?>
+<h1><span>Configuring the Number of Items Within a Homepage Tab</span></h1>
+<p>Homepage Tabs allow you to display tabbed content on the home page of 
+ the OGPL Web site. Each Homepage Tab retrieves and displays information 
+ from a content source. The following table lists each Homepage Tab and 
+ its content source.</p>
+<p class="TableCaption"><span>Table: Description of Homepage Tabs and Content 
+ Source</span></p>
+<table style="margin-left: 0.25in;" cellspacing="0" width="93.191%">
+	<col style="width: 26.753%;" />
+	<col style="width: 73.247%;" />
+	<tr>
+		<td style="border: Solid 1px #000000;" bgcolor="#E8E8E8"><p class="TableHeading">Homepage 
+		 Tab</p></td>
+		<td style="border-top: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;" bgcolor="#E8E8E8"><p class="TableHeading"><span>Description 
+		 and Content Source</span></p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Popular Catalogs</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Displays 
+		 most-viewed application catalogs, dataset catalogs, and document 
+		 catalogs.</p>
+		<p>This Homepage Tab uses the Most_Popular_Catalog view as the 
+		 content source. The Most_Popular_Catalog view in turn uses the 
+		 following views to fetch the information:</p>
+		<ul type="disc">
+			<li><p>Popular_Apps_Catalog</p></li>
+			<li><p>Popular_Dataset_Catalog</p></li>
+			<li><p>Popular_Document_Catalog</p></li>
+		</ul></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Recent Catalogs</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Displays 
+		 recently added application catalogs, dataset catalogs, and document 
+		 catalogs.</p>
+		<p>This Homepage Tab uses the Most_Recent_Catalogs view as the 
+		 content source. The Most_Recent_Catalog view in turn uses the 
+		 following views to fetch the information:</p>
+		<ul type="disc">
+			<li><p>Recent_Apps_Catalog</p></li>
+			<li><p>Recent_Dataset_Catalog</p></li>
+			<li><p>Recent_Document_Catalog</p></li>
+		</ul></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Major Events</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Displays 
+		 major events happening around the world through the RSS feeds.</p>
+		<p>This Homepage Tab uses a block as a content source. For example, 
+		 RSS feed aggregator. For more information, see <a href="managing_rss_feeds.htm">Managing 
+		 <b><span style="font-weight: normal;">RSS Feeds</span></b></a></p></td>
+	</tr>
+</table>
+<p>&#160;</p>
+<p><span>You can configure the number of items that must appear on each 
+ Homepage Tab on the home page of the OGPL by performing the following 
+ steps:</span></p>
+<ol type="1">
+	<li><p>In the Drupal menu, point to <span class="UI">Site building</span>, 
+	 <span class="UI">Views</span>, and then click <span class="UI">List</span>.<br />
+	The <span class="UI">Views</span> page appears and displays the list 
+	 of views for different blocks of the OGPL Web site.</p></li>
+	<li><p>In the views list, navigate to the content source for the Hompeage 
+	 Tab that you want to configure, and click the <span class="UI">Edit</span> 
+	 link. For example, if you want to edit the number of items that must 
+	 appear on the <span class="UI">Popular Catalogs</span> Homepage Tab, 
+	 navigate to the <span class="UI">Popular_Apps_Catalog</span> View, 
+	 and click the <span class="UI">Edit</span> link.<br />
+	The <span class="UI">Edit view</span> <span class="UI" style="font-style: italic;"><i><i>View_Name</i></i></span> 
+	 page appears, where <span class="UI" style="font-style: italic;"><i><i>View_Name</i></i></span> 
+	 is the name of the <span class="UI">View</span> that you selected.</p></li>
+	<li><p>In the <span class="UI">Basic settings</span> section, click 
+	 the number link that appears next to <span class="UI">Items to display</span>.<br />
+	The <span class="UI">Defaults: Items to display</span> and <span class="UI">Offset</span> 
+	 fields appear.</p></li>
+	<li><p>In the <span class="UI">Defaults: Items to display</span> field, 
+	 enter the number of items that must appear on the Homepage Tab. For 
+	 example, if you want the names of the 10 most-viewed datasets to appear 
+	 on the <span class="UI">Popular Catalogs</span> Homepage Tab, enter 
+	 <span class="UI">10</span> in the <span class="UI">Defaults: Items 
+	 to display</span> field.</p></li>
+	<li><p>In the <span class="UI">Offset</span> field, enter the number 
+	 of items that must not appear on the Homepage Tab. For example, if 
+	 you enter <span class="UI">3</span> in the <span class="UI">Offset</span> 
+	 field, the top 3 most-viewed datasets will not appear on the <span 
+	 class="UI">Popular Catalogs</span> Homepage Tab.</p></li>
+	<li><p>Click <span class="UI">Update</span>.<br />
+	The number of items that you specified appears in the appropriate Homepage 
+	 Tab.</p></li>
+</ol>
+<?rh-region_start id="footer" style="width: 100%; position: relative;" ?>
+<p>&#160;</p>
+<?rh-region_end ?><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

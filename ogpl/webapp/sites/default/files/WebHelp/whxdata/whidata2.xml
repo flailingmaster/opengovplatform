@@ -1,0 +1,235 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+<indexdata>
+<key name="Default Delay Time" >
+  <topic name="Configuring the Default Delay Time" url="configuring_the_default_delay_time.htm" />
+  <key name="Configuring" >
+    <topic name="Configuring the Default Delay Time" url="configuring_the_default_delay_time.htm" />
+  </key>
+</key>
+<key name="Default Theme" >
+  <topic name="Selecting Default Theme" url="selecting_default_theme.htm" />
+  <key name="Selecting" >
+    <topic name="Selecting Default Theme" url="selecting_default_theme.htm" />
+  </key>
+</key>
+<key name="Deleting" >
+  <topic name="Deleting a Feedback Category" url="deleting_a_feedback_category.htm" />
+  <topic name="Deleting a Homepage Tab from the Quicktab Block" url="deleting_a_homepage_tab_from_the_quicktab_block.htm" />
+  <topic name="Deleting Content" url="deleting_content.htm" />
+  <topic name="Deleting a Quicktab block" url="deleting_a_quicktab_block.htm" />
+  <topic name="Deleting Users" url="deleting_users.htm" />
+  <topic name="Deleting the Search Index" url="deleting_the_search_index.htm" />
+  <topic name="Deleting Captcha" url="deleting_captcha.htm" />
+  <topic name="Deleting an Action Status for a Feedback" url="deleting_an_action_status_for_a_feedback.htm" />
+  <topic name="Deleting Mini Panels" url="deleting_mini_panels.htm" />
+  <topic name="Deleting a Menu Item" url="deleting_a_menu_item.htm" />
+  <topic name="Deleting Menus" url="deleting_menus.htm" />
+  <key name="Action Status" >
+    <topic name="Deleting an Action Status for a Feedback" url="deleting_an_action_status_for_a_feedback.htm" />
+  </key>
+  <key name="Captcha" >
+    <topic name="Deleting Captcha" url="deleting_captcha.htm" />
+  </key>
+  <key name="Content" >
+    <topic name="Deleting Content" url="deleting_content.htm" />
+  </key>
+  <key name="Feedback Category" >
+    <topic name="Deleting a Feedback Category" url="deleting_a_feedback_category.htm" />
+  </key>
+  <key name="Homepage Tab" >
+    <topic name="Deleting a Homepage Tab from the Quicktab Block" url="deleting_a_homepage_tab_from_the_quicktab_block.htm" />
+  </key>
+  <key name="Menu Item" >
+    <topic name="Deleting a Menu Item" url="deleting_a_menu_item.htm" />
+  </key>
+  <key name="Menus" >
+    <topic name="Deleting Menus" url="deleting_menus.htm" />
+  </key>
+  <key name="Mini Panels" >
+    <topic name="Deleting Mini Panels" url="deleting_mini_panels.htm" />
+  </key>
+  <key name="Quicktab block" >
+    <topic name="Deleting a Quicktab block" url="deleting_a_quicktab_block.htm" />
+  </key>
+  <key name="Search Index" >
+    <topic name="Deleting the Search Index" url="deleting_the_search_index.htm" />
+  </key>
+  <key name="Users" >
+    <topic name="Deleting Users" url="deleting_users.htm" />
+  </key>
+</key>
+<key name="Description_of_fields_in_the_menu_setting_section" >
+  <topic name="Creating Pages" url="creating_pages.htm" />
+  <topic name="Creating Blocks" url="creating_blocks.htm" />
+</key>
+<key name="Disabling" >
+  <topic name="Disabling Mini Panels" url="disabling_mini_panels.htm" />
+  <key name="Mini Panels" >
+    <topic name="Disabling Mini Panels" url="disabling_mini_panels.htm" />
+  </key>
+</key>
+<key name="Display" >
+  <topic name="Configuring the Number of Items to Display in Popular Catalogs Homepage Tab" url="configuring_the_number_of_items_to_display_in_popular_catalogs_homepage_tab.htm" />
+  <topic name="Configuring the Number of Items to Display in Hompage Tab" url="configuring_the_number_of_items_to_display_in_homepage_tab.htm" />
+  <key name="Items" >
+    <topic name="Configuring the Number of Items to Display in Popular Catalogs Homepage Tab" url="configuring_the_number_of_items_to_display_in_popular_catalogs_homepage_tab.htm" />
+    <topic name="Configuring the Number of Items to Display in Hompage Tab" url="configuring_the_number_of_items_to_display_in_homepage_tab.htm" />
+  </key>
+</key>
+<key name="Editing" >
+  <topic name="Editing Users" url="editing_users.htm" />
+  <key name="Users" >
+    <topic name="Editing Users" url="editing_users.htm" />
+  </key>
+</key>
+<key name="Enabling" >
+  <topic name="Enabling Themes" url="enabling_themes.htm" />
+  <topic name="Enabling the Search Filters" url="enabling_the_search_filters.htm" />
+  <topic name="Enabling Mini Panels" url="enabling_mini_panels.htm" />
+  <key name="Mini Panels" >
+    <topic name="Enabling Mini Panels" url="enabling_mini_panels.htm" />
+  </key>
+  <key name="Search Filters" >
+    <topic name="Enabling the Search Filters" url="enabling_the_search_filters.htm" />
+  </key>
+  <key name="Themes" >
+    <topic name="Enabling Themes" url="enabling_themes.htm" />
+  </key>
+</key>
+<key name="Exporting" >
+  <topic name="Exporting Mini Panels" url="exporting_mini_panels.htm" />
+  <key name="Mini Panels" >
+    <topic name="Exporting Mini Panels" url="exporting_mini_panels.htm" />
+  </key>
+</key>
+<key name="FAQ" >
+  <topic name="Creating FAQ" url="creating_faq.htm" />
+  <topic name="Updating an FAQ" url="updating_an_faq.htm" />
+  <topic name="Updating FAQ" url="updating_faq.htm" />
+  <key name="Creating" >
+    <topic name="Creating FAQ" url="creating_faq.htm" />
+  </key>
+  <key name="Updating" >
+    <topic name="Updating an FAQ" url="updating_an_faq.htm" />
+    <topic name="Updating FAQ" url="updating_faq.htm" />
+  </key>
+</key>
+<key name="Featured Gallery" >
+  <topic name="Updating Images for a Featured Gallery" url="updating_images_for_a_featured_gallery.htm" />
+  <topic name="Adding Images to the Featured Gallery" url="adding_images_to_the_featured_gallery.htm" />
+  <topic name="Updating Featured Gallery" url="updating_featured_gallery.htm" />
+  <key name="Updating" >
+    <topic name="Updating Featured Gallery" url="updating_featured_gallery.htm" />
+  </key>
+</key>
+<key name="Feedback" >
+  <topic name="Adding Notes to a Feedback" url="adding_notes_to_a_feedback_poc.htm" />
+  <topic name="Forwarding a Feedback" url="forwarding_a_feedback_pmo.htm" />
+  <topic name="Closing a Feedback" url="closing_a_feedback.htm" />
+  <topic name="Reverting Feedback" url="reverting_feedback.htm" />
+  <topic name="Filtering the List of Feedback" url="filtering_the_list_of_feedback.htm" />
+  <topic name="Forwarding a Feedback" url="forwarding_a_feedback_poc.htm" />
+  <topic name="Viewing a Reply for a Feedback" url="viewing_a_reply_for_a_feedback_pmo.htm" />
+  <topic name="Reverting a Feedback" url="reverting_a_feedback_pmo.htm" />
+  <topic name="Managing the Action Status for a Feedback" url="managing_the_action_status_for_a_feedback.htm" />
+  <topic name="Viewing the Reply for a Feedback" url="viewing_the_reply_for_a_feedback.htm" />
+  <topic name="Managing Feedback" url="managing_feedback.htm" />
+  <topic name="Replying to a Feedback" url="replying_to_a_feedback_pmo.htm" />
+  <topic name="Viewing a Reply for a Feedback - POC" url="viewing_a_reply_for_a_feedback_poc.htm" />
+  <topic name="Reverting a Feedback" url="reverting_a_feedback_poc.htm" />
+  <topic name="Replying to a Feedback" url="replying_to_a_feedback.htm" />
+  <topic name="Archiving a Feedback" url="archiving_a_feedback.htm" />
+  <topic name="Replying to a Feedback- PMO" url="replying_to_feedback_pmo.htm" />
+  <topic name="Marking a Feedback as Irrelevant" url="marking_a_feedback_as_irrelevant.htm" />
+  <topic name="Forwarding a Feedback" url="forwarding_a_feedback.htm" />
+  <topic name="Assigning a Feedback" url="assigning_a_feedback.htm" />
+  <topic name="Reassigning a Feedback" url="reassigning_a_feedback.htm" />
+  <topic name="Deleting an Action Status for a Feedback" url="deleting_an_action_status_for_a_feedback.htm" />
+  <topic name="Adding Notes to a Feedback" url="adding_notes_to_a_feedback_pmo.htm" />
+  <topic name="Updating an Action Status for a Feedback" url="updating_an_action_status_for_a_feedback.htm" />
+  <topic name="Adding Notes to a Feedback" url="adding_notes_to_a_feedback.htm" />
+  <key name="Archiving" >
+    <topic name="Archiving a Feedback" url="archiving_a_feedback.htm" />
+  </key>
+  <key name="Assigning" >
+    <topic name="Assigning a Feedback" url="assigning_a_feedback.htm" />
+  </key>
+  <key name="Closing" >
+    <topic name="Closing a Feedback" url="closing_a_feedback.htm" />
+  </key>
+  <key name="Forwarding" >
+    <topic name="Forwarding a Feedback" url="forwarding_a_feedback_pmo.htm" />
+    <topic name="Forwarding a Feedback" url="forwarding_a_feedback_poc.htm" />
+    <topic name="Forwarding a Feedback" url="forwarding_a_feedback.htm" />
+  </key>
+  <key name="Managing" >
+    <topic name="Managing Feedback" url="managing_feedback.htm" />
+  </key>
+  <key name="Marking" >
+    <topic name="Marking a Feedback as Irrelevant" url="marking_a_feedback_as_irrelevant.htm" />
+  </key>
+  <key name="Reassigning" >
+    <topic name="Reassigning a Feedback" url="reassigning_a_feedback.htm" />
+  </key>
+  <key name="Replying" >
+    <topic name="Replying to a Feedback" url="replying_to_a_feedback_pmo.htm" />
+    <topic name="Replying to a Feedback" url="replying_to_a_feedback.htm" />
+    <topic name="Replying to a Feedback- PMO" url="replying_to_feedback_pmo.htm" />
+  </key>
+  <key name="Reverting" >
+    <topic name="Reverting Feedback" url="reverting_feedback.htm" />
+    <topic name="Reverting a Feedback" url="reverting_a_feedback_pmo.htm" />
+    <topic name="Reverting a Feedback" url="reverting_a_feedback_poc.htm" />
+  </key>
+</key>
+<key name="Feedback Category" >
+  <topic name="Deleting a Feedback Category" url="deleting_a_feedback_category.htm" />
+  <topic name="Updating a Feedback Category" url="updating_a_feedback_category.htm" />
+  <topic name="Managing Feedback Categories" url="managing_feedback_categories.htm" />
+  <topic name="Tracking a Feedback Category" url="tracking_a_feedback_category.htm" />
+  <key name="Deleting" >
+    <topic name="Deleting a Feedback Category" url="deleting_a_feedback_category.htm" />
+  </key>
+  <key name="Managing" >
+    <topic name="Managing Feedback Categories" url="managing_feedback_categories.htm" />
+  </key>
+  <key name="Tracking" >
+    <topic name="Tracking a Feedback Category" url="tracking_a_feedback_category.htm" />
+  </key>
+  <key name="Updating" >
+    <topic name="Updating a Feedback Category" url="updating_a_feedback_category.htm" />
+  </key>
+</key>
+<key name="Feedback Delay Time" >
+  <topic name="Tracking the Feedback Delay Time" url="tracking_the_feedback_delay_time.htm" />
+  <topic name="Updating the Feedback Delay Time" url="updating_the_feedback_delay_time.htm" />
+  <topic name="Setting the Feedback Delay Time" url="setting_the_feedback_delay_time.htm" />
+  <topic name="Managing Feedback Delay Time" url="managing_feedback_delay_time.htm" />
+  <key name="Managing" >
+    <topic name="Managing Feedback Delay Time" url="managing_feedback_delay_time.htm" />
+  </key>
+  <key name="Setting" >
+    <topic name="Setting the Feedback Delay Time" url="setting_the_feedback_delay_time.htm" />
+  </key>
+  <key name="Tracking" >
+    <topic name="Tracking the Feedback Delay Time" url="tracking_the_feedback_delay_time.htm" />
+  </key>
+  <key name="Updating" >
+    <topic name="Updating the Feedback Delay Time" url="updating_the_feedback_delay_time.htm" />
+  </key>
+</key>
+<key name="Feedback Received" >
+  <topic name="Viewing the List of Feedback Received" url="viewing_the_list_of_feedback_received.htm" />
+</key>
+<key name="Feedback Review" >
+  <topic name="Adding a Feedback Review" url="adding_a_feedback_review_vrm_admin.htm" />
+  <topic name="Adding a Feedback Review" url="adding_a_feedback_review.htm" />
+  <topic name="Adding a Feedback Review" url="adding_a_feedback_review_poc.htm" />
+  <key name="Adding" >
+    <topic name="Adding a Feedback Review" url="adding_a_feedback_review_vrm_admin.htm" />
+    <topic name="Adding a Feedback Review" url="adding_a_feedback_review.htm" />
+    <topic name="Adding a Feedback Review" url="adding_a_feedback_review_poc.htm" />
+  </key>
+</key>
+
+</indexdata>

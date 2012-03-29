@@ -1,0 +1,7 @@
+name = Workflow Email Notification
+description = An email notification is send on every every workflow state transition.
+package = REI
+core = 6.x
+dependencies[] = workflow
+dependencies[] = content
+package = DMS customizations

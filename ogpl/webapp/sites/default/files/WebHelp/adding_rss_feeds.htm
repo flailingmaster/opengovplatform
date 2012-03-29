@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <meta name="generator" content="Adobe RoboHelp 9" />
+<title>Adding RSS Feeds</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addTocInfo("Content Management System Administrator\nManaging RSS Feeds\nAdding RSS Feeds");
+addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("<a href=\"cms_administrator.htm\">Content Management System Administrator<\/a> > <a href=\"managing_rss_feeds.htm\">Managing RSS Feeds<\/a> > Adding RSS Feeds<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<div style="width: 100%; position: relative;" id="header">
+	<p>&#160;</p>
+</div>
+
+<h2>Adding RSS Feeds</h2>
+<p>You can subscribe to an RSS feed of a Web site and add it to the OGPL 
+ Web site. You can specify the time interval at which the feed items in 
+ the RSS feed must be updated. </p>
+<p>To add a RSS feed:</p>
+<ol type="1">
+	<li><p>In the navigation menu, point to <span class="UI">Configurable 
+	 Items</span>, and then click <span class="UI">Manage RSS Aggregator</span>. 
+	 <br />
+	The <span class="UI">Feed Aggregator</span> page appears.</p></li>
+	<li><p>Click the <span class="UI">Add feed</span> tab. &#160;<br />
+	The <span class="UI">Add Feed</span> tab displays the settings required 
+	 to configure a new RSS feed.</p></li>
+	<li><p>In the <span class="UI">Title</span> field, enter the name of 
+	 the source from which you want to receive the RSS feed. <br />
+	<span style="font-weight: bold;"><b>Note</b></span>: The name that you enter 
+	 in the <span class="UI">Title</span> field appears on the OGPL Web 
+	 site.</p></li>
+	<li><p>In the <span class="UI">URL</span> field, enter the complete 
+	 URL for the RSS feed.</p></li>
+	<li><p>In the <span class="UI">Update Interval</span> list, click the 
+	 appropriate time interval between each RSS feed update. <br />
+	<span style="font-weight: bold;"><b>Note</b></span>: The interval at which 
+	 RSS feed is updated also depends on the interval that you specified 
+	 in <span class="UI">Automatically run cron</span> section in the <span 
+	 class="UI">Site Information</span> Web page. &#160;For more information, 
+	 see <a href="configuring_site_information.htm">Configuring the Site 
+	 Information</a>.<br />
+	The following table illustrates the relation between the update interval 
+	 and the cron interval.</p></li>
+</ol>
+<p class="MsoNormal" style="margin-left: .5in; mso-bidi-font-weight: normal;"><b 
+	 style="font-weight: bold;">Table: Relation between the update interval 
+ and the cron interval</b></p>
+<table class="MsoNormalTable" style="margin-left: .5in; border-collapse: collapse; 
+		 mso-yfti-tbllook: 1184;" cellspacing="0" width="93%">
+	<col />
+	<col />
+	<col />
+	<tr style="mso-yfti-irow: 0; mso-yfti-firstrow: yes;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; mso-border-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;" bgcolor="#E8E8E8"><p 
+			 class="tableheading" style="font-weight: bold;">Update Interval</p></td>
+		<td style="border-top: solid 1.0pt #000000; border-right: solid 1.0pt #000000; 
+			 border-bottom: solid 1.0pt #000000; width: 22.84%; mso-border-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;" bgcolor="#E8E8E8"><p 
+			 class="tableheading" style="font-weight: bold;">Cron Interval</p></td>
+		<td style="width: 77.16%; border: solid #000000 1.0pt; border-left: none; 
+			 mso-border-top-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;" 
+			 bgcolor="#E8E8E8"><p class="tableheading" style="font-weight: bold;">Interval 
+		 at which RSS feed is updated</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 1;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p><span 
+		 class="UI">15 minutes</span></p></td>
+		<td style="border-top: solid 1.0pt #000000; border-right: solid 1.0pt #000000; 
+			 border-bottom: solid 1.0pt #000000; width: 22.84%; mso-border-left-alt: solid black .75pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p><span class="UI">1 
+		 hour</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p>1 hour</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 2; mso-yfti-lastrow: yes;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p><span 
+		 class="UI">1 hour</span></p></td>
+		<td style="border-top: solid 1.0pt #000000; border-right: solid 1.0pt #000000; 
+			 border-bottom: solid 1.0pt #000000; width: 22.84%; mso-border-left-alt: solid black .75pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p><span class="UI">15 
+		 minutes</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p>1 hour</p></td>
+	</tr>
+</table>
+<p>&#160;</p>
+<ol start="6" type="1">
+	<li><p>Click <span class="UI">Save</span>. The RSS feed is added and 
+	 appears in the <span class="UI">List</span> tab and on the OGPL Web 
+	 site. </p></li>
+</ol>
+<p>&#160;</p>
+<div style="width: 100%; position: relative;" id="footer">
+	<p>&#160;</p>
+</div>
+<script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

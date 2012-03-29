@@ -1,0 +1,158 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+<indexdata>
+<key name="Viewing" >
+  <topic name="Viewing the Revision History of a Content" url="viewing_the_revision_history_of_a_content.htm" />
+  <topic name="Viewing the Top Visitors Report" url="viewing_the_top_visitors_report.htm" />
+  <topic name="Viewing the Access Denied Pages/Datasets Report" url="viewing_the_access_denied_pages_datasets_report.htm" />
+  <topic name="Viewing the VRM Delay Analysis Report" url="viewing_the_vrm_delay_analysis_report.htm" />
+  <topic name="Viewing Agency List" url="viewing_agency_list.htm" />
+  <topic name="Viewing the VRM Source Metrics Report" url="viewing_the_vrm_source_metrics_report.htm" />
+  <topic name="Viewing the VRM Status Metrics Report" url="viewing_the_vrm_status_metrics_report.htm" />
+  <topic name="Viewing a Reply for a Feedback" url="viewing_a_reply_for_a_feedback_pmo.htm" />
+  <topic name="Viewing List of Themes" url="viewing_list_of_themes.htm" />
+  <topic name="Viewing the Reply for a Feedback" url="viewing_the_reply_for_a_feedback.htm" />
+  <topic name="Viewing the Top Referrer Report" url="viewing_the_top_referrer_report.htm" />
+  <topic name="Viewing a Reply for a Feedback - POC" url="viewing_a_reply_for_a_feedback_poc.htm" />
+  <topic name="Viewing the VRM Category Metrics Report" url="viewing_the_vrm_category_metrics_report.htm" />
+  <topic name="Viewing Menu Items in a Menu" url="viewing_menu_items_in_a_menu.htm" />
+  <topic name="Viewing the List of Feedback Received" url="viewing_the_list_of_feedback_received.htm" />
+  <topic name="Viewing the Top Search Phrases Report" url="viewing_the_top_search_phrases_report.htm" />
+  <topic name="Viewing Content List" url="viewing_content_list.htm" />
+  <topic name="Viewing Captcha Examples" url="viewing_captcha_examples.htm" />
+  <topic name="Viewing Blocks Content" url="viewing_blocks_content.htm" />
+  <topic name="Viewing Revision History" url="viewing_revision_history.htm" />
+  <topic name="Viewing the Assignee Wise VRM Statistics Report" url="viewing_the_assignee_wise_vrm_statistics_report.htm" />
+  <topic name="Viewing Blocks List" url="viewing_blocks_list.htm" />
+  <topic name="Viewing Reports" url="viewing_reports.htm" />
+  <topic name="Viewing the Top Pages Report" url="viewing_the_top_pages_report.htm" />
+  <topic name="Viewing the VRM Action Metrics Report" url="viewing_the_vrm_action_metrics_report.htm" />
+  <topic name="Viewing List of Mini Panels" url="viewing_list_of_mini_panels.htm" />
+  <topic name="Viewing the Page Not Found Error Report" url="viewing_the_page_not_found_error_report.htm" />
+  <topic name="Viewing the Content List" url="viewing_the_content_list.htm" />
+  <key name="Access Denied Pages" >
+    <topic name="Viewing the Access Denied Pages/Datasets Report" url="viewing_the_access_denied_pages_datasets_report.htm" />
+  </key>
+  <key name="Agency List" >
+    <topic name="Viewing Agency List" url="viewing_agency_list.htm" />
+  </key>
+  <key name="Assignee Wise VRM Statistics Report" >
+    <topic name="Viewing the Assignee Wise VRM Statistics Report" url="viewing_the_assignee_wise_vrm_statistics_report.htm" />
+  </key>
+  <key name="Blocks Content" >
+    <topic name="Viewing Blocks Content" url="viewing_blocks_content.htm" />
+  </key>
+  <key name="Blocks List" >
+    <topic name="Viewing Blocks List" url="viewing_blocks_list.htm" />
+  </key>
+  <key name="Captcha Examples" >
+    <topic name="Viewing Captcha Examples" url="viewing_captcha_examples.htm" />
+  </key>
+  <key name="Content List" >
+    <topic name="Viewing Content List" url="viewing_content_list.htm" />
+    <topic name="Viewing the Content List" url="viewing_the_content_list.htm" />
+  </key>
+  <key name="List" >
+    <topic name="Viewing List of Themes" url="viewing_list_of_themes.htm" />
+    <topic name="Viewing the List of Feedback Received" url="viewing_the_list_of_feedback_received.htm" />
+    <topic name="Viewing List of Mini Panels" url="viewing_list_of_mini_panels.htm" />
+  </key>
+  <key name="Menu Items" >
+    <topic name="Viewing Menu Items in a Menu" url="viewing_menu_items_in_a_menu.htm" />
+  </key>
+  <key name="Page Not Found Error Report" >
+    <topic name="Viewing the Page Not Found Error Report" url="viewing_the_page_not_found_error_report.htm" />
+  </key>
+  <key name="Reply" >
+    <topic name="Viewing a Reply for a Feedback" url="viewing_a_reply_for_a_feedback_pmo.htm" />
+    <topic name="Viewing the Reply for a Feedback" url="viewing_the_reply_for_a_feedback.htm" />
+    <topic name="Viewing a Reply for a Feedback - POC" url="viewing_a_reply_for_a_feedback_poc.htm" />
+  </key>
+  <key name="Reports" >
+    <topic name="Viewing Reports" url="viewing_reports.htm" />
+  </key>
+  <key name="Revision History" >
+    <topic name="Viewing the Revision History of a Content" url="viewing_the_revision_history_of_a_content.htm" />
+    <topic name="Viewing Revision History" url="viewing_revision_history.htm" />
+  </key>
+  <key name="Top Pages Report" >
+    <topic name="Viewing the Top Pages Report" url="viewing_the_top_pages_report.htm" />
+  </key>
+  <key name="Top Referrer Report" >
+    <topic name="Viewing the Top Referrer Report" url="viewing_the_top_referrer_report.htm" />
+  </key>
+  <key name="Top Search Phrases Report" >
+    <topic name="Viewing the Top Search Phrases Report" url="viewing_the_top_search_phrases_report.htm" />
+  </key>
+  <key name="Top Visitors Report" >
+    <topic name="Viewing the Top Visitors Report" url="viewing_the_top_visitors_report.htm" />
+  </key>
+  <key name="VRM Action Metrics Report" >
+    <topic name="Viewing the VRM Action Metrics Report" url="viewing_the_vrm_action_metrics_report.htm" />
+  </key>
+  <key name="VRM Category Metrics Report" >
+    <topic name="Viewing the VRM Category Metrics Report" url="viewing_the_vrm_category_metrics_report.htm" />
+  </key>
+  <key name="VRM Delay Analysis Report" >
+    <topic name="Viewing the VRM Delay Analysis Report" url="viewing_the_vrm_delay_analysis_report.htm" />
+  </key>
+  <key name="VRM Source Metrics Report" >
+    <topic name="Viewing the VRM Source Metrics Report" url="viewing_the_vrm_source_metrics_report.htm" />
+  </key>
+  <key name="VRM Status Metrics Report" >
+    <topic name="Viewing the VRM Status Metrics Report" url="viewing_the_vrm_status_metrics_report.htm" />
+  </key>
+</key>
+<key name="Voting API" >
+  <topic name="Configuring the Voting API" url="configuring_the_voting_api.htm" />
+  <key name="Configuring" >
+    <topic name="Configuring the Voting API" url="configuring_the_voting_api.htm" />
+  </key>
+</key>
+<key name="VRM Action Metrics Report" >
+  <topic name="Viewing the VRM Action Metrics Report" url="viewing_the_vrm_action_metrics_report.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing the VRM Action Metrics Report" url="viewing_the_vrm_action_metrics_report.htm" />
+  </key>
+</key>
+<key name="VRM Category Metrics Report" >
+  <topic name="Viewing the VRM Category Metrics Report" url="viewing_the_vrm_category_metrics_report.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing the VRM Category Metrics Report" url="viewing_the_vrm_category_metrics_report.htm" />
+  </key>
+</key>
+<key name="VRM Delay Analysis Report" >
+  <topic name="Viewing the VRM Delay Analysis Report" url="viewing_the_vrm_delay_analysis_report.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing the VRM Delay Analysis Report" url="viewing_the_vrm_delay_analysis_report.htm" />
+  </key>
+</key>
+<key name="VRM Reports" >
+  <topic name="VRM Reports" url="vrm_reports.htm" />
+</key>
+<key name="VRM Source Metrics Report" >
+  <topic name="Viewing the VRM Source Metrics Report" url="viewing_the_vrm_source_metrics_report.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing the VRM Source Metrics Report" url="viewing_the_vrm_source_metrics_report.htm" />
+  </key>
+</key>
+<key name="VRM Status Metrics Report" >
+  <topic name="Viewing the VRM Status Metrics Report" url="viewing_the_vrm_status_metrics_report.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing the VRM Status Metrics Report" url="viewing_the_vrm_status_metrics_report.htm" />
+  </key>
+</key>
+<key name="Weightage" >
+  <topic name="Resetting the Weightage for Search Fields" url="resetting_the_weightage_for_search_fields.htm" />
+  <topic name="Specifying Weightage to the Search Fields" url="specifying_weightage_to_the_search_fields.htm" />
+  <key name="Resetting" >
+    <topic name="Resetting the Weightage for Search Fields" url="resetting_the_weightage_for_search_fields.htm" />
+  </key>
+  <key name="Specifying" >
+    <topic name="Specifying Weightage to the Search Fields" url="specifying_weightage_to_the_search_fields.htm" />
+  </key>
+</key>
+<key name="Workflow" >
+  <topic name="Sending Content Back in Workflow" url="sending_content_back_in_workflow.htm" />
+</key>
+
+</indexdata>

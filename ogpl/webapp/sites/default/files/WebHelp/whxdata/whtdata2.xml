@@ -1,0 +1,42 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+<tocdata>
+<item name="Viewing the Content List" url="viewing_the_content_list.htm" />
+<item name="Filtering the Content List " url="filtering_the_list_of_content.htm" />
+<item name="Previewing Content" url="previewing_the_content.htm#bc-2" />
+<item name="Updating a Block" url="updating_a_block.htm" />
+<item name="Updating a Page" url="updating_a_page.htm" />
+<item name="Updating an FAQ" url="updating_an_faq.htm" />
+<item name="Updating Country Data" url="updating_country_data.htm" />
+<item name="Updating Images for a Featured Gallery" url="updating_images_for_a_featured_gallery.htm" />
+<item name="Updating Images for a Rotating Panel" url="updating_image_for_a_rotating_panel.htm" />
+<item name="Approving Content" url="approving_content.htm" />
+<item name="Sending the Content Back to the Content Creator" url="sending_the_content_back_to_the_content_creator.htm" />
+<item name="Viewing the Revision History of a Content" url="viewing_the_revision_history_of_a_content.htm#bc-2" />
+<item name="Tracking Revisions of a Content" url="tracking_the_revisions_to_the_content.htm#bc-2" />
+<book name="Reports" url="viewing_reports.htm#bc-3" >
+  <book name="CMS Reports" url="cms_reports.htm#bc-3" >
+    <item name="Viewing the Access Denied Pages/Datasets Report" url="viewing_the_access_denied_pages_datasets_report.htm#bc-3" />
+    <item name="Viewing the Page Not Found Error Report" url="viewing_the_page_not_found_error_report.htm#bc-3" />
+    <item name="Viewing the Top Pages Report" url="viewing_the_top_pages_report.htm#bc-3" />
+    <item name="Viewing the Top Referrer Report" url="viewing_the_top_referrer_report.htm#bc-3" />
+    <item name="Viewing the Top Visitors Report" url="viewing_the_top_visitors_report.htm#bc-3" />
+    <item name="Viewing the Top Search Phrases Report" url="viewing_the_top_search_phrases_report.htm#bc-3" />
+  </book>
+  <book name="VRM Reports" url="vrm_reports.htm#bc-3" >
+    <item name="Viewing the VRM Action Metrics Report" url="viewing_the_vrm_action_metrics_report.htm#bc-3" />
+    <item name="Viewing the VRM Source Metrics Report" url="viewing_the_vrm_source_metrics_report.htm#bc-3" />
+    <item name="Viewing the VRM Status Metrics Report" url="viewing_the_vrm_status_metrics_report.htm#bc-3" />
+    <item name="Viewing the VRM Delay Analysis Report" url="viewing_the_vrm_delay_analysis_report.htm#bc-3" />
+    <item name="Viewing the Assignee Wise VRM Statistics Report" url="viewing_the_assignee_wise_vrm_statistics_report.htm#bc-3" />
+    <item name="Viewing the VRM Category Metrics Report" url="viewing_the_vrm_category_metrics_report.htm#bc-3" />
+  </book>
+</book>
+<book name="Reference Documents" >
+  <item name="Uploading Reference Documents" url="uploading_reference_documents.htm#bc-4" />
+</book>
+<book name="Support Information" url="contact_admin.htm#bc-2" >
+  <item name="Contacting the Super Administrator" url="contacting_super_administrator.htm#bc-2" />
+  <item name="Tracking Contact Admin Page Visits" url="tracking_contact_admin_page_visits.htm#bc-2" />
+</book>
+
+</tocdata>

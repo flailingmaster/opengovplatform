@@ -1,0 +1,8 @@
+core = "6.x"
+dependencies[] = "taxonomy"
+dependencies[] = "views"
+description = "feedback category listing for urm "
+features[views][] = "feedback_category_listing"
+features[views_api][] = "api:2"
+name = "feedback_category_listing_urm"
+package = "Features"

@@ -1,0 +1,36 @@
+<?php
+/**
+ * Implements HOOK_theme().
+ */
+function conditional_styles_theme($existing, $type, $theme, $path) {
+  include_once './' . drupal_get_path('module', 'conditional_styles') . '/conditional_styles.theme.inc';
+  return _conditional_styles_theme($existing, $type, $theme, $path);
+}
+
+/**
+ * Implements MODULE_preprocess_page().
+ */
+function conditional_styles_preprocess_page(&$vars, $hook) {
+  // Add a $conditional_styles variable and append them to $styles.
+  $language = $GLOBALS['language']->direction == LANGUAGE_RTL ? '_rtl' : '';
+  $vars['conditional_styles'] = variable_get('conditional_styles_' . $GLOBALS['theme'] . $language, '');
+  $vars['styles'] .= $vars['conditional_styles'];
+}
+
+/**
+ * Implements MODULE_preprocess_maintenance_page().
+ */
+function conditional_styles_preprocess_maintenance_page(&$vars, $hook) {
+  // Add a $conditional_styles variable and append them to $styles.
+  $language = $GLOBALS['language']->direction == LANGUAGE_RTL ? '_rtl' : '';
+  $vars['conditional_styles'] = variable_get('conditional_styles_' . $GLOBALS['theme'] . $language, '');
+  $vars['styles'] .= $vars['conditional_styles'];
+}
+
+/**
+ * Implements HOOK_enable().
+ */
+function conditional_styles_enable() {
+  // Flush the .info file cache, the page cache and the theme registry.
+  drupal_flush_all_caches();
+}

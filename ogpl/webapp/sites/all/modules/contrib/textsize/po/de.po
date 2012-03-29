@@ -1,0 +1,880 @@
+# $Id: de.po,v 1.1.1.3.2.4 2009/11/17 20:40:42 christianzwahlen Exp $
+#
+# German translation of Drupal (Text Size Module)
+# Copyright 2009 Zwahlen <info@zwahlendesign.ch>
+# Generated from files:
+#  textsize.module: n/a
+#  includes/textsize.admin.inc: n/a
+#  textsize.info: n/a
+#  includes/textsize.block.inc: n/a
+
+msgid ""
+msgstr ""
+"Project-Id-Version: textsize (5.x-1.x)\n"
+"POT-Creation-Date: 2009-11-17 17:06+0100\n"
+"PO-Revision-Date: 2009-11-17 17:06+0100\n"
+"Last-Translator: Zwahlen <info@zwahlendesign.ch>\n"
+"Language-Team: German <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: textsize.module:29 includes/textsize.admin.inc:33;33
+msgid "Text Size configuration"
+msgstr "Schriftgrad Konfiguration"
+
+#: textsize.module:30
+msgid "Settings for the display and values."
+msgstr "Einstellungen für die Darstellung und Werte."
+
+#: textsize.module:37;44;51;58 textsize.info:0 includes/textsize.admin.inc:31;75;76;77;135;172 includes/textsize.block.inc:205
+msgid "Text Size"
+msgstr "Schriftgrad"
+
+#: textsize.module:37 includes/textsize.block.inc:388;388;471;471
+msgid "Increase"
+msgstr "Vergrössern"
+
+#: textsize.module:44 includes/textsize.block.inc:389;389;472;472
+msgid "Decrease"
+msgstr "Verkleinern"
+
+#: textsize.module:51 includes/textsize.block.inc:391;391;474;474
+msgid "Normal"
+msgstr "Normal"
+
+#: textsize.module:326
+msgid "Minimum"
+msgstr "Minimum"
+
+#: textsize.module:326
+msgid "Min."
+msgstr "Min."
+
+#: textsize.module:327
+msgid "Maximum"
+msgstr "Maximum"
+
+#: textsize.module:327
+msgid "Max."
+msgstr "Max."
+
+#: textsize.module:367
+msgid "jQuery Cookie plugin"
+msgstr "jQuery Cookie plugin"
+
+#: textsize.module:369
+msgid "The Text Size module require the !jquery_cookie_plugin_link."
+msgstr "Das Schriftgrad Modul erfordert das !jquery_cookie_plugin_link."
+
+#: textsize.module:369
+msgid "Place the plugin (%jquery_cookie_js) in the module directory \"%textsize_directory\"."
+msgstr ""
+"Plazieren Sie das Plugin (%jquery_cookie_js) in das Modul Verzeichnis "
+"\"%textsize_directory\"."
+
+#: textsize.module:19
+msgid "administer textsize"
+msgstr "Schriftgrad verwalten"
+
+#: textsize.module:19
+msgid "access textsize content"
+msgstr "Schriftgrad Inhalt zugreifen"
+
+#: textsize.module:0
+msgid "textsize"
+msgstr "schriftgrad"
+
+#: textsize.info:0
+msgid "Display a adjustable text size changer or a zoom function on the page for a better web accessibility."
+msgstr ""
+"Zeigt für eine bessere Web-Zugänglichkeit einen einstellbaren "
+"Schriftgrad-Wechsler auf der Seite an."
+
+#: textsize.info:0
+msgid "User interface"
+msgstr "Benutzeroberfläche"
+
+#: includes/textsize.admin.inc:14;15;149
+msgid "PHP: Hypertext Preprocessor"
+msgstr "PHP: Hypertext Preprozessor"
+
+#: includes/textsize.admin.inc:16
+msgid "My Structured Query Language"
+msgstr "Mein strukturierte Datenbankabfragesprache"
+
+#: includes/textsize.admin.inc:17;150
+msgid "Extensible Hypertext Markup Language"
+msgstr "Erweiterbare Hypertext Auszeichnungssprache"
+
+#: includes/textsize.admin.inc:18;19;151;362
+msgid "Cascading Style Sheets"
+msgstr "Kaskadierte Stylesheets"
+
+#: includes/textsize.admin.inc:20;28;28;152
+msgid "Web Content Accessibility Guidelines"
+msgstr "Web Zugänglichkeitsrichtlinien"
+
+#: includes/textsize.admin.inc:21;29;29;153
+msgid "Barrierefreie Informationstechnik-Verordnung"
+msgstr "Barrierefreie Informationstechnik-Verordnung"
+
+#: includes/textsize.admin.inc:22
+msgid "Portable Network Graphics"
+msgstr "Portable Netzwerk Grafik"
+
+#: includes/textsize.admin.inc:23
+msgid "Graphic Interchange Format"
+msgstr "Grafikaustausch-Format"
+
+#: includes/textsize.admin.inc:24
+msgid "Scalable Vector Graphics"
+msgstr "Skalierbare Vektorgrafiken"
+
+#: includes/textsize.admin.inc:25
+msgid "eXperimental Computing Facility"
+msgstr "eXperimental Computing Facility"
+
+#: includes/textsize.admin.inc:26;154
+msgid "Identification"
+msgstr "Identifikation"
+
+#: includes/textsize.admin.inc:27
+msgid "Equal measurement"
+msgstr "Equal measurement"
+
+#: includes/textsize.admin.inc:28;29;30;35
+msgid "External link to:"
+msgstr "Externer Link zu:"
+
+#: includes/textsize.admin.inc:30;30
+msgid "Mozilla Firefox"
+msgstr "Mozilla Firefox"
+
+#: includes/textsize.admin.inc:31;31
+msgid "Access control"
+msgstr "Zugriffskontrolle"
+
+#: includes/textsize.admin.inc:31
+msgid "module"
+msgstr "Modul"
+
+#: includes/textsize.admin.inc:32
+msgid "Blocks"
+msgstr "Blöcke"
+
+#: includes/textsize.admin.inc:34;34
+msgid "Import"
+msgstr "Importieren"
+
+#: includes/textsize.admin.inc:34
+msgid "Localization"
+msgstr "Lokalisierung"
+
+#: includes/textsize.admin.inc:35;131
+msgid "Download Themes"
+msgstr "Themes herunterladen"
+
+#: includes/textsize.admin.inc:35;35
+msgid "Text Size home page"
+msgstr "Schriftgrad Website"
+
+#: includes/textsize.admin.inc:36;36;155;155;283
+msgid "Overwrite text size in templates"
+msgstr "Überschreibe Schriftgrösse in Templates"
+
+#: includes/textsize.admin.inc:38;39;156;157;158;159;160;161
+msgid "Footnote"
+msgstr "Fussnote"
+
+#: includes/textsize.admin.inc:42;58;75;76;77;94;104
+msgid "Screenshot of block:"
+msgstr "Bildschirmfoto vom Block:"
+
+#: includes/textsize.admin.inc:42;58;77;77;184
+msgid "Select menu"
+msgstr "Auswahl Menü"
+
+#: includes/textsize.admin.inc:43
+msgid "This module display a adjustable text size changer or a zoom function on the page for a better web accessibility."
+msgstr ""
+"Dieses Modul zeigt für eine bessere Web-Zugänglichkeit einen "
+"einstellbaren Schriftgrad-Wechsler auf der Seite an."
+
+#: includes/textsize.admin.inc:44
+msgid "The zoom function is comparable to the text zoom function in Firefox 3, but this module resize also variable media objects, variable pixel images and vector images."
+msgstr ""
+"Die Zoom-Funktion ist vergleichbar zu der Text-Zoom-Funktion in "
+"Firefox 3, aber dieses Modul verändert auch Medienobjekte, variable "
+"Pixelbilder und Vektorbilder."
+
+#: includes/textsize.admin.inc:45
+msgid "Advantages compared with browser zoom"
+msgstr "Vorteile im Vergleich zum Browser-Zoom"
+
+#: includes/textsize.admin.inc:47
+msgid "Adjustable."
+msgstr "Einstellbar."
+
+#: includes/textsize.admin.inc:47
+msgid "Increases/decreases step, minimum, maximum, standard and variable or three fixed values."
+msgstr ""
+"Vergrösserungs-/Verkleinerungsschritt, Minimum, Maximum, Standard und "
+"variable oder drei feste Werte."
+
+#: includes/textsize.admin.inc:48
+msgid "Resize region definable."
+msgstr "Region für die Grössenänderung definierbar."
+
+#: includes/textsize.admin.inc:48
+msgid "For example a element with a !abbr_id \"%content\":"
+msgstr "Zum Beispiel ein Element mit einer !abbr_id \"%content\":"
+
+#: includes/textsize.admin.inc:49
+msgid "Browser independent."
+msgstr "Browserunabhängig."
+
+#: includes/textsize.admin.inc:50
+msgid "One click function."
+msgstr "Ein-Klick Funktion."
+
+#: includes/textsize.admin.inc:50
+msgid "No tutorial required."
+msgstr "Keine Anleitung nötig."
+
+#: includes/textsize.admin.inc:51
+msgid "Same handling in any browser (shortcuts)."
+msgstr "Gleiche Handhabung in jedem Browser (Tastaturkürzel)."
+
+#: includes/textsize.admin.inc:52
+msgid "Resize text, variable images and media objects (media objects and pixel images with \"!abbr_em\" or \"&#037;\" size specification and !abbr_svg images)."
+msgstr ""
+"Verändert die Grösse von Text, variablen Bildern und Medienobjekte "
+"Medienobjekte oder Pixelbilder mit \"!abbr_em\" oder \"&#037;\" "
+"Grössenangaben und !abbr_svg Bilder)."
+
+#: includes/textsize.admin.inc:53
+msgid "Select menu availabe."
+msgstr "Auswahlmenü verfügbar."
+
+#: includes/textsize.admin.inc:54
+msgid "Display current text size (zoom size)."
+msgstr "Zeigt die aktuelle Textgrösse (Zoom Grösse) an."
+
+#: includes/textsize.admin.inc:57
+msgid "Features"
+msgstr "Eigenschaften"
+
+#: includes/textsize.admin.inc:60
+msgid "!abbr_wcag and !abbr_bitv conform. More Information on: !link_wcag and !link_bitv."
+msgstr ""
+"!abbr_wcag und !abbr_bitv konform. Mehr Information auf: !link_wcag "
+"und !link_bitv."
+
+#: includes/textsize.admin.inc:60
+msgid "Keep the conditions:"
+msgstr "Hält folgende Bedingungen ein:"
+
+#: includes/textsize.admin.inc:62
+msgid "!abbr_wcag/!abbr_bitv 1.1: Alt text in the images."
+msgstr "!abbr_wcag/!abbr_bitv 1.1: Alt Text in den Bildern."
+
+#: includes/textsize.admin.inc:63
+msgid "!abbr_wcag/!abbr_bitv 3.1: Standard links with text and not images."
+msgstr "!abbr_wcag/!abbr_bitv 3.1: Standard Links mit Text und keine Bilder."
+
+#: includes/textsize.admin.inc:64
+msgid "!abbr_wcag/!abbr_bitv 6.3: No !javascript required."
+msgstr "!abbr_wcag/!abbr_bitv 6.3: Kein !javascript erfordelich."
+
+#: includes/textsize.admin.inc:65
+msgid "!abbr_wcag/!abbr_bitv 11.1: Open and standard code."
+msgstr "!abbr_wcag/!abbr_bitv 11.1: Offener und standardisierter Code."
+
+#: includes/textsize.admin.inc:66
+msgid "!abbr_wcag/!abbr_bitv 13.6: Links in a list."
+msgstr "!abbr_wcag/!abbr_bitv 13.6: Links in einer Liste."
+
+#: includes/textsize.admin.inc:69
+msgid "No !javascript required. !jquery suppport."
+msgstr "Kein !javascript erfordelich. !jquery Unterstützung."
+
+#: includes/textsize.admin.inc:70
+msgid "No !abbr_css required."
+msgstr "Kein !abbr_css erforderlich."
+
+#: includes/textsize.admin.inc:71
+msgid "Minimum and maximum text size."
+msgstr "Minimaler und maximaler Schriftgrad."
+
+#: includes/textsize.admin.inc:72
+msgid "Caching mode: \"Normal\" and \"Aggressive\" compatible."
+msgstr "Cache-Modus: \"Normal\" und \"Aggressiv\" kompatibel."
+
+#: includes/textsize.admin.inc:73
+msgid "Uniform markin of menu, based on the open source browser Firefox 2.0 (!link_ff)."
+msgstr ""
+"Einheitliche Menü Beschriftung, basierend auf dem quelloffenem "
+"Browser Firefox 2.0 (!link_ff)."
+
+#: includes/textsize.admin.inc:74;180
+msgid "Block type"
+msgstr "Block Art"
+
+#: includes/textsize.admin.inc:75;75;182
+msgid "Text links"
+msgstr "Text Links"
+
+#: includes/textsize.admin.inc:76;76;94;183
+msgid "Image links"
+msgstr "Bild Links"
+
+#: includes/textsize.admin.inc:79
+msgid "Themable."
+msgstr "Theme editierbar."
+
+#: includes/textsize.admin.inc:81;187
+msgid "Images are showed with !abbr_css."
+msgstr "Bilder werden mit !abbr_css dargestellt."
+
+#: includes/textsize.admin.inc:81;187
+msgid "Ideal for Web Accessibility."
+msgstr "Ideal für barrierefreien Zugang."
+
+#: includes/textsize.admin.inc:82
+msgid "No Link text, only images in the !abbr_xhtml source code with standard 0 pixel margin."
+msgstr ""
+"Kein Linktext, nur Bilder im !abbr_xhtml Quelltext mit standard 0 "
+"Pixel Aussenabstand."
+
+#: includes/textsize.admin.inc:82;126;187;227;285;321;333;452
+msgid "Warning"
+msgstr "Warnung"
+
+#: includes/textsize.admin.inc:82
+msgid "Not for: !abbr_wcag/!abbr_bitv 3.1! If !javascript is not activated: No image change action if the cursor move over the images!"
+msgstr ""
+"Nicht für: !abbr_wcag/!abbr_bitv 3.1! Wenn !javascript nicht "
+"aktiviert ist: Keine Bildwechsel Aktion wenn der Mauszeiger über die "
+"Bilder fährt!"
+
+#: includes/textsize.admin.inc:86
+msgid "Requirements"
+msgstr "Anforderungen"
+
+#: includes/textsize.admin.inc:90
+msgid "Theme or a theme region with font sitze \"!abbr_em\", \"&#037;\" or no sitze for the !internet_explorer browser."
+msgstr ""
+"Theme oder eine Theme-Region mit Schriftgrösse \"em\", \"%\" oder "
+"keine Grösse für den !internet_explorer Browser."
+
+#: includes/textsize.admin.inc:93
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: includes/textsize.admin.inc:96;97;98;99
+msgid "Go to:"
+msgstr "Gehen Sie zu:"
+
+#: includes/textsize.admin.inc:96;97;98;99
+msgid "Administer"
+msgstr "Verwalten"
+
+#: includes/textsize.admin.inc:96
+msgid "User management"
+msgstr "Benutzerverwaltung"
+
+#: includes/textsize.admin.inc:96
+msgid "Set the different roles."
+msgstr "Stellen Sie die verschiedenen Rollen ein"
+
+#: includes/textsize.admin.inc:97;99
+msgid "Site building"
+msgstr "Strukturierung"
+
+#: includes/textsize.admin.inc:97
+msgid "Make the block \"Text Size\" visibile."
+msgstr "Machen Sie den Block \"Schriftgrad\" sichtbar."
+
+#: includes/textsize.admin.inc:98
+msgid "Site configuration"
+msgstr "Einstellungen"
+
+#: includes/textsize.admin.inc:98
+msgid "Change the settings if you want."
+msgstr "Wechseln Sie die Einstellungen wenn Sie wollen."
+
+#: includes/textsize.admin.inc:99
+msgid "Translate interface"
+msgstr "Oberfläche übersetzen"
+
+#: includes/textsize.admin.inc:99
+msgid "Import your language file (for German \"!de_po\") if it is necessary."
+msgstr ""
+"Importieren ihre Sprachdatei (für Deutsch \"!de_po\") wenn es nötig "
+"ist."
+
+#: includes/textsize.admin.inc:102
+msgid "Theming"
+msgstr "Theming"
+
+#: includes/textsize.admin.inc:103
+msgid "Create Themes"
+msgstr "Themes erstellen"
+
+#: includes/textsize.admin.inc:104;126
+msgid "Image links, not in a list"
+msgstr "Bild Links, nicht in einer Liste"
+
+#: includes/textsize.admin.inc:106
+msgid "Copy the files/directorys in your theme:"
+msgstr "Kopieren Sie die Dateien/Verzeichnisse in Ihr Theme:"
+
+#: includes/textsize.admin.inc:112
+msgid "Copy the code oft the functions in your template.!abbr_php_small file:"
+msgstr ""
+"Kopieren Sie den Code der Funktionen in Ihre template.!abbr_php_small "
+"Datei:"
+
+#: includes/textsize.admin.inc:119
+msgid "Rename the functions to the name of your theme (\"mytheme\") or use \"phptemplate\":"
+msgstr ""
+"Benennen Sie die Funktionen um, zum Namen Ihres Themes (\"mytheme\") "
+"oder verwenden Sie \"phptemplate\":"
+
+#: includes/textsize.admin.inc:126
+msgid "Edit the !abbr_php and !abbr_css code in the files."
+msgstr "Bearbeiten Sie den !abbr_php und !abbr_css Code in den Dateien."
+
+#: includes/textsize.admin.inc:126
+msgid "Example:"
+msgstr "Beispiel:"
+
+#: includes/textsize.admin.inc:126
+msgid "Change the following elements:"
+msgstr "Ändern Sie folgende Elemente:"
+
+#: includes/textsize.admin.inc:126;126
+msgid "to"
+msgstr "zu"
+
+#: includes/textsize.admin.inc:126
+msgid "!abbr_wcag/!abbr_bitv 10.5: Adjacent hyperlinks have to be separated by printable characters surrounded by spaces."
+msgstr ""
+"!abbr_wcag/!abbr_bitv 10.5: Nebeneinander liegende Hyperlinks sind "
+"durch von Leerzeichen umgebene, druckbare Zeichen zu trennen."
+
+#: includes/textsize.admin.inc:126
+msgid "Not for: !abbr_wcag/!abbr_bitv 13.6! Links are not in a list."
+msgstr ""
+"Nicht für: !abbr_wcag/!abbr_bitv 13.6! Links sind nicht in einer "
+"Liste."
+
+#: includes/textsize.admin.inc:127
+msgid "Edit the images. Create your own icons. The source file is in the directory:"
+msgstr ""
+"Bearbeiten Sie die Bilder. Erstellen Sie Ihre eigenen Bilder. Die "
+"Quelldatei ist im Verzeichnis:"
+
+#: includes/textsize.admin.inc:127
+msgid "!abbr_png images are for new browsers and !abbr_gif images for old browsers (!internet_explorer 6)."
+msgstr ""
+"!abbr_png Bilder sind für neue Browser und !abbr_gif Bilder für alte "
+"Browser (!internet_explorer 6)."
+
+#: includes/textsize.admin.inc:132
+msgid "Edited templates are available from the developers website:"
+msgstr "Bearbeitete Templates sind verfügbar auf der Website des Entwicklers:"
+
+#: includes/textsize.admin.inc:134;135
+msgid "Screenshots"
+msgstr "Bildschirmfotos"
+
+#: includes/textsize.admin.inc:164
+msgid "Global settings"
+msgstr "Globale Einstellungen"
+
+#: includes/textsize.admin.inc:170
+msgid "Block title"
+msgstr "Blocktitel"
+
+#: includes/textsize.admin.inc:173 includes/textsize.block.inc:209
+msgid "Zoom"
+msgstr "Zoom"
+
+#: includes/textsize.admin.inc:176
+msgid "Select the block title."
+msgstr "Wählen Sie den Block Titel."
+
+#: includes/textsize.admin.inc:187
+msgid "Select the type of block."
+msgstr "Wählen Sie die Art des Blocks aus."
+
+#: includes/textsize.admin.inc:187
+msgid "Images in the !abbr_xhtml source code."
+msgstr "Bilder im !abbr_xhtml Quellcode."
+
+#: includes/textsize.admin.inc:187
+msgid "Not for: !abbr_wcag/!abbr_bitv 3.1! No hover action if !javascript is not activated!"
+msgstr ""
+"Nicht für: !abbr_wcag/!abbr_bitv 3.1! Keinen Bildwechsel-Aktion wenn "
+"!javascript nicht aktiviert ist!"
+
+#: includes/textsize.admin.inc:191
+msgid "Type of links"
+msgstr "Links Art"
+
+#: includes/textsize.admin.inc:193
+msgid "Variable"
+msgstr "Variable"
+
+#: includes/textsize.admin.inc:194
+msgid "Fixed"
+msgstr "Fixiert"
+
+#: includes/textsize.admin.inc:197
+msgid "Fixed links shows only 3 options for changing the text size (Increase, decrease and normal)."
+msgstr ""
+"Fixierte Links zeigen nur 3 Möglichkeiten an, den Schriftgrad zu "
+"ändern (Vergrössern, Verkleinern und Normal)."
+
+#: includes/textsize.admin.inc:201
+msgid "Advanced settings"
+msgstr "Erweiterte Einstellungen"
+
+#: includes/textsize.admin.inc:207
+msgid "!abbr_xhtml element"
+msgstr "!abbr_xhtml Element"
+
+#: includes/textsize.admin.inc:219
+msgid "Select the !abbr_xhtml element for the resize process. Standard is \"!body\" for the whole page."
+msgstr ""
+"Wählen Sie das !abbr_xhtml Element für den Grössenänderungsprozess "
+"aus. Standard ist \"!body\" für die ganze Seite."
+
+#: includes/textsize.admin.inc:223
+msgid "!abbr_xhtml element !abbr_id/class"
+msgstr "!abbr_xhtml Element !abbr_id/Klasse"
+
+#: includes/textsize.admin.inc:227
+msgid "Define one or more !abbr_id's (\"#myid\" or \"#myid, div#myid-2\") [!footnote_4] or one or more classes (\".myclass\" or \".myclass, div.myclass-2\") for the !abbr_xhtml element. Standard is the textfield empty for the body element."
+msgstr ""
+"Definieren Sie eine oder mehrere !abbr_id's (\"#meineid\" oder "
+"\"#meineid, div#meineid-2\") [!footnote_4] oder eine oder mehrere "
+"Klassen (\".meineklasse\" or \".meineklasse, div.meineklasse-2\") für "
+"das !abbr_xhtml Element. Standard ist das Textfeld leer für das Body "
+"Element."
+
+#: includes/textsize.admin.inc:227
+msgid "If you use !abbr_id's, uncheck: \"!link_ts_important\"."
+msgstr ""
+"Wenn Sie !abbr_id's verwenden, deaktivieren Sie: "
+"\"!link_ts_important\"."
+
+#: includes/textsize.admin.inc:231;407;410
+msgid "Increases/decreases step"
+msgstr "Vergrösserungs-/Verkleinerungsschritt"
+
+#: includes/textsize.admin.inc:237
+msgid "Percentage by which each click increases/decreases the text size."
+msgstr ""
+"Prozentwert um den der Schriftgrad pro Klick vergrössert/verkleinert "
+"wird."
+
+#: includes/textsize.admin.inc:237
+msgid "The default increases/decreases step is 5&#037;."
+msgstr "Der standard Vergrösserungs-/Verkleinerungsschritt ist 5&#037;."
+
+#: includes/textsize.admin.inc:237;247;257;273
+msgid "Allowed values"
+msgstr "Erlaubte Werte"
+
+#: includes/textsize.admin.inc:241;429;435;445
+msgid "Minimum Text Size"
+msgstr "Minimum Schriftgrad"
+
+#: includes/textsize.admin.inc:247
+msgid "The minimum default text size is 50&#037;."
+msgstr "Der standard minimum Schriftgrad ist 50&#037;."
+
+#: includes/textsize.admin.inc:251;414
+msgid "Text Size Normal"
+msgstr "Schriftgrad Normal"
+
+#: includes/textsize.admin.inc:257
+msgid "The default normal text size is 75&#037;."
+msgstr "Der standard normale Schriftgrad ist 75&#037;."
+
+#: includes/textsize.admin.inc:261
+msgid "Display text size normal as 100&#037;."
+msgstr "Zeige den normalen Schriftgrad als 100&#037;."
+
+#: includes/textsize.admin.inc:263
+msgid "Default checked for: Yes."
+msgstr "Standardmässig markiert für: Ja."
+
+#: includes/textsize.admin.inc:267;439;442
+msgid "Maximum Text Size"
+msgstr "Maximum Schriftgrad"
+
+#: includes/textsize.admin.inc:273
+msgid "The maximum default text size is 150&#037;."
+msgstr "Der standard maximum Schriftgrad ist 150&#037;."
+
+#: includes/textsize.admin.inc:277
+msgid "Support !javascript"
+msgstr "Unterstütze !javascript"
+
+#: includes/textsize.admin.inc:279
+msgid "Support !javascript (!jquery) or only !abbr_php for caching mode: \"Normal\" and \"Aggressive\" and anonymous users."
+msgstr ""
+"Unterstütze !javascript (!jquery) oder nur !abbr_php für "
+"Cache-Modus: \"Normal\" und \"Aggressiv\" und anonyme Benutzer."
+
+#: includes/textsize.admin.inc:285
+msgid "Overwrite the font-size value of the current theme (with \"!important\"). Note: The !abbr_xhtml element for the resize process can not have the value \"!important\" in the !abbr_css style \"font-size\"."
+msgstr ""
+"Überschreibe den Schriftgrössen-Wert (font-size) des aktuellen "
+"Themes (mit \"!important\").  Hinweis: Das !abbr_xhtml Element für "
+"den Grössenänderungsprozess kann nicht den Wert: \"!important\" im "
+"!abbr_css Stil \"font-size\" haben."
+
+#: includes/textsize.admin.inc:285
+msgid "Not checked (no), for less code."
+msgstr "Nicht ausgewählt (Nein), für weniger Code."
+
+#: includes/textsize.admin.inc:285
+msgid "If you use the !abbr_xhtml element \"body\":"
+msgstr "Wenn Sie das !abbr_xhtml Element \"body\" verwenden:"
+
+#: includes/textsize.admin.inc:285;388
+msgid "Delete in your theme the !abbr_css style:"
+msgstr "Löschen Sie in Ihrem Theme den !abbr_css Stil:"
+
+#: includes/textsize.admin.inc:285;388
+msgid "For example"
+msgstr "Zum Beispiel"
+
+#: includes/textsize.admin.inc:289
+msgid "Display message after changing text size"
+msgstr "Zeige Meldung nach Schriftgrad-Wechsel"
+
+#: includes/textsize.admin.inc:294
+msgid "Theme settings"
+msgstr "Theme Einstellungen"
+
+#: includes/textsize.admin.inc:295
+msgid "Enable, disable or set the display of certain text size elements."
+msgstr ""
+"Aktivieren, deaktivieren oder stellen Sie die Darstellung der "
+"bestimmten Schriftgrad Elemente ein."
+
+#: includes/textsize.admin.inc:301
+msgid "Toggle display"
+msgstr "Anzeige ein-/ausschalten"
+
+#: includes/textsize.admin.inc:302
+msgid "Enable or disable the display of certain text size elements."
+msgstr ""
+"Aktiviere oder deaktivieren Sie die Darstellung der bestimmten "
+"Schriftgrad Elemente ein."
+
+#: includes/textsize.admin.inc:308
+msgid "Subtitle"
+msgstr "Untertitel"
+
+#: includes/textsize.admin.inc:310
+msgid "Ideal for image links and the select menue (title as label)."
+msgstr "Ideal für Bild Links und das Auswahlmenü (Titel als Label)."
+
+#: includes/textsize.admin.inc:314
+msgid "Text size normal"
+msgstr "Schriftgrad normal"
+
+#: includes/textsize.admin.inc:319
+msgid "Link text"
+msgstr "Linktext"
+
+#: includes/textsize.admin.inc:321
+msgid "Not for block type \"Image links\" with images in the !abbr_xhtml source code."
+msgstr ""
+"Nicht für Block Typ  \"Bild Links\" mit Bilder in dem !abbr_xhtml "
+"Quellcode."
+
+#: includes/textsize.admin.inc:325
+msgid "Display current text size text and value"
+msgstr "Zeige den aktuellen Schriftgrad Text und Wert an"
+
+#: includes/textsize.admin.inc:327
+msgid "Text and value"
+msgstr "Text und Wert"
+
+#: includes/textsize.admin.inc:327;328
+msgid "for example"
+msgstr "zum Beispiel"
+
+#: includes/textsize.admin.inc:327;328 includes/textsize.block.inc:206
+msgid "Current Size"
+msgstr "Aktuelle Grösse"
+
+#: includes/textsize.admin.inc:328
+msgid "Only the value"
+msgstr "Nur den Wert"
+
+#: includes/textsize.admin.inc:329
+msgid "Hide text and value"
+msgstr "Verberge Text und Wert"
+
+#: includes/textsize.admin.inc:330
+msgid "Remove text and value in the source code"
+msgstr "Entferne Text und Wert im Quellcode"
+
+#: includes/textsize.admin.inc:333
+msgid "Not for screen readers or text browsers (text is not in the !abbr_xhtml source code)."
+msgstr ""
+"Nicht für Bildschirmlesegeräte oder Textbrowser (Text ist nich im "
+"!abbr_xhtml Quellcode)."
+
+#: includes/textsize.admin.inc:337
+msgid "Display inline"
+msgstr "Darstellung in einer Linie"
+
+#: includes/textsize.admin.inc:338
+msgid "Set the display of certain text size elements to inline or normal."
+msgstr ""
+"Stellen Sie die Darstellung der bestimmten Schriftgrad Elemente in "
+"einer Linie oder normal ein."
+
+#: includes/textsize.admin.inc:344
+msgid "Subtitle, list and select menu"
+msgstr "Untertitel, Liste und Auswahlmenü"
+
+#: includes/textsize.admin.inc:349
+msgid "Current text size"
+msgstr "Aktueller Schriftgrad"
+
+#: includes/textsize.admin.inc:385
+msgid "The element class have to be empty for the body element."
+msgstr "Die Element-Klasse muss für das body Element leer sein."
+
+#: includes/textsize.admin.inc:393
+msgid "The !abbr_xhtml !abbr_id/element class can not be empty."
+msgstr "Das !abbr_xhtml Element !abbr_id/Klasse kann nicht leer sein."
+
+#: includes/textsize.admin.inc:393;399;402
+msgid "Textfield content"
+msgstr "Textfeld Inhalt"
+
+#: includes/textsize.admin.inc:396
+msgid "The !abbr_xhtml element !abbr_id/class have to be start with a hash (\"#\") for a !abbr_id or a point (\".\") for a class."
+msgstr ""
+"Das !abbr_xhtml Element !abbr_id/Klasse muss mit einem Rautenzeichen "
+"\"#\" für eine !abbr_id oder mit einem Punkt \".\" für eine Klasse "
+"beginnen."
+
+#: includes/textsize.admin.inc:399
+msgid "The !abbr_xhtml element !abbr_id/class can not have only a hash (\"#\") or a point (\".\")."
+msgstr ""
+"The !abbr_xhtml Element !abbr_id/Klasse kann nicht nur ein "
+"Rautenzeichen \"#\" oder einen Punkt \".\" haben."
+
+#: includes/textsize.admin.inc:402
+msgid "The !abbr_xhtml element !abbr_id/class can not have a empty space (\" \") after a hash (\"#\") or a point (\".\")."
+msgstr ""
+"Das !abbr_xhtml Element !abbr_id/Klasse kann nicht einen Leerschlag "
+"(\" \") nach einem Rautenzeichen (\"#\") oder einem Punkt (\".\") "
+"haben."
+
+#: includes/textsize.admin.inc:407;414;429;439
+msgid "Please enter a integer in:"
+msgstr "Bitte geben Sie eine Ganzzahl ein in:"
+
+#: includes/textsize.admin.inc:410
+msgid "The minimum step is 1&#037; in:"
+msgstr "Der minimale Schritt ist 1&#037; in:"
+
+#: includes/textsize.admin.inc:419
+msgid "The text size have been saved as %ts_value% (100&#037;)."
+msgstr "Der Schriftgrad wurde gespeichert als %ts_value% (100&#037;)."
+
+#: includes/textsize.admin.inc:422
+msgid "The text size normal is bigger than the maximum normal size of: !ts_size%."
+msgstr ""
+"Der normale Schriftgrad ist grösser als der maximale normale "
+"Schriftgrad von: !ts_size%."
+
+#: includes/textsize.admin.inc:425
+msgid "The text size normal is less than the minimum normal size of: !ts_size%."
+msgstr ""
+"Der normale Schriftgrad ist kleiner als der minimale normale "
+"Schriftgrad von: !ts_size%."
+
+#: includes/textsize.admin.inc:432
+msgid "The minimum text size can not be the same or bigger value than the normal textsize."
+msgstr ""
+"Der minimum Schriftgrad kann nicht der gleiche oder grössere Wert "
+"sein, als der normale Schriftgrad."
+
+#: includes/textsize.admin.inc:435
+msgid "The minimum size is 1&#037; in:"
+msgstr "Die minimale Grösse ist 1&#037; in:"
+
+#: includes/textsize.admin.inc:442
+msgid "The maximum size is 1000&#037; in:"
+msgstr "Die maximale Grösse ist 1000&#037; in:"
+
+#: includes/textsize.admin.inc:445
+msgid "The minimum size is 3&#037; in:"
+msgstr "Die minimale Grösse ist 3&#037; in:"
+
+#: includes/textsize.admin.inc:449
+msgid "This configuration generate not a normal text size of 100&#037; in the source code."
+msgstr ""
+"Diese Konfiguration erstellt nicht einen normalen Schriftgrad im "
+"Quellcode von 100&#037;."
+
+#: includes/textsize.admin.inc:452
+msgid "This configuration generate and display not a normal text size of 100&#037;!"
+msgstr ""
+"Diese Konfiguration erstellt im Quellcode und zeigt keinen normalen "
+"Schriftgrad von 100&#037; an!"
+
+#: includes/textsize.block.inc:56;105;140;169;292
+msgid "The text size have not been saved, because your browser do not accept cookies."
+msgstr ""
+"Der Schriftgrad wurde nicht gespeichert, weil Ihr Browser keine "
+"Cookies akzeptiert."
+
+#: includes/textsize.block.inc:59;62
+msgid "The text size maximum is: %ts_max%."
+msgstr "Der maximum Schriftgrad ist %ts_max%."
+
+#: includes/textsize.block.inc:68;75;117;124
+msgid "The text size have been saved as %ts_value%."
+msgstr "Der Schriftgrad wurde gespeichert als %ts_value%."
+
+#: includes/textsize.block.inc:108;111
+msgid "The text size minimum is: %ts_min%."
+msgstr "Der minimum Schriftgrad ist %ts_min%."
+
+#: includes/textsize.block.inc:146
+msgid "The text size have been saved as %textsize_normal%."
+msgstr "Der Schriftgrad wurde gespeichert als %textsize_normal%."
+
+#: includes/textsize.block.inc:175
+msgid "The text size have been saved as %textsize%."
+msgstr "Der Schriftgrad wurde gespeichert als %textsize%."
+
+#: includes/textsize.block.inc:210
+msgid "Current Zoom"
+msgstr "Aktueller Zoom"
+
+#: includes/textsize.block.inc:286
+msgid "The text size have been saved as %textsize_post%."
+msgstr "Der Schriftgrad wurde gespeichert als %textsize_post%."
+
+#: includes/textsize.block.inc:311
+msgid "Save"
+msgstr "Speichern"
+

@@ -1,0 +1,404 @@
+<?php
+/**
+* Custom function to get non-system workflow states.
+*/
+function workflow_customizations_non_system_workflow_states() {
+  //Filter out the workflow system states
+  $states = workflow_get_states(3);
+  foreach ($states as $sid => $value) {
+    $name = workflow_get_state_name($sid);
+    if (workflow_is_system_state($name) || $name == 'Draft') {
+      unset($states[$sid]);
+    }
+  }
+
+  //Filter out the deleted and archived states
+  $workflows = workflow_get_all();
+  foreach ($workflows as $wid => $value) {
+    $deleted_state = variable_get("workflow_node_revision_deleted_state_$wid", 11);
+    $archived_state = variable_get("workflow_node_revision_archived_state_$wid", 12);
+    unset($states[$deleted_state]);
+    unset($states[$archived_state]);
+  }
+
+  return $states;
+}
+
+/**
+* Custom report for processing time of all agencies.
+*/
+function workflow_customizations_all_agencies_processing_time() {
+  $sql = 'SELECT cta.field_agency_name_value AS Agency, ws1.state AS Source , ws2.state AS "Destination", SEC_TO_TIME(AVG(TIME_TO_SEC(TIMEDIFF(FROM_UNIXTIME(wnh1.stamp), FROM_UNIXTIME(wnh2.stamp))))) as "Processing Time"
+  FROM workflow_node_history wnh1   
+  LEFT JOIN workflow_node_history wnh2 on wnh1.nid = wnh2.nid AND wnh1.old_sid = wnh2.sid AND wnh1.stamp > wnh2.stamp
+  %s  
+  LEFT JOIN workflow_states ws1 ON ws1.sid = wnh1.old_sid   
+  LEFT JOIN workflow_states ws2 ON ws2.sid = wnh1.sid   
+  LEFT JOIN content_type_dataset ctd on wnh1.nid = ctd.nid   
+  LEFT JOIN content_type_agency cta on ctd.field_ds_agency_name_nid = cta.nid   
+  WHERE  wnh2.stamp IS NOT NULL AND cta.field_agency_name_value IS NOT NULL AND ws1.state IS NOT NULL AND ws2.state  IS NOT NULL AND ws1.state <> ws2.state 
+  GROUP BY Agency, Source';
+
+  //Pre-process results for matrix output
+  $states = workflow_customizations_non_system_workflow_states();
+  $state_table = array();
+  foreach ($states as $sid => $name ) {
+    $short_name = workflow_get_state_name($sid);
+    $state_table[$short_name] = '00:00:00';
+  }
+
+  $allowed_states = implode(',' , array_keys($states));
+  if (!empty($allowed_states)) {
+    $state_filter = "AND wnh1.old_sid IN ($allowed_states) AND wnh1.sid IN ($allowed_states) AND wnh2.sid IN ($allowed_states)";
+  }
+
+  $result = db_query($sql, array($state_filter));
+  $report = array();
+
+  while ($data = db_fetch_array($result)) {
+    $report[] = $data;
+  }
+
+  return theme('workflow_customizations_agency_processing_time_block', $report, $state_table);
+}
+
+/**
+* Custom report for processing time for a single agency.
+*/
+function workflow_customizations_single_agency_processing_time() {
+  global $user;
+  $profile = content_profile_load('profile', $user->uid);
+
+  if (isset($profile->field_prof_agency[0]['nid'])) {
+    $agency = $profile->field_prof_agency[0]['nid'];
+  }
+  else {
+    $agency = '-1';
+  }
+
+  $sql = 'SELECT cta.field_agency_name_value AS Agency, ws1.state AS Source , ws2.state AS "Destination", SEC_TO_TIME(AVG(TIME_TO_SEC(TIMEDIFF(FROM_UNIXTIME(wnh1.stamp), FROM_UNIXTIME(wnh2.stamp))))) as "Processing Time"
+  FROM workflow_node_history wnh1
+  LEFT JOIN workflow_node_history wnh2 on wnh1.nid = wnh2.nid AND wnh1.old_sid = wnh2.sid AND wnh1.stamp > wnh2.stamp
+  %s
+  LEFT JOIN workflow_states ws1 ON ws1.sid = wnh1.old_sid
+  LEFT JOIN workflow_states ws2 ON ws2.sid = wnh1.sid
+  LEFT JOIN content_type_dataset ctd on wnh1.nid = ctd.nid
+  LEFT JOIN content_type_agency cta on ctd.field_ds_agency_name_nid = cta.nid
+  WHERE  wnh2.stamp IS NOT NULL AND cta.field_agency_name_value IS NOT NULL AND ws1.state IS NOT NULL AND ws2.state  IS NOT NULL AND ws1.state <> ws2.state 
+  %s
+  GROUP BY Agency, Source';
+
+  //Pre-process results for matrix output
+  $states = workflow_customizations_non_system_workflow_states();
+  $state_table = array();
+  foreach ($states as $sid => $name ) {
+    $short_name = workflow_get_state_name($sid);
+    $state_table[$short_name] = '00:00:00';
+  }
+
+  $allowed_states = implode(',' , array_keys($states));
+  if (!empty($allowed_states)) {
+    $state_filter = "AND wnh1.old_sid IN ($allowed_states) AND wnh1.sid IN ($allowed_states) AND wnh2.sid IN ($allowed_states)";
+  }
+
+  $agency_filter = " AND cta.nid = $agency";
+
+  $result = db_query($sql, array($state_filter, $agency_filter));
+  $report = array();
+
+  while ($data = db_fetch_array($result)) {
+    $report[] = $data;
+  }
+
+  return theme('workflow_customizations_agency_processing_time_block', $report, $state_table);
+}
+
+/**
+* Custom report for each agency by workflow state.
+*/
+function workflow_customizations_all_agencies_workflow_queue() {
+  $sql = "SELECT cta.field_agency_name_value AS Agency, workflow_states.state as 'Workflow State', count(ctd.nid) as Count
+  FROM content_type_dataset ctd
+  LEFT JOIN content_type_agency cta ON ctd.field_ds_agency_name_nid = cta.nid 
+  LEFT JOIN workflow_node workflow_node ON ctd.nid = workflow_node.nid 
+  LEFT JOIN workflow_states workflow_states ON workflow_node.sid = workflow_states.sid
+  %s
+  GROUP BY cta.field_agency_name_value, workflow_states.state";
+
+  //Pre-process results for matrix output
+  $states = workflow_customizations_non_system_workflow_states();
+  $state_table = array();
+  foreach ($states as $sid => $name ) {
+    $short_name = workflow_get_state_name($sid);
+    $state_table[$short_name] = 0;
+  }
+    
+  $allowed_states = implode(',' , array_keys($states));
+  if (!empty($allowed_states)) {
+    $state_filter = "WHERE workflow_node.sid IN ($allowed_states)";
+  }
+
+  $result = db_query($sql, array($state_filter));
+  $report = array();
+
+  while ($data = db_fetch_array($result)) {
+    $report[] = $data;
+  }
+
+  return theme('workflow_customizations_agency_workflow_queue_block', $report, $state_table);
+}
+
+/**
+* Custom report for single agency by workflow state.
+*/
+function workflow_customizations_single_agency_workflow_queue() {
+  global $user;
+  $profile = content_profile_load('profile', $user->uid);
+
+  if (isset($profile->field_prof_agency[0]['nid'])) {
+    $agency = $profile->field_prof_agency[0]['nid'];
+  }
+  else {
+    $agency = '-1';
+  }
+
+  $sql = "SELECT cta.field_agency_name_value AS Agency, workflow_states.state as 'Workflow State', count(ctd.nid) as Count
+  FROM content_type_dataset ctd
+  LEFT JOIN content_type_agency cta ON ctd.field_ds_agency_name_nid = cta.nid
+  LEFT JOIN workflow_node workflow_node ON ctd.nid = workflow_node.nid
+  LEFT JOIN workflow_states workflow_states ON workflow_node.sid = workflow_states.sid
+  %s
+  GROUP BY cta.field_agency_name_value, workflow_states.state";
+
+  //Pre-process results for matrix output
+  $states = workflow_customizations_non_system_workflow_states();
+  $state_table = array();
+  foreach ($states as $sid => $name ) {
+    $short_name = workflow_get_state_name($sid);
+    $state_table[$short_name] = 0;
+  }
+    
+  $allowed_states = implode(',' , array_keys($states));
+  if (!empty($allowed_states)) {
+    $state_filter = "WHERE workflow_node.sid IN ($allowed_states) AND cta.nid = $agency";
+  }
+
+  $result = db_query($sql, array($state_filter));
+  $report = array();
+
+  while ($data = db_fetch_array($result)) {
+    $report[] = $data;
+  }
+
+  return theme('workflow_customizations_agency_workflow_queue_block', $report, $state_table);
+}
+
+/**
+* Implementation of hook_theme().
+*/
+function workflow_customizations_theme() {
+  return array(
+    'workflow_customizations_agency_processing_time_block' => array(
+      'template' => 'workflow_customizations_agency_processing_time_block',
+      'arguments' => array('report' => NULL, 'state_order' => NULL),
+    ),
+    'workflow_customizations_agency_workflow_queue_block' => array(
+      'template' => 'workflow_customizations_agency_workflow_queue_block',
+      'arguments' => array('report' => NULL, 'state_order' => NULL),
+    ),
+  );
+}
+
+/**
+* Implementation of hook_block().
+*/
+function workflow_customizations_block($op = 'list', $delta = 0) {
+  $block = array();
+  switch ($op) {
+    case 'list':
+      $block[0]['info'] = t('Workflow all agencies processing time.');
+      $block[1]['info'] = t('Workflow state all agencies.');
+      $block[2]['info'] = t('Workflow single agency processing time.');
+      $block[3]['info'] = t('Workflow state single agency.');
+      return $block;
+    case 'view':
+      switch ($delta) {
+        case 0:
+          $block['content'] = workflow_customizations_all_agencies_processing_time();
+          break;
+        case 1:
+          $block['content'] = workflow_customizations_all_agencies_workflow_queue();
+          break;
+        case 2:
+	  $block['content'] = workflow_customizations_single_agency_processing_time();
+          break;
+        case 3:
+          $block['content'] = workflow_customizations_single_agency_workflow_queue();
+          break;
+      }
+  }
+  return $block;
+}
+
+/**
+ * Implementation of hook_action_info().
+ */
+function workflow_customizations_action_info() {
+  return array(
+    'workflow_customizations_approve_action' => array(
+      'type' => 'node',
+      'description' => t('Approve'),
+      'configurable' => FALSE,
+      'aggregate' => TRUE,
+      'hooks' => array(
+        'nodeapi' => array('presave'),
+        'comment' => array('insert', 'update'),
+        'workflow' => array('any'),
+      ),
+    ),
+    'workflow_customizations_sendback_action' => array(
+      'type' => 'node',
+      'description' => t('Sendback'),
+      'configurable' => FALSE,
+      'aggregate' => TRUE,
+      'hooks' => array(
+        'nodeapi' => array('presave'),
+        'comment' => array('insert', 'update'),
+        'workflow' => array('any'),
+      ),
+    ),
+    'workflow_customizations_delete_action' => array(
+      'type' => 'node',
+      'description' => t('Delete'),
+      'configurable' => FALSE,
+      'aggregate' => TRUE,
+      'hooks' => array(
+        'nodeapi' => array('presave'),
+        'comment' => array('insert', 'update'),
+        'workflow' => array('any'),
+      ),
+    ),
+  );
+}
+
+/**
+ * Implementation of a Drupal action. Delete a node from the system.
+ */
+function workflow_customizations_delete_action($node_ids, $context) {
+  foreach ($node_ids as $nid) {
+    $node = node_load($nid);
+    $title =  empty($node->title) ? 'Untitled' : check_plain($node->title);
+
+    if (node_access('delete', $node)) {
+      node_delete($node->nid);
+    }
+    else {
+      drupal_set_message(t('@type %title was not deleted.', array('@type' => node_get_types('name', $node), '%title' => $title)), 'status');
+    }
+  }
+}
+
+/**
+ * Implementation of a Drupal action. Move a node to the next state in the workfow.
+ */
+function workflow_customizations_approve_action($node_ids, $context) {
+
+  require_once ('workflow_customizations.validation.inc');
+  
+  foreach ($node_ids as $nid) {
+    $node = node_load($nid);
+    $title =  empty($node->title) ? 'Untitled' : check_plain($node->title);
+
+    // If this action is being fired because it's attached to a workflow transition
+    // then the node's new state (now its current state) should be in $node->workflow
+    // because that is where the value from the workflow form field is stored;
+    // otherwise the current state is placed in $node->_workflow by our nodeapi load.
+    if (!isset($node->workflow) && !isset($node->_workflow)) {
+      drupal_set_message(t('%title was not approved.', array('%title' => $title)), 'status');
+      continue;
+    }
+
+    $current_state = isset($node->workflow) ? $node->workflow : $node->_workflow;
+  
+    // Get the node's new state.
+    $choices = workflow_field_choices($node);
+    foreach ($choices as $sid => $name) {
+      if (isset($flag)) {
+        $new_state = $sid;
+        $new_state_name = $name;
+        break;
+      }
+      if ($sid == $current_state) {
+        $flag = TRUE;
+      }
+    }
+
+    // No go without validation
+    $validated = workflow_customizations_validate_node($node);
+    if (!$validated) {
+      drupal_set_message(t('%title was not approved. [ validation error ]', array('%title' => $title)), 'status');
+      continue; // Continue to next node.
+    }
+    
+    // Fire the transition.
+    $result = workflow_execute_transition($node, $new_state); 
+
+    if (!empty($result) && !empty($new_state) && $result == $new_state) {
+      drupal_set_message(t('%title was approved successfully.', array('%title' => $title)), 'status');      
+    }
+    else {
+      drupal_set_message(t('%title was not approved.', array('%title' => $title)), 'status');      
+    }
+  }
+}
+
+/**
+ * Implementation of a Drupal action. Move a node to the previous state in the workfow.
+ */
+function workflow_customizations_sendback_action($node_ids, $context) {
+  foreach ($node_ids as $nid) {
+    $result = workflow_execute_transition($node, $context['target_sid']);
+    $node = node_load($nid);
+    $title =  empty($node->title) ? 'Untitled' : check_plain($node->title);
+
+    global $user;
+    $roles = $user->roles;
+    $author = user_load($node->uid);
+
+    // If the logged in user has the Agency POC role and the node was created by a data steward show the sendback option
+    $role_check = ($user->uid == 1 || !isset($roles['4']) || (isset($roles['4']) && isset($author->roles['3'])));
+
+    // If this action is being fired because it's attached to a workflow transition
+    // then the node's new state (now its current state) should be in $node->workflow
+    // because that is where the value from the workflow form field is stored;
+    // otherwise the current state is placed in $node->_workflow by our nodeapi load.
+    if ((!isset($node->workflow) && !isset($node->_workflow)) || !$role_check) {
+      drupal_set_message(t('%title was not sent back.', array('%title' => $title)), 'status');
+      continue;
+    }
+
+    $current_state = isset($node->workflow) ? $node->workflow : $node->_workflow;
+  
+    // Get the node's new state.
+    $choices = workflow_field_choices($node);
+    foreach ($choices as $sid => $name) {
+      if ($sid == $current_state) {
+        break;
+      }
+      else {
+        $new_state = $sid;
+        $new_state_name = $name;
+      } 
+    }
+
+    // Fire the transition.
+    $result = workflow_execute_transition($node, $new_state);
+
+    if (!empty($result) && !empty($new_state) && $result == $new_state) {
+      drupal_set_message(t('%title was sent back successfully.', array('%title' => $title)), 'status');
+    }
+    else {
+      drupal_set_message(t('%title was not sent back.', array('%title' => $title)), 'status');
+    }
+  }
+}

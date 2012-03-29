@@ -1,0 +1,176 @@
+Index: branches/qa/sites/all/modules/CMS/textsize/textsize-image.tpl.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/CMS/textsize/textsize-image.tpl.php	(revision )
++++ branches/qa/sites/all/modules/CMS/textsize/textsize-image.tpl.php	(revision 4540)
+@@ -29,16 +29,17 @@
+ <?php  if ($subtitle): ?>
+ <h3 class="<?php print $list_inline; ?>"><?php print $subtitle_text; ?></h3>
+ <?php endif; ?>
+-<ul class="textsize_<?php print $list_inline .' '. $current_inline;  ?>">
+-<?php  if ($textsize_increase): ?>
+-  <li class="ts_increase_<?php print check_plain($link_type); ?>"><?php print l('<img src="'. base_path() . path_to_theme() .'/images/increase_16.gif" alt="'. t('Increase') .'" class="ts_increase text_display_hidden ts_rollover" />', 'textsize/increase', array('attributes' => array('title' => $block_title .': '. t('Increase') .' +'. $increment .'%', 'class' => 'ts_increase_'. $link_type .' text_display_hidden ts_rollover'), 'query' => $dest, 'html' => TRUE)); ?></li>
++<ul class="textsize_<?php print $list_inline .' '. $current_inline;  ?>"><?php  if ($textsize_decrease): ?>
++  <li class="ts_decrease_<?php print check_plain($link_type); ?>"><?php print l('<img src="'. base_path() . path_to_theme() .'/images/textsizeMinus.gif" alt="'. t('Decrease') .'" class="ts_decrease text_display_hidden ts_rollover" />', 'textsize/decrease', array('attributes' => array('title' => $block_title .': '. t('Decrease') .' -'. $increment .'%', 'class' => 'ts_decrease_'. $link_type .' text_display_hidden ts_rollover'), 'query' => $dest, 'html' => TRUE)); ?></li>
+ <?php endif; ?>
+-<?php  if ($textsize_decrease): ?>
+-  <li class="ts_decrease_<?php print check_plain($link_type); ?>"><?php print l('<img src="'. base_path() . path_to_theme() .'/images/decrease_16.gif" alt="'. t('Decrease') .'" class="ts_decrease text_display_hidden ts_rollover" />', 'textsize/decrease', array('attributes' => array('title' => $block_title .': '. t('Decrease') .' -'. $increment .'%', 'class' => 'ts_decrease_'. $link_type .' text_display_hidden ts_rollover'), 'query' => $dest, 'html' => TRUE)); ?></li>
+-<?php endif; ?>
+ <?php  if ($textsize_normal): ?>
+-  <li class="ts_normal_<?php print check_plain($link_type); ?>"><?php print l('<img src="'. base_path() . path_to_theme() .'/images/normal_16.gif" alt="'. t('Normal') .'" class="ts_normal text_display_hidden ts_rollover" />', 'textsize/normal', array('attributes' => array('title' => $block_title .': '. t('Normal') .' ='. $normal .'%', 'class' => 'ts_normal_'. $link_type .' text_display_hidden ts_rollover'), 'query' => $dest, 'html' => TRUE)); ?></li>
++  <li class="ts_normal_<?php print check_plain($link_type); ?>"><?php print l('<img src="'. base_path() . path_to_theme() .'/images/textsizeNormal.gif" alt="'. t('Normal') .'" class="ts_normal text_display_hidden ts_rollover" />', 'textsize/normal', array('attributes' => array('title' => $block_title .': '. t('Normal') .' ='. $normal .'%', 'class' => 'ts_normal_'. $link_type .' text_display_hidden ts_rollover'), 'query' => $dest, 'html' => TRUE)); ?></li>
+ <?php endif; ?>
++
++<?php  if ($textsize_increase): ?>
++  <li class="ts_increase_<?php print check_plain($link_type); ?>"><?php print l('<img src="'. base_path() . path_to_theme() .'/images/textsizePlus.gif" alt="'. t('Increase') .'" class="ts_increase text_display_hidden ts_rollover" />', 'textsize/increase', array('attributes' => array('title' => $block_title .': '. t('Increase') .' +'. $increment .'%', 'class' => 'ts_increase_'. $link_type .' text_display_hidden ts_rollover'), 'query' => $dest, 'html' => TRUE)); ?></li>
++<?php endif; ?>
++
+ </ul>
+ <?php  if ($current_textsize): ?>
+ <p class="textsize_current <?php print $current_inline .' '. $display_current_textsize .' current_text_'. $display_current_textsize_text; ?>"><span class="<?php print $display_current_textsize_text; ?>"><?php print $current_textsize_text; ?>: </span><span id="textsize_current" title="<?php print $current_textsize_text .': '. $textsize .'%'; ?>"><?php print $textsize; ?>%</span></p>
+\ No newline at end of file
+Index: branches/qa/sites/all/modules/CMS/textsize/textsize.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/CMS/textsize/textsize.css	(revision )
++++ branches/qa/sites/all/modules/CMS/textsize/textsize.css	(revision 4540)
+@@ -66,6 +66,7 @@
+   background: transparent;
+   padding: 0;
+   margin: 0 0 0.2em 0;
++  padding-top:6px;
+ }
+ ul.textsize_inline li {
+   display: block;
+@@ -195,7 +196,7 @@
+   min-height: 16px; /* NOTE icon specific */
+   height: 1em; /* NOTE icon specific (16px = 1em) */
+   background-color: transparent;
+-  background-image: url("images/increase.gif");
++  background-image: url("images/textsizePlus.gif");
+   background-repeat: no-repeat;
+   background-position: 0 0px;
+ }
+@@ -210,7 +211,7 @@
+   min-height: 16px; /* NOTE icon specific */
+   height: 1em; /* NOTE icon specific (16px = 1em) */
+   background-color: transparent;
+-  background-image: url("images/decrease.gif");
++  background-image: url("images/textsizeMinus.gif");
+   background-repeat: no-repeat;
+   background-position: 0px 0px;
+ }
+@@ -225,7 +226,7 @@
+   min-height: 16px; /* NOTE icon specific */
+   height: 1em; /* NOTE icon specific (16px = 1em) */
+   background-color: transparent;
+-  background-image: url("images/normal.gif");
++  background-image: url("images/textsizeNormal.gif");
+   background-repeat: no-repeat;
+   background-position: 0px 0px;
+ }
+@@ -313,25 +314,25 @@
+  */
+ head:first-child+body a.textsize_increase,
+ head:first-child+body a.textsize_increase:visited {
+-  background-image: url("images/increase.png") !important; /* !important for page style module */
++  background-image: url("images/textsizePlus.gif") !important; /* !important for page style module */
+ }
+ head:first-child+body a.textsize_decrease,
+ head:first-child+body a.textsize_decrease:visited {
+-  background-image: url("images/decrease.png") !important; /* !important for page style module */
++  background-image: url("images/textsizeMinus.gif") !important; /* !important for page style module */
+ }
+ head:first-child+body a.textsize_normal,
+ head:first-child+body a.textsize_normal:visited {
+-  background-image: url("images/normal.png") !important; /* !important for page style module */
++  background-image: url("images/textsizeNormal.gif") !important; /* !important for page style module */
+ }
+ 
+ head:first-child+body a.textsize_increase:hover {
+-  background-image: url("images/increase.png") !important; /* !important for page style module */
++  background-image: url("images/textsizePlus.gif") !important; /* !important for page style module */
+ }
+ head:first-child+body a.textsize_decrease:hover {
+-  background-image: url("images/decrease.png") !important; /* !important for page style module */
++  background-image: url("images/textsizeMinus.gif") !important; /* !important for page style module */
+ }
+ head:first-child+body a.textsize_normal:hover {
+-  background-image: url("images/normal.png") !important; /* !important for page style module */
++  background-image: url("images/textsizeNormal.gif") !important; /* !important for page style module */
+ }
+ 
+ /* admin and help */
+@@ -343,7 +344,7 @@
+   width: 20em;
+   height: 2em; /* NOTE icon specific */
+   padding: 0em 0.5em 0em 28px; /* NOTE icon specific (16 + 12 = 28px) */
+-  background: transparent url("images/normal.gif") no-repeat 0 0;
++  background: transparent url("images/textsizeNormal.gif") no-repeat 0 0;
+ }
+ div#edit-textsize-display-increase-wrapper label input,
+ div#edit-textsize-display-decrease-wrapper label input,
+@@ -351,17 +352,17 @@
+   margin: 0em 3.5em 0em 0.3em; /* NOTE icon specific */
+ }
+ div#edit-textsize-display-increase-wrapper label {
+-  background: transparent url("images/increase.gif") no-repeat 2.2em 0;
++  background: transparent url("images/textsizePlus.gif") no-repeat 2.2em 0;
+   display: block;
+   height: 16px; /* NOTE icon specific */
+ }
+ div#edit-textsize-display-decrease-wrapper label {
+-  background: transparent url("images/decrease.gif") no-repeat 2.2em 0;
++  background: transparent url("images/textsizeMinus.gif") no-repeat 2.2em 0;
+   display: block;
+   height: 16px; /* NOTE icon specific */
+ }
+ div#edit-textsize-display-normal-wrapper label {
+-  background: transparent url("images/normal.gif") no-repeat 2.2em 0;
++  background: transparent url("images/textsizeNormal.gif") no-repeat 2.2em 0;
+   display: block;
+   height: 16px; /* NOTE icon specific */
+ }
+@@ -394,6 +395,10 @@
+  */
+ .ts_clear {
+   clear: both;
++}
++.ts_increase_fix
++{
++padding-top:6px;
+ }
+ /* display hidden. If your theme have a class for "display hidden" */
+ .display_hidden {
+Index: branches/qa/sites/all/modules/CMS/textsize/textsize-text.tpl.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/CMS/textsize/textsize-text.tpl.php	(revision )
++++ branches/qa/sites/all/modules/CMS/textsize/textsize-text.tpl.php	(revision 4540)
+@@ -30,15 +30,16 @@
+ <h3 class="<?php print $list_inline; ?>"><?php print $subtitle_text; ?></h3>
+ <?php endif; ?>
+ <ul class="textsize_<?php print $list_inline .' '. $current_inline; ?>">
+-<?php  if ($textsize_increase): ?>
+-  <li class="ts_increase_<?php print check_plain($link_type); ?>"><?php print l('<span class="'. $display_links .'">'. t('Increase') .'</span>', 'textsize/increase', array('attributes' => array('title' => $block_title .': '. t('Increase') .' +'. $increment .'%', 'class' => 'ts_icon ts_increase_'. $link_type .' textsize_increase text_'. $display_links), 'query' => $dest, 'html' => TRUE)); ?></li>
+-<?php endif; ?>
+ <?php  if ($textsize_decrease): ?>
+   <li class="ts_decrease_<?php print check_plain($link_type); ?>"><?php print l('<span class="'. $display_links .'">'. t('Decrease') .'</span>', 'textsize/decrease', array('attributes' => array('title' => $block_title .': '. t('Decrease') .' -'. $increment .'%', 'class' => 'ts_icon ts_decrease_'. $link_type .' textsize_decrease text_'. $display_links), 'query' => $dest, 'html' => TRUE)); ?></li>
+ <?php endif; ?>
+ <?php  if ($textsize_normal): ?>
+   <li class="ts_normal_<?php print check_plain($link_type); ?>"><?php print l('<span class="'. $display_links .'">'. t('Normal') .'</span>', 'textsize/normal', array('attributes' => array('title' => $block_title .': '. t('Normal') .' ='. $normal .'%', 'class' => 'ts_icon ts_normal_'. $link_type .' textsize_normal text_'. $display_links), 'query' => $dest, 'html' => TRUE)); ?></li>
+ <?php endif; ?>
++<?php  if ($textsize_increase): ?>
++  <li class="ts_increase_<?php print check_plain($link_type); ?>"><?php print l('<span class="'. $display_links .'">'. t('Increase') .'</span>', 'textsize/increase', array('attributes' => array('title' => $block_title .': '. t('Increase') .' +'. $increment .'%', 'class' => 'ts_icon ts_increase_'. $link_type .' textsize_increase text_'. $display_links), 'query' => $dest, 'html' => TRUE)); ?></li>
++<?php endif; ?>
++
+ </ul>
+ <?php  if ($current_textsize): ?>
+ <p class="textsize_current <?php print $current_inline .' '. $display_current_textsize .' current_text_'. $display_current_textsize_text .' text_'. $display_links; ?>"><span class="<?php print $display_current_textsize_text; ?>"><?php print $current_textsize_text; ?>: </span><span id="textsize_current" title="<?php print $current_textsize_text .': '. $textsize .'%'; ?>"><?php print $textsize; ?>%</span></p>
+\ No newline at end of file

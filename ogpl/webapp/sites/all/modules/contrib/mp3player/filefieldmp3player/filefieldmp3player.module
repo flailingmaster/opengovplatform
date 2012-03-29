@@ -1,0 +1,104 @@
+<?php
+
+/**
+* Implementation of hook_field_formatter_info().
+*/
+function filefieldmp3player_field_formatter_info() {
+  $formatters = array();
+  $players = mp3player_players();
+
+  foreach($players as $pid => $player) {
+    $formatters['mp3player_'. $player['name']] = array(
+      'label' => t('MP3 Player ('.$player['name'].')'),
+      'field types' => array('filefield')
+    );
+  }
+
+  return $formatters;
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function filefieldmp3player_theme() {
+  $path = drupal_get_path('module', 'filefieldmp3player') .'/theme';
+  $theme = array();
+  $players = mp3player_players();
+
+  foreach($players as $pid => $player) {
+    $theme['filefieldmp3player_formatter_mp3player_'. $player['name']] = array(
+      'arguments' => array('element' => NULL),
+      'function' => 'theme_filefieldmp3player_formatter_mp3player',
+    );
+  }
+  
+  $theme['filefieldmp3player_description'] = array(
+    'template' => 'description',
+    'arguments' => array(
+      'id3' => array(),
+    ),
+    'path' => $path,
+    );
+
+  return $theme;
+}
+
+/**
+ * Formatter theme function for file fields presented as a Flash MP3 Player.
+ */
+function theme_filefieldmp3player_formatter_mp3player($element) {
+  $item = $element['#item'];
+  if($item['list'] == "0") {
+    // Isn't listed so bail now
+    return;
+  }
+  
+  if(variable_get('mp3player_description', 'description') == 'id3' && module_exists(getid3) && getid3_load() == TRUE) {
+    $id3 = getid3_analyze($item['filepath']);
+
+    $title = $info['tags']['id3v2']['title'][0];
+    $artist = $info['tags']['id3v2']['artist'][0];
+    $album = $info['tags']['id3v2']['album'][0];
+    $year = $info['tags']['id3v2']['year'][0];
+    $track = $info['tags']['id3v2']['track'][0];
+    $genre = $info['tags']['id3v2']['genre'][0];
+    
+    $description = theme('filefieldmp3player_description', $id3);
+  }
+  else if(isset($item['data']['description']) && is_array($item['data'])) {
+    //Data straight from node isn't serialized
+    $description = $item['data']['description'];
+  }
+  else if(isset($item['data']['description']) && is_array(unserialize($item['data']))){
+    //Data from a View is on the other hand
+    $bits = unserialize($item['data']);
+    $description = $bits['description'];
+  }
+  
+  $parts = explode('_', $element['#formatter']);
+  unset($parts[0]);
+  $player = implode('_', $parts);
+
+  if (!empty($item['filepath'])) {
+    if($item['filemime'] == 'audio/mpeg' || $item['filemime'] == 'audio/x-mpeg' || $item['filemime'] == 'audio/mp3' || $item['filemime'] == 'audio/x-mp3' || $item['filemime'] == 'audio/mpeg3' || $item['filemime'] == 'audio/x-mpeg3' || $item['filemime'] == 'audio/mpg' || $item['filemime'] == 'audio/x-mpg' || $item['filemime'] == 'audio/mpegaudi') {
+      //MP3 files get special treatment.
+      return theme('mp3player', $player, file_create_url($item['filepath']), NULL, NULL, $description);
+    }
+    else {
+      // Fall back to filefield's default behavior.
+      return theme('filefield_formatter_default', $element);
+    }
+  }
+}
+
+/**
+ * Pre-processor for mp3 player description.
+ */
+function filefieldmp3player_preprocess_filefieldmp3player_description(&$vars) {
+  $vars['title']  = $vars['id3']['tags']['id3v2']['title'][0];
+  $vars['artist'] = $vars['id3']['tags']['id3v2']['artist'][0];
+  $vars['album']  = $vars['id3']['tags']['id3v2']['album'][0];
+  $vars['year']   = $vars['id3']['tags']['id3v2']['year'][0];
+  $vars['track']  = $vars['id3']['tags']['id3v2']['track'][0];
+  $vars['genre']  = $vars['id3']['tags']['id3v2']['genre'][0];
+}

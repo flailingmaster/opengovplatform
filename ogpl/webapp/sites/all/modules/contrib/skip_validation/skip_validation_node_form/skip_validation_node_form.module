@@ -1,0 +1,30 @@
+<?php
+// $Id: skip_validation_node_form.module,v 1.2 2009/10/13 04:17:56 cdale Exp $
+
+/**
+ * @file
+ *
+ * Adds a feature which skips required field validations on node preview and deletion.
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function skip_validation_node_form_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#skip_validation_node_form':
+      return '<p>'. t('Adds a feature which skips validations on node preview and deletion.') .'</p>';
+      break;
+  }
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function skip_validation_node_form_form_alter(&$form, &$form_state, $form_id) {
+  if ($form['#id'] == 'node-form') {
+    $form['buttons']['delete']['#skip_validation'] = TRUE;
+    $form['buttons']['preview']['#skip_required_validation'] = TRUE;
+  }
+}
+

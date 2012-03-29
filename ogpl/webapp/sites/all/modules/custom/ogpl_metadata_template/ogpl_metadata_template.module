@@ -1,0 +1,3 @@
+<?php
+
+include_once('ogpl_metadata_template.features.inc');

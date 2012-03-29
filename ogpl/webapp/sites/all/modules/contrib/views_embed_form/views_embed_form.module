@@ -1,0 +1,160 @@
+<?php
+// $Id: views_embed_form.module,v 1.1.2.2 2009/03/15 13:52:53 meba Exp $
+/**
+  This module creates a possibility for developers to embed a form as field in
+  Views. Due to security reasons, it's not possible to embed any form available
+  in Drupal, specific forms need to be enabled for this functionality by module
+  developers. Views embed form provides an API function which provides this ability.
+
+  See README.txt for an example.
+*/
+
+/**
+ * Implementation of hook_views_api().
+ */
+function views_embed_form_views_api() {
+  return array(
+      'api' => 2,
+      'path' => drupal_get_path('module', 'views_embed_form'),
+      );
+}
+
+/**
+ *  Implementation of hook_views_handlers().
+ */
+function views_embed_form_views_handlers() {
+  return array(
+      'info' => array(
+        'path' => drupal_get_path('module', 'views_embed_form'),
+        ),
+      'handlers' => array(
+        'views_handler_field_views_embed_form' => array(
+          'parent' => 'views_handler_field',
+          ),
+        ),
+      );
+}
+
+/**
+ * Implementation of hook_forms()
+ *
+ * http://www.gtrlabs.org/blog/dayre/drupal_5_how_to_process_multiple_instances_of_the_same_form_on_the_same_page
+ *
+ * How does drupal_get_form() know where to get the form data from ?  For example,
+ * our view() function may call drupal_get_form() with a form id of
+ * mymodule_thing_form27.  We don't have a function called mymodule_thing_form27(),
+ * so the forms API will call this form hook to get the name of a function that
+ * can provide form data.  This is what prevents us from duplicating our _form()
+ * and _submit() functions for each unique form instance.
+ *
+ */
+function views_embed_form_forms() {
+
+  // the form id Drupal plans on using will be the first
+  // element of the first array.
+  $args = func_get_args();
+  $form_id = $args[0];
+
+  // Given a form_id like mymodule_thing_form27 or mymodule_thing_form13,
+  // we look for familiar text to tell we are dealing with the correct
+  // form.  Other functions will call this function as part of their form
+  // rendering (e.g. search form rendering) so we need to tell them apart.
+  $forms = array();
+
+  // Here we are telling the forms API that for any form ids starting
+  // with mymodule_thing_formX (X could be any unique id), callback to the
+  // function mymodule_thing_form to get the form data.
+  if ($callback = views_embed_form_is_embed_form($form_id)) {
+    $forms[$form_id] = array('callback' => $callback);
+  }
+
+  return $forms;
+}
+
+/**
+ * Implementation of hook_form_alter()
+ *
+ * Automatically repair callbacks to validate and submit form handlers
+ * if they are implemented
+ */
+function views_embed_form_form_alter(&$form, $form_state, $form_id) {
+
+  if ($callback = views_embed_form_is_embed_form($form_id)) {
+    if (function_exists($callback . '_submit')) {
+      $form['#submit'] = array($callback . '_submit');
+    }
+    if (function_exists($callback . '_validate')) {
+      $form['#validate'] = array($callback . '_validate');
+    }
+  }
+}
+
+/**
+ * Test if the form_id belongs to embed form.
+ *
+ * @param string $form_id
+ * @return form_callback | FALSE
+ */
+function views_embed_form_is_embed_form($form_id) {
+  $embed_forms = views_embed_form_get_forms();
+
+  // maybe we can use rtrim and array_key_exists(), to avoid this iteration
+  foreach ($embed_forms as $key => &$val) {
+    if (strpos($form_id, $key) === 0) {
+      return $key;
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+ * Returns all embedded forms accessible for current user.
+ * Uses static caching.
+ *
+ * @return array
+ */
+function views_embed_form_get_forms() {
+  static $forms = array();
+
+  if (!count($forms)) {
+    $forms = module_invoke_all('views_embed_form');
+  }
+  return $forms;
+}
+
+
+/**
+ * Test form for Views Embed Form. Doesn't do anything, just print a Node ID.
+ */
+
+/**
+ * Implementation of hook_views_embed_form().
+ *
+ * Example of views_embed_form hook. You should always honor permissions during
+ * the hook implementation. This hook is checked during view editing and also
+ * when displaying every row.
+ */
+function views_embed_form_views_embed_form() {
+  if (user_access('access content')) {
+    return array('vef_test_form' => 'Views Embed Form Test');
+  }
+}
+
+function vef_test_form(&$form_state, $row) {
+  $form = array();
+  $form['submit'] = array(
+      '#type' => 'submit',
+      '#name' => 'submit' . intval($row->nid),
+      '#value' => 'Click me!',
+      );
+  $form['nid'] = array(
+      '#type' => 'hidden',
+      '#value' => intval($row->nid),
+      );
+  return $form;
+}
+function vef_test_form_submit($form, &$form_state) {
+  drupal_set_message(t('You clicked a Views Embed Form Test for Node #@nid', array('@nid' => $form_state['values']['nid'])));
+}
+

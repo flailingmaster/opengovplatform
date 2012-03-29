@@ -1,0 +1,15 @@
+; $Id: 
+name = Clientside Validation Form
+description = Add client side validation to regular forms
+core = 6.x
+package = Clientside Validation
+
+files[] = clientside_validation_form.module
+dependencies[] = clientside_validation
+
+; Information added by drupal.org packaging script on 2011-11-29
+version = "6.x-1.24"
+core = "6.x"
+project = "clientside_validation"
+datestamp = "1322565939"
+

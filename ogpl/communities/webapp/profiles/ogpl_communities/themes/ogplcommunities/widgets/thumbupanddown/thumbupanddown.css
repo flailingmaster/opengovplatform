@@ -1,0 +1,85 @@
+/* $Id: $ */
+
+
+/* vote up and down*/
+.vud-widget-thumbupanddown {
+ 	margin: 0 5px 0 0;
+	padding: 5px;
+	height: 35px;
+ 	position: relative;
+ 	float: left;
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px;
+	border: 1px solid #d48233;
+}
+.vud-widget-thumbupanddown a {
+  text-decoration: none;
+  float: left;
+}
+.up-score {
+	padding-bottom: 5px;
+	height:15px;
+}
+
+.up-current-score {
+	color:#003366;
+}
+
+.vud-widget-thumbupanddown a.vud-link-up span,
+.vud-widget-thumbupanddown a.vud-link-down span {
+  margin-right: 5px;
+}
+.vud-widget-thumbupanddown .up-score .up-current-score,
+.vud-widget-thumbupanddown .down-score .down-current-score {
+  display: block;
+  font-size: 16px;
+	line-height: 16px;
+  margin-left: 25px;
+  text-align: right;
+  padding-top: 0px;
+}
+.vud-widget-thumbupanddown .up-score {
+  color: #197566;
+}
+.vud-widget-thumbupanddown .down-score {
+  color: #751929;
+}
+.vud-widget-thumbupanddown .up-active,
+.vud-widget-thumbupanddown .down-active {
+  cursor: default;
+}
+.vud-widget-thumbupanddown .up-inactive,
+.vud-widget-thumbupanddown .down-inactive,
+.vud-widget-thumbupanddown .up-active,
+.vud-widget-thumbupanddown .down-active {
+  display: block;
+  width: 15px;
+  height: 15px;
+  font-weight: bold;
+  text-align: center;
+  background: url(arrows.png) 0 0 no-repeat;
+}
+.vud-widget-thumbupanddown .up-active {
+  background-position: -15px -15px;
+}
+.vud-widget-thumbupanddown .down-active {
+  background-position: 0px -15px;
+}
+.vud-widget-thumbupanddown .up-inactive {
+  background-position: 0px 0px;
+}
+.vud-widget-thumbupanddown .down-inactive {
+  background-position: -15px 0px;
+}
+.vud-widget-thumbupanddown .up-inactive:hover {
+  background-position: 0px 0px;
+}
+.vud-widget-thumbupanddown .down-inactive:hover {
+  background-position: -15px 0px;
+}
+.vud-widget-thumbupanddown a.ctools-ajaxing,
+.vud-widget-thumbupanddown a.ctools-ajaxing:hover {
+  padding-right: 0 !important;
+  background-image: url(status-active.gif);
+  background-position: center;
+}

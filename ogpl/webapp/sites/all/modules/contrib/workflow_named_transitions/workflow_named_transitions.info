@@ -1,0 +1,12 @@
+; $Id: workflow_named_transitions.info,v 1.2 2008/12/23 06:11:02 deekayen Exp $
+name = Workflow Named Transitions
+description = "Display a transition label on workflow state change options instead of just state names."
+package = Workflow
+dependencies[] = workflow
+core = 6.x
+; Information added by drupal.org packaging script on 2009-04-14
+version = "6.x-1.1"
+core = "6.x"
+project = "workflow_named_transitions"
+datestamp = "1239732759"
+

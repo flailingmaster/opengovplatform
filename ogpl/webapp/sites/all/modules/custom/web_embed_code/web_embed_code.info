@@ -1,0 +1,4 @@
+; $Id$
+name = Web Embed code
+description = This module provides user to embed the code in the website.
+core = 6.x

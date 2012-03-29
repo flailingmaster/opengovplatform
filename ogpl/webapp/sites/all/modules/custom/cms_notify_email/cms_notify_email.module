@@ -1,0 +1,87 @@
+<?php
+function cms_notify_email_cron(){
+    $default_language = language_default();
+    
+    // Find nodes for which reminder is set
+    $sql  = "
+    SELECT node.nid,node.title,date(field_expiry_date_value) as notification_date 
+    FROM node 
+    LEFT JOIN content_field_no_ofdays node_data_field_no_ofdays ON node.vid = node_data_field_no_ofdays.vid 
+    LEFT JOIN content_field_expiry_date node_data_field_expiry_date ON node.vid = node_data_field_expiry_date.vid 
+    LEFT JOIN workflow_node workflow_node ON node.nid = workflow_node.nid WHERE node.type
+	IN ( 'block', 'faq', 'imageflow', 'flags', 'page', 'rotating_panel','country_data') 
+	AND field_expiry_date_value IS NOT NULL 
+	AND date(NOW()) = date(field_expiry_date_value - INTERVAL field_no_ofdays_value DAY) 
+	AND (workflow_node.sid = 19)";
+    $results = db_query($sql);
+    while ($arrNotification = db_fetch_array($results)) {
+
+        // Get content creator details
+        $sqlUser  = "
+        SELECT users.uid,users.mail,users.name 
+        FROM users 
+        JOIN content_field_content_creator cfm 
+        ON cfm.field_content_creator_uid = users.uid 
+		WHERE cfm.nid = %d ORDER BY vid DESC LIMIT 1";
+      	$resultsUsers = db_query($sqlUser, $arrNotification['nid']);
+
+        while ($arrResultUsers = db_fetch_array($resultsUsers)) {
+	        $emailId 				= $arrResultUsers['mail'];
+		    $params['!node_title'] 		= $arrNotification['title'];
+	        $params['!user_name'] 		= $arrResultUsers['name'];
+		    $params['!notification_date'] 	= $arrNotification['notification_date'];
+		    $params['!nid'] 			= $arrNotification['nid'];
+	
+	        // Check if is mail already sent by querying log table
+	 	    $sqlLog  = "
+	 	    SELECT user_id 
+	 	    FROM cms_expiry_notification_log 
+	 	    WHERE user_id = ".$arrResultUsers['uid']." 
+	 	    AND node_id = ".$arrNotification['nid']." 
+	 	    AND notification_date = '".$arrNotification['notification_date']."'";
+	     	    
+		    $resultLog = db_query($sqlLog);
+	
+		    if ($resultLog && mysql_num_rows($resultLog) == 0){
+		    	// Load the template for content expiry mail
+		        $pet = pet_load('notify_expiry_email');
+		        // get the node and uers ids
+		        $pet_params['pet_nid'] = $arrNotification['nid'];
+		        $user_object = user_load(array('mail' => $arrResultUsers['mail']));
+		        $pet_params['pet_uid'] = $user_object->uid;
+		        // from is the site admin
+		        $pet_params['pet_from'] = variable_get('site_mail', '');
+		        // to is the feedback sender email
+		        $pet_params['pet_to'] = $arrResultUsers['mail'];
+		        // date format is picked from the Date format interface from admin UI.
+		        $pet_params['expiry-date'] = format_date(strtotime($arrNotification['notification_date']), 'custom', variable_get('date_format_notify', 'Y-m-d'));
+				// send the email using pet module api.
+				pet_send_one_mail($pet, $pet_params);
+				// insert the notification log in the db
+		    	$sqlInsertLog  = "INSERT INTO cms_expiry_notification_log(user_id,node_id,notification_date,date_created) VALUES(".$arrResultUsers['uid'].",".$arrNotification['nid'].",'".$arrNotification['notification_date']."',NOW())";
+				$resultInsertLog = db_query($sqlInsertLog);
+	        }
+       }  
+   }
+}
+
+function cms_notify_email_mail_alter($message)
+{
+	// This makes the Forward mail and Reply mail to be HTML capable.
+	if($message['id'] == 'pet_notify_expiry_email') {
+		$message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
+		$message['headers']['Bcc'] = 'dpmisra@nic.in';
+	}
+}
+
+function cms_notify_email_pet_substitutions_alter(&$substitutions, &$params)
+{	
+	// Replace the tokens in mails.
+	$replace = array('expiry-date');
+
+	foreach($replace as $token) {
+		if (array_key_exists($token, $params)) {
+			$params['pet']->body = str_replace('[' . $token . ']', $params[$token], $params['pet']->body); 
+		}
+	}
+}

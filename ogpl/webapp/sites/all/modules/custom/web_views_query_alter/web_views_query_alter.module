@@ -1,0 +1,206 @@
+<?php
+function web_views_query_alter_help($path, $arg){
+    $output='';
+    switch($path){
+        case "admin1/help#views query":
+        $output = '<p>'.t("Help about viewsqueryalter module").'</p>' ;
+        break;
+    }
+    return $output;
+}
+
+function web_views_query_alter_perm(){
+    return array();
+}
+
+function web_views_query_alter_views_pre_execute(&$view) {
+   if($view->name=="Recent_Apps_Catalog" || $view->name=="Recent_Dataset_Catalog" || $view->name=="Recent_Document_Catalog" || $view->name=="Popular_Apps_Catalog" || $view->name=="Popular_Dataset_Catalog" || $view->name=="Popular_Document_Catalog") {
+        $view->build_info['query'] = str_replace("field_ds_catlog_type_item_id = %d", "field_ds_catlog_type_type = '%s'", $view->build_info['query']);
+   }
+   if($view->name=="open_data_sites_country_list") {
+        $view->build_info['query'] = str_replace("COUNT(flexifield_items_node_data_field_state_data_node_data_field_state_dataset_count.field_state_dataset_count_value)", "SUM(flexifield_items_node_data_field_state_data_node_data_field_state_dataset_count.field_state_dataset_count_value)", $view->build_info['query']);
+        $view->build_info['query'] = str_replace("count(flexifield_items_node_data_field_state_data_node_data_field_state_dataset_count.field_state_dataset_count_value)", "SUM(flexifield_items_node_data_field_state_data_node_data_field_state_dataset_count.field_state_dataset_count_value)", $view->build_info['query']);
+   }
+   /* if($view->name=='ownerwise_feedback_listing')
+    {
+     $view->build_info['query'] = str_replace("GROUP BY vid", "GROUP BY content_type_feedback.field_assigned_to_uid", $view->build_info['query']);
+    }
+    */
+}
+
+function web_views_query_alter_views_query_alter(&$view, &$query) {
+/*
+if($view->name=='ownerwise_feedback_stat'){
+      $query->distinct=owner_id;
+      $query->fields[feedback_id]=$query->fields[feedback_owner_id];
+      unset($query->fields[feedback_owner_id]);
+   }*/
+   if($view->name=='assigneewise_feedback_listing' && $view->name=='ownerwise_feedback_listing')
+    {
+      $query->distinct=field_assigned_to_uid;
+      $query->fields[vid]=$query->fields[field_assigned_to_uid];
+      unset($query->fields[field_assigned_to_uid]);
+    }
+}
+
+function web_views_query_alter_form_country_data_node_form_alter(&$form, &$form_state)
+{
+    $node_id = 0;
+    if(isset($form['nid']['#value'])){
+        $node_id = (int)$form['nid']['#value'];
+    }
+    $state_data=array();
+    $agency_data=array();
+    if($node_id > 0){
+        $state_query = "SELECT DISTINCT field_state_name_value FROM content_type_state_data_site WHERE nid={$node_id} AND field_region_type_value='State' ORDER BY field_state_name_value ASC";
+        $agency_query = "SELECT DISTINCT field_state_name_value FROM content_type_state_data_site WHERE nid={$node_id} AND field_region_type_value='Agency' ORDER BY field_state_name_value ASC";
+        $state_obj = db_query($state_query);
+        while ($row = db_fetch_object($state_obj)) {
+            $state_data[] = $row->field_state_name_value;
+        }
+        $agency_obj = db_query($agency_query);
+        while ($row = db_fetch_object($agency_obj)) {
+            $agency_data[] = $row->field_state_name_value;
+        }
+    }
+    $state_data = trim(implode("|", $state_data));
+    $agency_data = trim(implode("|", $agency_data));
+
+    $form['country_data_nid']=array('#type'=>'hidden','#value'=>$node_id,'#attributes'=>array('id'=>'country-data-nid'));
+
+    setcookie($node_id."-state-data",$state_data, time()+3600*24);
+    setcookie($node_id."-agency-data",$agency_data, time()+3600*24);
+    $form['#validate'][] = 'ods_country_data_validation';
+}
+function ods_country_data_validation(&$form, &$form_state)
+{
+    /* Validation for Flag Image and Dataset link */
+    $dataset_link_present = 0;
+    if(isset($form_state['values']['field_country_dataset_link'])){
+        foreach($form_state['values']['field_country_dataset_link'] as $k => $v){
+            $v['url'] = trim($v['url']);
+            if(is_numeric($k)){
+                if(!empty($v['url'])){
+                    $dataset_link_present++;
+                    break;
+                }
+            }
+        }
+    }
+    if($dataset_link_present > 0){
+        if(isset($form_state['values']['field_site_flag_image'])){
+            if((isset($form_state['values']['field_site_flag_image'][0]['fid']) && ($form_state['values']['field_site_flag_image'][0]['fid'] == 0)) || (isset($form_state['values']['field_site_flag_image'][0]['filepath']) && empty($form_state['values']['field_site_flag_image'][0]['filepath']))){
+                form_set_error('field_site_flag_image', t('Please select Flag Image'));
+            }
+        }
+    } else {
+        if(isset($form_state['values']['field_site_flag_image'])){
+            if((isset($form_state['values']['field_site_flag_image'][0]['fid']) && $form_state['values']['field_site_flag_image'][0]['fid'] != 0) || (isset($form_state['values']['field_site_flag_image'][0]['filepath']) && !empty($form_state['values']['field_site_flag_image'][0]['filepath']))){
+                form_set_error('field_country_dataset_link', t('If you upload Flag Image, Dataset Link is required'));
+            }
+        }
+    }
+    
+    if(isset($form_state['values']['field_state_data'])){
+        $record_no_array = array();
+        $duplicate_check = array();
+        $state_required = array();
+		$invalid_state_name=array();
+		$invalid_city_name=array();
+		$latitude_required=array();
+		$longitude_required=array();
+
+        foreach($form_state['values']['field_state_data'] as $key => $value){
+            if(is_numeric($key)){
+                if(empty($value['value']['field_state_name'][0]['value']) && empty($value['value']['field_sub_region'][0]['value'])){
+                    if(trim($value['value']['field_sub_region'][0]['value']) == ''){
+                        unset($form_state['values']['field_state_data'][$key]);
+                        continue;
+                    }
+                }
+                if(empty($value['value']['field_state_name'][0]['value']) && !empty($value['value']['field_sub_region'][0]['value'])){
+                    $state_required[] = $key+1;
+                }
+                if(empty($value['value']['field_region_type'][0]['value']) && !empty($value['value']['field_state_name'][0]['value'])){
+                    $record_no_array[] = $key+1;
+                }
+				if(is_numeric($value['value']['field_state_name'][0]['value']) || preg_match('/[#!=\+\*~\@\$\^\%`\;\\\|\,\?]/',$value['value']['field_state_name'][0]['value'])){
+					$invalid_state_name[]=$key+1;
+				}
+				if(is_numeric($value['value']['field_sub_region'][0]['value']) || preg_match('/[#!=\+\*~\@\$\^\%`\;\\\|\,\?]/',$value['value']['field_sub_region'][0]['value'])){
+					$invalid_city_name[]=$key+1;
+				}
+				if(empty($value['value']['field_state_longitude'][0]['value']) && !empty($value['value']['field_state_latitude'][0]['value'])){
+					$longitude_required[]=$key+1;
+				}
+				if(empty($value['value']['field_state_latitude'][0]['value']) && !empty($value['value']['field_state_longitude'][0]['value'])){
+					$latitude_required[]=$key+1;
+				}
+                /* Duplicate records check */
+                $region_type = '';
+                $region_name = '';
+                $sub_region = '';
+                $region_type = isset($value['value']['field_region_type'][0]['value']) ? trim($value['value']['field_region_type'][0]['value']) : '';
+                $region_name = isset($value['value']['field_state_name'][0]['value']) ? trim($value['value']['field_state_name'][0]['value']) : '';
+                $sub_region = isset($value['value']['field_sub_region'][0]['value']) ? trim($value['value']['field_sub_region'][0]['value']) : '';
+                $duplicate_record_key = $key+1;
+                if(!empty($region_type)){
+                    $duplicate_check[$duplicate_record_key] = $region_type.$region_name.$sub_region;
+                }
+            }
+        }
+        if(count($record_no_array) > 0){
+            form_set_error('field_region_type', t('Region Type not selected for State/City/Agency Data record: '.implode(',',$record_no_array)));
+        }
+        if(count($state_required) > 0){
+            form_set_error('field_sub_region', t('State/Agency field is empty for State/City/Agency Data record: '.implode(',',$state_required)));
+        }
+		if(count($invalid_state_name)>0){
+		form_set_error('field_state_name',t('Please enter valid characters for state/agency name for State/City/Agency Data record: '.implode(',',$invalid_state_name)));
+		}
+		if(count($invalid_city_name)>0){
+		form_set_error('field_sub_region',t('Please enter valid characters for city/sub-agency name for State/City/Agency Data record: '.implode(',',$invalid_city_name)));
+		}
+		if(count($latitude_required)>0){
+		form_set_error('field_state_latitude',t('Please enter latitude for State/City/Agency Data record: '.implode(',',$latitude_required)));
+	
+	}
+	if(count($longitude_required)>0){
+		form_set_error('field_state_longitude',t('Please enter longitude for State/City/Agency Data record: '.implode(',',$longitude_required)));
+	}
+
+        if(count($duplicate_check) > 0){
+            $duplicate_msg = get_keys_for_duplicate_values($duplicate_check);
+            if(!empty($duplicate_msg)){
+                form_set_error('field_state_name', t('Duplicates found for state/agency name for State/City/Agency Data record: '.$duplicate_msg));
+            }
+        }
+    }
+}
+function get_keys_for_duplicate_values($my_arr){
+    $dups=array();
+    foreach($my_arr as $key=>$val){
+      if(isset($new_arr[$val])){
+         $new_arr[$val]=$key;
+      }else{
+        if(isset($dups[$val])){
+           $dups[$val][]=$key;
+        }else{
+           $dups[$val]=array($key);
+        }
+      }
+    }
+    foreach($dups as $k=>$v){
+        if(count($v) <= 1){
+            unset($dups[$k]);
+        }
+    }
+    $duplicate_id_string = '';
+    foreach($dups as $i=>$d){
+        $duplicate_id_string .= '['.implode(',',$d).'],';
+    }
+    if(!empty($duplicate_id_string)){
+        $duplicate_id_string = substr($duplicate_id_string, 0, -1);
+    }
+    return $duplicate_id_string;
+}

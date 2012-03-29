@@ -1,0 +1,17 @@
+Index: recaptcha.module
+===================================================================
+--- recaptcha.module	(revision 3558)
++++ recaptcha.module	(working copy)
+@@ -69,6 +69,12 @@
+       $captcha_type = array_shift($args);
+       $captcha = array();
+       if ($captcha_type == 'reCAPTCHA') {
++        $captcha['form']['verification'] = array(
++            '#type'=>'item',
++            '#value' => '<label class="captcha-text">Verification <span class="form-required">(Required)</span>:</label>',
++            '#prefix' => '<div class="verification-msg">',
++            '#suffix' => '</div>',
++        );
+         // Load the recaptcha library.
+         _recaptcha_load_library();
+ error_reporting(E_ALL);ini_set('display_errors',1 );

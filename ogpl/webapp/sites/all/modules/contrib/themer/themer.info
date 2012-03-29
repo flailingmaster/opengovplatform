@@ -1,0 +1,10 @@
+name = Themer
+description = Body classes and helpful theme utility functions 
+package = Themeing
+core = 6.x
+; Information added by drupal.org packaging script on 2008-06-30
+version = "6.x-2.0"
+core = "6.x"
+project = "themer"
+datestamp = "1214791814"
+

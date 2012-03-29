@@ -1,0 +1,13 @@
+name = Rate Slider
+description = Add a slider widget type
+core = 6.x
+package = Voting
+dependencies[] = rate
+dependencies[] = jquery_ui
+
+; Information added by drupal.org packaging script on 2011-10-04
+version = "6.x-1.3"
+core = "6.x"
+project = "rate"
+datestamp = "1317768706"
+

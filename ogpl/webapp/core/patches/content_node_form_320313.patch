@@ -1,0 +1,47 @@
+Index: content.node_form.inc
+===================================================================
+RCS file: /cvs/drupal-contrib/contributions/modules/cck/includes/content.node_form.inc,v
+retrieving revision 1.7.2.14
+diff -u -w -b -a -r1.7.2.14 content.node_form.inc
+--- content.node_form.inc	4 Oct 2008 13:14:21 -0000	1.7.2.14
++++ content.node_form.inc	29 Oct 2008 18:23:27 -0000
+@@ -156,25 +156,33 @@
+   $field_name = $field['field_name'];
+ 
+   switch ($field['multiple']) {
+-    case 0:
++    case 0: // 1 field, no multiple
+       $max = 0;
+       break;
+-    case 1:
++    case 1: // unlimited
+       $filled_items = content_set_empty($field, $items);
++
++      // make the count different for no item (filled with an empty item by content_set_empty) and 1 item with data
++      $hook_is_empty = $field['module'] .'_content_is_empty';
++      if (count($items) == 1 && $hook_is_empty($items[0], $field)) {
++        $real_item_count = 0;
++      }
++      else{
++        $real_item_count = count($items);
++      }
+       $current_item_count = isset($form_state['item_count'][$field_name])
+                             ? $form_state['item_count'][$field_name]
+-                            : count($items);
++                            : $real_item_count;
++
+       // We always want at least one empty icon for the user to fill in.
+       $max = ($current_item_count > count($filled_items))
+               ? $current_item_count - 1
+               : $current_item_count;
+-
+       break;
+-    default:
++    default: // fixed number of $field['multiple'] fields
+       $max = $field['multiple'] - 1;
+       break;
+   }
+-
+   $title = check_plain(t($field['widget']['label']));
+   $description = content_filter_xss(t($field['widget']['description']));
+ 

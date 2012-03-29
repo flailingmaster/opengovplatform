@@ -1,0 +1,79 @@
+<?php
+/**
+ * @file
+ * Allow the exclusion of some nodes from the apachesolr indexing process.
+ *
+ * @todo We exclude entirely or not at all but should probably support namespaces.
+ */
+
+/**
+ * Implementation of hook_nodeapi().
+ */
+function apachesolr_exclude_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  if ($op == 'insert' || $op == 'update') {
+    $exclude = _apachesolr_exclude_check_excluded($node->nid);
+    if ($node->apachesolr_exclude) {
+      if (!$exclude) {
+        $apachesolr_exclude = new stdClass();
+        $apachesolr_exclude->nid = $node->nid;
+        drupal_write_record('apachesolr_exclude', $apachesolr_exclude);
+
+        if (apachesolr_delete_node_from_index($node)) {
+          // There was no exception, so update the table.
+          db_query("UPDATE {apachesolr_search_node} SET changed = %d WHERE nid  = %d", time(), $node->nid);
+          if ($set_message && user_access('administer search') && variable_get('apachesolr_set_nodeapi_messages', 1)) {
+            apachesolr_set_stats_message('Unpublished content will be removed from the Apache Solr search index in approximately @autocommit_time.');
+          }
+        }
+      }
+
+      unset($node->apachesolr_exclude);
+    }
+    elseif ($exclude) {
+      db_query('DELETE FROM {apachesolr_exclude} WHERE nid = %d', $node->nid);
+    }
+  }
+
+  if ($op == 'delete') {
+    db_query('DELETE FROM {apachesolr_exclude} WHERE nid = %d', $node->nid);
+  }
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function apachesolr_exclude_form_alter(&$form, $form_state, $form_id) {
+  if (strpos($form_id, '_node_form') && user_access('administer search')) {
+    $nid = isset($form['#node']->nid) ? $form['#node']->nid : 0;
+
+    $form['options']['apachesolr_exclude'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Exclude from Solr indexing'),
+      '#default_value' => _apachesolr_exclude_check_excluded($nid),
+    );
+  }
+}
+
+/**
+ * Implementation of hook_apachesolr_node_exclude().
+ */
+function apachesolr_exclude_apachesolr_node_exclude($node, $namespace) {
+  return _apachesolr_exclude_check_excluded($node->nid);
+}
+
+/**
+ * Implementation of hook_views_api().
+ */
+function apachesolr_exclude_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'apachesolr_exclude') .'/includes',
+  );
+}
+
+/**
+ * Helper funtion to check if a node should be excluded.
+ */
+function _apachesolr_exclude_check_excluded($nid) {
+  return (bool) db_result(db_query('SELECT nid FROM {apachesolr_exclude} WHERE nid = %d', $nid));
+}

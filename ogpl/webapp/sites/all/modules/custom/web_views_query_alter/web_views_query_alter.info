@@ -1,0 +1,3 @@
+name = Web Views Query Alter
+description = Views Query Alter module allows you to write your custom queries
+core=6.x

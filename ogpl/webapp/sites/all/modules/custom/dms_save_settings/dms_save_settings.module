@@ -1,0 +1,149 @@
+<?php
+
+/** Implementation of hook_form_alter() */
+function dms_save_settings_form_alter($form, &$form_state, $form_id) {
+    $active_forms = variable_get('save_settings_admin',array());
+    foreach ($active_forms as $current_form) {
+        if ($current_form.'_node_form' == $form_id) {
+            $form['#validate'] = array(
+                    'dms_save_settings_security_validate'
+            );
+        }
+    }
+}
+
+/** Implementation of hook_validate  */
+function dms_save_settings_security_validate ($form, &$form_state) {
+    $currentWF = $form['#node'] -> _workflow;
+    $newWF = $form_state['values']['workflow'];
+    // $find and $replace can be changed for new fields or renamed.
+    $find = array('/field_ds_/','/_/');
+    $replace = array('',' ');
+    $fields = content_fields();
+    //print_r($fields);
+    //Check if the workflow is being changed
+    if ($currentWF != $newWF) {
+        //print_r($form);
+        //First check to see that we have a unique title, if not pass an error.
+        $title = $form['group_ds_all_datasets']['field_ds_title']['#value'][0]['value'];
+        $queryResult = db_query("SELECT COUNT(*) FROM {node} n WHERE n.title = '". $title ."'");
+        if (db_result($queryResult) > 1 && $form_state['values']['field_request_type'][0]['value'] == 'Create'){
+          form_set_error('form',t('The title of the dataset must be unique'), TRUE);
+        }
+        // Email and url validations
+        foreach ($form_state['values'] as $name => $j) {
+            if (!empty($j[0]['email'])) {
+                if (!valid_email_address($j[0]['email'])) {
+                    form_set_error('form',t(preg_replace($find, $replace, $name). ' needs to be in the correct format before you may change the workflow'), TRUE);
+                }
+            }
+            if (!empty($j[0]['url'])) {
+                if (!valid_url($j[0]['url'], TRUE)) {
+                     form_set_error('form',t(preg_replace($find, $replace, $name). ' needs to be in an absolute format before you may change the workflow'), TRUE);
+                }
+            }
+        }
+        /**
+         * Iterate through the $form['#node'] element for field values in the node object.
+         * Then check if the field is
+         * required. If required do field level validation.
+         */
+//print_r($fields);
+        foreach ($form['#field_info'] as $currentField => $key) {
+            $nodeValue = $form['#node']->{$currentField}[0];
+            if( $key['required'] == 1) {
+                //dsm($currentField);
+                //dsm($nodeValue);
+                if ($key['type'] == 'nodereference' && !isset($nodeValue['nid'])) {
+                    form_set_error('form',t(preg_replace($find, $replace, $currentField). ' needs to be set before you may change the workflow'), TRUE);
+                }
+                if ($nodeValue['value'] == 'Please Select') {
+                    form_set_error('form',t(preg_replace($find, $replace, $currentField). ' needs to be set before you may change the workflow'), TRUE);
+                }
+                if($key['type'] == 'text' && $nodeValue['value'] == NULL) {
+                    form_set_error('form',t(preg_replace($find, $replace, $currentField). ' needs to be set before you may change the workflow'), TRUE);
+                }
+                if($key['type'] == 'datestamp' && $nodeValue['value'] == NULL) {
+                    form_set_error('form',t(preg_replace($find, $replace, $currentField). ' needs to be set before you may change the workflow'), TRUE);
+
+                }
+                if($key['type'] == 'link' && $nodeValue['url'] == NULL){
+                    form_set_error('form',t(preg_replace($find, $replace, $currentField). ' needs to be set before you may change the workflow'), TRUE);
+
+                }
+                //Flexifields are a pain to work with, have to pull all cck field to check for required states. Should be a better way to do this.
+                if($key['type'] == 'flexifield' && $key['required'] == 1){
+                    foreach($nodeValue['value'] as $flexifieldName => $flexifieldKey) {
+                        if ($fields[$flexifieldName]['required'] == 1){
+                            foreach($flexifieldKey as $currentKey => $currentKeyKey) {
+                                //dsm();
+                                if($fields[$flexifieldName]['type'] == 'link' && $currentKeyKey['url'] == NULL) {
+                                   // Will add url checks if(!valid_url($currentKeyKey['url'])
+                                    form_set_error('form',t(preg_replace($find, $replace, $flexifieldName). ' needs to be set before you may change the workflow'), TRUE);
+
+                                }
+                                if($fields[$flexifieldName]['type'] == 'datestamp' && $currentKeyKey['value'] == NULL) {
+                                    form_set_error('form',t(preg_replace($find, $replace, $flexifieldName). ' needs to be set before you may change the workflow'), TRUE);
+
+                                }
+                                if($fields[$flexifieldName]['type'] == 'text' && $currentKeyKey['value'] == NULL) {
+                                    form_set_error('form',t(preg_replace($find, $replace, $flexifieldName). ' needs to be set before you may change the workflow'), TRUE);
+
+                                }
+                                if($currentKeyKey['value'] == 'Please Select') {
+                                    form_set_error('form',t(preg_replace($find, $replace, $flexifieldName). ' needs to be set before you may change the workflow'), TRUE);
+
+                                }
+                            }
+                            //dsm($flexifieldKey);
+                            //$nodeValue[]
+                        }
+                    }
+                }
+            }
+        }
+        // Start conditional field validation
+        foreach ($form['#conditional_fields']['data'] as $j => $k) {
+            foreach ($k['trigger_values'] as $l => $m) {
+                if ($l == $form_state['values'][$k['control_field_name']][0]['value']) {
+                    $subfield = $k['field_name'];
+                    if (!isset($form_state['values'][$subfield][0]['value'])) {
+                        form_set_error('form',t(preg_replace($find, $replace, $subfield). ' conditional needs to be set before you may change the workflow'), TRUE);
+                    }
+                }
+            }
+        }
+    } else { //Workflow is not being changed, set form errors to null so form will save
+        form_set_error(null,null, TRUE);
+    }
+}
+
+function dms_save_settings_menu() {
+  $items['admin/settings/save-settings'] = array(
+    'description' => 'Change save settings for forms',
+    'title' => t('DMS save settings'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dms_save_settings_admin'),
+    'access arguments' => array('dms_save_settings_admin'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+function dms_save_settings_admin(){
+  $form = array();
+
+  $form['save_settings_admin'] = array(
+    '#type' => 'checkboxes',
+    '#options' => array_map('check_plain', node_get_types('names')),
+    '#title' => t('DMS save settings'),
+    '#default_value' => variable_get('save_settings_admin', array()),
+    '#description' => t("Select which forms to alter save settings"),
+  );
+
+  return system_settings_form($form);
+}
+
+function dms_save_settings_perm(){
+    return array('dms_save_settings_admin');
+}

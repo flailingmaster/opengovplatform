@@ -1,0 +1,6 @@
+$add_category="Amber"
+$description="OpenGov Platform metadata schema, version 3.02. This document is still in draft."
+$edit_category="Agency_Category"
+$edit_description="Edited Preformatted text."
+$assignee="neethi_thilakan@persistent.co.in"
+$addnew_category="AA_Category"

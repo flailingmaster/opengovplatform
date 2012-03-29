@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Adobe RoboHelp 9" />
+<title>Managing Global and Advanced Search</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="JavaScript">//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+        origWidth = innerWidth;
+        origHeight = innerHeight;
+        onresize = reDo;
+}
+onerror = null; 
+//]]></script>
+<script type="text/javascript" language="javascript1.2" src="./whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="./whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whtopic.js"></script>
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addTocInfo("Content Management System Administrator\nManaging Global and Advanced Search");
+addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("<a href=\"cms_administrator.htm\">Content Management System Administrator<\/a> > Managing Global and Advanced Search<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<a name="bc-1" id="bc-1"></a>
+<?rh-region_start id="header" style="width: 100%; position: relative;" ?>
+<p>&#160;</p>
+<?rh-region_end ?>
+<h1>Managing Global and Advanced Search</h1>
+<p>The visitors of the OGPL Web site can use the global and advanced search 
+ functionality to search for a specific dataset or document. The OGPL Web 
+ site uses Apache Solr as the search server to scan the search index and 
+ display the results that matches the search criteria. You must execute 
+ the cron job to index all the content on the OGPL Web site to ensure fast 
+ and accurate information retrieval during search operations. For more 
+ information on cron, see <a href="managing_cron.htm">Managing Cron</a>. 
+ &#160;For more information on indexing, see <a href="updating_the_search_index.htm">Updating 
+ Search Index</a>.</p>
+<p>The following image illustrates how Advanced Search appears on the OGPL 
+ Web site.</p>
+<p><img src="advanced_search.png" alt="advanced_search.png" style="border: Solid 1px #4f81bd; 
+		 border-width: 1px; border-style: solid;" width="600" height="304" border="1" /></p>
+<p>You can perform the following tasks to make the content on the OGPL 
+ Web site searchable:</p>
+<ul type="disc">
+	<li><p>Configure the Apache Solr search server. For more information 
+	 see, <a href="configuring_the_apache_solr_search_server.htm">Configuring 
+	 the Apache Solr Server</a>.</p></li>
+	<li><p>Index all the content on OGPL Web site by executing the cron 
+	 job. For more information, see <a href="updating_the_search_index.htm">Updating 
+	 Search Index</a>.</p></li>
+	<li><p>Enable filters to create search filter blocks. For more information, 
+	 see <a href="enabling_the_search_filters.htm">Enabling Search Filters</a>.</p></li>
+	<li><p>Give bias to certain properties of the content when ordering 
+	 the search results. For more information, see <a href="configuring_the_content_bias_settings.htm">Content 
+	 Bias Settings</a>.</p></li>
+	<li><p>Specify weightage for the content fields that you want to give 
+	 priority while searching. For more information, see <a href="specifying_weightage_to_the_search_fields.htm">Search 
+	 fields</a>.</p></li>
+</ul>
+<?rh-region_start id="footer" style="width: 100%; position: relative;" ?>
+<p>&#160;</p>
+<?rh-region_end ?><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+#edit-PMO-wrapper  {
+	margin-left: 175px;
+	float: left;
+}
+#edit-and-emails-wrapper{
+	margin-left: 175px;
+}
+#edit-POC-wrapper  {
+	float: left;
+}
+
+#edit-txt-to-addrs-wrapper, #edit-and-emails-wrapper {
+	clear: both;
+    height: 50px;
+    width: 100%;
+}
+#edit-POC,#edit-PMO{
+	width: 208px
+}
+form#print-mail-form {
+	border: 1px solid black;
+	padding: 20px;
+}
+input#edit-fld-from-addr,input#edit-fld-from-name,textarea#edit-txt-to-addrs,input#edit-and-emails,input#edit-fld-subject{
+width: 400px;
+}
+#edit-PMO-wrapper .description,#edit-POC-wrapper .description, #edit-and-emails-wrapper .description {
+	font-size: 82%;
+	color: #4F4E4F;
+}

@@ -1,0 +1,3 @@
+<?php
+
+include_once('open_data_site_view_and_content_types.features.inc');

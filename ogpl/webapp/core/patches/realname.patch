@@ -1,0 +1,23 @@
+Index: branches/qa/sites/all/modules/CMS/realname/realname_theme.inc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/CMS/realname/realname_theme.inc	(revision )
++++ branches/qa/sites/all/modules/CMS/realname/realname_theme.inc	(revision 4540)
+@@ -52,9 +52,14 @@
+ 
+     // Shorten the name when it is too long or it will break many tables.
+     $max_name = $options['max_length'];
++
++      //show fullname for notes
++      $notes_url = request_uri();
++      if(!(strpos($notes_url, "/type/note") || strpos($notes_url, "/print") ) ){
+           if (drupal_strlen($name) > $max_name) {
+               $name = drupal_substr($name, 0, $max_name - 3) .'...';
++          }
+-          }
++      }
+ 
+     if (user_access('access user profiles') && !$options['plain']) {
+       $l_opts = array('absolute' => TRUE);

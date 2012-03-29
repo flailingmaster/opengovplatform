@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Adobe RoboHelp 9" />
+<title>Managing Homepage Tabs</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="JavaScript">//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+        origWidth = innerWidth;
+        origHeight = innerHeight;
+        onresize = reDo;
+}
+onerror = null; 
+//]]></script>
+<script type="text/javascript" language="javascript1.2" src="./whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="./whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whtopic.js"></script>
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("Managing Homepage Tabs<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+        var strUrl = document.location.href;
+        var bc = 0;
+        var n = strUrl.toLowerCase().indexOf("bc-");
+        if(n != -1)
+        {
+                document.location.href = strUrl.substring(0, n);
+                bc = strUrl.substring(n+3);
+        }
+
+        if (window.addTocInfo)
+        {
+        addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+        }
+        if (window.writeBtnStyle)
+                writeBtnStyle();
+
+        if (window.writeIntopicBar)
+                writeIntopicBar(1);
+
+        
+        document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("Admin_Guide_Template.htm", "", ">", "Home", "Preface.htm");
+document.write("Managing Homepage Tabs<\/p>");
+
+
+        if (window.setRelStartPage)
+        {
+        setRelStartPage("Admin_Guide_Template.htm");
+
+                autoSync(1);
+                sendSyncInfo();
+                sendAveInfoOut();
+        }
+}
+else
+        if (window.gbIE4)
+                document.location.reload();
+
+//-->
+//]]></script>
+<?rh-region_start id="header" style="width: 100%; position: relative;" ?>
+<p>&#160;</p>
+<?rh-region_end ?>
+<h1>Managing Homepage Tabs</h1>
+<p>The Rotating Tabs allow you to display the dynamic and static content 
+ in the form of Quicktabs. The Front End Home Page Rotating Tabs is a Drupal 
+ QT block and can consist of maximum 3 quicktabs.</p>
+<p>The Front End Home Page Rotating Tabs block consists of 3 quicktabs:</p>
+<ul type="disc">
+	<li><p>Recent Catalogs: Displays the recently added catalogs.</p></li>
+	<li><p>Popular Catalogs: Displays the most viewed catalogs.</p></li>
+	<li><p>Major Events: Displays major events happening around the world 
+	 through the RSS feeds.</p></li>
+</ul>
+<p>The quicktabs use jQuery to fetch the information from the following 
+ content sources:</p>
+<ul type="disc">
+	<li><p>View: This content type is used to fetch and display the content 
+	 for the Recent Catalogs and Popular Catalogs quicktabs.</p></li>
+	<li><p>Block: This content type is used to fetch and display the RSS 
+	 feeds for the Major Events quicktab.</p></li>
+</ul>
+<p>The quicktabs fetch information from the above content types and display 
+ on the home page of the <span style="font-weight: bold;"><b><b>O</b></b></span><span 
+	 style="font-weight: bold;"><b>GPL Web</b></span> site.</p>
+<?rh-region_start id="footer" style="width: 100%; position: relative;" ?>
+<p>&#160;</p>
+<?rh-region_end ?><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+        writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+<script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

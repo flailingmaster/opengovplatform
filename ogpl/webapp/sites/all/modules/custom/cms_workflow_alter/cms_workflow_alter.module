@@ -1,0 +1,49 @@
+<?php
+function cms_workflow_alter_views_pre_execute(&$view)
+{
+	if($view->name=='content_management' || $view->name=='content_mgmt_contentcreator' || $view->name=='content_mgmt_moderator' || $view->name=='content_mgmt_cmsadmin')
+	{
+		$search = array('LEFT JOIN {content_field_content_creator} node_data_field_content_creator ON node.vid');
+		$replace = array('LEFT JOIN {content_field_content_creator} node_data_field_content_creator ON (SELECT MAX(vid) FROM node_revisions WHERE node_revisions.nid=node.nid)');
+		$view->build_info['query'] = str_replace($search,$replace,$view->build_info['query']);
+		$view->build_info['count_query'] = $view->build_info['query']; 
+		$search = array('LEFT JOIN {content_field_moderator} node_data_field_moderator ON node.vid');
+		$replace = array('LEFT JOIN {content_field_moderator} node_data_field_moderator ON (SELECT MAX(vid) FROM node_revisions WHERE node_revisions.nid=node.nid)');
+		$view->build_info['query'] = str_replace($search,$replace,$view->build_info['query']);
+		$view->build_info['count_query'] = $view->build_info['query']; 
+		$search = array('LEFT JOIN {node_revisions} node_revisions ON node.vid');
+		$replace = array('LEFT JOIN node_revisions node_revisions ON (SELECT MAX(vid) FROM node_revisions WHERE node_revisions.nid=node.nid)');
+		$view->build_info['query'] = str_replace($search,$replace,$view->build_info['query']);
+		$view->build_info['count_query'] = $view->build_info['query'];
+	}
+	
+	if($view->name=='cms_user_management' || $view->name=='urm_user_management' || $view->name=='dms_user_management' || $view->name=='dms_user_management_poc')
+	{
+		
+		$search = array('LEFT JOIN {users_roles} users_roles2 ON users.uid = users_roles2.uid AND users_roles2.rid !=');
+		$replace = array('LEFT JOIN {users_roles} users_roles2 ON users.uid = users_roles2.uid AND users_roles2.rid = ');
+		$view->build_info['query'] = str_replace($search,$replace,$view->build_info['query']);
+		$view->build_info['count_query'] = $view->build_info['query']; 
+	}
+
+	
+}
+
+function cms_workflow_alter_form_alter(&$form, &$form_state, $form_id){
+if($form_id=='user_profile_form')
+ { 
+   $form['cancel'] = array (
+      '#type' => 'submit',
+	  '#value' => 'Cancel',
+      '#weight' => 32,
+	  '#attributes' => array('onClick' => 'history.go(-1); return false;'),
+      );
+  }
+  if($form_id=='system_site_information_settings')
+  {	$form['site_slogan']['#title']='Country Name';
+	$form['site_slogan']['#description']='This country name will appear in certain pages on the site';
+	$form['site_slogan']['#weight']='1';
+	$form['cron_safe_threshold']['#weight']='7';
+	$form['google_map_key']['#weight']='15';
+  }
+}

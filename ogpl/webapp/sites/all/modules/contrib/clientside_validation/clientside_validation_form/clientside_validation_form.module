@@ -1,0 +1,304 @@
+<?php
+
+// $Id$
+/**
+ * @file
+ * Add clientside validation to regular forms
+ */
+
+function clientside_validation_form_clientside_validation_form_alter(&$form, &$form_state, &$js_rules) {
+  clientside_validation_form_after_build_recurse($form['#id'], $form, $form_state, $js_rules);
+}
+
+function clientside_validation_form_after_build_recurse($form_id, &$form, &$form_state, &$js_rules) {
+  if ($children = array_values(element_children($form))) {
+    foreach ($children as $index => $item) {
+      $element = $form[$item];
+      if ((isset($element['#type']) && isset($element['#field_name'])) || (isset($element['#type']) && isset($form_state['#field_info'][$element['#parents'][0]]))) {
+        clientside_validation_cck($form_id, $element, $js_rules);
+      }
+      else {
+        $types = array(
+          'textfield', 'textarea', 'select', 'radio', 'checkbox', 'password', 'file', 'radios', 'checkboxes',
+        );
+        if (isset($element['#type']) && in_array($element['#type'], $types)) {
+          clientside_validation_regular($form_id, $element, $js_rules);
+        }
+      }
+      clientside_validation_form_after_build_recurse($form_id, $element, $form_state, $js_rules);
+    }
+  }
+}
+
+function clientside_validation_regular($form_id, $element, &$js_rules) {
+  static $multiples = array();
+  if (isset($element['#name'])) {
+    $el_name = $element['#name'];
+    $el_title = $el_name;
+    if (isset($element['#title'])) {
+      $el_title = $element['#title'];
+    }
+    $is_multiple = FALSE;
+    if (isset($element['#multiple'])) {
+      $is_multiple = $element['#multiple'];
+    }
+    switch ($element['#type']) {
+      case 'textfield':
+      case 'password':
+      case 'textarea':
+      case 'file':
+        if ($is_multiple) {
+          // Only first field is required
+          if (!isset($multiples[$form_id][$el_name])) {
+            _clientside_validation_set_required($el_name, $el_title, $element['#required'], $js_rules);
+            $multiples[$form_id][$el_name] = 1;
+          }
+        }
+        else {
+          _clientside_validation_set_required($el_name, $el_title, $element['#required'], $js_rules);
+        }
+        if (isset($element['#maxlength']) && $element['#maxlength'] > 0) {
+          _clientside_validation_set_minmaxlength($el_name, $el_title, '', $element['#maxlength'], $js_rules);
+        }
+        break;
+      case 'select':
+        if ($is_multiple) {
+          $el_name .= '[]';
+          if (!isset($element['#minlength'])) {
+            $element['#minlength'] = 0;
+          }
+          $max = (($is_multiple === TRUE || $is_multiple == 1) ? '' : $is_multiple);
+          _clientside_validation_set_minmaxlength($el_name, $el_title, $element['#minlength'], $max, $js_rules);
+        }
+        _clientside_validation_set_required($el_name, $el_title, $element['#required'], $js_rules);
+        break;
+      case 'radio':
+      case 'radios':
+        _clientside_validation_set_required($el_name, $el_title, $element['#required'], $js_rules);
+        break;
+      case 'checkbox':
+      case 'checkboxes':
+        $is_multiple = (isset($element['#options']) && count($element['#options']>1));
+        if ($is_multiple && $element['#required']) {
+          $id = '#' . $element['#id'] . '-wrapper';
+          _clientside_validation_set_checkboxgroup_minmax($element[$key]['#name'], $el_title, $id, $js_rules);
+        }
+        elseif ($element['#required']) {
+          _clientside_validation_set_required($el_name, $el_title, $element['#required'], $js_rules);
+        }
+        break;
+    }
+  }
+}
+
+function clientside_validation_cck($form_id, $element, &$js_rules) {
+
+  static $multiples = array();
+  if (isset($element['#name']) && !isset($js_rules[$element['#name']])) {
+    if (!isset($element['#field_name'])) {
+      $element['#field_name'] = $element['#parents'][0]; // Is this a good idea???
+    }
+    $cckfield = content_fields($element['#field_name']);
+    $el_name = $element['#name'];
+    $is_multiple = $cckfield['multiple'];
+    $title = t($cckfield['widget']['label']);
+    switch ($cckfield['type']) {
+      case 'text':
+        switch ($element['#type']) {
+          case 'textfield':
+          case 'textarea':
+            if ($is_multiple) {
+              // Only first field is required
+              if (!isset($multiples[$form_id][$cckfield['field_name']])) {
+                _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+                $multiples[$form_id][$cckfield['field_name']] = 1;
+              }
+            }
+            else {
+              _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+            }
+            if (isset($cckfield['max_length']) && $cckfield['max_length'] > 0) {
+              _clientside_validation_set_minmaxlength($el_name, $element['#title'], '', $cckfield['max_length'], $js_rules);
+            }
+            break;
+          case 'select':
+            if ($is_multiple) {
+              $el_name .= '[]';
+              if (!isset($element['#minlength'])) {
+                $element['#minlength'] = 0;
+              }
+              $max = (($is_multiple === TRUE || $is_multiple == 1) ? '' : $is_multiple);
+              _clientside_validation_set_minmaxlength($el_name, $element['#title'], '', $max, $js_rules);
+            }
+            _clientside_validation_set_required($el_name, $element['#title'], $cckfield['required'], $js_rules);
+            break;
+          case 'radio':
+            _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+            break;
+          case 'checkbox':
+            if ($is_multiple) {
+              // We don't have a parent element to connect to, so no go, outer div has only a class
+              // The checkboxes element has the unique name, but this isn't added to the outer div
+              $id = '#edit-' . str_replace('_', '-', $element['#field_name']) . '-value-wrapper';
+              module_load_include('inc', 'content', 'includes/content.crud');
+              $inf = content_field_instance_read(array('field_name' => $element['#field_name']));
+              _clientside_validation_set_checkboxgroup_minmax($element['#name'], $inf[0]['widget']['label'], $id, $js_rules);
+            }
+            else {
+              _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+            }
+            break;
+        }
+        break;
+      case 'number_decimal':
+      case 'number_float':
+      case 'number_integer':
+        switch ($element['#type']) {
+          case 'textfield':
+            if ($is_multiple) {
+              // Only first field is required
+              if (!isset($multiples[$form_id][$cckfield['field_name']])) {
+                _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+                $multiples[$form_id][$cckfield['field_name']] = 1;
+              }
+            }
+            else {
+              _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+            }
+            if ($cckfield['type'] == 'number_integer') {
+              _clientside_validation_set_number($el_name, $title, $js_rules);
+            }
+            else {
+              _clientside_validation_set_number_decimal($el_name, $title, $cckfield['decimal'], $js_rules);
+            }
+            _clientside_validation_set_minmax($el_name, $title, $cckfield['min'], $cckfield['max'], $js_rules);
+            break;
+          case 'select':
+            if ($is_multiple) {
+              $el_name .= '[]';
+              _clientside_validation_set_minmaxlength($el_name, $element['#title'], '', $is_multiple, $js_rules);
+            }
+            _clientside_validation_set_required($el_name, $element['#title'], $cckfield['required'], $js_rules);
+            _clientside_validation_set_minmax($el_name, $element['#title'], $cckfield['min'], $cckfield['max'], $js_rules);
+            break;
+          case 'radio':
+            _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+            break;
+          case 'checkbox':
+            if ($is_multiple) {
+              // We don't have a parent element to connect to, so no go, outer div has only a class
+              // The checkboxes element has the unique name, but this isn't added to the outer div
+              $id = '#edit-' . str_replace('_', '-', $element['#field_name']) . '-value-wrapper';
+              module_load_include('inc', 'content', 'includes/content.crud');
+              $inf = content_field_instance_read(array('field_name' => $element['#field_name']));
+              _clientside_validation_set_checkboxgroup_minmax($element['#name'], $inf[0]['widget']['label'], $id, $js_rules);
+            }
+            else {
+              _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+            }
+            break;
+        }
+        break;
+      case 'email':
+        $el_name = $element['email']['#name'];
+        _clientside_validation_set_email($el_name, $title, $js_rules);
+        break;
+      case 'filefield': // files[field_file1_0]
+        switch ($element['#type']) {
+          case 'filefield_widget':
+          case 'imagefield_widget':
+            $el_name = $element['upload']['#name'];
+              if ($is_multiple) {
+                // Only first field is required
+                if (!isset($multiples[$form_id][$cckfield['field_name']])) {
+                  _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+                  $multiples[$form_id][$cckfield['field_name']] = 1;
+                }
+              }
+              else {
+                _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+              }
+              if (isset($cckfield['widget']['file_extensions'])) {
+                $extensions = explode(' ', $cckfield['widget']['file_extensions']);
+                _clientside_validation_set_extensions($el_name, $extensions, $js_rules);
+              }
+            break;
+        }
+        break;
+      case 'date':
+        switch ($element['#type']) {
+          case 'select':
+            if (empty($element['#title'])) {
+              // Is the case when the labels are inside the select box :/
+              $title = t(ucfirst(array_pop(explode('-', $element['#id']))));
+            }
+            $id = explode('-', $element['#id']);
+            unset($id[count($id) - 1]);
+            $id = implode('-', $id);
+            $id = '#' . $id . '-wrapper';
+            _clientside_validation_set_dategroup_required($element['#field_name'], $title, $id, $js_rules);
+            break;
+          case 'textfield':
+            if (empty($element['#title'])) {
+              // Is the case when the labels are inside the select box :/
+              $title = t(ucfirst(array_pop(explode('-', $element['#id']))));
+            }
+            _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+            break;
+        }
+        break;
+      case 'userreference':
+      case 'nodereference':
+        switch ($element['#type']) {
+          case 'textfield':
+            if ($is_multiple) {
+              // Only first field is required
+              if (!isset($multiples[$form_id][$cckfield['field_name']])) {
+                _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+                $multiples[$form_id][$cckfield['field_name']] = 1;
+              }
+            }
+            else {
+              _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+            }
+            if (isset($cckfield['max_length']) && $cckfield['max_length'] > 0) {
+              _clientside_validation_set_minmaxlength($el_name, $element['#title'], '', $cckfield['max_length'], $js_rules);
+            }
+            break;
+          case 'select':
+            if ($is_multiple) {
+              $el_name .= '[]';
+              if (!isset($element['#minlength'])) {
+                $element['#minlength'] = 0;
+              }
+              $max = (($is_multiple === TRUE || $is_multiple == 1) ? '' : $is_multiple);
+              _clientside_validation_set_minmaxlength($el_name, $element['#title'], '', $max, $js_rules);
+            }
+            _clientside_validation_set_required($el_name, $element['#title'], $cckfield['required'], $js_rules);
+            break;
+          case 'radio':
+            _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+            break;
+          case 'checkbox':
+            if ($is_multiple) {
+              // We don't have a parent element to connect to, so no go, outer div has only a class
+              // The checkboxes element has the unique name, but this isn't added to the outer div
+              if ($cckfield['type'] == 'userreference') {
+                $id = '#edit-' . str_replace('_', '-', $element['#field_name']) . '-uid-uid-wrapper';
+              }
+              else {
+                $id = '#edit-' . str_replace('_', '-', $element['#field_name']) . '-nid-nid-wrapper';
+              }
+              module_load_include('inc', 'content', 'includes/content.crud');
+              $inf = content_field_instance_read(array('field_name' => $element['#field_name']));
+              _clientside_validation_set_checkboxgroup_minmax($element['#name'], $inf[0]['widget']['label'], $id, $js_rules);
+            }
+            else {
+              _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
+            }
+            break;
+        }
+        break;
+    }
+  }
+}

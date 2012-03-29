@@ -1,0 +1,16 @@
+name = Module Grants Monitor
+package = Access control
+description = Provides a summary view of all content accessible to the user, as determined by enabled content access modules.
+core = "6.x"
+dependencies[] = node_tools
+dependencies[] = user_tools
+; Smart Tabs is highly recommended but not a programmatic dependency
+;dependencies[] = smart_tabs
+version = "6.x-3.dev"
+
+; Information added by drupal.org packaging script on 2012-03-03
+version = "6.x-3.8"
+core = "6.x"
+project = "module_grants"
+datestamp = "1330736749"
+

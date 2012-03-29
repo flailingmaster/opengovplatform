@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Adobe RoboHelp 9" />
+<title>Configuring the Voting API</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addTocInfo("Super Administrator\nManaging Configurations\nConfiguring the Voting API");
+addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("<a href=\"super_administrator.htm\">Super Administrator<\/a> > <a href=\"restricting_super_administrator_access.htm\">Managing Configurations<\/a> > Configuring the Voting API<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<h1>Configuring the Voting API</h1>
+<p>Visitors to the OGPL Web site can rate a dataset on the following criteria:</p>
+<ul type="disc">
+<li>Quality</li>
+<li>Accessibility</li>
+<li>Usability</li>
+</ul>
+<p>&#160;</p>
+<p>The Open Government Platform Control Panel application computes the ratings for each of these criteria and displays the overall rating for the dataset, on the <span style="font-weight: bold;"><b>Raw Dataset, Apps, Documents, Tools,</b></span> <span>and</span> <span style="font-weight: bold;"><b>Services</b></span> pages of the OGPL Web site. Overall rating is also shown in Metric reports.</p>
+<p>You can define the vote counting process in the voting module of the OGPL Control Panel.</p>
+<p>To configure the voting API:</p>
+<ol type="1">
+<li>
+<p>In the Drupal menu, point to <span style="font-weight: bold;"><b>Site configuration</b></span>, and click <span style="font-weight: bold;"><b>Voting API</b></span>.<br />
+The <span style="font-weight: bold;"><b>Voting API</b></span> page appears.</p>
+</li>
+<li>
+<p>In the <span style="font-weight: bold;"><b>Anonymous vote rollover</b></span> list, click the time period after which two votes from the same computer is considered valid.<br />
+<span style="font-weight: bold;"><b>Notes:</b></span></p>
+<ul type="disc">
+<li>
+<p>Clicking <span style="font-weight: bold;"><b>Never</b></span> will prohibit all computers from double-voting. The OGPL Control Panel application does not register votes that are cast for the second time, for the same dataset from publicly accessed computers, such as Internet cafes and hotels.</p>
+</li>
+<li>
+<p>The <span style="font-weight: bold;"><b>Immediately</b></span> option does not work because currently there is a limitation in the Voting API.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>In the <span style="font-weight: bold;"><b>Vote tallying</b></span> section, click the appropriate option. The following table lists each field and its description.</p>
+</li>
+</ol>
+<p class="TableCaption" style="margin-left: 36px;"><span>Table: Description of options in the Vote tallying section</span></p>
+<table width="100%">
+ <tr>
+ <td>
+<table style="margin-left: 40px;" cellspacing="0" width="93.191%" align="left">
+<col style="width: 34.828%;" />
+<col style="width: 65.172%;" />
+<tr>
+<td style="border: Solid 1px #000000;" bgcolor="#E8E8E8">
+<p class="TableHeading"><span>Title</span></p>
+</td>
+<td style="border-top: Solid 1px #000000; border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;" bgcolor="#E8E8E8">
+<p class="TableHeading"><span style="font-weight: bold;"><b>Description</b></span></p>
+</td>
+</tr>
+<tr>
+<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;">
+<p class="TableText" style="font-weight: bold;">Tally results whenever a vote is cast</p>
+</td>
+<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;">
+<p class="TableText">Votes are counted in real-time.</p>
+</td>
+</tr>
+<tr>
+<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;">
+<p class="TableText"><span class="UI">Tally results at cron-time</span></p>
+</td>
+<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;">
+<p class="TableText" style="mso-fareast-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA;">Votes are counted when the cron job is executed. This option is best used for Web sites with high traffic.</p>
+</td>
+</tr>
+<tr>
+<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;">
+<p class="TableText" style="font-weight: bold;">Do not tally results automatically: I am using a module that manages its own vote results</p>
+</td>
+<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;">
+<p class="TableText">Does not count votes.</p>
+<p class="TableText">A different module is used for counting votes.</p>
+</td>
+</tr>
+</table>
+</td></tr>
+</table>
+<ol start="4" type="1">
+<li>
+<p>Click <span style="font-weight: bold;"><b>Save configuration</b></span>.<br />
+The voting API in the OGPL Web site is updated.<br /></p>
+</li>
+</ol>
+<script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

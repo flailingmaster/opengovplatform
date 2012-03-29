@@ -1,0 +1,3 @@
+name = Web Contact Owner
+description = Feedback module allows you to collect feedback from the users and display them to admin.
+core=6.x

@@ -1,0 +1,227 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+<indexdata>
+<key name="Feedback Status" >
+  <topic name="Managing Feedback Status" url="managing_feedback_status.htm" />
+  <topic name="Tracking a Feedback Status" url="tracking_a_feedback_status.htm" />
+  <topic name="Updating Information for a Feedback Status" url="updating_information_for_a_feedback_status.htm" />
+  <key name="Managing" >
+    <topic name="Managing Feedback Status" url="managing_feedback_status.htm" />
+  </key>
+  <key name="Tracking" >
+    <topic name="Tracking a Feedback Status" url="tracking_a_feedback_status.htm" />
+  </key>
+</key>
+<key name="Filtering" >
+  <topic name="Filtering User List" url="filtering_user_list.htm" />
+  <topic name="Filtering the List of Feedback" url="filtering_the_list_of_feedback.htm" />
+  <topic name="Filtering the List of Content" url="filtering_the_list_of_content.htm" />
+  <topic name="Filtering Content List" url="filtering_content_list.htm" />
+  <key name="Content List" >
+    <topic name="Filtering Content List" url="filtering_content_list.htm" />
+  </key>
+  <key name="List" >
+    <topic name="Filtering the List of Feedback" url="filtering_the_list_of_feedback.htm" />
+    <topic name="Filtering the List of Content" url="filtering_the_list_of_content.htm" />
+  </key>
+  <key name="User List" >
+    <topic name="Filtering User List" url="filtering_user_list.htm" />
+  </key>
+</key>
+<key name="Forward" >
+  <topic name="Forwarding a Feedback" url="forwarding_a_feedback_pmo.htm" />
+  <topic name="Forwarding a Feedback" url="forwarding_a_feedback_poc.htm" />
+  <topic name="Forwarding a Feedback" url="forwarding_a_feedback.htm" />
+  <key name="Feedback" >
+    <topic name="Forwarding a Feedback" url="forwarding_a_feedback_pmo.htm" />
+    <topic name="Forwarding a Feedback" url="forwarding_a_feedback_poc.htm" />
+    <topic name="Forwarding a Feedback" url="forwarding_a_feedback.htm" />
+  </key>
+</key>
+<key name="General Settings" >
+  <topic name="Configuring General Settings for Captcha" url="configuring_general_settings_for_captcha.htm" />
+  <key name="Configuring" >
+    <topic name="Configuring General Settings for Captcha" url="configuring_general_settings_for_captcha.htm" />
+  </key>
+</key>
+<key name="Global" >
+  <topic name="Managing Global and Advanced Search" url="managing_global_advanced_search.htm" />
+  <key name="Managing" >
+    <topic name="Managing Global and Advanced Search" url="managing_global_advanced_search.htm" />
+  </key>
+</key>
+<key name="Global Settings" >
+  <topic name="Configuring Global Settings for Themes" url="configuring_global_settings_for_themes.htm" />
+  <key name="Configuring" >
+    <topic name="Configuring Global Settings for Themes" url="configuring_global_settings_for_themes.htm" />
+  </key>
+</key>
+<key name="Global_settings" >
+  <topic name="Configuring Text Resize Settings" url="configuring_text_resize_settings.htm" />
+</key>
+<key name="Homepage Tab" >
+  <topic name="Deleting a Homepage Tab from the Quicktab Block" url="deleting_a_homepage_tab_from_the_quicktab_block.htm" />
+  <topic name="Updating Homepage Tabs" url="updating_homepage_tabs.htm" />
+  <topic name="Adding Homepage Tab to the Quicktab Block" url="adding_homepage_tab_to_the_quicktab_block.htm" />
+  <topic name="Managing Homepage Tabs" url="managing_homepage_tabs.htm" />
+  <topic name="Managing Homepage Tabs" url="managing_homepage_tabs_sa.htm" />
+  <key name="Adding" >
+    <topic name="Adding Homepage Tab to the Quicktab Block" url="adding_homepage_tab_to_the_quicktab_block.htm" />
+  </key>
+  <key name="Deleting" >
+    <topic name="Deleting a Homepage Tab from the Quicktab Block" url="deleting_a_homepage_tab_from_the_quicktab_block.htm" />
+  </key>
+  <key name="Managing" >
+    <topic name="Managing Homepage Tabs" url="managing_homepage_tabs.htm" />
+    <topic name="Managing Homepage Tabs" url="managing_homepage_tabs_sa.htm" />
+  </key>
+  <key name="Updating" >
+    <topic name="Updating Homepage Tabs" url="updating_homepage_tabs.htm" />
+  </key>
+</key>
+<key name="Hompage Tab" >
+  <topic name="Configuring the Number of Items to Display in Hompage Tab" url="configuring_the_number_of_items_to_display_in_homepage_tab.htm" />
+</key>
+<key name="Image" >
+  <topic name="Updating Image for a Rotating Panel" url="updating_image_for_a_rotating_panel.htm" />
+  <topic name="Updating Images for a Featured Gallery" url="updating_images_for_a_featured_gallery.htm" />
+  <topic name="Adding Images to the Featured Gallery" url="adding_images_to_the_featured_gallery.htm" />
+  <key name="Adding" >
+    <topic name="Adding Images to the Featured Gallery" url="adding_images_to_the_featured_gallery.htm" />
+  </key>
+  <key name="Updating" >
+    <topic name="Updating Image for a Rotating Panel" url="updating_image_for_a_rotating_panel.htm" />
+    <topic name="Updating Images for a Featured Gallery" url="updating_images_for_a_featured_gallery.htm" />
+  </key>
+</key>
+<key name="Image Captcha" >
+  <topic name="Configuring Image Captcha" url="configuring_image_captcha.htm" />
+  <key name="Configuring" >
+    <topic name="Configuring Image Captcha" url="configuring_image_captcha.htm" />
+  </key>
+</key>
+<key name="Importing" >
+  <topic name="Importing Mini Panels" url="importing_mini_panels.htm" />
+  <key name="Mini Panels" >
+    <topic name="Importing Mini Panels" url="importing_mini_panels.htm" />
+  </key>
+</key>
+<key name="Information" >
+  <topic name="Updating Information for a Feedback Status" url="updating_information_for_a_feedback_status.htm" />
+  <key name="Updating" >
+    <topic name="Updating Information for a Feedback Status" url="updating_information_for_a_feedback_status.htm" />
+  </key>
+</key>
+<key name="Irrelevant" >
+  <topic name="Marking a Feedback as Irrelevant" url="marking_a_feedback_as_irrelevant.htm" />
+</key>
+<key name="Items" >
+  <topic name="Configuring the Number of Items to Display in Popular Catalogs Homepage Tab" url="configuring_the_number_of_items_to_display_in_popular_catalogs_homepage_tab.htm" />
+  <topic name="Configuring the Number of Items to Display in Hompage Tab" url="configuring_the_number_of_items_to_display_in_homepage_tab.htm" />
+  <key name="Display" >
+    <topic name="Configuring the Number of Items to Display in Popular Catalogs Homepage Tab" url="configuring_the_number_of_items_to_display_in_popular_catalogs_homepage_tab.htm" />
+    <topic name="Configuring the Number of Items to Display in Hompage Tab" url="configuring_the_number_of_items_to_display_in_homepage_tab.htm" />
+  </key>
+</key>
+<key name="List" >
+  <key name="Filtering" >
+    <topic name="Filtering the List of Feedback" url="filtering_the_list_of_feedback.htm" />
+    <topic name="Filtering the List of Content" url="filtering_the_list_of_content.htm" />
+  </key>
+  <key name="Viewing" >
+    <topic name="Viewing List of Themes" url="viewing_list_of_themes.htm" />
+    <topic name="Viewing the List of Feedback Received" url="viewing_the_list_of_feedback_received.htm" />
+    <topic name="Viewing List of Mini Panels" url="viewing_list_of_mini_panels.htm" />
+  </key>
+</key>
+<key name="Managing" >
+  <topic name="Managing Blocks Content" url="managing_blocks_content.htm" />
+  <topic name="Managing Users" url="managing_users.htm" />
+  <topic name="Managing Accessibility Options" url="managing_accessibility_options.htm" />
+  <topic name="Managing Menu" url="managing_menu.htm" />
+  <topic name="Managing Mini Panels" url="managing_mini_panels.htm" />
+  <topic name="Managing Agencies" url="managing_agencies.htm" />
+  <topic name="Managing the Action Status for a Feedback" url="managing_the_action_status_for_a_feedback.htm" />
+  <topic name="Managing Feedback" url="managing_feedback.htm" />
+  <topic name="Managing Themes" url="managing_themes.htm" />
+  <topic name="Managing Feedback Status" url="managing_feedback_status.htm" />
+  <topic name="Managing Captcha" url="managing_captcha.htm" />
+  <topic name="Managing Feedback Categories" url="managing_feedback_categories.htm" />
+  <topic name="Managing Global and Advanced Search" url="managing_global_advanced_search.htm" />
+  <topic name="Managing Cron" url="managing_cron.htm" />
+  <topic name="Managing Homepage Tabs" url="managing_homepage_tabs.htm" />
+  <topic name="Managing Content" url="managing_content.htm" />
+  <topic name="Managing Menus" url="managing_menus.htm" />
+  <topic name="Managing Homepage Tabs" url="managing_homepage_tabs_sa.htm" />
+  <topic name="Managing Feedback Delay Time" url="managing_feedback_delay_time.htm" />
+  <key name="Accessibility Options" >
+    <topic name="Managing Accessibility Options" url="managing_accessibility_options.htm" />
+  </key>
+  <key name="Action Status" >
+    <topic name="Managing the Action Status for a Feedback" url="managing_the_action_status_for_a_feedback.htm" />
+  </key>
+  <key name="Agencies" >
+    <topic name="Managing Agencies" url="managing_agencies.htm" />
+  </key>
+  <key name="Blocks Content" >
+    <topic name="Managing Blocks Content" url="managing_blocks_content.htm" />
+  </key>
+  <key name="Captcha" >
+    <topic name="Managing Captcha" url="managing_captcha.htm" />
+  </key>
+  <key name="Content" >
+    <topic name="Managing Content" url="managing_content.htm" />
+  </key>
+  <key name="Cron" >
+    <topic name="Managing Cron" url="managing_cron.htm" />
+  </key>
+  <key name="Feedback" >
+    <topic name="Managing Feedback" url="managing_feedback.htm" />
+  </key>
+  <key name="Feedback Categories" >
+    <topic name="Managing Feedback Categories" url="managing_feedback_categories.htm" />
+  </key>
+  <key name="Feedback Delay Time" >
+    <topic name="Managing Feedback Delay Time" url="managing_feedback_delay_time.htm" />
+  </key>
+  <key name="Feedback Status" >
+    <topic name="Managing Feedback Status" url="managing_feedback_status.htm" />
+  </key>
+  <key name="Global" >
+    <topic name="Managing Global and Advanced Search" url="managing_global_advanced_search.htm" />
+  </key>
+  <key name="Homepage Tabs" >
+    <topic name="Managing Homepage Tabs" url="managing_homepage_tabs.htm" />
+    <topic name="Managing Homepage Tabs" url="managing_homepage_tabs_sa.htm" />
+  </key>
+  <key name="Menu" >
+    <topic name="Managing Menu" url="managing_menu.htm" />
+  </key>
+  <key name="Menus" >
+    <topic name="Managing Menus" url="managing_menus.htm" />
+  </key>
+  <key name="Mini Panels" >
+    <topic name="Managing Mini Panels" url="managing_mini_panels.htm" />
+  </key>
+  <key name="Themes" >
+    <topic name="Managing Themes" url="managing_themes.htm" />
+  </key>
+  <key name="Users" >
+    <topic name="Managing Users" url="managing_users.htm" />
+  </key>
+</key>
+<key name="Marking" >
+  <topic name="Marking a Feedback as Irrelevant" url="marking_a_feedback_as_irrelevant.htm" />
+  <key name="Feedback" >
+    <topic name="Marking a Feedback as Irrelevant" url="marking_a_feedback_as_irrelevant.htm" />
+  </key>
+</key>
+<key name="Menu" >
+  <key name="Configuring" >
+    <topic name="Configuring Menu" url="configuring_menu.htm" />
+  </key>
+  <key name="Managing" >
+    <topic name="Managing Menu" url="managing_menu.htm" />
+  </key>
+</key>
+
+</indexdata>

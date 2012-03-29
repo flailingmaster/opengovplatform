@@ -1,0 +1,26 @@
+From 6eb01e50a33447688f4fcd35538e1deef3496e1d Mon Sep 17 00:00:00 2001
+From: Jonathan Zacsh <jzacsh@gmail.com>
+Date: Mon, 19 Sep 2011 11:49:20 -0400
+Subject: [PATCH] Issue #1284010: return false if necessary in imageapi_image_scale() instead of trying to divide by zero.
+
+---
+ imageapi.module |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/imageapi.module b/imageapi.module
+index c86c0bf..a7f0067 100644
+--- a/imageapi.module
++++ b/imageapi.module
+@@ -218,6 +218,9 @@ function imageapi_image_scale_and_crop(&$image, $width, $height) {
+  *   TRUE or FALSE, based on success.
+  */
+ function imageapi_image_scale(&$image, $width = NULL, $height = NULL, $upscale = FALSE) {
++  if (!$image->info['width']) {
++    return FALSE;
++  }
+   $aspect = $image->info['height'] / $image->info['width'];
+ 
+   if ($upscale) {
+-- 
+1.7.4.1
+

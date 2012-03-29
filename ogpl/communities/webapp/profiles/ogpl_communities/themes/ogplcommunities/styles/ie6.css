@@ -1,0 +1,41 @@
+.comment-bubble-container a {
+	width:24px;
+}	
+.vud-widget-upanddown {
+	width: 50px;
+}
+/*ie6 png fix for images*/
+img {
+	behavior: url(iepngfix.htc);
+}
+
+div.challenge-resources {
+    border-width:1px !important;
+    border-style:dotted !important;
+    border-color:#333 !important;
+}
+.clear-both {
+    clear:both;
+}
+.view-ocean-regional-planning div div ul li, div.pane-communities-customization-0 div div ul li, li.blog-archive-row, div.pane-4 div ul li {
+    background-image:url(../images/list-arrow-blue.png);
+    background-position: 0 11px;
+    background-repeat:no-repeat;
+    list-style-image:none !important;
+    list-style-type:none !important;
+    margin-left: 0 !important;
+    padding-left: 1.5em !important;
+}
+#forum table {
+    border-collapse:collapse;
+}
+#forum tr.even td, tr.odd td {
+    border-bottom-width: 1px !important;
+    border-bottom-style:solid !important;
+    border-bottom-color:#CCCCCC !important;
+}
+.apps-maps-container {
+    border-width:1px;
+    border-style:solid;
+    border-color:#DDDDDD;
+}

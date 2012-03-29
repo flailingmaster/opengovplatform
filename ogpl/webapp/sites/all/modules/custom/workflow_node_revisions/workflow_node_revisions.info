@@ -1,0 +1,7 @@
+name = Workflow based node revisions
+description = A node revisioning module based on the workflow module.
+package = REI
+core = 6.x
+dependencies[] = workflow
+dependencies[] = content
+package = DMS customizations

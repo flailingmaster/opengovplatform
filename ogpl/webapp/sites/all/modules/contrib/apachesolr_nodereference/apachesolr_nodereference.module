@@ -1,0 +1,178 @@
+<?php
+
+/**
+ * Implementation of hook_menu().
+ */
+function apachesolr_nodereference_menu() {
+  $items = array();
+
+  $items['apachesolr/nodereference/autocomplete'] = array(
+    'title' => 'Nodereference autocomplete',
+    'page callback' => 'apachesolr_nodereference_autocomplete',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_block().
+ */
+function apachesolr_nodereference_block($op = 'list', $delta = 0, $edit = array()) {
+  switch ($op) {
+    case 'list':
+      $enabled_facets = apachesolr_get_enabled_facets('apachesolr_nodereference');
+      $facets = apachesolr_nodereference_apachesolr_facets();
+
+      // add the blocks
+      $blocks = array();
+
+      foreach ($enabled_facets as $delta => $facet_field) {
+        if (isset($facets[$delta])) {
+          $blocks[$delta] = $facets[$delta] + array('cache' => BLOCK_CACHE_PER_ROLE | BLOCK_CACHE_PER_PAGE);
+        }
+      }
+
+      return $blocks;
+
+    case 'view':
+      if (apachesolr_has_searched()) {
+        $enabled_facets = apachesolr_get_enabled_facets('apachesolr_nodereference');
+        
+        if (!in_array($delta, $enabled_facets)) {
+          return;
+        }
+
+        $response = apachesolr_static_response_cache();
+
+        if (empty($response)) {
+          return;
+        }
+
+        $query = apachesolr_current_query();
+        $facets = apachesolr_nodereference_apachesolr_facets();
+
+        return apachesolr_facet_block($response, $query, 'apachesolr_nodereference', $delta, $delta, $facets[$delta]['info'], 'apachesolr_nodereference_facet_callback');
+      }
+
+      break;
+
+    case 'configure':
+      return apachesolr_facetcount_form('apachesolr_nodereference', $delta);
+
+    case 'save':
+      apachesolr_facetcount_save($edit);
+
+      break;
+  }
+}
+
+/**
+ * Custom nodereference autocomplete
+ */
+function apachesolr_nodereference_autocomplete($field_name, $string = '') {
+  $fields = content_fields();
+  $field = $fields[$field_name];
+  $match = isset($field['widget']['autocomplete_match']) ? $field['widget']['autocomplete_match'] : 'contains';
+  $matches = array();
+
+  $references = _nodereference_potential_references($field, $string, $match, array(), 10);
+
+  foreach ($references as $id => $row) {
+    // Add a class wrapper for a few required CSS overrides.
+    $matches[$row['title']] = '<div class="reference-autocomplete">'. $row['rendered'] . '</div>';
+  }
+
+  drupal_json($matches);
+}
+
+/**
+ * Implementation of hook_apachesolr_cck_fields_alter().
+ */
+function apachesolr_nodereference_apachesolr_cck_fields_alter(&$mappings) {
+  $mappings['nodereference'] = array(
+    'nodereference_buttons' => array(
+      'callback' => 'apachesolr_nodereference_callback',
+      'index_type' => 'integer',
+    ),
+    'nodereference_select' => array(
+      'callback' => 'apachesolr_nodereference_callback',
+      'index_type' => 'integer',
+    ),
+    'nodereference_autocomplete' => array(
+      'callback' => 'apachesolr_nodereference_callback',
+      'index_type' => 'integer',
+    ),
+  );
+}
+
+function apachesolr_nodereference_callback($node, $cck_field_name) {
+  $fields = array();
+
+  // check if node contains the provided cck field, cck fields can be retreived from apachesolr
+  if ((isset($node->{$cck_field_name}) && $cck_fields = apachesolr_nodereference_fields()) && $cck_field = $cck_fields[$cck_field_name]) {
+    // retrieve generated index key for field from apachesolr
+    $index_key = apachesolr_index_key($cck_field);
+
+    // iterate through each field within nodereference field
+    foreach ($node->{$cck_field_name} as $field) {
+      // check if index value can be retrieved
+      if ($index_value = (isset($field['nid']) && strlen($field['nid'])) ? $field['nid'] : FALSE) {
+        // set values
+        $fields[] = array(
+          'key' => $index_key,
+          'value' => $index_value,
+        );
+      }
+    }
+  }
+
+  return $fields;
+}
+
+function apachesolr_nodereference_fields() {
+  $fields = array();
+
+  // provide CCK mappings filters
+  foreach (apachesolr_cck_fields() as $name => $field) {
+    if ($field['type'] == 'nodereference') {
+      $fields[$name] = $field;
+    }
+  }
+
+  return $fields;
+}
+
+/**
+ * Implementation of hook_apachesolr_facets()
+ */
+function apachesolr_nodereference_apachesolr_facets() {
+  $facets = array();
+
+  foreach (apachesolr_nodereference_fields() as $field) {
+    // retrieve generated index key for field from apachesolr
+    $key = apachesolr_index_key($field);
+
+    $facets[$key] = array(
+      'info' => t('Filter by @field-name', array('@field-name' => $field['widget']['label'])),
+      'facet_field' => $key,
+      'display_callback' => 'apachesolr_nodereference_facet_callback'
+    );
+  }
+
+  return $facets;
+}
+
+/**
+ * Callback function for the 'Filter by' nodereference facet block.
+ */
+function apachesolr_nodereference_facet_callback($facet, &$options) {
+  if (is_numeric($facet)) {
+    return db_result(db_query("SELECT title FROM {node} WHERE nid = %d", $facet));
+  }
+
+  $options['html'] = TRUE;
+
+  return theme('placeholder', t('No results'));
+}

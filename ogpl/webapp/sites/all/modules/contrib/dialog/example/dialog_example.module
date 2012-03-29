@@ -1,0 +1,122 @@
+<?php
+// $Id$
+
+/**
+ * Implementation of hook_menu().
+ */
+function dialog_example_menu() {
+  $items['dialog/example'] = array(
+    'title' => 'Dialog example',
+    'page callback' => 'dialog_example_page',
+    'access arguments' => array('access content'),
+  );
+  $items['dialog/%ctools_js/example'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'dialog_example_ajax_callback',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/login/%ctools_js'] = array(
+    'page callback' => 'dialog_login_callback',
+    'page arguments' => array(1, 2),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['user/register/%ctools_js'] = array(
+    'page callback' => 'dialog_login_callback',
+    'page arguments' => array(1, 2),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+function dialog_example_page() {
+  global $user;
+
+  dialog_add_js();
+  $links = array();
+  $links[] = l('Simple test', 'dialog/nojs/example', array('attributes' => array('class' => 'ctools-use-dialog')));
+  if (!$user->uid) {
+    $links[] = l('User login', 'user/login/nojs', array('attributes' => array('class' => 'ctools-use-dialog')));
+    $links[] = l('User registration', 'user/register/nojs', array('attributes' => array('class' => 'ctools-use-dialog')));
+  }
+  else {
+    $links[] = l(t('Logout'), 'logout', array('@logout' => url('logout', array('query' => array('destination' => 'dialog/example')))));
+  }
+
+  return theme('item_list', $links);
+}
+
+function dialog_example_ajax_callback($ajax = FALSE) {
+  if ($ajax) {
+    $options = array(
+      'height' => rand(25, 75) . '%',
+      'width' => rand(25, 75) . '%',
+      'position' => 'center',
+    );
+    dialog_ajax_render('test', dialog_example_page(), $options);
+    return;
+  }
+
+  return 'hello world';
+}
+
+/**
+* Menu callback for our ajax links.
+*/
+function dialog_login_callback($type, $js) {
+  switch ($type) {
+    case 'login':
+      $title = t('Login');
+      $form_id = 'user_login';
+      $msg = 'You are now logged in.';
+      break;
+    case 'register':
+      $title = t('Register');
+      $form_id = 'user_register';
+      $msg = 'You are now registered.';
+      break;
+  }
+
+  if ($js) {
+    ctools_include('ajax');
+    $form_state = array(
+      'ajax' => TRUE,
+      'title' => $title,
+    );
+    $output = dialog_form_wrapper($form_id, $form_state);
+    if (empty($output)) {
+      $output[] = dialog_command_display('Welcome', $msg);
+      $output[] = ctools_ajax_command_redirect('user');
+    }
+    else {
+      foreach ($output as $i => $command) {
+        if ($command['command'] == 'dialog_display') {
+          $output[$i]['options']['height'] = 'auto';
+          $output[$i]['options']['width'] = 600;
+
+          $output[$i]['options']['position'] = 'center';
+          $output[$i]['options']['resizable'] = FALSE;
+        }
+      }
+    }
+    ctools_ajax_render($output);
+  }
+  else {
+    return drupal_get_form($form_id);
+  }
+}
+
+function dialog_example_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id == 'user_login' && !empty($form_state['ajax'])) {
+    $form['submit']['#attributes']['class'] = 'ctools-dialog-button';
+  }
+  elseif ($form_id == 'user_register' && !empty($form_state['ajax'])) {
+    $form['submit']['#attributes']['class'] = 'ctools-dialog-button';
+  }
+
+}

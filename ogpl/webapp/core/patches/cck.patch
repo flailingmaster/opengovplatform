@@ -1,0 +1,62 @@
+Index: branches/qa/sites/all/modules/contrib/cck/includes/views/handlers/content_handler_field.inc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/contrib/cck/includes/views/handlers/content_handler_field.inc	(revision )
++++ branches/qa/sites/all/modules/contrib/cck/includes/views/handlers/content_handler_field.inc	(revision 4540)
+@@ -183,6 +183,7 @@
+   function render($values) {
+     // We're down to a single node here, so we can retrieve the actual field
+     // definition for the node type being considered.
++
+     $field = content_fields($this->content_field['field_name'], $values->{$this->aliases['type']});
+ 
+     // If the field does not appear in the node type, then we have no value
+Index: branches/qa/sites/all/modules/contrib/cck/includes/content.node_form.inc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/contrib/cck/includes/content.node_form.inc	(revision )
++++ branches/qa/sites/all/modules/contrib/cck/includes/content.node_form.inc	(revision 4540)
+@@ -151,25 +151,33 @@
+   $field_name = $field['field_name'];
+ 
+   switch ($field['multiple']) {
+-    case 0:
++    case 0: // 1 field, no multiple
+       $max = 0;
+       break;
+-    case 1:
++    case 1: // unlimited
+       $filled_items = content_set_empty($field, $items);
++
++      // make the count different for no item (filled with an empty item by content_set_empty) and 1 item with data
++      $hook_is_empty = $field['module'] .'_content_is_empty';
++      if (count($items) == 1 && $hook_is_empty($items[0], $field)) {
++        $real_item_count = 0;
++      }
++      else{
++        $real_item_count = count($items);
++      }
+       $current_item_count = isset($form_state['item_count'][$field_name])
+                             ? $form_state['item_count'][$field_name]
+-                            : count($items);
++                            : $real_item_count;
++
+       // We always want at least one empty icon for the user to fill in.
+       $max = ($current_item_count > count($filled_items))
+               ? $current_item_count - 1
+               : $current_item_count;
+-
+       break;
+-    default:
++    default: // fixed number of $field['multiple'] fields
+       $max = $field['multiple'] - 1;
+       break;
+   }
+-
+   $title = check_plain(t($field['widget']['label']));
+   $description = content_filter_xss(t($field['widget']['description']));
+ 

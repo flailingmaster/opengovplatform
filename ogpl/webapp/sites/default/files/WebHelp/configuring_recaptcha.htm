@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Adobe RoboHelp 9" />
+<title>Configuring reCaptcha</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="JavaScript">//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+        origWidth = innerWidth;
+        origHeight = innerHeight;
+        onresize = reDo;
+}
+onerror = null; 
+//]]></script>
+<script type="text/javascript" language="javascript1.2" src="./whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="./whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whtopic.js"></script>
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addTocInfo("Content Management System Administrator\nManaging Captcha\nConfiguring reCaptcha");
+addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("<a href=\"cms_administrator.htm\">Content Management System Administrator<\/a> > <a href=\"managing_captcha.htm\">Managing Captcha<\/a> > Configuring reCaptcha<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<h1>Configuring reCaptcha</h1>
+<p>You can use reCAPTCHA Web service to improve the CAPTCHA system and 
+ protect e-mail addresses. To use reCAPTCHA, you need to first register 
+ at <a href="http://www.recaptcha.net">www.recaptcha.net</a>. 
+ After you register, the page displays the public key and private key that 
+ you can use for the reCAPTCHA settings in the OGPL Web site.</p>
+<p>You can configure various reCAPTCHA settings, such as the public key 
+ and private key, secure connection settings, and theme settings.</p>
+<p>To configure the reCAPTCHA:</p>
+<ol start="1" style="margin-top: 0in;" type="1">
+	<li class="MsoNormal" style="mso-list: l0 level1 lfo1; tab-stops: .5in;"><p>In 
+	 the navigation menu, point to <span class="UI">Configurable Items</span>, 
+	 and click <span class="UI">Manage Captcha</span>.<br />
+	The <span class="UI">CAPTCHA</span> page appears.</p></li>
+	<li class="MsoNormal" style="mso-list: l0 level1 lfo1; tab-stops: .5in;"><p>Click 
+	 the <b style="mso-bidi-font-weight: normal;"><span class="UI">reCAPTCHA</span></b> 
+	 tab.<br />
+	The <span class="UI">reCAPTCHA</span> tab displays the settings required 
+	 to configure this CAPTCHA.</p></li>
+	<li class="MsoNormal" style="mso-list: l0 level1 lfo1; tab-stops: .5in;"><p>Configure 
+	 the appropriate reCAPTCHA settings. The following table lists each 
+	 field and its description.</p></li>
+</ol>
+<p class="MsoNormal" style="margin-left: 36px;"><b style="font-weight: bold; 
+													 mso-bidi-font-weight: normal;">Table: 
+ Description of fields in the reCAPTCHA tab on CAPTCHA page</b></p>
+<table class="MsoNormalTable" style="border-collapse: collapse; mso-yfti-tbllook: 1184; 
+		 margin-left: 40px;" cellspacing="0" width="93%">
+	<tr style="mso-yfti-irow: 0; mso-yfti-firstrow: yes;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; mso-border-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;" bgcolor="#E8E8E8"><p 
+			 class="tableheading" style="font-weight: bold;">Field</p></td>
+		<td style="width: 77.16%; border: solid #000000 1.0pt; border-left: none; 
+			 mso-border-top-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;" 
+			 bgcolor="#E8E8E8"><p class="tableheading" style="font-weight: bold;">Description</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 1;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Public Key</span></p>
+		<p class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">(Required)</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Enter 
+		 the public key that was provided when you registered at reCAPTCHA.net.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 2;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Private Key<br />
+		(Required)</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Enter 
+		 the private key that was provided when you registered at reCAPTCHA.net.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 3;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Secure Connection</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">If 
+		 you want to connect to the reCAPTCHA server using a secure connection, 
+		 select this check box.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 4;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal"><span class="UI">AJAX API</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">If 
+		 you want to use the AJAX API to display 
+		 reCAPTCHA, select this check box.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 5;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Theme Settings</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Use 
+		 this section to configure the theme and tab index settings for 
+		 reCAPTCHA.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 6;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal"><span class="UI">Theme<br />
+		(Required)</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Click 
+		 the visual theme that you want to use for reCAPTCHA.<span style="mso-spacerun: yes;">&#160;</span></p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 7; mso-yfti-lastrow: yes;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Tab Index</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">If 
+		 you want the reCAPTCHA box to be selected in a particular tab 
+		 sequence, enter the appropriate tab index. Tabindex 
+		 is a number that specifies the order in which various page elements 
+		 are selected when a user presses the TAB key on the keyboard. 
+		 By default, this box is blank and the default tab sequence is 
+		 followed.</p></td>
+	</tr>
+</table>
+<p class="MsoNormal">&#160;</p>
+<ol start="4" type="1">
+	<li><p><span>Click <b style="mso-bidi-font-weight: normal;">Save configuration</b>.<br />
+	The settings for reCAPTCHA are saved in the OGPL Control Panel application.</span></p></li>
+</ol>
+<script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

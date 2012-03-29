@@ -1,0 +1,3118 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: alan_lobo
+ * Date: 2/29/12
+ * Time: 11:11 AM
+ * To change this template use File | Settings | File Templates.
+ */
+
+function web_charts_export_cron()
+{
+
+    global $base_url;
+
+    cron_gather_incremental_stats($base_url);
+    cron_clear_old_data();
+}
+
+function cron_clear_old_data()
+{
+    db_query("DELETE FROM {charts_export_visitor_summary} WHERE month <= SUBDATE(CURDATE(), INTERVAL 2 MONTH)");
+}
+
+function cron_gather_incremental_stats($base_url)
+{
+    $start_aid = variable_get('charts_export_accesslog_max_aid', 0);
+    $end_aid = db_fetch_object(db_query("SELECT MAX(aid) AS max_aid
+                                               FROM {accesslog}"))->max_aid;
+
+    $result = db_query("SELECT hostname, FROM_UNIXTIME(timestamp, '%Y-%m-01') AS month, aid
+                          FROM {accesslog}
+                         WHERE url = '$base_url/'
+                           AND aid BETWEEN $start_aid AND $end_aid
+                      ORDER BY aid
+                         LIMIT 5000");
+
+    $ip_address = $all_details = array();
+    while ($row = db_fetch_object($result)) {
+        $ip_address[$row->hostname] = $row->hostname;
+        $all_details[$row->hostname][$row->month]['month'] = $row->month;
+        $all_details[$row->hostname][$row->month]['count']++;
+        $end_aid = $row->aid;
+    }
+
+    $source = variable_get('host_ip_config', 'web_service');
+    switch($source)
+    {
+        case 'web_service':
+            $output = get_geo_info_from_webservice($ip_address);
+            break;
+        case 'local_db':
+            $output = get_geo_info_from_database($ip_address);
+            break;
+        default:
+            $output = array();
+    }
+
+    foreach ($output as $row => $ip)
+    {
+        if (!isset($ip_address[$row])) continue;
+        $ip = (array)$ip;
+        foreach($all_details[$row] as &$monthly_entry)
+        {
+            $monthly_entry['country'] = $ip['country'];
+            $monthly_entry['city'] = urldecode($ip['city']);
+        }
+    }
+
+    foreach ($all_details as &$detail)
+    {
+        foreach ($detail as &$monthwise)
+        {
+            if (count($monthwise) == 4) $monthwise = "({$monthwise['count']}, '{$monthwise['month']}', '{$monthwise['country']}', '{$monthwise['city']}')";
+            else unset($monthwise);
+        }
+        $detail = implode(',', $detail);
+    }
+
+    if (count($all_details)) {
+        $all_details = implode(',', $all_details);
+        db_query("INSERT INTO {charts_export_visitor_summary}
+                      (count, month, country, city)
+                  VALUES
+                      $all_details
+                  ON DUPLICATE KEY UPDATE
+                      count = count + VALUES(count)");
+    }
+    variable_set('charts_export_accesslog_max_aid', $end_aid + 1);
+}
+
+function get_geo_info_from_webservice($ip_address)
+{
+    $webservice_url = variable_get('webservice_url', null);
+    $output = json_decode(file_get_contents($webservice_url . '?ip_address[]=' . implode('&ip_address[]=', array_keys($ip_address))));
+    return $output;
+}
+
+function get_geo_info_from_database($ip_address)
+{
+    include 'IP2Location.php';
+    $database_name = variable_get('database_name', 'hostip_current');
+    $webObj = new IP2Location($ip_address, $database_name);
+    return $webObj->_handle_request();
+}
+function web_charts_export_perm() {
+  return array('access_vrm_reports','access_poc_reports');
+}
+function web_charts_export_menu()
+{
+    $items['visitorstats/monthly-download-trends'] = array(
+        'title' => 'Monthly Download Trends',
+        'page callback' => 'monthly_download_trends',
+        'access callback' => true,
+        'access arguments' => true,
+        'type' => MENU_CALLBACK,
+    );
+    $items['suggesteddatasets-graph'] = array(
+        'title' => 'Suggested Datasets',
+        'page callback' => 'suggested_datasets_page',
+        'access callback' => true,
+        'access arguments' => true,
+        'type' => MENU_CALLBACK,
+    );
+    $items['agency-publications/category-wise'] = array(
+        'title' => 'Category Wise',
+        'page callback' => 'category_wise',
+        'access callback' => true,
+        'access arguments' => true,
+        'type' => MENU_CALLBACK,
+    );
+    $items['agency-publications/high-value-dataset'] = array(
+        'title' => 'High Value Datasets',
+        'page callback' => 'high_value',
+        'access callback' => true,
+        'access arguments' => true,
+        'type' => MENU_CALLBACK,
+    );
+    $items['visitorstats/daily-visitor-statistics'] = array(
+        'title' => 'Daily Visitor Statistics',
+        'page callback' => 'daily_visitor_statistics',
+        'access callback' => true,
+        'access arguments' => true,
+        'type' => MENU_CALLBACK,
+    );
+    $items['visitorstats/monthly-visitor-statistics'] = array(
+        'title' => 'Monthly Visitor Statistics',
+        'page callback' => 'monthly_visitor_statistics',
+        'access callback' => true,
+        'access arguments' => true,
+        'type' => MENU_CALLBACK,
+    );
+    $items['visitorstats/top10visitingcities'] = array(
+        'title' => 'Top 10 Visiting Cities',
+        'page callback' => 'top_visiting_cities',
+        'access callback' => true,
+        'access arguments' => true,
+        'type' => MENU_CALLBACK,
+    );
+    $items['visitorstats/top10visitingcountries'] = array(
+        'title' => 'Top 10 Visiting Countries',
+        'page callback' => 'top_visiting_countries',
+        'access callback' => true,
+        'access arguments' => true,
+        'type' => MENU_CALLBACK,
+    );
+	$items['action-metrics'] = array(
+        'title' => 'VRM Action Metrics',
+        'page callback' => 'vrm_action_metrics',
+        //'access callback' => true,
+        'access arguments' => array('access_vrm_reports'),
+        'type' => MENU_CALLBACK,
+    );
+	$items['source-metrics'] = array(
+        'title' => 'VRM Source Metrics',
+        'page callback' => 'vrm_source_metrics',
+       // 'access callback' => true,
+        'access arguments' => array('access_vrm_reports'),
+        'type' => MENU_CALLBACK,
+    );
+	$items['status-metrics'] = array(
+        'title' => 'VRM Status Metrics',
+        'page callback' => 'vrm_status_metrics',
+       // 'access callback' => true,
+        'access arguments' => array('access_vrm_reports'),
+        'type' => MENU_CALLBACK,
+    );
+	$items['poc-action-metrics'] = array(
+        'title' => 'VRM Action Metrics',
+        'page callback' => 'poc_action_metrics',
+      //  'access callback' => true,
+        'access arguments' => array('access_poc_reports'),
+        'type' => MENU_CALLBACK,
+    );
+	$items['poc-source-metrics'] = array(
+        'title' => 'VRM Source Metrics',
+        'page callback' => 'poc_source_metrics',
+        //'access callback' => true,
+        'access arguments' => array('access_poc_reports'),
+        'type' => MENU_CALLBACK,
+    );
+	$items['poc-status-metrics'] = array(
+        'title' => 'VRM Status Metrics',
+        'page callback' => 'poc_status_metrics',
+        //'access callback' => true,
+         'access arguments' => array('access_poc_reports'),
+        'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+function monthly_download_trends()
+{
+
+    $output = '';
+    $output .= '<script language="JavaScript" type="text/javascript">
+	function getAbsolutePath() {
+	    var loc = window.location;
+	    var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf(\'/\') + 1);
+	    return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+	}
+	
+	function loadchart(year)
+	{
+	year = document.getElementById("selectyear").value;
+	window.location=getAbsolutePath()+"monthly-download-trends\?year="+year;
+	return false;
+	}';
+    $output .= "</script>";
+    $year_get = $_GET['year'];
+    if (!empty($year_get)) {
+        $chart_year = $year_get;
+    }
+    $year = (int)date('Y');
+
+    $output .= "<form class=\"charts_form hidden-on-pdf\" action=\"\">";
+    $output .= '<div class="metrics-datasetreport-select"><label for="selectyear">Select Year</label>: ';
+    $output .= "<select name='year' id='selectyear' >";
+    $output .= "<option value='" . $year . "'>Past 12 Months</option>";
+    $year = $year - 1;
+    $till_date = db_query("select accesslog.timestamp as min_date from accesslog ORDER BY accesslog.timestamp ASC LIMIT 1");
+    $tilldate = db_fetch_object($till_date);
+    $till_year = (int)date("Y", $tilldate->min_date);
+    for ($i = 0; $i < 9; $i++) {
+        if ($year >= $till_year) {
+            if ($year_get == $year) {
+                $output .= "<option value='" . $year . "' selected = 'selected'>" . $year . "&nbsp;</option>";
+            } else {
+                $output .= "<option value='" . $year . "'>" . $year . "&nbsp;</option>";
+            }
+        }
+        else break;
+        $year = $year - 1;
+    }
+    $output .= "</select>";
+    $output .= '<input type="submit" value="Submit" id="submit_btn" title="Submit"/></div>';
+    $output .= "</form>";
+
+    global $base_url;
+    $output .= get_download_links();
+
+    function fusionchart_callback($base_url, $chart_year)
+    {
+        $url = $base_url . '/';
+        $new = 0;
+        $year = $chart_year;
+
+        if (empty($year) || $year == (int)date('Y')) {
+            $year = (int)date('Y');
+            $year_new = (int)date('y');
+            $month = (int)date('m');
+            $month = $month - 1;
+            $new = 1;
+            //$year=$year-1;
+        }
+
+        if ($year != (int)date('Y')) {
+            $output = '<div class="chart-metrics-visitorstats-table-heading">
+	      <p>Monthly Download Trends (' . $year . ')</p></div>';
+        }
+        else {
+            $output = '<div class="chart-metrics-visitorstats-table-heading">
+	      <p>Monthly Download Trends (Past 12 Months)</p></div>';
+        }
+        /*started here */
+
+        $values = array();
+        $start = array();
+        $end = array();
+        $index = array();
+        if ($new == 1) {
+            for ($i = 0; $i < 12; $i++) {
+                if ($month == 0) {
+                    $month = 12;
+                    $year = $year - 1;
+                }
+                //$output .= $month.'---'.$year."<br>";
+                $num = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                $start[$i] = strtotime("$month/01/$year 00:00:00");
+                $end[$i] = strtotime("$month/$num/$year 23:59:59");
+                $index[$i] = monthName($month) . ' ' . $year;
+                $month = $month - 1;
+            }
+        } else {
+            $month = 1;
+            for ($i = 0; $i < 12; $i++) {
+                $num = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                $start[$i] = strtotime("$month/01/$year 00:00:00");
+                $end[$i] = strtotime("$month/$num/$year 23:59:59");
+                $index[$i] = monthName($month) . $year;
+                $month = $month + 1;
+            }
+        }
+        for ($i = 0; $i < 12; $i++) {
+            //$output .= "SELECT count(download_count.dcid) as cnt  FROM download_count  where download_count.timestamp >= $start[$i] AND  download_count.timestamp <= $end[$i] <br>";
+            $result = db_query("SELECT count(download_count.dcid) as cnt  FROM download_count  where download_count.timestamp >= $start[$i] AND  download_count.timestamp <= $end[$i] ");
+            $values[$index[$i]] = (int)db_fetch_object($result)->cnt;
+            if ($values[$index[$i]] != 0) $chart = 1;
+
+
+        }
+
+
+        //$j=1;
+        if ($new == 1) {
+            $values1 = array_reverse($values);
+            $index1 = array_reverse($index);
+
+            $j = 0;
+            foreach ($values1 as $i)
+            {
+
+                $a[$j] = array($index1[$j], $i);
+                $j = $j + 1;
+
+            }
+        }
+        else {
+            $j = 0;
+            foreach ($values as $i)
+            {
+                $a[$j] = array($index[$j], $i);
+                $j = $j + 1;
+
+            }
+        }
+
+
+        if ($chart == 1) {
+
+            // Export to CSV
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                $header = array('Month of the Year', 'Number of Downloads');
+                array_unshift($a, $header);
+                if ($_GET['export'] == 'csv') {
+                    export_to_csv($a, "Monthly_Download_Trends.csv");
+                }
+
+                // Export to XLS
+                if ($_GET['export'] == 'xls') {
+                    export_to_xls($a, "Monthly_Download_Trends.xls");
+                }
+            }
+
+            //$output .='<div style="position:relative;width:900px;height:450px;overflow:hidden;"><div style="width:900px;height:500px;position:absolute;margin:-40px 0 0 0;">';
+            $info = new stdClass();
+            $info->data = $a;
+            $info->chart_type = 'Column 2D';
+            $info->settings = array('Caption' => ' ', 'yAxisName' => 'Number of Downloads', 'xAxisName' => 'Month of the Year', 'decimalPrecision' => '0', 'formatNumberScale' => '0','rotateNames' => '1');
+            $info->width = 900;
+            $info->height = 500;
+            $info->attributes = array('color' => array('38ACEC'));
+            $output .= theme('fusionchart', $info);
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image'])) {
+                phplot_get_image($info);
+            }
+            $image_parameter = 'image=1';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img class="hidden-image-chart-report" src="' . $full_url . '" alt="Monthly Downloaded Trends"/>';
+            return $output;
+
+        }
+        else
+            return $output .= "<div class='chart-error'>No Data Found</div>";
+
+    }
+
+    return $output .= fusionchart_callback($base_url, $chart_year);
+
+}
+
+function suggested_datasets_callback($args = NULL)
+{
+    $chart = $total_sum = 0;
+    $query = "select count(content_type_feedback.nid) as value, term_data.name as name from term_data,content_type_feedback where term_data.tid=content_type_feedback.field_action_status_value and content_type_feedback.field_source_value=15 group by term_data.name";
+    $result = db_query($query);
+    while ($row = db_fetch_object($result)) {
+        $data_csv[] = array($row->name, $row->value);
+        $total_sum += $row->value;
+        $chart = 1;
+    }
+
+    $info = new stdClass();
+    $info->query = "select count(content_type_feedback.nid) as value, term_data.name as name from term_data,content_type_feedback where term_data.tid=content_type_feedback.field_action_status_value and content_type_feedback.field_source_value=15 group by term_data.name";
+    $info->chart_type = 'Pie 3D';
+    $info->settings = array('Caption' => 'Agency Determinations Of Site Suggestions', 'showNames' => '1', 'showLegend' => '0', 'rotateNames' => '1', 'showPercentageValues' => '1', 'decimalPrecision' => '2', 'animation' => '1', 'formatNumberScale' => '0', 'showValues' => '1', 'showPercentageInLabel' => '1');
+    $info->attributes = array('color' => array('DC143C', 'FF00FF', '000080', '00FF00', 'FFD700', '0000FF', '228B22', '778899', '4169E1'));
+    $info->width = 900;
+    $info->height = 500;
+
+
+    if ($chart == 1) {
+        // Export to CSV
+        if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+
+            // calculate the %
+            foreach ($data_csv as &$rowset) {
+                $rowset[1] = number_format((($rowset[1] * 100) / $total_sum),2);
+            }
+            array_unshift($data_csv, array('Action Status', 'Feedback Received(in %)'));
+            if ($_GET['export'] == 'csv') {
+                export_to_csv($data_csv, "Agency_Determinations_Of_Site_Suggestions.csv");
+            }
+            // Export to XLS
+            if ($_GET['export'] == 'xls') {
+                export_to_xls($data_csv, "Agency_Determinations_Of_Site_Suggestions.xls");
+            }
+        }
+
+        $output = '<br /><div style="text-align:center;margin:0px auto;font-weight:bold;font-size:1.5em;">
+			Total Suggested Datasets: ' . $total_sum . '
+		</div>';
+
+        $output .= '<div class="hidden-on-pdf" style="position:relative;width:900px;height:250px;overflow:hidden;">
+					<div style="width:900px;height:500px;position:absolute;margin:-120px 0 0 0;">';
+        $output .= theme('fusionchart', $info);
+        $output .= '</div></div>';
+    }
+    if ($chart == 0) {
+        $output .= '<br /><div style="text-align:center;margin:0px auto;font-weight:bold;font-size:1.5em;">
+			No data found.
+		</div>';
+
+    }
+    // if chart image is requested then call  phplot_get_image($info)
+    if (isset($_GET['image']) && $_GET['image'] == 'suggested') {
+
+        // get the data array for legend
+        $result = db_query($info->query);
+        if (db_affected_rows() > 0) {
+            while ($row = db_fetch_object($result)) {
+                $data[] = array($row->name, $row->value);
+            }
+            $info->data = $data;
+            phplot_get_image($info, 'pie');
+        }
+    }
+
+    $image_parameter = 'image=suggested';
+    $full_url = get_full_url($image_parameter);
+    $output .= '<img class="hidden-image-chart-report" src="' . $full_url . '" alt="Agency determination of site suggestions">';
+
+    return $output;
+}
+
+function suggested_datasets_page()
+{
+
+    $output = '';
+
+    $output .= get_download_links('suggesteddatasets-graph');
+    $output .= '<br /><p>&nbsp;</p><div style="text-align:center;margin:0px auto;font-weight:bold;font-size:1.7em;">
+	
+	Agency Determination on Suggestions
+	</div>';
+
+    global $base_url;
+
+    $output .= suggested_datasets_callback();
+
+    $output .= '<div id="suggest-cp-block"><div style="text-align:center;margin-right:20px;" class="suggest-cp">';
+    $output .= '<div class="suggest-dataset hidden-on-pdf">Would you like to suggest a data? Please <a href="' . $base_url . '/suggest_dataset" title="click here">click here </a> to submit your data.</div></div></div>';
+
+    return $output;
+}
+
+function web_charts_export_block($op = 'list', $delta = 0, $edit = array())
+{
+    switch ($op) {
+        case 'list':
+            $blocks[0] = array(
+                'info' => t('Suggested Datasets Metric'),
+            );
+            return $blocks;
+
+        case 'view':
+            switch ($delta) {
+                case 0:
+                    $blocks['subject'] = "";
+                    $blocks['content'] = suggested_datasets_page();
+
+            }
+            return $blocks;
+    }
+
+}
+
+function category_wise()
+{
+    $export_csv = array();
+
+    $output = '<script language="JavaScript" type="text/javascript">
+	function getAbsolutePath() {
+	    var loc = window.location;
+	    var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf(\'/\') + 1);
+	    return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+	}
+	
+	function loadchart(year)
+	{
+	year = document.getElementById("selectyear").value;
+	window.location=getAbsolutePath()+"\category-wise\?year="+year;
+	return false;
+	}';
+    $output .= "</script>";
+
+
+    $year_get = $_GET['year'];
+
+    if (!empty($year_get)) {
+        $chart_year = $year_get;
+    }
+
+    $year = (int)date('Y');
+
+    //$year=$year-1;
+    //onsubmit=\"return loadchart()\";
+
+
+    $output .= "<form action=\"\" class=\"charts_form hidden-on-pdf\" method=\"get\" >";
+
+    $output .= '<div class="metrics-datasetreport-select"><label for="selectyear">Select Year</label>: ';
+
+    $output .= "<select name='year' id='selectyear' >";
+    $output .= '<option value=""> -- All -- &nbsp;</option>';
+    while ($year > 2010) {
+        if ($year_get == $year) {
+            $output .= "<option value='" . $year . "' selected = 'selected'>" . $year . " </option>";
+        }
+        else {
+            $output .= "<option value='" . $year . "'>" . $year . "  </option>";
+        }
+        $year = $year - 1;
+    }
+    $output .= "</select>";
+
+    $output .= '<input type="submit" value="Submit" id="submit_btn" title="Submit"/></div>';
+
+    $output .= "</form>";
+
+    $output .= get_download_links();
+
+
+    global $base_url;
+    variable_set('charts', '0');
+
+    function fusionchart_table($cat_type, $year, $others)
+    {
+        if ($year != '') {
+            $startdate = mktime(0, 0, 0, 1, 1, $year);
+            $enddate = mktime(23, 59, 59, 12, 31, $year);
+        }
+        else {
+            $startdate = mktime(0, 0, 0, 1, 1, 2010);
+            $enddate = mktime();
+        }
+
+
+        $result = db_query("select count(*)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid INNER JOIN node n on DS.nid=n.nid where WF.sid=10 AND n.status=1 AND DS.field_ds_catlog_type_type='$cat_type' AND WF.stamp BETWEEN   $startdate AND $enddate group by SEC.field_ds_sector_nid Order by count(*) desc ");
+
+        $colors = array('lblue', 'yellow', 'orange', 'green', 'gold', 'turquoise', 'purple', 'lorange', 'dgreen', 'blue', 'red');
+        $i = 0;
+        $output = '<div class="color-code-table"><table>';
+        variable_set('charts', '1');
+
+        while ($row = db_fetch_object($result))
+        {
+
+            if ($i >= 10)
+                break;
+
+            $output .= '<tr><td style="width:12px;"><div class="' . $colors[$i] . '"></div></td><td style="width:380px;">' . $row->name . '</td><td style="width:20px;"> ' . $row->value . '</td></tr>';
+            $i++;
+        }
+        if ($i == 10)
+            $output .= '<tr style="border-bottom: 0px none;"><td style="width:12px;"><div class="' . $colors[$i] . '"></div></td><td style="width:380px;">Others</td><td style="width:20px;"> ' . $others . '</td></tr>';
+
+        $output .= '</table></div>';
+        return $output;
+
+    }
+
+    function fusionchart_document()
+    {
+        $yr = $_GET['year'];
+
+        if ($yr == '') {
+            $startdate = mktime(0, 0, 0, 1, 1, 2010);
+            $enddate = mktime();
+        }
+        else
+        {
+            $startdate = mktime(0, 0, 0, 1, 1, $yr);
+            $enddate = mktime(23, 59, 59, 12, 31, $yr);
+        }
+        $result = db_query("select count(*)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid INNER JOIN node n on DS.nid=n.nid where WF.sid=10 AND n.status=1 AND  DS.field_ds_catlog_type_type='catalog_type_document' AND WF.stamp BETWEEN   $startdate AND $enddate group by SEC.field_ds_sector_nid Order by count(*) desc ");
+
+        $j = 0;
+        $k = 0;
+        $sum = 0;
+        while ($row = db_fetch_object($result))
+        {
+            if ($k < 10) {
+                $data[$j] = array($row->name, $row->value);
+                $j++;
+            }
+            else
+                $sum = $sum + (int)$row->value;
+
+            $k++;
+        }
+        if ($data && $j == 10) $data[$j] = array('Others', $sum);
+
+        $info = new stdClass();
+        $info->data = $data;
+        $info->chart_type = 'Pie 2D';
+        $info->settings = array('showLegend' => '1', 'rotateNames' => '1', 'decimalPrecision' => '2', 'animation' => '1', 'formatNumberScale' => '0', 'showValues' => '1', 'pieRadius' => '100', 'showPercentageInLabel' => '1', 'showPercentageValues' => '1');
+        $info->attributes = array('color' => array('ADDFFF', 'FFF000', 'F87431', 'A0C544', 'EAC117', '228BA8', '6D5499', 'E67541', '347C2C', '157DEC', '800517'));
+        $info->width = 500;
+        $info->height = 283;
+        global $charts;
+        if ($data) {
+            $charts = 1;
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                return $data;
+            }
+            $output = '<div class="charts-wrapper"><div class="pie-chart-metrics-visitorstats-table-heading"><p>Documents by Category</p></div><table class="category-wise-chart hidden-on-pdf"><tr><td class="bgcolor">';
+            $output .= theme('fusionchart', $info) . '</td><td style="vertical-align: top;">';
+            $output .= fusionchart_table('catalog_type_document', $yr, $sum);
+            $output .= '</td>';
+            $output .= '</tr></table>';
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image']) && $_GET['image'] == 'document') {
+                phplot_get_image($info, 'pie');
+            }
+            $image_parameter = 'image=document';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img style="border-bottom:1px solid #A0A0A0;" class="hidden-image-chart-report" src="' . $full_url . '" alt="Documents by Category"/></div>';
+            return $output;
+        }
+    }
+
+    function fusionchart_apps()
+    {
+        $yr = $_GET['year'];
+
+        if ($yr == '') {
+            $startdate = mktime(0, 0, 0, 1, 1, 2010);
+            $enddate = mktime();
+        }
+        else {
+            $startdate = mktime(0, 0, 0, 1, 1, $yr);
+            $enddate = mktime(23, 59, 59, 12, 31, $yr);
+        }
+
+        $result = db_query("select count(*)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid INNER JOIN node n on DS.nid=n.nid where WF.sid=10 AND n.status=1  AND  DS.field_ds_catlog_type_type='catalog_type_data_apps' AND WF.stamp BETWEEN   $startdate AND $enddate group by SEC.field_ds_sector_nid Order by count(*) desc ");
+
+        $j = 0;
+        $k = 0;
+        $sum = 0;
+        while ($row = db_fetch_object($result))
+        {
+            if ($k < 10) {
+                $data[$j] = array($row->name, $row->value);
+                $j++;
+            }
+            else
+                $sum = $sum + (int)$row->value;
+            $k++;
+        }
+        if ($data && $j == 10) $data[$j] = array('Others', $sum);
+
+        $info = new stdClass();
+        $info->data = $data;
+        $info->chart_type = 'Pie 2D';
+        $info->settings = array('showLegend' => '1', 'rotateNames' => '1', 'decimalPrecision' => '2', 'animation' => '1', 'formatNumberScale' => '0', 'showPercentageValues' => '1', 'pieRadius' => '100', 'showPercentageInLabel' => '1');
+        $info->attributes = array('color' => array('ADDFFF', 'FFF000', 'F87431', 'A0C544', 'EAC117', '228BA8', '6D5499', 'E67541', '347C2C', '157DEC', '800517'));
+        $info->width = 500;
+        $info->height = 283;
+        if ($data) {
+            $charts = 1;
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                return $data;
+            }
+
+            $output = '<div class="charts-wrapper"><div class="pie-chart-metrics-visitorstats-table-heading"><p>Apps by Category</p></div><table class="category-wise-chart hidden-on-pdf"><tr><td class="bgcolor">';
+            $output .= theme('fusionchart', $info) . '</td><td style="vertical-align: top;">';
+            $output .= fusionchart_table('catalog_type_data_apps', $yr, $sum);
+            $output .= '</td>';
+            $output .= '</tr></table>';
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image']) && $_GET['image'] == 'apps') {
+                phplot_get_image($info, 'pie');
+            }
+            $image_parameter = 'image=apps';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img style="border-bottom:1px solid #A0A0A0;" class="hidden-image-chart-report" src="' . $full_url . '" alt="Apps by Category"/></div>';
+            return $output;
+        }
+    }
+
+
+    function fusionchart_tools()
+    {
+        $yr = $_GET['year'];
+
+
+        if ($yr == '') {
+            $startdate = mktime(0, 0, 0, 1, 1, 2010);
+            $enddate = mktime();
+        }
+        else {
+            $startdate = mktime(0, 0, 0, 1, 1, $yr);
+            $enddate = mktime(23, 59, 59, 12, 31, $yr);
+        }
+
+        $result = db_query("select count(*)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid INNER JOIN node n on DS.nid=n.nid where WF.sid=10 AND n.status=1  AND DS.field_ds_catlog_type_type='catalog_type_data_tools' AND WF.stamp BETWEEN   $startdate AND $enddate group by SEC.field_ds_sector_nid Order by count(*) desc ");
+
+        $j = 0;
+        $k = 0;
+        $sum = 0;
+        while ($row = db_fetch_object($result))
+        {
+            if ($k < 10) {
+                $data[$j] = array($row->name, $row->value);
+                $j++;
+            }
+            else
+                $sum = $sum + (int)$row->value;
+
+            $k++;
+        }
+        if ($data && $j == 10) $data[$j] = array('Others', $sum);
+
+        $info = new stdClass();
+        $info->data = $data;
+        $info->chart_type = 'Pie 2D';
+        $info->settings = array('showNames' => '0', 'showLegend' => '0', 'rotateNames' => '0', 'decimalPrecision' => '2', 'animation' => '1', 'formatNumberScale' => '0', 'showPercentageValues' => '1', 'pieRadius' => '100', 'showPercentageInLabel' => '1');
+        $info->attributes = array('color' => array('ADDFFF', 'FFF000', 'F87431', 'A0C544', 'EAC117', '228BA8', '6D5499', 'E67541', '347C2C', '157DEC', '800517'));
+        $info->width = 500;
+        $info->height = 283;
+        if ($data) {
+            $charts = 1;
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                return $data;
+            }
+            $output = '<div class="charts-wrapper"><div class="pie-chart-metrics-visitorstats-table-heading"><p>Tools by Category</p></div><table class="category-wise-chart hidden-on-pdf"><tr><td class="bgcolor">';
+            $output .= theme('fusionchart', $info) . '</td><td style="vertical-align: top;">';
+            $output .= fusionchart_table('catalog_type_data_tools', $yr, $sum);
+            $output .= '</td>';
+            $output .= '</tr></table>';
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image']) && $_GET['image'] == 'tools') {
+                phplot_get_image($info, 'pie');
+            }
+            $image_parameter = 'image=tools';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img style="border-bottom:1px solid #A0A0A0;" class="hidden-image-chart-report" src="' . $full_url . '" alt="Tools by Category"/></div>';
+            return $output;
+        }
+    }
+
+    function fusionchart_services()
+    {
+        $yr = $_GET['year'];
+
+
+        if ($yr == '') {
+            $startdate = mktime(0, 0, 0, 1, 1, 2010);
+            $enddate = mktime();
+        }
+        else
+        {
+            $startdate = mktime(0, 0, 0, 1, 1, $yr);
+            $enddate = mktime(23, 59, 59, 12, 31, $yr);
+        }
+        $result = db_query("select count(*)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid INNER JOIN node n on DS.nid=n.nid where WF.sid=10 AND n.status=1  AND DS.field_ds_catlog_type_type='catalog_type_data_service' AND WF.stamp BETWEEN   $startdate AND $enddate group by SEC.field_ds_sector_nid Order by count(*) desc ");
+
+        $j = 0;
+        $k = 0;
+        $sum = 0;
+        while ($row = db_fetch_object($result))
+        {
+            if ($k < 10) {
+                $data[$j] = array($row->name, $row->value);
+                $j++;
+            }
+            else
+                $sum = $sum + (int)$row->value;
+
+            $k++;
+        }
+
+        if ($data && $j == 10) $data[$j] = array('Others', $sum);
+
+        $info = new stdClass();
+        $info->data = $data;
+        $info->chart_type = 'Pie 2D';
+        $info->settings = array('showNames' => '0', 'showLegend' => '0', 'rotateNames' => '0', 'decimalPrecision' => '2', 'animation' => '1', 'formatNumberScale' => '0', 'showPercentageValues' => '1', 'pieRadius' => '100', 'showPercentageInLabel' => '1');
+        $info->attributes = array('color' => array('ADDFFF', 'FFF000', 'F87431', 'A0C544', 'EAC117', '228BA8', '6D5499', 'E67541', '347C2C', '157DEC', '800517'));
+        $info->width = 500;
+        $info->height = 283;
+        if ($data) {
+            $charts = 1;
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                return $data;
+            }
+
+            $output = '<div class="charts-wrapper"><div class="pie-chart-metrics-visitorstats-table-heading"><p>Services by Category</p></div><table class="category-wise-chart hidden-on-pdf"><tr><td class="bgcolor">';
+            $output .= theme('fusionchart', $info) . '</td><td style="vertical-align: top;">';
+            $output .= fusionchart_table('catalog_type_data_service', $yr, $sum);
+            $output .= '</td>';
+            $output .= '</tr></table>';
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image']) && $_GET['image'] == 'services') {
+                phplot_get_image($info, 'pie');
+            }
+            $image_parameter = 'image=services';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img style="border-bottom:1px solid #A0A0A0;" class="hidden-image-chart-report" src="' . $full_url . '" alt="Services by Category"/></div>';
+            return $output;
+        }
+
+    }
+
+
+    function fusionchart_rawdata()
+    {
+
+        $yr = $_GET['year'];
+
+        if ($yr == '') {
+            $startdate = mktime(0, 0, 0, 1, 1, 2010);
+            $enddate = mktime();
+        }
+        else
+        {
+            $startdate = mktime(0, 0, 0, 1, 1, $yr);
+            $enddate = mktime(23, 59, 59, 12, 31, $yr);
+        }
+
+        $result = db_query("select count(*)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid INNER JOIN node n on DS.nid=n.nid where WF.sid=10 AND n.status=1  AND DS.field_ds_catlog_type_type='catalog_type_raw_data' AND WF.stamp BETWEEN   $startdate AND $enddate group by SEC.field_ds_sector_nid Order by count(*) desc ");
+
+        $j = 0;
+        $k = 0;
+        $sum = 0;
+        while ($row = db_fetch_object($result))
+        {
+            if ($k < 10) {
+                $data[$j] = array($row->name, $row->value);
+                $j++;
+            }
+            else
+                $sum = $sum + (int)$row->value;
+
+            $k++;
+        }
+        if ($data && $j == 10) $data[$j] = array('Others', $sum);
+        $info = new stdClass();
+        $info->data = $data;
+        $info->chart_type = 'Pie 2D';
+        $info->settings = array('showNames' => '0', 'showLegend' => '0', 'rotateNames' => '0', 'decimalPrecision' => '2', 'animation' => '1', 'formatNumberScale' => '0', 'showPercentValues' => '1', 'pieRadius' => '100', 'showPercentageInLabel' => '1');
+        $info->attributes = array('color' => array('ADDFFF', 'FFF000', 'F87431', 'A0C544', 'EAC117', '228BA8', '6D5499', 'E67541', '347C2C', '157DEC', '800517'), 'showBorder' => '1', 'borderColor' => '1D8BD1');
+        $info->width = 500;
+        $info->height = 283;
+        if ($data) {
+            $charts = 1;
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                return $data;
+            }
+
+
+            $output = '<div class="charts-wrapper"><div class="pie-chart-metrics-visitorstats-table-heading"><p>Raw Datasets by Category</p></div><table class="category-wise-chart hidden-on-pdf"><tr><td class="bgcolor">';
+            $output .= theme('fusionchart', $info) . '</td><td  style="vertical-align: top;">';
+            $output .= fusionchart_table('catalog_type_raw_data', $yr, $sum);
+            $output .= '</td>';
+            $output .= '</tr></table>';
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image']) && $_GET['image'] == 'raw') {
+                phplot_get_image($info, 'pie');
+            }
+
+            $image_parameter = 'image=raw';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img style="border-bottom:1px solid #A0A0A0;" class="hidden-image-chart-report" src="' . $full_url . '" alt="Raw Datasets by Category"/></div>';
+            return $output;
+        }
+
+    }
+
+
+    $yr = $_GET['year'];
+
+    if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+        $data_csv = array();
+        $data_csv['raw'] = fusionchart_rawdata();
+        if (!empty($data_csv['raw'])) {
+            array_unshift($data_csv['raw'], array('Category', 'Number of Raw Datasets'));
+            array_unshift($data_csv['raw'], array('Raw Datasets by Category', ''));
+        }
+        $data_csv['document'] = fusionchart_document();
+        if (!empty($data_csv['document'])) {
+           array_unshift($data_csv['document'], array('Category', 'Number of Documents'));
+           array_unshift($data_csv['document'], array('', ''), array('Documents by Category', ''));
+        }
+        $data_csv['apps'] = fusionchart_apps();
+        if (!empty($data_csv['apps'])) {
+           array_unshift($data_csv['apps'], array('Category', 'Number of Apps'));
+           array_unshift($data_csv['apps'], array('', ''), array('Apps by Category', ''));
+        }
+        $data_csv['tools'] = fusionchart_tools();
+        if (!empty($data_csv['tools'])) {
+            array_unshift($data_csv['tools'], array('Category', 'Number of Tools'));
+            array_unshift($data_csv['tools'], array('', ''), array('Tools by Category', ''));
+        }
+        $data_csv['services'] = fusionchart_services();
+        if (!empty($data_csv['services'])) {
+            array_unshift($data_csv['services'], array('Category', 'Number of Services'));
+            array_unshift($data_csv['services'], array('', ''), array('Services by Category', ''));
+        }
+        foreach ($data_csv as $category) {
+            if (is_array($category)) {
+                foreach ($category as $value) {
+                    $data_csv_final[] = $value;
+                }
+            }
+        }
+        if ($_GET['export'] == 'csv') {
+            export_to_csv($data_csv_final, "Agency_Publications_Category_Wise.csv");
+        }
+
+        // Export to XLS
+        if ($_GET['export'] == 'xls') {
+            export_to_xls($data_csv_final, "Agency_Publications_Category_Wise.xls", false);
+        }
+    }
+
+    $output .= fusionchart_rawdata();
+    $output .= fusionchart_document();
+    $output .= fusionchart_apps();
+    $output .= fusionchart_tools();
+    $output .= fusionchart_services();
+    if (variable_get('charts', '0') == '0') {
+        $output .= '<div class="chart-metrics-visitorstats-table-heading"><p>No data found</p></div>';
+    }
+    return $output;
+
+}
+
+function high_value()
+{
+    $output = '';
+    $output .= '';
+    $output .= "";
+
+
+    $year_get = $_GET['year'];
+
+    if (!empty($year_get)) {
+        $chart_year = $year_get;
+    }
+
+    $year = (int)date('Y');
+
+    //$year=$year-1;
+
+    $output .= "<form action=\"\" class=\"charts_form hidden-on-pdf\" id='high-value-filters' >";
+
+    $output .= '<div class="metrics-highvalue-select"><label for="selectyear">Select Year</label>: ';
+
+    $output .= "<select name='year' id='selectyear' >";
+    $output .= '<option value="">-- All -- &nbsp;</option>';
+    while ($year > 2010) {
+        if ($year_get == $year) {
+            $output .= "<option value='" . $year . "' selected = 'selected'>" . $year . "</option>";
+        }
+        else {
+            $output .= "<option value='" . $year . "'>" . $year . "</option>";
+        }
+        $year = $year - 1;
+    }
+    $output .= "</select></div>";
+
+    $cur_agency = $_GET['agency'];
+    $agency = db_query("Select nid,field_agency_name_value as name from content_type_agency");
+    $output .= '<div class="metrics-highvalue-select"><label for="agency">Select Agency</label>: ';
+    $output .= "<select name='agency' id='agency' >";
+    $output .= '<option value="">-- All --</option>';
+    while ($row = db_fetch_object($agency))
+    {
+        if ($cur_agency == $row->nid) {
+            $output .= "<option value='" . $row->nid . "' selected = 'selected'>" . $row->name . "&nbsp;</option>";
+        }
+        else {
+            $output .= "<option value='" . $row->nid . "'>" . $row->name . "&nbsp;</option>";
+        }
+    }
+    $output .= "</select></div>";
+
+    $cur_cat = $_GET['category'];
+    $agency = db_query("Select nid,field_sector_title_value as name from content_type_sector");
+    $output .= '<div class="metrics-highvalue-select"><label for="cat">Select Category</label>: ';
+    $output .= "<select name='category' id='cat' >";
+    $output .= '<option value="">-- All --</option>';
+    while ($row = db_fetch_object($agency))
+    {
+        if ($cur_cat == $row->nid) {
+            $output .= "<option value='" . $row->nid . "' selected = 'selected'>" . $row->name . "&nbsp;</option>";
+        }
+        else {
+            $output .= "<option value='" . $row->nid . "'>" . $row->name . "&nbsp;</option>";
+        }
+    }
+    $output .= "</select></div>";
+
+    $output .= '<div class="metrics-highvalue-select" ><input type="submit" value="Submit" id="submit_btn" title="Submit"/></div>';
+
+    $output .= "</form>";
+
+    $output .= get_download_links();
+
+    global $base_url;
+    variable_set('high_chart', '0');
+
+
+    function fusionchart_table($data)
+    {
+        variable_set('high_chart', '1');
+        $colors = array('yellow', 'lblue', 'orange', 'green', 'gold', 'turquoise', 'purple', 'lorange', 'dgreen', 'blue', 'red');
+        $output = '<div class="color-code-table"><table>';
+        $output .= '<tr><td style="width:12px;"><div class="' . $colors[0] . '"></div></td><td style="width:380px;" >High Value</td><td style="width:20px;"> ' . $data[0][1] . '</td></tr>';
+        $output .= '<tr><td style="width:12px;"><div class="' . $colors[1] . '"></div></td><td style="width:380px;">Others</td><td style="width:20px;"> ' . $data[1][1] . '</td></tr>';
+        $output .= '</table></div>';
+        return $output;
+    }
+
+
+    function fusionchart_document()
+    {
+        $yr = $_GET['year'];
+        $ag = $_GET['agency'];
+        $cat = $_GET['category'];
+        $agency_query = "";
+        $cat_query = "";
+        if ($yr == '') {
+            $startdate = mktime(0, 0, 0, 1, 1, 2010);
+            $enddate = mktime();
+        }
+        else
+        {
+            $startdate = mktime(0, 0, 0, 1, 1, $yr);
+            $enddate = mktime(23, 59, 59, 12, 31, $yr);
+        }
+
+        if ($ag != '') {
+            $agency_query = "AND  DS.field_ds_agency_name_nid=$ag";
+        }
+        if ($cat != '') {
+            $cat_query = "AND SEC.field_ds_sector_nid=$cat";
+        }
+
+        $result = db_result(db_query("select count(distinct DS.nid)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid LEFT JOIN node n on DS.nid=n.nid where WF.sid=10 AND n.status=1 $agency_query $cat_query   AND DS.field_ds_catlog_type_type='catalog_type_document' AND WF.stamp BETWEEN   $startdate AND $enddate  "));
+
+        $high_val = db_result(db_query("select count(distinct DS.nid)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid  LEFT JOIN content_type_policy_program_open_government as ppog ON ppog.nid=DS.nid  LEFT JOIN node n on DS.nid=n.nid where WF.sid=10 AND n.status=1 AND DS.field_ds_catlog_type_type='catalog_type_document' $agency_query $cat_query  AND WF.stamp BETWEEN   $startdate AND $enddate AND ppog.field_ppog_high_value_dataset_value='Yes' "));
+
+
+        $total = $result;
+        if ($result != 0) {
+            $result = $result - $high_val;
+            $data[0] = array('High Value', $high_val);
+            $data[1] = array('Others', $result);
+        }
+        $info = new stdClass();
+        $info->data = $data;
+        $info->chart_type = 'Pie 2D';
+        $info->settings = array('showNames' => '0', 'showLegend' => '0', 'rotateNames' => '0', 'decimalPrecision' => '2', 'animation' => '1', 'formatNumberScale' => '0', 'showPercentageValues' => '1', 'pieRadius' => '100', 'showPercentageInLabel' => '1');
+        $info->attributes = array('color' => array('FFF000', 'ADDFFF', 'F87431', 'A0C544', 'EAC117', '228BA8', '6D5499', 'E67541', '347C2C', '157DEC', '800517'), 'showBorder' => '1', 'borderColor' => '1D8BD1');
+        $info->width = 500;
+        $info->height = 285;
+        if ($data) {
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                return $data;
+            }
+            $charts = 1;
+            $output = '<div class="pie-chart-metrics-visitorstats-table-heading"><p>High Value Documents</p></div><table class="category-wise-chart hidden-on-pdf"><tr><td class="bgcolor">';
+            $output .= theme('fusionchart', $info) . '</td><td style="vertical-align:top">';
+            $output .= fusionchart_table($data);
+            $output .= '</td>';
+            $output .= '</tr></table>';
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image']) && $_GET['image'] == 'document') {
+                phplot_get_image($info, 'pie');
+            }
+            $image_parameter = 'image=document';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img style="border-bottom:1px solid #A0A0A0;" class="hidden-image-chart-report" src="' . $full_url . '" alt="High Value Documents"/>';
+            return $output;
+        }
+    }
+
+
+    function fusionchart_apps()
+    {
+        $yr = $_GET['year'];
+        $ag = $_GET['agency'];
+        $cat = $_GET['category'];
+        $agency_query = "";
+        $cat_query = "";
+        if ($yr == '') {
+            $startdate = mktime(0, 0, 0, 1, 1, 2010);
+            $enddate = mktime();
+        }
+        else
+        {
+            $startdate = mktime(0, 0, 0, 1, 1, $yr);
+            $enddate = mktime(23, 59, 59, 12, 31, $yr);
+        }
+
+        if ($ag != '') {
+            $agency_query = "AND  DS.field_ds_agency_name_nid=$ag";
+        }
+        if ($cat != '') {
+            $cat_query = "AND SEC.field_ds_sector_nid=$cat";
+        }
+
+        $result = db_result(db_query("select count(distinct DS.nid)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid LEFT JOIN node n on DS.nid=n.nid where WF.sid=10 AND n.status=1 $agency_query $cat_query   AND DS.field_ds_catlog_type_type='catalog_type_data_apps' AND WF.stamp BETWEEN   $startdate AND $enddate  "));
+
+        $high_val = db_result(db_query("select count(distinct DS.nid)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid  LEFT JOIN content_type_policy_program_open_government as ppog ON ppog.nid=DS.nid  LEFT JOIN node n on DS.nid=n.nid where WF.sid=10 AND n.status=1 AND DS.field_ds_catlog_type_type='catalog_type_data_apps' $agency_query $cat_query  AND WF.stamp BETWEEN   $startdate AND $enddate AND ppog.field_ppog_high_value_dataset_value='Yes' "));
+
+
+        $total = (int)$result;
+        if ($result != 0) {
+            $others = $result - $high_val;
+            $data[0] = array('High Value', $high_val);
+            $data[1] = array('Others', $others);
+        }
+        $info = new stdClass();
+        $info->data = $data;
+        $info->chart_type = 'Pie 2D';
+        $info->settings = array('showNames' => '0', 'showLegend' => '0', 'rotateNames' => '0', 'decimalPrecision' => '2', 'animation' => '1', 'formatNumberScale' => '0', 'showPercentageValues' => '1', 'pieRadius' => '100', 'showPercentageInLabel' => '1');
+        $info->attributes = array('color' => array('FFF000', 'ADDFFF', 'F87431', 'A0C544', 'EAC117', '228BA8', '6D5499', 'E67541', '347C2C', '157DEC', '800517'), 'showBorder' => '1', 'borderColor' => '1D8BD1');
+        $info->width = 500;
+        $info->height = 285;
+        if ($data) {
+            $charts = 1;
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                return $data;
+            }
+            $output = '<div class="pie-chart-metrics-visitorstats-table-heading"><p>High Value Apps</p></div><table class="category-wise-chart hidden-on-pdf"><tr><td class="bgcolor">';
+            $output .= theme('fusionchart', $info) . '</td><td style="vertical-align:top">';
+            $output .= fusionchart_table($data);
+            $output .= '</td>';
+            $output .= '</tr></table>';
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image']) && $_GET['image'] == 'apps') {
+                phplot_get_image($info, 'pie');
+            }
+            $image_parameter = 'image=apps';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img style="border-bottom:1px solid #A0A0A0;" class="hidden-image-chart-report" src="' . $full_url . '" alt="High Value Apps"/>';
+            return $output;
+        }
+    }
+
+
+    function fusionchart_tools()
+    {
+        $yr = $_GET['year'];
+        $ag = $_GET['agency'];
+        $cat = $_GET['category'];
+        $agency_query = "";
+        $cat_query = "";
+        if ($yr == '') {
+            $startdate = mktime(0, 0, 0, 1, 1, 2010);
+            $enddate = mktime();
+        }
+        else
+        {
+            $startdate = mktime(0, 0, 0, 1, 1, $yr);
+            $enddate = mktime(23, 59, 59, 12, 31, $yr);
+        }
+
+        if ($ag != '') {
+            $agency_query = "AND  DS.field_ds_agency_name_nid=$ag";
+        }
+        if ($cat != '') {
+            $cat_query = "AND SEC.field_ds_sector_nid=$cat";
+        }
+
+        $result = db_result(db_query("select count(distinct DS.nid)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid LEFT JOIN node n on DS.nid=n.nid where WF.sid=10 AND n.status=1 $agency_query $cat_query   AND DS.field_ds_catlog_type_type='catalog_type_data_tools' AND WF.stamp BETWEEN   $startdate AND $enddate  "));
+
+        $high_val = db_result(db_query("select count(distinct DS.nid)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid  LEFT JOIN content_type_policy_program_open_government as ppog ON ppog.nid=DS.nid  LEFT JOIN node n on DS.nid=n.nid where WF.sid=10 AND n.status=1 AND DS.field_ds_catlog_type_type='catalog_type_data_tools' $agency_query $cat_query  AND WF.stamp BETWEEN   $startdate AND $enddate AND ppog.field_ppog_high_value_dataset_value='Yes' "));
+
+        $total = $result;
+        if ($result != 0) {
+            $others = (int)$result - (int)$high_val;
+            $data[0] = array('High Value', $high_val);
+            $data[1] = array('Others', $others);
+        }
+        $info = new stdClass();
+        $info->data = $data;
+        $info->chart_type = 'Pie 2D';
+        $info->settings = array('showNames' => '0', 'showLegend' => '0', 'rotateNames' => '0', 'decimalPrecision' => '2', 'animation' => '1', 'formatNumberScale' => '0', 'showPercentageValues' => '1', 'pieRadius' => '100', 'showPercentageInLabel' => '1');
+        $info->attributes = array('color' => array('FFF000', 'ADDFFF', 'F87431', 'A0C544', 'EAC117', '228BA8', '6D5499', 'E67541', '347C2C', '157DEC', '800517'), 'showBorder' => '1', 'borderColor' => '1D8BD1');
+        $info->width = 500;
+        $info->height = 285;
+        if ($data) {
+            $charts = 1;
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                return $data;
+            }
+            $output = '<div class="pie-chart-metrics-visitorstats-table-heading"><p>High Value Tools</p></div><table class="category-wise-chart hidden-on-pdf"><tr><td class="bgcolor">';
+            $output .= theme('fusionchart', $info) . '</td><td style="vertical-align:top">';
+            $output .= fusionchart_table($data);
+            $output .= '</td>';
+            $output .= '</tr></table>';
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image']) && $_GET['image'] == 'tools') {
+                phplot_get_image($info, 'pie');
+            }
+            $image_parameter = 'image=tools';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img style="border-bottom:1px solid #A0A0A0;" class="hidden-image-chart-report" src="' . $full_url . '" alt="High Value Tools"/>';
+            return $output;
+        }
+    }
+
+    function fusionchart_services()
+    {
+        $yr = $_GET['year'];
+        $ag = $_GET['agency'];
+        $cat = $_GET['category'];
+        $agency_query = "";
+        $cat_query = "";
+        if ($yr == '') {
+            $startdate = mktime(0, 0, 0, 1, 1, 2010);
+            $enddate = mktime();
+        }
+        else
+        {
+            $startdate = mktime(0, 0, 0, 1, 1, $yr);
+            $enddate = mktime(23, 59, 59, 12, 31, $yr);
+        }
+
+        if ($ag != '') {
+            $agency_query = "AND  DS.field_ds_agency_name_nid=$ag";
+        }
+        if ($cat != '') {
+            $cat_query = "AND SEC.field_ds_sector_nid=$cat";
+        }
+
+        $result = db_result(db_query("select count(distinct DS.nid)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid LEFT JOIN node n on DS.nid=n.nid where WF.sid=10 AND n.status=1 $agency_query $cat_query   AND DS.field_ds_catlog_type_type='catalog_type_data_service' AND WF.stamp BETWEEN   $startdate AND $enddate  "));
+
+        $high_val = db_result(db_query("select count(distinct DS.nid)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid  LEFT JOIN content_type_policy_program_open_government as ppog ON ppog.nid=DS.nid LEFT JOIN node n on DS.nid=n.nid  where WF.sid=10 AND n.status=1 AND DS.field_ds_catlog_type_type='catalog_type_data_service' $agency_query $cat_query  AND WF.stamp BETWEEN   $startdate AND $enddate AND ppog.field_ppog_high_value_dataset_value='Yes' "));
+
+        $total = $result;
+        if ($result != 0) {
+            $others = (int)$result - (int)$high_val;
+            $data[0] = array('High Value', $high_val);
+            $data[1] = array('Others', $others);
+        }
+        $info = new stdClass();
+        $info->data = $data;
+        $info->chart_type = 'Pie 2D';
+        $info->settings = array('showNames' => '0', 'showLegend' => '0', 'rotateNames' => '0', 'decimalPrecision' => '2', 'animation' => '1', 'formatNumberScale' => '0', 'showPercentageValues' => '1', 'pieRadius' => '100', 'showPercentageInLabel' => '1');
+        $info->attributes = array('color' => array('FFF000', 'ADDFFF', 'F87431', 'A0C544', 'EAC117', '228BA8', '6D5499', 'E67541', '347C2C', '157DEC', '800517'), 'showBorder' => '1', 'borderColor' => '1D8BD1');
+        $info->width = 500;
+        $info->height = 285;
+        if ($data) {
+            $charts = 1;
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                return $data;
+            }
+            $output = '<div class="pie-chart-metrics-visitorstats-table-heading"><p>High Value Services</p></div><table class="category-wise-chart hidden-on-pdf"><tr><td class="bgcolor">';
+            $output .= theme('fusionchart', $info) . '</td><td style="vertical-align:top">';
+            $output .= fusionchart_table($data);
+            $output .= '</td>';
+            $output .= '</tr></table>';
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image']) && $_GET['image'] == 'services') {
+                phplot_get_image($info, 'pie');
+            }
+            $image_parameter = 'image=services';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img style="border-bottom:1px solid #A0A0A0;" class="hidden-image-chart-report" src="' . $full_url . '" alt="High Value Services"/>';
+            return $output;
+        }
+
+    }
+
+    function fusionchart_rawdata()
+    {
+        $yr = $_GET['year'];
+        $ag = $_GET['agency'];
+        $cat = $_GET['category'];
+        $agency_query = "";
+        $cat_query = "";
+        if ($yr == '') {
+            $startdate = mktime(0, 0, 0, 1, 1, 2010);
+            $enddate = mktime();
+        }
+        else
+        {
+            $startdate = mktime(0, 0, 0, 1, 1, $yr);
+            $enddate = mktime(23, 59, 59, 12, 31, $yr);
+        }
+
+        if ($ag != '') {
+            $agency_query = "AND  DS.field_ds_agency_name_nid=$ag";
+        }
+        if ($cat != '') {
+            $cat_query = "AND SEC.field_ds_sector_nid=$cat";
+        }
+
+        $result = db_result(db_query("select count(distinct DS.nid)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid  LEFT JOIN node n on DS.nid=n.nid  where WF.sid=10 AND n.status=1 $agency_query $cat_query   AND DS.field_ds_catlog_type_type='catalog_type_raw_data' AND WF.stamp BETWEEN   $startdate AND $enddate  "));
+
+        $high_val = db_result(db_query("select count(distinct DS.nid)as value,field_sector_title_value as name from content_field_ds_sector SEC LEFT JOIN content_type_sector CTS ON SEC.field_ds_sector_nid=CTS.nid LEFT JOIN content_type_dataset DS On SEC.nid=DS.nid LEFT JOIN workflow_node WF on WF.nid=DS.nid  LEFT JOIN content_type_policy_program_open_government as ppog ON ppog.nid=DS.nid  LEFT JOIN node n on DS.nid=n.nid  where WF.sid=10 AND n.status=1 AND DS.field_ds_catlog_type_type='catalog_type_raw_data' $agency_query $cat_query  AND WF.stamp BETWEEN   $startdate AND $enddate AND ppog.field_ppog_high_value_dataset_value='Yes' "));
+
+        $total = $result;
+        if ($result != 0) {
+            $others = (int)$result - (int)$high_val;
+            $data[0] = array('High Value', $high_val);
+            $data[1] = array('Others', $others);
+        }
+        $info = new stdClass();
+        $info->data = $data;
+        $info->chart_type = 'Pie 2D';
+        $info->settings = array('showNames' => '0', 'showLegend' => '0', 'rotateNames' => '0', 'decimalPrecision' => '2', 'animation' => '1', 'formatNumberScale' => '0', 'showPercentageValues' => '1', 'pieRadius' => '100', 'showPercentageInLabel' => '1');
+        $info->attributes = array('color' => array('FFF000', 'ADDFFF', 'F87431', 'A0C544', 'EAC117', '228BA8', '6D5499', 'E67541', '347C2C', '157DEC', '800517'), 'showBorder' => '1', 'borderColor' => '1D8BD1');
+        $info->width = 500;
+        $info->height = 285;
+        if ($data) {
+            $charts = 1;
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                return $data;
+            }
+            $output = '<div class="pie-chart-metrics-visitorstats-table-heading"><p>High Value Raw Datasets</p></div><table class="category-wise-chart hidden-on-pdf"><tr><td class="bgcolor">';
+            $output .= theme('fusionchart', $info) . '</td><td style="vertical-align:top">';
+            $output .= fusionchart_table($data);
+            $output .= '</td>';
+            $output .= '</tr></table>';
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image']) && $_GET['image'] == 'raw') {
+                phplot_get_image($info, 'pie');
+            }
+            $image_parameter = 'image=raw';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img style="border-bottom:1px solid #A0A0A0;" class="hidden-image-chart-report" src="' . $full_url . '" alt="High Value Raw Datasets"/>';
+            return $output;
+        }
+
+    }
+
+    $yr = $_GET['year'];
+
+    if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+        $data_csv = array();
+        $data_csv['raw'] = fusionchart_rawdata();
+        if (!empty($data_csv['raw'])) {
+            array_unshift($data_csv['raw'], array('Type', 'Number of Raw Datasets'));
+            array_unshift($data_csv['raw'], array('High Value Raw Datasets', ''));
+        }
+        $data_csv['document'] = fusionchart_document();
+        if (!empty($data_csv['document'])) {
+            array_unshift($data_csv['document'], array('Type', 'Number of Documents'));
+            array_unshift($data_csv['document'], array('', ''), array('High Value Documents', ''));
+        }
+        $data_csv['apps'] = fusionchart_apps();
+        if (!empty($data_csv['apps'])) {
+            array_unshift($data_csv['apps'], array('Type', 'Number of Apps'));
+            array_unshift($data_csv['apps'], array('', ''), array('High Value Apps', ''));
+        }
+        $data_csv['tools'] = fusionchart_tools();
+        if (!empty($data_csv['tools'])) {
+            array_unshift($data_csv['tools'], array('Type', 'Number of Tools'));
+            array_unshift($data_csv['tools'], array('', ''), array('High Value Tools', ''));
+        }
+        $data_csv['services'] = fusionchart_services();
+        if (!empty($data_csv['services'])) {
+            array_unshift($data_csv['services'], array('Type', 'Number of Services'));
+            array_unshift($data_csv['services'], array('', ''), array('High Value Services', ''));
+        }
+        foreach ($data_csv as $category) {
+            if (is_array($category)) {
+                foreach ($category as $value) {
+                    //array_push($data_csv_final, $category);
+                    $data_csv_final[] = $value;
+                }
+            }
+        }
+        if (!is_array($data_csv_final[0])) {
+            unset($data_csv_final[0]);
+        }
+        if ($_GET['export'] == 'csv') {
+            export_to_csv($data_csv_final, "High_Value_Datasets.csv");
+        }
+        // Export to XLS
+        if ($_GET['export'] == 'xls') {
+            export_to_xls($data_csv_final, "High_Value_Datasets.xls", false);
+        }
+    }
+
+    $output .= fusionchart_rawdata();
+    $output .= fusionchart_document();
+    $output .= fusionchart_apps();
+    $output .= fusionchart_tools();
+    $output .= fusionchart_services();
+    if (variable_get('high_chart', '0') == '0') {
+        $output .= '<div class="chart-metrics-visitorstats-table-heading"><p>No Data Found.</p></div>';
+    }
+
+
+    return $output;
+
+
+}
+
+function daily_visitor_statistics()
+{
+    $output = '';
+    $output .= '<script language="JavaScript" type="text/javascript">
+	function getAbsolutePath() {
+	    var loc = window.location;
+	    var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf(\'/\') + 1);
+	    return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+	}
+	
+	function loadchart() {
+	month_year = document.getElementById("selectmonth").value;
+	
+	window.location=getAbsolutePath()+"daily-visitor-statistics\?month_year="+month_year;
+	return false;
+	}';
+    $output .= "</script>";
+
+    $month_year_get = $_GET['month_year'];
+    if (!empty($month_year_get))
+        $chart_month = explode("/", $month_year_get);
+
+    $month = (int)date('m');
+    $year = (int)date('Y');
+    $month = $month - 1;
+    if ($month == 0) {
+        $month = 12;
+        $year = $year - 1;
+    }
+    $till_date = db_query("select accesslog.timestamp as min_date from accesslog ORDER BY accesslog.timestamp ASC LIMIT 1");
+    $tilldate = db_fetch_object($till_date);
+
+    $till_year = (int)date("Y", $tilldate->min_date);
+    $till_month = (int)date("m", $tilldate->min_date);
+
+    $output .= "<form class=\"charts_form hidden-on-pdf\" action=\"\">";
+    $output .= '<div class="metrics-datasetreport-select"><label for="selectmonth">Select Month</label>: ';
+    $output .= "<select name='month_year' id='selectmonth' >";
+    for ($i = 0; $i < 12; $i++)
+    {
+        if ($month == 0) {
+            $month = 12;
+            $year = $year - 1;
+        }
+        if ($year >= $till_year) {
+            if ($month >= $till_month || $year > $till_year) {
+                $month_name = monthName($month);
+
+                $month_year = $month_name . " " . $year;
+                $month_year_int = $month . "/" . $year;
+
+                if ($month_year_get == $month_year_int) {
+                    $output .= "<option value='" . $month_year_int . "' selected = 'selected'>" . $month_year . "</option>";
+                } else {
+                    $output .= "<option value='" . $month_year_int . "'>" . $month_year . "</option>";
+                }
+            }
+            else break;
+        }
+        $month = $month - 1;
+    }
+    $output .= "</select>";
+    $output .= '<input type="submit" value="Submit" id="submit_btn" title="Submit"/></div>';
+    $output .= "</form>";
+
+    $output .= get_download_links();
+
+    global $base_url;
+    function fusionchart_callback($base_url, $chart_month)
+    {
+        $url = $base_url . '/';
+        //$url = 'http://203.199.26.72/dms/';
+        $chart = 0;
+        $values = array();
+        if (empty($chart_month)) {
+            $month = (int)date('m');
+            $year = (int)date('Y');
+            $month = $month - 1;
+            if ($month == 0) {
+                $month = 12;
+                $year = $year - 1;
+            }
+        }
+        else {
+            $month = $chart_month[0];
+            $year = $chart_month[1];
+        }
+        $output = '<div class="chart-metrics-visitorstats-table-heading">
+	      <p>Daily Visitor Statistics (' . monthName($month) . ' ' . $year . ')</p></div>';
+
+        $num = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+
+        for ($i = 1; $i <= $num; $i++) {
+            // $chart=1;
+            $start = strtotime("$month/$i/$year 00:00:00");
+            $end = strtotime("$month/$i/$year 23:59:59");
+            $result = db_query("SELECT count( aid ) AS cnt FROM accesslog WHERE accesslog.url =  '$url' AND accesslog.timestamp >= $start AND  accesslog.timestamp <= $end ");
+
+            //$output .= "<br> SELECT count( aid ) AS cnt FROM accesslog WHERE accesslog.url =  '$url' AND accesslog.timestamp >= $start AND  accesslog.timestamp <= $end  ";
+            $values[$i] = (int)db_fetch_object($result)->cnt;
+            if ($values[$i] != 0) $chart = 1;
+        }
+
+
+        /*
+	  if($month==1 || $month==3 || $month== 5 || $month==7 || $month==8 || $month==10 || $month==12){
+
+	  $values=array('1'=>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	  }
+	  if($month==2 ){
+	  if($year%4==0 && $year%400==0)
+	  $values=array('1'=>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	  else
+	  $values=array('1'=>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	  }
+	  if($month==4 || $month==6 || $month==9 || $month==11)
+	  $values=array('1'=>0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	  $query="SELECT accesslog.timestamp as timestamp FROM accesslog where accesslog.url='http://203.199.26.72/dms/' ";
+	  $result=db_query($query);
+	  //$result = db_query("SELECT accesslog.timestamp as timestamp FROM accesslog where accesslog.url='$url' and DATE_FORMAT(FROM_UNIXTIME(accesslog.timestamp), '%b')='Dec'");
+	  //$output .= "SELECT accesslog.timestamp as timestamp FROM accesslog where accesslog.url='$url' and DATE_FORMAT(FROM_UNIXTIME(accesslog.timestamp), '%b')='Dec'";
+	  while ($data = db_fetch_object($result))
+	  {
+
+	  $date=(int)date('d',$data->timestamp);
+	  $mon=(int)date('m',$data->timestamp);
+	  $yr=(int)date('Y',$data->timestamp);
+
+	  if($month==$mon && $year==$yr)
+	  {
+	  $chart=1;
+	  $values[$date]++;
+	  }
+
+	  }
+
+	  */
+
+        $a = array();
+        $j = 0;
+        foreach ($values as $i)
+        {
+            $a[$j++] = array($j, $i);
+        }
+
+
+        if ($chart == 1) {
+
+            // Export to CSV
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                $header = array('Day of the Month', 'Number of Visitors');
+                array_unshift($a, $header);
+                if ($_GET['export'] == 'csv') {
+                    export_to_csv($a, "Daily_Visitor_Statistics.csv");
+                }
+                // Export to XLS
+                if ($_GET['export'] == 'xls') {
+                    export_to_xls($a, "Daily_Visitor_Statistics.xls");
+                }
+            }
+            //$output .='<div style="position:relative;width:900px;height:450px;overflow:hidden;"><div style="width:900px;height:500px;position:absolute;margin:-40px 0 0 0;">';
+            $info = new stdClass();
+            $info->data = $a;
+            $info->chart_type = 'Column 2D';
+            $info->settings = array('Caption' => ' ', 'yAxisName' => 'Number of Visitors', 'xAxisName' => 'Day of the Month', 'decimalPrecision' => '0');
+            $info->attributes = array('color' => array('38ACEC'));
+            $info->width = 900;
+            $info->height = 500;
+            if (strpos(request_uri(), 'printpdf') === false) {
+                $output .= '<div class="hidden-on-pdf">';
+                $output .= theme('fusionchart', $info);
+                $output .= '</div>';
+            }
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image'])) {
+                phplot_get_image($info);
+            }
+            $image_parameter = 'image=1';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img class="hidden-image-chart-report" src="' . $full_url . '" alt="Daily visitor statistics"/>';
+            return $output;
+
+            //$output .="</div>";
+            //$output .="</div>";
+
+        }
+
+        if ($chart == 0) {
+            $output .= '<div class="chart-error">No Data Found</div>';
+            return $output;
+        }
+
+    }
+
+    $output .= fusionchart_callback($base_url, $chart_month);
+    return $output;
+
+}
+
+function monthly_visitor_statistics()
+{
+
+    $output = '<script language="JavaScript" type="text/javascript">
+	function getAbsolutePath() {
+	    var loc = window.location;
+	    var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf(\'/\') + 1);
+	    return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+	}
+	
+	function loadchart(year)
+	{
+	year = document.getElementById("selectyear").value;
+	window.location=getAbsolutePath()+"monthly-visitor-statistics\?year="+year;
+	return false;
+	}';
+    $output .= "</script>";
+    $year_get = $_GET['year'];
+    if (!empty($year_get)) {
+        $chart_year = $year_get;
+    }
+    $year = (int)date('Y');
+
+    $output .= "<form class=\"charts_form hidden-on-pdf\" action=\"\" >";
+    $output .= '<div class="metrics-datasetreport-select"><label for="selectyear">Select Year</label>: ';
+    $output .= "<select name='year' id='selectyear' >";
+    $output .= "<option value='" . $year . "'>Past 12 Months&nbsp;</option>";
+    $year = $year - 1;
+    $till_date = db_query("select accesslog.timestamp as min_date from accesslog ORDER BY accesslog.timestamp ASC LIMIT 1");
+    $tilldate = db_fetch_object($till_date);
+    $till_year = (int)date("Y", $tilldate->min_date);
+    for ($i = 0; $i < 9; $i++) {
+        if ($year >= $till_year) {
+            if ($year_get == $year) {
+                $output .= "<option value='" . $year . "' selected = 'selected'>" . $year . "&nbsp;</option>";
+            } else {
+                $output .= "<option value='" . $year . "'>" . $year . "&nbsp;</option>";
+            }
+        }
+        else break;
+        $year = $year - 1;
+    }
+    $output .= "</select>";
+    $output .= '<input type="submit" value="Submit" id="submit_btn" title="Submit"/></div>';
+    $output .= "</form>";
+
+    $output .= get_download_links();
+
+    global $base_url;
+    function fusionchart_callback($base_url, $chart_year)
+    {
+        $url = $base_url . '/';
+        //$url='http://203.199.26.72/dms/';
+        $new = 0;
+        $year = $chart_year;
+        $month = 1;
+        if (empty($year) || $year == (int)date('Y')) {
+            $year = (int)date('Y');
+            $year_new = (int)date('y');
+            $month = (int)date('m');
+            $month = $month - 1;
+            $new = 1;
+            //$year=$year-1;
+        }
+        if ($year != (int)date('Y')) {
+            $output = '<div class="chart-metrics-visitorstats-table-heading">
+	      <p>Monthly Visitor Statistics (' . $year . ')</p></div>';
+        }
+        else {
+            $output = '<div class="chart-metrics-visitorstats-table-heading">
+	      <p>Monthly Visitor Statistics (Past 12 Months)</p></div>';
+        }
+
+        /*started here */
+
+        $values = array();
+        $start = array();
+        $end = array();
+        $index = array();
+        if ($new == 1) {
+            for ($i = 0; $i < 12; $i++) {
+                if ($month == 0) {
+                    $month = 12;
+                    $year = $year - 1;
+                }
+                $num = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                $start[$i] = strtotime("$month/01/$year 00:00:00");
+                $end[$i] = strtotime("$month/$num/$year 23:59:59");
+                $index[$i] = monthName($month) . ' ' . $year;
+                $month = $month - 1;
+            }
+        }
+        else {
+            for ($i = 0; $i < 12; $i++) {
+                $num = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+                $start[$i] = strtotime("$month/01/$year 00:00:00");
+                $end[$i] = strtotime("$month/$num/$year 23:59:59");
+                $index[$i] = monthName($month) . $year;
+                $month = $month + 1;
+            }
+        }
+
+        for ($i = 0; $i < 12; $i++) {
+            $result = db_query("SELECT count( aid ) AS cnt FROM accesslog WHERE accesslog.url =  '$url' AND accesslog.timestamp >= $start[$i] AND  accesslog.timestamp <= $end[$i] ");
+            $values[$index[$i]] = (int)db_fetch_object($result)->cnt;
+            if ($values[$index[$i]] != 0) $chart = 1;
+        }
+
+
+        //$j=1;
+        if ($new == 1) {
+            $values1 = array_reverse($values);
+            $index1 = array_reverse($index);
+
+            $j = 0;
+            foreach ($values1 as $i)
+            {
+
+                $a[$j] = array($index1[$j], $i);
+                $j = $j + 1;
+
+            }
+        }
+        else {
+            $j = 0;
+            foreach ($values as $i)
+            {
+                $a[$j] = array($index[$j], $i);
+                $j = $j + 1;
+
+            }
+        }
+
+
+        if ($chart == 1) {
+
+            // Export to CSV
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                $header = array('Month of the Year', 'Number of Visitors');
+                array_unshift($a, $header);
+                if ($_GET['export'] == 'csv') {
+                    export_to_csv($a, "Monthly_Visitor_Statistics.csv");
+                }
+                // Export to XLS
+                if ($_GET['export'] == 'xls') {
+                    export_to_xls($a, "Monthly_Visitor_Statistics.xls");
+                }
+            }
+
+            //$output .='<div style="position:relative;width:900px;height:450px;overflow:hidden;"><div style="width:900px;height:500px;position:absolute;margin:-40px 0 0 0;">';
+            $info = new stdClass();
+            $info->data = $a;
+            $info->chart_type = 'Column 2D';
+            $info->settings = array('Caption' => ' ', 'xAxisName' => 'Month of the Year', 'yAxisName' => 'Number of Visitors', 'decimalPrecision' => '0', 'formatNumberScale' => '0', 'labelDisplay' => 'Rotate', 'slantLabels' => '1','rotateNames' => '1');
+            $info->attributes = array('color' => array('38ACEC'));
+            $info->width = 900;
+            $info->height = 500;
+            $output .= theme('fusionchart', $info);
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image'])) {
+                phplot_get_image($info);
+            }
+            $image_parameter = 'image=1';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img class="hidden-image-chart-report" src="' . $full_url . '" alt="Monthly visitor statistics"/>';
+            return $output;
+            //$output .= "</div>";
+            //$output .= "</div>";
+        }
+        else
+            return $output .= "<div class='chart-error'>No Data Found</div>";
+
+    }
+
+    $output .= fusionchart_callback($base_url, $chart_year);
+    return $output;
+
+}
+
+function top_visiting_cities()
+{
+
+    function fusionchart_callback()
+    {
+
+        $month = date('Y-m-01', strtotime('-1 month'));
+        $monthName = date('F Y', strtotime('-1 month'));
+
+        $output = '<div class="chart-metrics-visitorstats-table-heading">
+		      <p>Top 10 Visiting Cities (' . $monthName . ')</p></div>';
+        $output .= get_download_links();
+        $info = new stdClass();
+        $query = "
+           SELECT count(*)
+             FROM {charts_export_visitor_summary}
+            WHERE month = '$month'";
+        if (current(db_fetch_array(db_query($query))) > 0) {
+            $info->query = "
+                           SELECT city AS name, SUM(count) AS value
+                             FROM {charts_export_visitor_summary}
+                            WHERE month = '$month'
+                         GROUP BY city
+                         ORDER BY value DESC
+                        LIMIT 10";
+
+            // Export to CSV
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                $result = db_query($info->query);
+                $data_csv[] = array('Cities', 'Number of Visits');
+                while ($row = db_fetch_object($result)) {
+                    $data_csv[] = array($row->name, $row->value);
+                }
+                if ($_GET['export'] == 'csv') {
+                    export_to_csv($data_csv, "Top_10_Visiting_Cities.csv");
+                }
+                // Export to XLS
+                if ($_GET['export'] == 'xls') {
+                    export_to_xls($data_csv, "Top_10_Visiting_Cities.xls");
+                }
+            }
+
+            $info->chart_type = 'Column 2D';
+            $info->settings = array('Caption' => ' ', 'xAxisName' => 'City', 'yAxisName' => 'Number of Visits', 'decimalPrecision' => '0', 'formatNumberScale' => '0', 'rotateNames' => '1');
+            $info->attributes = array('color' => array('38ACEC'));
+            $info->width = 900;
+            $info->height = 500;
+            $output .= theme('fusionchart', $info);
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image'])) {
+                $cities_result = db_query($info->query);
+                if (db_affected_rows() > 0) {
+                    while ($cities_row = db_fetch_object($cities_result)) {
+                        $a[] = array($cities_row->name, $cities_row->value);
+                    }
+                    $info->data = $a;
+                    phplot_get_image($info, 'bar', 0);
+                }
+            }
+            $image_parameter = 'image=1';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img class="hidden-image-chart-report" src="' . $full_url . '" alt="Top 10 Visiting cities"/>';
+            return $output;
+
+        }
+        else
+            $output .= '<div class="chart-error">No data found</div>';
+        return $output;
+    }
+
+    global $base_url;
+    $this_page = drupal_get_path_alias($_GET['q']);
+    $output = '<div class="catalog-tabs-menu hidden-on-pdf">';
+    $output .= '<ul class="catalog-tabs catalog-adjust">';
+    if ($this_page == 'visitorstats/top10visitingcountries') {
+        $output .= '<li><a class="active" href="' . $base_url . '/visitorstats/top10visitingcountries" title="Country Statistics">Country Statistics</a> </li>';
+        $output .= '<li><a  href="' . $base_url . '/visitorstats/top10visitingcities" title="City Statistics">City Statistics</a> </li>';
+    }
+    else {
+        $output .= '<li><a  href="' . $base_url . '/visitorstats/top10visitingcountries" title="Country Statistics">Country Statistics</a> </li>';
+        $output .= '<li><a class="active" href="' . $base_url . '/visitorstats/top10visitingcities" title="City Statistics">City Statistics</a> </li>';
+    }
+    $output .= '</ul>';
+    $output .= '</div>';
+    $output .= '<div class="metrics-category-report-border">';
+    $output .= fusionchart_callback();
+    $output .= '</div>';
+    return $output;
+
+
+}
+
+function top_visiting_countries()
+{
+
+    function fusionchart_callback()
+    {
+        $month = date('Y-m-01', strtotime('-1 month'));
+        $monthName = date('F Y', strtotime('-1 month'));
+        $output = '<div class="chart-metrics-visitorstats-table-heading">
+		      <p>Top 10 Visiting Countries (' . $monthName . ')</p></div>';
+
+        $output .= get_download_links();
+        $info = new stdClass();
+        $query = "
+          SELECT count(*)
+            FROM {charts_export_visitor_summary}
+           WHERE month = '$month'";
+        if (current(db_fetch_array(db_query($query))) > 0) {
+            $info->query = "
+                          SELECT country AS name, SUM(count) AS value
+                            FROM {charts_export_visitor_summary}
+                           WHERE month = '$month'
+                        GROUP BY name
+                        ORDER BY value DESC
+                           LIMIT 10";
+
+            // Export to CSV
+            if ($_GET['export'] == 'csv' || $_GET['export'] == 'xls') {
+                $result = db_query($info->query);
+                $data_csv[] = array('Countries', 'Number of Visits');
+                while ($row = db_fetch_object($result)) {
+                    $data_csv[] = array($row->name, $row->value);
+                }
+                if ($_GET['export'] == 'csv') {
+                    export_to_csv($data_csv, "Top_10_Visiting_Countries.csv");
+                }
+                // Export to XLS
+                if ($_GET['export'] == 'xls') {
+                    export_to_xls($data_csv, "Top_10_Visiting_Countries.xls");
+                }
+            }
+
+            $info->chart_type = 'Column 2D';
+            $info->settings = array('Caption' => ' ', 'xAxisName' => 'Country', 'yAxisName' => 'Number of Visits', 'decimalPrecision' => '0', 'formatNumberScale' => '0', 'rotateNames' => '1');
+            $info->attributes = array('color' => array('38ACEC'));
+            $info->width = 900;
+            $info->height = 500;
+            $output .= theme('fusionchart', $info);
+            // if chart image is requested then call  phplot_get_image($info)
+            if (isset($_GET['image'])) {
+                $countries_result = db_query($info->query);
+                if (db_affected_rows() > 0) {
+                    while ($countries_row = db_fetch_object($countries_result)) {
+                        $a[] = array($countries_row->name, $countries_row->value);
+                    }
+                    $info->data = $a;
+                    phplot_get_image($info, 'bar', 0);
+                }
+            }
+            $image_parameter = 'image=1';
+            $full_url = get_full_url($image_parameter);
+            $output .= '<img class="hidden-image-chart-report" src="' . $full_url . '" alt="Top 10 visiting countries"/>';
+            return $output;
+        }
+        else {
+            $output .= '<div class="chart-error">No data found</div>';
+            return $output;
+        }
+    }
+
+    global $base_url;
+    $this_page = drupal_get_path_alias($_GET['q']);
+    $output = '<div class="catalog-tabs-menu hidden-on-pdf">';
+    $output .= '<ul class="catalog-tabs catalog-adjust">';
+    if ($this_page == 'visitorstats/top10visitingcountries') {
+        $output .= '<li><a class="active" href="' . $base_url . '/visitorstats/top10visitingcountries" title="Country Statistics">Country Statistics</a> </li>';
+        $output .= '<li><a  href="' . $base_url . '/visitorstats/top10visitingcities" title="City Statistics">City Statistics</a> </li>';
+    }
+    else {
+        $output .= '<li><a  href="' . $base_url . '/visitorstats/top10visitingcountries" title="Country Statistics">Country Statistics</a> </li>';
+        $output .= '<li><a class="active" href="' . $base_url . '/visitorstats/top10visitingcities" title="City Statistics">City Statistics</a> </li>';
+    }
+    $output .= '</ul>';
+    $output .= '</div>';
+    $output .= '<div class="metrics-category-report-border">';
+    $output .= fusionchart_callback();
+    $output .= '</div>';
+    return $output;
+
+}
+
+function get_full_url($parameter, $forcedurl = null)
+{
+	$final_url = is_null($forcedurl) ? $_GET['q'] : $forcedurl;
+    if (strpos(request_uri(), '?') !== false) {
+        // append to query string
+        $expoded_url = explode('?', request_uri());
+        $query_string = $expoded_url[1];
+        $parameter = '&' . $parameter;
+        $full_url = url($final_url, array('absolute' => true, 'query' => $query_string)) . $parameter;
+    } else {
+        $parameter = '?' . $parameter;
+        $full_url = url($final_url, array('absolute' => true)) . $parameter;
+    }
+    $full_url = str_replace("&", "&amp;", $full_url);
+    return strip_tags($full_url);
+}
+
+function get_download_links($url = null)
+{
+    global $base_url;
+    // Download report section
+    $output = '<div class="charts-download hidden-on-pdf">
+					Download report as:
+					<a title="CSV Download"  class="hyperlink" href="' . get_full_url('export=csv', $url) . '">
+						<img alt="CSV" src="' . $base_url . '/sites/all/themes/ogpl_css3/images/csv.png"/>
+					</a>
+					<a title="XLS Download"  class="hyperlink" href="' . get_full_url('export=xls', $url) . '">
+						<img alt="XLS" src="' . $base_url . '/sites/all/themes/ogpl_css3/images/xls.png"/>
+					</a>
+					<a title="PDF Download"  class="hyperlink" href="' . get_pdfprint_url($url) . '">
+						<img alt="PDF" src="' . $base_url . '/sites/all/themes/ogpl_css3/images/pdf.png"/>
+					</a>
+				</div>';
+    return $output;
+}
+
+function cleanData(&$str)
+{
+    $str = preg_replace("/\t/", "\\t", $str);
+    $str = preg_replace("/\r?\n/", "\\n", $str);
+    if (strstr($str, '"')) $str = '"' . str_replace('"', '""', $str) . '"';
+}
+
+function export_to_csv($result, $filename = 'myfile.csv')
+{
+
+    drupal_set_header('Content-Type: text/csv');
+    drupal_set_header('Content-Disposition: attachment; filename=' . $filename);
+
+    if (!empty($result)) {
+        foreach ($result as $rowset) {
+            if (!empty($rowset) && is_array($rowset)) {
+                foreach ($rowset as $value) {
+                    $values[] = '"' . str_replace('"', '""', decode_entities(strip_tags($value))) . '"';
+                }
+                print implode(',', $values) . "\r\n";
+                unset($values);
+            } else {
+                print "\r\n";
+            }
+        }
+    }
+
+    exit;
+
+}
+
+function export_to_xls($result, $filename = 'myfile.xls', $bold_header = true)
+{
+    if (module_exists('libraries')) {
+
+        $path = drupal_get_path('module', 'dms_ds_upload');
+
+        drupal_set_header("Content-Description: File Transfer");
+        drupal_set_header('Content-Type: application/vnd.ms-excel');
+        drupal_set_header('Content-Disposition: attachment;filename=' . $filename);
+
+        require_once $path . '/Classes/PHPExcel.php';
+        require_once $path . '/Classes/PHPExcel/Writer/Excel5.php';
+
+        $objPHPExcel = new PHPExcel();
+
+        $row = 1;
+        if (!empty($result)) {
+            foreach ($result as $single_row) {
+                $column_no = 'A';
+                if (!empty($single_row) && is_array($single_row)) {
+                    foreach ($single_row as $column) {
+                        $objPHPExcel->getActiveSheet()->setCellValue($column_no . $row, $column);
+                        $column_no++;
+                    }
+                } else {
+                    $objPHPExcel->getActiveSheet()->setCellValue($column_no . $row, '');
+                }
+                $row++;
+            }
+        }
+
+
+        $column = 'A';
+        $last_column = $objPHPExcel->getActiveSheet()->getHighestColumn();
+        do {
+            $objPHPExcel->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+            $column++;
+        } while ($column <= $last_column);
+
+        $style_array = array(
+            'font' => array(
+                'bold' => $bold_header
+            )
+        );
+        $objPHPExcel->getActiveSheet()->getStyle('A1:' . $last_column . '1')->applyFromArray($style_array);
+
+        $objWriter = new PHPExcel_Writer_Excel5($objPHPExcel);
+        $objWriter->save('php://output');
+    }
+    exit;
+
+}
+
+function phplot_get_image($info, $chart_type = 'bar', $y_tick_anchor = '')
+{
+
+    if (module_exists('libraries')) {
+        $libraries = libraries_get_libraries();
+        if (isset($libraries['phplot'])) {
+            $path = libraries_get_path('phplot');
+        }
+
+        require_once $path . '/phplot.php';
+
+        if ($chart_type == 'bar') {
+            $plot = new PHPlot(900, 400);
+            $plot->SetPlotType('bars');
+            $plot->SetDataColors('#38acec');
+            $plot->SetShading(0);
+
+            if ($info->settings['rotateNames'] == 1) {
+                $plot->SetXDataLabelAngle(90);
+            }
+            $plot->SetDataValues($info->data);
+
+            $plot->SetXTitle($info->settings['xAxisName']);
+            $plot->SetYTitle($info->settings['yAxisName']);
+
+            $plot->SetXTickLabelPos('none');
+            $plot->SetXTickPos('none');
+            $plot->SetYDataLabelPos('plotin');
+            $plot->SetYTickAnchor($y_tick_anchor);
+
+            $plot->SetNumYTicks(5);
+            $plot->SetPrecisionY(0);
+        } else if ($chart_type == 'pie') {
+            $image_width = 900;
+            $image_height = 310;
+
+            $plot = new PHPlot($image_width, $image_height);
+            $plot->SetImageBorderType('plain');
+            $plot->SetShading(0);
+            $plot->SetPlotAreaPixels(0, 0, 500, 310);
+
+            $plot->SetPlotType('pie');
+            $plot->SetDataType('text-data-single');
+            $plot->SetDataValues($info->data);
+
+            foreach ($info->attributes['color'] as &$color_code) {
+                $color_code = '#' . $color_code;
+            }
+            $plot->SetDataColors($info->attributes['color']);
+
+            $plot->SetPieAutoSize(true);
+
+            foreach ($info->data as $row)
+                $plot->SetLegend(implode(': ', $row));
+
+            // legend in upper right corner
+            $plot->SetLegendPosition(1, 0, 'image', 1, 0, -5, +5);
+            $plot->SetPieLabelType('percent', 'data', 2, '', '%');
+            $plot->SetFont('legend', 4);
+            $plot->SetFont('generic', 4, 14);
+
+        }
+
+        $plot->DrawGraph();
+    }
+    exit;
+}
+
+function get_pdfprint_url($forcedurl = null)
+{
+	$final_url = is_null($forcedurl) ? $_GET['q'] : $forcedurl;
+    if (strpos(request_uri(), '?') !== false) {
+        // append to query string
+        $expoded_url = explode('?', request_uri());
+        $query_string = $expoded_url[1];
+        $full_url = url('printpdf/' . $final_url, array('absolute' => true, 'query' => $query_string));
+    } else {
+        $full_url = url('printpdf/' . $final_url, array('absolute' => true));
+    }
+
+    return $full_url;
+
+}
+
+function monthName($month)
+{
+    $months = array(null, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September','October', 'November', 'December');
+    return $months[$month];
+}
+function month_NameShort($month_int) {
+		$month_int = $month_int;
+		$months = array("","Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+		return $months[$month_int];
+	}
+function vrm_action_metrics(){
+	$check=0;
+	$total=0;
+	$output='';
+	$output.= '<script LANGUAGE="JavaScript">
+		function getAbsolutePath() {
+		var loc = window.location;
+		var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf(\'/\') + 1);
+		return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+	}
+
+	function loadchart() {
+	month = document.getElementById("selectmonth").value;
+	year = document.getElementById("selectyear").value;
+	category = document.getElementById("category").value;
+	if(year=="year" && month!="month"){
+		alert("Invalid Year");
+		return false;
+	}
+	window.location=getAbsolutePath()+"action-metrics\?month_int="+month+"&year_int="+year+"&category="+category;
+	return false;
+}';
+	$output.= "</script>";
+	$month_get=$_GET['month_int'];
+	$year_get=$_GET['year_int'];
+	$category_get=$_GET['category'];
+	$till_date=db_query("select node.created as min_date from node where node.type='feedback' ORDER BY node.created ASC LIMIT 1");
+	$tilldate=db_fetch_object($till_date);
+	$till_year=(int)date("Y",$tilldate->min_date);
+	$till_month=(int)date("m",$tilldate->min_date);
+	$month=(int)date('m');
+	$year=(int)date('Y');
+	$status=0;
+	$output.= "<form onsubmit=\"return loadchart()\">";
+	$output.='<label class="label_first_chart">Select Year: </label>';
+	$output.="<select id='selectyear'>";
+	$output.= "<option value=year >Year</option>";
+	while($year>=$till_year && $till_year>1970){
+		if($year_get == $till_year){
+			$output.= "<option value='".$till_year."' selected = 'selected'>".$till_year."</option>";
+		}else{
+			$output.= "<option value='".$till_year."'>".$till_year."</option>";
+		}
+		$till_year+=1;
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart"> Select Month:</label>';
+	$output.="<select id='selectmonth'>";
+	$output.= "<option value=month >Month</option>";
+	for($month_int=1;$month_int<=12;$month_int++){
+		if($month_get == $month_int) {
+			$output.= "<option value='".$month_int."' selected = 'selected'>".month_NameShort($month_int)."</option>";
+		}else{
+		$output.= "<option value='".$month_int."'>".month_NameShort($month_int)."</option>";
+		}
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart">Select Category: </label>';
+	$output.="<select id='category'>";
+	$category=db_query("select  term_data.tid as cat_id , term_data.name as name from term_data where term_data.vid=2");
+	$output.= "<option value=0 >- -All- -</option>";
+	while($res_category=db_fetch_object($category)){
+		if($category_get == $res_category->cat_id) {
+		$output.= "<option value='".$res_category->cat_id."' selected='selected' >".$res_category->name."</option>";
+		}else{
+		$output.= "<option value='".$res_category->cat_id."' >".$res_category->name."</option>";
+		}
+	}
+	$output.= ' <input class="chart-submit" type="submit" value="Apply" id="submit_btn" name="submit">';	
+	$output.="</form>";
+
+	function fusionchart_callback($month_get,$year_get,$category_get) {
+	global $total;
+	global $check;
+	$new=0;
+	$chart=0;
+	if($month_get=="month" && $year_get=="year"){
+		$from_date="";
+		$date_condition="1";
+	}
+	if($month_get=="month" && $year_get!="year"){
+		$from_date=",node";
+		$starttime = mktime(00, 00, 00, 01, 1, $year_get);
+		$endtime=mktime(23, 59, 59, 12, 31, $year_get);
+		$date_condition="node.created >= $starttime AND node.created<=$endtime and node.nid=content_type_feedback.nid";
+	}
+	if($month_get!="month" && !empty($month_get)){
+		$from_date=",node";
+		$num = cal_days_in_month(CAL_GREGORIAN, $month_get, $year_get);
+		$starttime = mktime(00, 00, 00, $month_get, 1, $year_get);
+		$endtime=mktime(23, 59, 59, $month_get, $num, $year_get);
+		$date_condition="node.created >= $starttime AND node.created<=$endtime and node.nid=content_type_feedback.nid";
+	}
+	if($category_get==0){
+		$from_category="";
+		$category_condition="1";
+	}
+	if($category_get!=0)
+	{
+		$from_category=" ,content_field_category ";
+		$category_condition="content_field_category.field_category_value=$category_get and content_field_category.nid=content_type_feedback.nid";
+	}
+	if($category_get==0 && empty($month_get) && empty($year_get) )$new=1;
+	if(empty($month_get) && empty($year_get) &&empty($category_get))$new=1;
+	if($new==1){
+		$info->query1 = "SELECT count(content_type_feedback.nid)as count, term_data.name as name FROM content_type_feedback,term_data where content_type_feedback.field_action_status_value is not null and term_data.tid=content_type_feedback.field_action_status_value group by content_type_feedback.field_action_status_value";
+	}
+	else{
+		$info->query1 ="SELECT count(content_type_feedback.nid)as count, term_data.name as name FROM content_type_feedback,term_data $from_category $from_date where content_type_feedback.`field_action_status_value`is not null and term_data.tid=content_type_feedback.field_action_status_value and $category_condition and  $date_condition group by content_type_feedback.field_action_status_value";
+	}
+	$result=db_query( $info->query1);
+	while($res=db_fetch_object($result)){
+		$total+=$res->count;
+		$chart=1;
+		$out[$status++]=array($res->name,$res->count);
+	}
+	if($chart==1){
+		$info->data=$out;
+		$info->chart_type = 'Pie 2D';
+		$info->settings = array('Caption' => '','showNames' => '1', 'yAxisName'=>'Number of Feedbacks', 'xAxisName'=>'Action Name','showLegend' => '0','rotateNames' => '1','showPercentageValues' => '0','decimalPrecision'=>'2','animation' => '1','formatNumberScale' => '0','showValues'=>'1','showPercentageInLabel' => '1');
+		$info->attributes=array();
+		$info->width = 900;
+		$info->height = 500;
+		$output.= theme('fusionchart', $info);
+	}
+	if($chart==0) {
+		$check=1;
+		$output.= '<div class="chart-error">No data found</div>';
+	}
+	return $output;
+}
+	$output.= fusionchart_callback($month_get,$year_get,$category_get);
+	global $total;
+	global $check;
+	if($check!=1)
+	$output.= '<div class="chart-error">Total Feedback:'.$total.'</div>';
+	return $output;
+}
+function vrm_source_metrics(){	
+	$total=0;
+	$check=0;
+	$output.= '<script LANGUAGE="JavaScript">
+	function getAbsolutePath(){
+		var loc = window.location;
+		var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf(\'/\') + 1);
+		return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+	}
+	function loadchart(){
+		var month = document.getElementById("selectmonth").value;
+		var year = document.getElementById("selectyear").value;
+		var status = document.getElementById("status").value;
+		var category = document.getElementById("category").value;
+	if(year=="year" && month!="month"){
+		alert("Invalid Year");
+		return false;
+	}
+	window.location=getAbsolutePath()+"source-metrics\?month_int="+month+"&year_int="+year+"&status="+status+"&category="+category;
+	return false;
+}';
+	$output.= "</script>";
+	$month_get=$_GET['month_int'];
+	$year_get=$_GET['year_int'];
+	$category_get=$_GET['category'];
+	$status_get=$_GET['status'];
+	$till_date=db_query("select node.created as min_date from node where node.type='feedback' ORDER BY node.created ASC LIMIT 1");
+	$tilldate=db_fetch_object($till_date);
+	$till_year=(int)date("Y",$tilldate->min_date);
+	$till_month=(int)date("m",$tilldate->min_date);
+	$month=(int)date('m');
+	$year=(int)date('Y');
+	$status=0;
+	$output.= "<form onsubmit=\"return loadchart()\">";
+	$output.='<label class="label_first_chart">Select Year: </label>';
+	$output.="<select id='selectyear'>";
+	$output.= "<option value=year >Year</option>";
+	while($year>=$till_year && $till_year>1970){
+		if($year_get == $till_year) {
+			$output.= "<option value='".$till_year."' selected = 'selected'>".$till_year."</option>";
+		} else{
+			$output.= "<option value='".$till_year."'>".$till_year."</option>";
+		}
+		$till_year+=1;
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart"> Select Month:</label>';
+	$output.="<select id='selectmonth'>";
+	$output.= "<option value=month >Month</option>";
+	for($month_int=1;$month_int<=12;$month_int++){
+		if($month_get == $month_int) {
+			$output.= "<option value='".$month_int."' selected = 'selected'>".month_NameShort($month_int)."</option>";
+		} else{
+			$output.= "<option value='".$month_int."'>".month_NameShort($month_int)."</option>";
+		}
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart">Select Action Status: </label>';
+	$output.="<select id='status'>";
+	$output.= "<option value=0 >- -All- -</option>";
+	$status=db_query("select term_data.tid as status_id , term_data.name as name from term_data where term_data.vid=1");
+	while($res_status=db_fetch_object($status)){
+		if($status_get == $res_status->status_id) {
+			$output.= "<option value='".$res_status->status_id."' selected='selected' >".$res_status->name."</option>";
+		} else{
+			$output.= "<option value='".$res_status->status_id."' >".$res_status->name."</option>";
+		}
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart">Select Category: </label>';
+	$output.="<select id='category'>";
+	$category=db_query("select  term_data.tid as cat_id , term_data.name as name from term_data where term_data.vid=2");
+	$output.= "<option value=0 >- -All- -</option>";
+	while($res_category=db_fetch_object($category)){
+		if($category_get == $res_category->cat_id) {
+			$output.= "<option value='".$res_category->cat_id."' selected='selected' >".$res_category->name."</option>";
+		} else {
+			$output.= "<option value='".$res_category->cat_id."' >".$res_category->name."</option>";
+		}
+	}
+	$output.= ' <input class="chart-submit" type="submit" value="Apply" id="submit_btn" name="submit">';
+	$output.="</form>";
+	function fusionchart_callback($month_get,$year_get,$category_get,$status_get) {
+	global $total;
+	global $check;
+	$new=0;
+	$chart=0;
+	$chart_month=explode("/",$month_year_get);
+	if($month_get=="month" && $year_get=="year"){
+		$from_date="";
+		$date_condition="1";
+	}
+	if($month_get=="month" && $year_get!="year"){
+		$from_date=",node";
+		$starttime = mktime(00, 00, 00, 01, 1, $year_get);
+		$endtime=mktime(23, 59, 59, 12, 31, $year_get);
+		$date_condition="node.created >= $starttime AND node.created<=$endtime and node.nid=content_type_feedback.nid";
+	}
+	if($month_get!="month" && !empty($month_get)){
+		$from_date=",node";
+		$num = cal_days_in_month(CAL_GREGORIAN, $month_get, $year_get);
+		$starttime = mktime(00, 00, 00, $month_get, 1, $year_get);
+		$endtime=mktime(23, 59, 59, $month_get, $num, $year_get);
+		$date_condition="node.created >= $starttime AND node.created<=$endtime and node.nid=content_type_feedback.nid";
+	}
+	if($status_get==0){
+		$status_condition="1";
+	}
+	if($status_get!=0){
+		$status_condition="content_type_feedback.field_action_status_value ='$status_get'";
+	}
+	if($category_get==0){
+		$from_category="";
+		$category_condition="1";
+	}
+	if($category_get!=0){
+		$from_category=" ,content_field_category ";
+		$category_condition="content_field_category.field_category_value=$category_get and content_field_category.nid=content_type_feedback.nid";
+	}
+	if($category_get==0 && $status_get==0 && empty($month_get) && empty($year_get))$new=1;
+	if(empty($month_get) && empty($year_get) &&empty($category_get)&&empty($source_get))$new=1;
+	if($new==1){
+		$info->query1 = "SELECT count(content_type_feedback.nid)as count, term_data.name as name FROM content_type_feedback,term_data where content_type_feedback.field_source_value is not null and term_data.tid=content_type_feedback.field_source_value group by content_type_feedback.field_source_value";
+	}else{
+ $info->query1 ="SELECT count(content_type_feedback.nid)as count, term_data.name as name FROM content_type_feedback,term_data $from_category $from_date where content_type_feedback.field_source_value is not null and term_data.tid=content_type_feedback.field_source_value and $status_condition and  $category_condition and  $date_condition  group by content_type_feedback.field_source_value";
+	}
+	$result=db_query( $info->query1);
+	while($res=db_fetch_object($result)){
+		$total+=$res->count;
+		$out[$status++]=array($res->name,$res->count);
+		$chart=1;
+	}
+	if($chart==1){
+	$info->data=$out;
+	$info->chart_type = 'Pie 2D';
+	$info->settings = array('Caption' => '','showNames' => '1', 'yAxisName'=>'Number of Feedbacks', 'xAxisName'=>'Action Name','showLegend' => '0','rotateNames' => '1','showPercentageValues' => '0','decimalPrecision'=>'2','animation' => '1','formatNumberScale' => '0','showValues'=>'1','showPercentageInLabel' => '1');
+	$info->attributes=array();
+	$info->width = 900;
+	$info->height = 500;
+    $output.= theme('fusionchart', $info);
+	}
+	if($chart==0) {
+	$check=1;
+	$output.= '<div class="chart-error">No data found</div>';
+	}
+	return $output;
+}
+	$output.= fusionchart_callback($month_get,$year_get,$category_get,$status_get);
+	global $total;
+	global $check;
+	if($check!=1)
+	$output.= '<div class="chart-error">Total Feedback:'.$total.'</div>';
+    return $output;
+}
+function vrm_status_metrics(){	
+	$total=0;
+	$check=0;
+	$output='';
+	$output.= '<script LANGUAGE="JavaScript">
+	function getAbsolutePath() {
+		var loc = window.location;
+		var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf(\'/\') + 1);
+		return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+	}
+
+	function loadchart() {
+		month = document.getElementById("selectmonth").value;
+		year = document.getElementById("selectyear").value;
+		source = document.getElementById("source").value;
+		category = document.getElementById("category").value;
+		if(year=="year" && month!="month"){
+			alert("Invalid Year");
+			return false;
+		}
+	window.location=getAbsolutePath()+"status-metrics\?month_int="+month+"&year_int="+year+"&category="+category+"&source="+source;
+	return false;
+	}';
+	$output.= "</script>";
+	$month_get=$_GET['month_int'];
+	$year_get=$_GET['year_int'];
+	$category_get=$_GET['category'];
+	$source_get=$_GET['source'];
+	$till_date=db_query("select node.created as min_date from node where node.type='feedback' ORDER BY node.created ASC LIMIT 1");
+	$tilldate=db_fetch_object($till_date);
+	$till_year=(int)date("Y",$tilldate->min_date);
+	$till_month=(int)date("m",$tilldate->min_date);
+	$month=(int)date('m');
+	$year=(int)date('Y');
+	$status=0;
+	$output.= "<form onsubmit=\"return loadchart()\">";
+	$output.='<label class="label_first_chart">Select Year: </label>';
+	$output.="<select id='selectyear'>";
+	$output.= "<option value=year >Year</option>";
+	while($year>=$till_year && $till_year>1970){
+		if($year_get == $till_year) {
+		$output.= "<option value='".$till_year."' selected = 'selected'>".$till_year."</option>";
+		} else{
+			$output.= "<option value='".$till_year."'>".$till_year."</option>";
+		}
+		$till_year+=1;
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart"> Select Month:</label>';
+	$output.="<select id='selectmonth'>";
+	$output.= "<option value=month >Month</option>";
+	for($month_int=1;$month_int<=12;$month_int++){
+		if($month_get == $month_int) {
+			$output.= "<option value='".$month_int."' selected = 'selected'>".month_NameShort($month_int)."</option>";
+		} else {
+			$output.= "<option value='".$month_int."'>".month_NameShort($month_int)."</option>";
+		}
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart">Select Source: </label>';
+	$output.="<select id ='source'>";
+	$source=db_query("select term_data.tid as source_id , term_data.name as name from term_data where term_data.vid=3");
+	$output.= "<option value=0>- -All- -</option>";
+	while($res_source=db_fetch_object($source)){
+		if($source_get == $res_source->source_id) {
+			$output.= "<option value='".$res_source->source_id."'  selected='selected'>".$res_source->name."</option>";
+		} else {
+			$output.= "<option value='".$res_source->source_id."' >".$res_source->name."</option>";
+		}
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart">Select Category: </label>';
+	$output.="<select id='category'>";
+	$category=db_query("select  term_data.tid as cat_id , term_data.name as name from term_data where term_data.vid=2");
+	$output.= "<option value=0 >- -All- -</option>";
+	while($res_category=db_fetch_object($category)){
+		if($category_get == $res_category->cat_id) {
+			$output.= "<option value='".$res_category->cat_id."' selected='selected' >".$res_category->name."</option>";
+		} else {
+			$output.= "<option value='".$res_category->cat_id."' >".$res_category->name."</option>";
+		}
+	}
+	$output.= ' <input class="chart-submit" type="submit" value="Apply" id="submit_btn" name="submit">';
+	$output.="</form>";
+	function fusionchart_callback($month_get,$year_get,$category_get,$source_get) {
+		global $total;
+		global $check;
+		$new=0;
+		$chart=0;
+		if($month_get=="month" && $year_get=="year"){
+			$from_date="";
+			$date_condition="1";
+		}
+		if($month_get=="month" && $year_get!="year"){
+			$from_date=",node";
+			$starttime = mktime(00, 00, 00, 01, 1, $year_get);
+			$endtime=mktime(23, 59, 59, 12, 31, $year_get);
+			$date_condition="node.created >= $starttime AND node.created<=$endtime and node.nid=content_type_feedback.nid";
+		}
+		if($month_get!="month" && !empty($month_get)){
+			$from_date=",node";
+			$num = cal_days_in_month(CAL_GREGORIAN, $month_get, $year_get);
+			$starttime = mktime(00, 00, 00, $month_get, 1, $year_get);
+			$endtime=mktime(23, 59, 59, $month_get, $num, $year_get);
+			$date_condition="node.created >= $starttime AND node.created<=$endtime and node.nid=content_type_feedback.nid";
+		}
+		if($source_get==0)
+			$source_condition="1";
+		if($source_get!=0)
+			$source_condition="field_source_value ='$source_get'";
+		if($category_get==0){
+			$from_category="";
+			$category_condition="1";
+		}
+		if($category_get!=0){
+			$from_category=" ,content_field_category ";
+			$category_condition="content_field_category.field_category_value=$category_get and content_field_category.nid=content_type_feedback.nid and content_field_category.nid=workflow_node.nid";
+		}
+		if($category_get==0 && $source_get==0 && empty($month_get) && empty($year_get) )$new=1;
+		if(empty($month_get) && empty($year_get) &&empty($status_get)&&empty($source_get))$new=1;
+		if($new==1){
+			$info->query1 = "SELECT count(content_type_feedback.nid)as count, workflow_states.state as name FROM content_type_feedback,workflow_states,workflow_node where workflow_node.nid=content_type_feedback.nid and workflow_states.sid=workflow_node.sid and workflow_states.wid=7 group by workflow_states.sid";
+		}
+		else{
+			$info->query1 ="SELECT count(content_type_feedback.nid)as count, workflow_states.state as name FROM content_type_feedback,workflow_states,workflow_node $from_category $from_date where workflow_node.nid=content_type_feedback.nid and workflow_states.sid=workflow_node.sid and workflow_states.wid=7 and $source_condition and  $category_condition and  $date_condition group by workflow_states.sid";
+		}
+		$result=db_query( $info->query1);
+		while($res=db_fetch_object($result)){
+			$total+=$res->count;
+			$out[$status++]=array($res->name,$res->count);
+			$chart=1;
+		}
+		if($chart==1){
+			$info->data=$out;
+			$info->chart_type = 'Pie 2D';
+			$info->settings = array('Caption' => '','showNames' => '1', 'yAxisName'=>'Number of Feedbacks', 'xAxisName'=>'Action Name','showLegend' => '0','rotateNames' => '1','showPercentageValues' => '0','decimalPrecision'=>'2','animation' => '1','formatNumberScale' => '0','showValues'=>'1','showPercentageInLabel' => '1');
+			$info->attributes=array();
+			$info->width = 900;
+			$info->height = 500;
+			$output.=theme('fusionchart', $info);
+		}
+		if($chart==0) {
+		$check=1;
+		$output.= '<div class="chart-error">No data found</div>';
+		}
+		return $output;
+	}
+	$output.= fusionchart_callback($month_get,$year_get,$category_get,$source_get);
+	global $total;
+	global $check;
+	if($check!=1)
+	$output.= '<div class="chart-error">Total Feedback:'.$total.'</div>';
+	return $output;
+}	
+function poc_action_metrics(){
+	$total=0;
+	$check=0;
+	$output='';
+	$output.= '<script LANGUAGE="JavaScript">
+	function getAbsolutePath() {
+		var loc = window.location;
+		var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf(\'/\') + 1);
+		return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+	}
+	function loadchart(){
+		month = document.getElementById("selectmonth").value;
+		year = document.getElementById("selectyear").value;
+		category = document.getElementById("category").value;
+		if(year=="year" && month!="month"){
+			alert("Invalid Year");
+		return false;
+	}
+	window.location=getAbsolutePath()+"poc-action-metrics\?month_int="+month+"&year_int="+year+"&category="+category;
+	return false;
+	}';
+	$output.= "</script>";
+	$month_get=$_GET['month_int'];
+	$year_get=$_GET['year_int'];
+	$category_get=$_GET['category'];
+	$till_date=db_query("select node.created as min_date from node where node.type='feedback' ORDER BY node.created ASC LIMIT 1");
+	$tilldate=db_fetch_object($till_date);
+	$till_year=(int)date("Y",$tilldate->min_date);
+	$till_month=(int)date("m",$tilldate->min_date);
+	$month=(int)date('m');
+	$year=(int)date('Y');
+	$status=0;
+	$output.= "<form onsubmit=\"return loadchart()\">";
+	$output.='<label class="label_first_chart">Select Year: </label>';
+	$output.="<select id='selectyear'>";
+	$output.= "<option value=year >Year</option>";
+	while($year>=$till_year && $till_year>1970){
+		if($year_get == $till_year) {
+			$output.= "<option value='".$till_year."' selected = 'selected'>".$till_year."</option>";
+		} else {
+			$output.= "<option value='".$till_year."'>".$till_year."</option>";
+		}
+		$till_year+=1;
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart">    Select Month:</label>';
+	$output.="<select id='selectmonth'>";
+	$output.= "<option value=month >Month</option>";
+	for($month_int=1;$month_int<=12;$month_int++){
+		if($month_get == $month_int) {
+			$output.= "<option value='".$month_int."' selected = 'selected'>".month_NameShort($month_int)."</option>";
+		} else {
+			$output.= "<option value='".$month_int."'>".month_NameShort($month_int)."</option>";
+		}
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart">Select Category: </label>';
+	$output.="<select id='category'>";
+	$category=db_query("select  term_data.tid as cat_id , term_data.name as name from term_data where term_data.vid=2");
+	$output.= "<option value=0 >- -All- -</option>";
+	while($res_category=db_fetch_object($category)){
+		if($category_get == $res_category->cat_id) {
+			$output.= "<option value='".$res_category->cat_id."' selected='selected' >".$res_category->name."</option>";
+		} else {
+			$output.= "<option value='".$res_category->cat_id."' >".$res_category->name."</option>";
+		}
+	}
+	$output.= ' <input class="chart-submit" type="submit" value="Apply" id="submit_btn" name="submit">';
+	$output.="</form>";
+	function fusionchart_callback($month_get,$year_get,$category_get) {
+		global $total;
+		global $check;
+		global $user;
+		$res_aid=db_query("select  content_type_profile.field_prof_agency_nid as aid from content_type_profile,node where content_type_profile.nid=node.nid and node.type='profile' and node.uid=$user->uid");
+		$res1_aid=db_fetch_object($res_aid);
+		if(empty($res1_aid->aid))
+			$user_condition="1";
+		else
+			$user_condition="content_type_feedback.field_agency_value=$res1_aid->aid";
+		$new=0;
+		$chart=0;
+		if($month_get=="month" && $year_get=="year"){
+			$from_date="";
+			$date_condition="1";
+		}
+		if($month_get=="month" && $year_get!="year"){
+			$from_date=",node";
+			$starttime = mktime(00, 00, 00, 01, 1, $year_get);
+			$endtime=mktime(23, 59, 59, 12, 31, $year_get);
+			$date_condition="node.created >= $starttime AND node.created<=$endtime and node.nid=content_type_feedback.nid";
+		}
+		if($month_get!="month" && !empty($month_get)){
+			$from_date=",node";
+			$num = cal_days_in_month(CAL_GREGORIAN, $month_get, $year_get);
+			$starttime = mktime(00, 00, 00, $month_get, 1, $year_get);
+			$endtime=mktime(23, 59, 59, $month_get, $num, $year_get);
+			$date_condition="node.created >= $starttime AND node.created<=$endtime and node.nid=content_type_feedback.nid";
+		}
+		if($category_get==0){
+			$from_category="";
+			$category_condition="1";
+		}
+		if($category_get!=0){
+			$from_category=" ,content_field_category ";
+			$category_condition="content_field_category.field_category_value=$category_get and content_field_category.nid=content_type_feedback.nid";
+		}
+		if($category_get==0 && empty($month_get) && empty($year_get) )$new=1;
+		if(empty($month_get) && empty($year_get) &&empty($category_get))$new=1;
+		if($new==1){
+			$info->query1 = "SELECT count(content_type_feedback.nid)as count, term_data.name as name FROM content_type_feedback,term_data where content_type_feedback.field_action_status_value is not null and term_data.tid=content_type_feedback.field_action_status_value and $user_condition group by content_type_feedback.field_action_status_value";
+		}else{
+			$info->query1 ="SELECT count(content_type_feedback.nid)as count, term_data.name as name FROM content_type_feedback,term_data $from_category $from_date where content_type_feedback.`field_action_status_value`is not null and term_data.tid=content_type_feedback.field_action_status_value and $category_condition and  $date_condition and $user_condition group by content_type_feedback.field_action_status_value";
+		}
+		$result=db_query( $info->query1);
+		while($res=db_fetch_object($result)){
+			$total+=$res->count;
+			$out[$status++]=array($res->name,$res->count);
+			$chart=1;
+		}
+		if($chart==1){
+			$info->data=$out;
+			$info->chart_type = 'Pie 2D';
+			$info->settings = array('Caption' => '','showNames' => '1', 'yAxisName'=>'Number of Feedbacks', 'xAxisName'=>'Action Name','showLegend' => '0','rotateNames' => '1','showPercentageValues' => '0','decimalPrecision'=>'2','animation' => '1','formatNumberScale' => '0','showValues'=>'1','showPercentageInLabel' => '1');
+			$info->attributes=array();
+			$info->width = 900;
+			$info->height = 500;
+			$output.=theme('fusionchart', $info);
+		}
+		if($chart==0) {
+			$check=1;
+			$output.= '<div class="chart-error">No data found</div>';
+		}
+		return $output;
+	}
+	$output.= fusionchart_callback($month_get,$year_get,$category_get);
+	global $total;
+	global $check;
+	if($check!=1)
+	$output.= '<div class="chart-error">Total Feedback:'.$total.'</div>';
+	return $output;
+}
+function poc_source_metrics(){	
+	$total=0;
+	$check=0;
+	$output='';
+	$output.= '<script LANGUAGE="JavaScript">
+	function getAbsolutePath() {
+		var loc = window.location;
+		var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf(\'/\') + 1);
+		return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+}
+	function loadchart() {
+		var month = document.getElementById("selectmonth").value;
+		var year = document.getElementById("selectyear").value;
+		var status = document.getElementById("status").value;
+		var category = document.getElementById("category").value;
+		if(year=="year" && month!="month"){
+			alert("Invalid Year");
+			return false;
+		}
+		window.location=getAbsolutePath()+"poc-source-metrics\?month_int="+month+"&year_int="+year+"&status="+status+"&category="+category;
+		return false;
+	}';
+	$output.= "</script>";
+	$month_get=$_GET['month_int'];
+	$year_get=$_GET['year_int'];
+	$category_get=$_GET['category'];
+	$status_get=$_GET['status'];
+	$till_date=db_query("select node.created as min_date from node where node.type='feedback' ORDER BY node.created ASC LIMIT 1");
+	$tilldate=db_fetch_object($till_date);
+	$till_year=(int)date("Y",$tilldate->min_date);
+	$till_month=(int)date("m",$tilldate->min_date);
+	$month=(int)date('m');
+	$year=(int)date('Y');
+	$status=0;
+	$output.= "<form onsubmit=\"return loadchart()\">";
+	$output.='<label class="label_first_chart">Select Year: </label>';
+	$output.="<select id='selectyear'>";
+	$output.= "<option value=year >Year</option>";
+	while($year>=$till_year && $till_year>1970){
+		if($year_get == $till_year) {
+			$output.= "<option value='".$till_year."' selected = 'selected'>".$till_year."</option>";
+		} else {
+			$output.= "<option value='".$till_year."'>".$till_year."</option>";
+		}
+		$till_year+=1;
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart"> Select Month:</label>';
+	$output.="<select id='selectmonth'>";
+	$output.= "<option value=month >Month</option>";
+	for($month_int=1;$month_int<=12;$month_int++){
+		if($month_get == $month_int) {
+			$output.= "<option value='".$month_int."' selected = 'selected'>".month_NameShort($month_int)."</option>";
+		} else {
+			$output.= "<option value='".$month_int."'>".month_NameShort($month_int)."</option>";
+		}
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart">Select Action Status: </label>';
+	$output.="<select id='status'>";
+	$output.= "<option value=0 >- -All- -</option>";
+	$status=db_query("select term_data.tid as status_id , term_data.name as name from term_data where term_data.vid=1");
+	while($res_status=db_fetch_object($status)){
+		if($status_get == $res_status->status_id) {
+			$output.= "<option value='".$res_status->status_id."' selected='selected' >".$res_status->name."</option>";
+		} else {
+			$output.= "<option value='".$res_status->status_id."' >".$res_status->name."</option>";
+		}
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart">Select category: </label>';
+	$output.="<select id='category'>";
+	$category=db_query("select  term_data.tid as cat_id , term_data.name as name from term_data where term_data.vid=2");
+	$output.= "<option value=0 >- -All- -</option>";
+	while($res_category=db_fetch_object($category)){
+		if($category_get == $res_category->cat_id) {
+			$output.= "<option value='".$res_category->cat_id."' selected='selected' >".$res_category->name."</option>";
+		} else {
+			$output.= "<option value='".$res_category->cat_id."' >".$res_category->name."</option>";
+		}
+	}
+	$output.= ' <input class="chart-submit" type="submit" value="Apply" id="submit_btn" name="submit">';
+	$output.="</form>";
+	function fusionchart_callback($month_get,$year_get,$category_get,$status_get) {
+		global $total;
+		global $check;
+		global $user;
+		$res_aid=db_query("select  content_type_profile.field_prof_agency_nid as aid from content_type_profile,node where content_type_profile.nid=node.nid and node.type='profile' and node.uid=$user->uid");
+		$res1_aid=db_fetch_object($res_aid);
+		if(empty($res1_aid->aid))
+			$user_condition="1";
+		else
+			$user_condition="content_type_feedback.field_agency_value=$res1_aid->aid";
+		$new=0;
+		$chart=0;
+		if($month_get=="month" && $year_get=="year"){
+			$from_date="";
+			$date_condition="1";
+		}
+		if($month_get=="month" && $year_get!="year"){
+			$from_date=",node";
+			$starttime = mktime(00, 00, 00, 01, 1, $year_get);
+			$endtime=mktime(23, 59, 59, 12, 31, $year_get);
+			$date_condition="node.created >= $starttime AND node.created<=$endtime and node.nid=content_type_feedback.nid";
+		}
+		if($month_get!="month" && !empty($month_get)){
+			$from_date=",node";
+			$num = cal_days_in_month(CAL_GREGORIAN, $month_get, $year_get);
+			$starttime = mktime(00, 00, 00, $month_get, 1, $year_get);
+			$endtime=mktime(23, 59, 59, $month_get, $num, $year_get);
+			$date_condition="node.created >= $starttime AND node.created<=$endtime and node.nid=content_type_feedback.nid";
+		}
+		if($status_get==0){
+			$status_condition="1";
+		}
+		if($status_get!=0){
+			$status_condition="content_type_feedback.field_action_status_value ='$status_get'";
+		}
+		if($category_get==0){
+			$from_category="";
+			$category_condition="1";
+		}
+		if($category_get!=0){
+			$from_category=" ,content_field_category ";
+			$category_condition="content_field_category.field_category_value=$category_get and content_field_category.nid=content_type_feedback.nid";
+		}
+		if($category_get==0 && $status_get==0 && empty($month_get) && empty($year_get))$new=1;
+		if(empty($month_get) && empty($year_get) &&empty($category_get)&&empty($source_get))$new=1;
+		if($new==1){
+			$info->query1 = "SELECT count(content_type_feedback.nid)as count, term_data.name as name FROM content_type_feedback,term_data where content_type_feedback.field_source_value is not null and term_data.tid=content_type_feedback.field_source_value and $user_condition group by content_type_feedback.field_source_value";
+		}
+		else{
+			$info->query1 ="SELECT count(content_type_feedback.nid)as count, term_data.name as name FROM content_type_feedback,term_data $from_category $from_date where content_type_feedback.field_source_value is not null and term_data.tid=content_type_feedback.field_source_value and $status_condition and  $category_condition and  $date_condition and $user_condition  group by content_type_feedback.field_source_value";
+		}
+		$result=db_query( $info->query1);
+		while($res=db_fetch_object($result)){
+			$total+=$res->count;
+			$out[$status++]=array($res->name,$res->count);
+			$chart=1;
+		}
+		if($chart==1){
+			$info->data=$out;
+			$info->chart_type = 'Pie 2D';
+			$info->settings = array('Caption' => '','showNames' => '1', 'yAxisName'=>'Number of Feedbacks', 'xAxisName'=>'Action Name','showLegend' => '0','rotateNames' => '1','showPercentageValues' => '0','decimalPrecision'=>'2','animation' => '1','formatNumberScale' => '0','showValues'=>'1','showPercentageInLabel' => '1');
+			$info->attributes=array();
+			$info->width = 900;
+			$info->height = 500;
+			$output.=theme('fusionchart', $info);
+		}
+		if($chart==0) {
+			$check=1;
+			$output.= '<div class="chart-error">No data found</div>';
+		}
+		return $output;
+	}
+	$output.= fusionchart_callback($month_get,$year_get,$category_get,$status_get);
+	global $total;
+	global $check;
+	if($check!=1)
+		$output.= '<div class="chart-error">Total Feedback:'.$total.'</div>';
+	return $output;
+}
+function poc_status_metrics(){
+	$total=0;
+	$check=0;
+	$output='';
+	$output.= '<script LANGUAGE="JavaScript">
+	function getAbsolutePath() {
+		var loc = window.location;
+		var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf(\'/\') + 1);
+		return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+	}
+	function loadchart() {
+		month = document.getElementById("selectmonth").value;
+		year = document.getElementById("selectyear").value;
+		source = document.getElementById("source").value;
+		category = document.getElementById("category").value;
+		if(year=="year" && month!="month"){
+			alert("Invalid Year");
+			return false;
+		}
+		window.location=getAbsolutePath()+"poc-status-metrics\?month_int="+month+"&year_int="+year+"&category="+category+"&source="+source;
+		return false;	
+	}';
+	$output.= "</script>";
+	$month_get=$_GET['month_int'];
+	$year_get=$_GET['year_int'];
+	$category_get=$_GET['category'];
+	$source_get=$_GET['source'];
+	$till_date=db_query("select node.created as min_date from node where node.type='feedback' ORDER BY node.created ASC LIMIT 1");
+	$tilldate=db_fetch_object($till_date);
+	$till_year=(int)date("Y",$tilldate->min_date);
+	$till_month=(int)date("m",$tilldate->min_date);
+	$month=(int)date('m');
+	$year=(int)date('Y');
+	$status=0;
+	$output.= "<form onsubmit=\"return loadchart()\">";
+	$output.='<label class="label_first_chart">Select Year: </label>';
+	$output.="<select id='selectyear'>";
+	$output.= "<option value=year >Year</option>";
+	while($year>=$till_year && $till_year>1970){
+		if($year_get == $till_year) {
+			$output.= "<option value='".$till_year."' selected = 'selected'>".$till_year."</option>";
+		} else {
+			$output.= "<option value='".$till_year."'>".$till_year."</option>";
+		}
+		$till_year+=1;
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart"> Select Month:</label>';
+	$output.="<select id='selectmonth'>";
+	$output.= "<option value=month >Month</option>";
+	for($month_int=1;$month_int<=12;$month_int++){
+		if($month_get == $month_int) {
+			$output.= "<option value='".$month_int."' selected = 'selected'>".month_NameShort($month_int)."</option>";
+		} else {
+			$output.= "<option value='".$month_int."'>".month_NameShort($month_int)."</option>";}
+}
+	$output.="</select>";
+	$output.='<label class="label_chart">Select Source: </label>';
+	$output.="<select id ='source'>";
+	$source=db_query("select term_data.tid as source_id , term_data.name as name from term_data where term_data.vid=3");
+	$output.= "<option value=0>- -All- -</option>";
+	while($res_source=db_fetch_object($source)){
+		if($source_get == $res_source->source_id) {
+			$output.= "<option value='".$res_source->source_id."'  selected='selected'>".$res_source->name."</option>";
+		} else {
+			$output.= "<option value='".$res_source->source_id."' >".$res_source->name."</option>";
+		}
+	}
+	$output.="</select>";
+	$output.='<label class="label_chart">Select Category: </label>';
+	$output.="<select id='category'>";
+	$category=db_query("select  term_data.tid as cat_id , term_data.name as name from term_data where term_data.vid=2");
+	$output.= "<option value=0 >- -All- -</option>";
+	while($res_category=db_fetch_object($category)){
+		if($category_get == $res_category->cat_id) {
+			$output.= "<option value='".$res_category->cat_id."' selected='selected' >".$res_category->name."</option>";
+		} else {
+			$output.= "<option value='".$res_category->cat_id."' >".$res_category->name."</option>";
+		}
+	}
+	$output.= ' <input class="chart-submit" type="submit" value="Apply" id="submit_btn" name="submit">';
+	$output.="</form>";
+	function fusionchart_callback($month_get,$year_get,$category_get,$source_get) {
+		global $user;
+		global $total;
+		global $check;
+		$res_aid=db_query("select  content_type_profile.field_prof_agency_nid as aid from content_type_profile,node where content_type_profile.nid=node.nid and node.type='profile' and node.uid=$user->uid");
+		$res1_aid=db_fetch_object($res_aid);
+		if(empty($res1_aid->aid))
+			$user_condition="1";
+		else
+			$user_condition="content_type_feedback.field_agency_value=$res1_aid->aid";
+		$new=0;
+		$chart=0;
+		if($month_get=="month" && $year_get=="year"){
+			$from_date="";
+			$date_condition="1";
+		}
+		if($month_get=="month" && $year_get!="year"){
+			$from_date=",node";
+			$starttime = mktime(00, 00, 00, 01, 1, $year_get);
+			$endtime=mktime(23, 59, 59, 12, 31, $year_get);
+			$date_condition="node.created >= $starttime AND node.created<=$endtime and node.nid=content_type_feedback.nid";	
+		}
+		if($month_get!="month" && !empty($month_get)){
+			$from_date=",node";
+			$num = cal_days_in_month(CAL_GREGORIAN, $month_get, $year_get);
+			$starttime = mktime(00, 00, 00, $month_get, 1, $year_get);
+			$endtime=mktime(23, 59, 59, $month_get, $num, $year_get);
+			$date_condition="node.created >= $starttime AND node.created<=$endtime and node.nid=content_type_feedback.nid";
+		}
+		if($source_get==0)
+			$source_condition="1";
+		if($source_get!=0)
+			$source_condition="field_source_value ='$source_get'";
+		if($category_get==0){
+			$from_category="";
+			$category_condition="1";	
+		}
+		if($category_get!=0){
+			$from_category=" ,content_field_category ";
+			$category_condition="content_field_category.field_category_value=$category_get and content_field_category.nid=content_type_feedback.nid and content_field_category.nid=workflow_node.nid";
+		}
+		if($category_get==0 && $source_get==0 && empty($month_get) && empty($year_get))$new=1;
+		if(empty($month_get) && empty($year_get) &&empty($status_get)&&empty($source_get))$new=1;
+		if($new==1){
+			$info->query1 = "SELECT count(content_type_feedback.nid)as count, workflow_states.state as name FROM content_type_feedback,workflow_states,workflow_node where workflow_node.nid=content_type_feedback.nid and workflow_states.sid=workflow_node.sid and workflow_states.wid=7 and $user_condition group by workflow_states.sid ";
+		}else{
+			$info->query1 ="SELECT count(content_type_feedback.nid)as count, workflow_states.state as name FROM content_type_feedback,workflow_states,workflow_node $from_category $from_date where workflow_node.nid=content_type_feedback.nid and workflow_states.sid=workflow_node.sid and workflow_states.wid=7 and $user_condition and $source_condition and  $category_condition and  $date_condition group by workflow_states.sid";
+		}
+		$result=db_query( $info->query1);
+		while($res=db_fetch_object($result)){
+			$total+=$res->count;
+			$out[$status++]=array($res->name,$res->count);
+			$chart=1;
+		}
+		if($chart==1){
+			$info->data=$out;
+			$info->chart_type = 'Pie 2D';
+			$info->settings = array('Caption' => '','showNames' => '1', 'yAxisName'=>'Number of Feedbacks', 'xAxisName'=>'Action Name','showLegend' => '0','rotateNames' => '1','showPercentageValues' => '0','decimalPrecision'=>'2','animation' => '1','formatNumberScale' => '0','showValues'=>'1','showPercentageInLabel' => '1');
+			$info->attributes=array();
+			$info->width = 900;
+			$info->height = 500;
+			$output.=theme('fusionchart', $info);
+		}
+		if($chart==0) {
+			$check=1;
+			$output.= '<div class="chart-error">No data found</div>';
+		}
+		return $output;
+	}
+		$output.= fusionchart_callback($month_get,$year_get,$category_get,$source_get);
+		global $total;
+		global $check;
+		if($check!=1)
+		$output.= '<div class="chart-error">Total Feedback:'.$total.'</div>';
+		return $output;
+}	

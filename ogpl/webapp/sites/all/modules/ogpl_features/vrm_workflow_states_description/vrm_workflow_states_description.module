@@ -1,0 +1,3 @@
+<?php
+
+include_once('vrm_workflow_states_description.features.inc');

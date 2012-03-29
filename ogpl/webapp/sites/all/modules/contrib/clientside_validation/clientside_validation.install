@@ -1,0 +1,24 @@
+<?php
+// $Id$
+/*
+ * @file
+ * Clientside validation install file
+ */
+
+/**
+ * Implements hook_install
+ */
+function clientside_validation_enable() {
+  //support for module like e.g. select_or_other
+  db_query("UPDATE {system} SET weight = 5 WHERE name = '%s'", "clientside_validation");
+}
+
+/**
+ * Clientside validation was split up into form validation, webform validation and fapi validation.
+ * This update enables the form and webform clientside validation module. It does not enable the
+ * fapi clientside validation module, because it's a new feature since this release.
+ */
+function clientside_validation_update_6100() {
+  module_enable(array('clientside_validation_form', 'clientside_validation_webform'));
+  return array(array('success' => TRUE));
+}

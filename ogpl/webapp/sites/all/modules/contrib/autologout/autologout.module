@@ -1,0 +1,166 @@
+<?php
+// $Id:
+
+/**
+ * @file
+ * Used to automagically log out a user after a preset time.
+ */
+
+/**
+ * Implementation of hook_perm().
+ */
+function autologout_perm() {
+  return array('administer autologout');
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function autologout_menu() {
+  $items = array();
+
+  $items['admin/settings/autologout'] = array(
+    'title' => 'Auto Logout',
+    'description' => 'Administer Auto Logout settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('autologout_settings'),
+    'access arguments' => array('administer autologout'),
+    'file' => 'autologout.admin.inc',
+    'type' => MENU_NORMAL_ITEM
+  );
+  $items['autologout_ahah_logout'] = array(
+    'title' => 'JS Logout',
+    'page callback' => 'autologout_ahah_logout',
+    'access callback' => '_autologout_access_ahah',
+    'type' => MENU_CALLBACK
+  );
+  $items['autologout_ahah_set_last'] = array(
+    'title' => 'JS Logout AHAH Set Last',
+    'page callback' => 'autologout_ahah_set_last',
+    'access callback' => '_autologout_access_ahah',
+    'type' => MENU_CALLBACK
+  );
+  
+  return $items;
+}
+
+/**
+ * Access callback for ahah menu items
+ */
+function _autologout_access_ahah() {
+  global $user;
+  return $user->uid && user_access('access content');
+}
+
+/**
+ * Implementation of hook_help().
+ */
+function autologout_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#autologout':
+      return '<p>'. t('This module allows you to force site users to be logged out after a given amount of time due to inactivity after first being presented with a confirmation dialog.') .'</p>';
+  }
+}
+
+/**
+ * Implementation of hook_init().
+ */
+function autologout_init() {
+  global $user;
+  if ($user->uid && _autologout_logout_role($user)) {
+    // should we be enforcing on admin pages?
+    if (arg(0) == 'admin' && !variable_get('autologout_enforce_admin', FALSE)) {
+      return;
+    }
+    
+    $now = time();
+    $timeout = variable_get('autologout_timeout', 1800);
+    $timeout_padding = variable_get('autologout_padding', 10);
+    $redirct_url = variable_get('autologout_redirect_url', 'user/login');
+    
+    // add jquery ui files
+    $jquery_ui = module_exists('jquery_ui');
+    if ($jquery_ui) {
+      jquery_ui_add(array('ui.dialog'));
+      // add default css
+	  drupal_add_css(jquery_ui_get_path() . '/themes/default/ui.all.css');
+    }
+    
+    // return all the drupal settings we'll need
+    $msg = t('@msg', array('@msg' => variable_get('autologout_message', 'Your session is about to expire. Do you want to reset it?')));
+    $settings = array(
+      'timeout' => $timeout * 1000,
+      'timeout_padding' => $timeout_padding * 1000,
+      'message' => t('@msg', array('@msg' => variable_get('autologout_message', 'Your session is about to expire. Do you want to reset it?'))),
+      'redirect_url' => url($redirct_url, array('query' => drupal_get_destination())),
+      'jquery_ui' => $jquery_ui,
+      'title' => t('@name Alert', array('@name' => variable_get('site_name', 'Drupal')))
+    );
+    drupal_add_js(array('autologout' => $settings), 'setting');
+    drupal_add_js(drupal_get_path('module', 'autologout') . '/autologout.js');
+
+    // we need a backup plan if JS is disabled
+    if (isset($_SESSION['autologout_last'])) {
+      // if time since last access is > than the timeout + some padding, logout the user
+      if (($now - $_SESSION['autologout_last']) >= ($timeout + (int)$timeout_padding)) {
+        _autologout_logout();
+        drupal_goto($redirct_url, drupal_get_destination());
+      }
+      else {
+        $_SESSION['autologout_last'] = $now;
+      }
+    }
+    else {
+      $_SESSION['autologout_last'] = $now;
+    }
+  }
+}
+
+/**
+ * Callback that performs the actual logout and redirects the user.
+ */
+function autologout_ahah_logout() {
+  _autologout_logout();
+  exit();
+}
+
+/**
+ * Callback to reset the last access session variable.
+ */
+function autologout_ahah_set_last() {
+  $_SESSION['autologout_last'] = time();
+}
+
+/**
+ * Helper to perform the actual logout.
+ */
+function _autologout_logout() {
+  global $user;
+  watchdog('user', 'Session automatically closed for %name by autologout.', array('%name' => $user->name));
+
+  // Destroy the current session:
+  session_destroy();
+  
+  // Only variables can be passed by reference workaround.
+  $null = NULL;
+  user_module_invoke('logout', $null, $user);
+
+  // Load the anonymous user
+  $user = drupal_anonymous_user();
+  
+  // @todo: this message is not being displayed once logged out
+  drupal_set_message(t('You have been logged out due to inactivity.'));
+}
+
+/**
+ * Helper to determine if a given user should be auto logged out
+ */
+function _autologout_logout_role($user) {
+  foreach ($user->roles as $key => $role) {
+    if (variable_get('autologout_role_' . $key, FALSE)) {
+      return TRUE;
+    }
+  }  
+  
+  return FALSE;
+}

@@ -1,0 +1,52 @@
+#mask {
+  position:absolute;
+  z-index:9000;
+  background-color:#000;
+  display:none;
+}
+
+
+ #boxes .window {
+  position:fixed;
+  width:440px;
+  height:200px;
+  display:none;
+  z-index:9999;
+  padding:20px;
+}
+ 
+ 
+/* Customize your modal window here, you can add background image too */
+#boxes #dialog {
+  font-size: 1.1em;
+  height: auto;
+  width: auto;
+  max-height: 400px;
+  min-height: 100px;
+  max-width: 800px;
+  min-width: 500px;
+}
+
+#dialog {
+  background: none repeat scroll 0 0 white;
+  border: 5px solid #712F46;
+  overflow: auto;
+  text-align: center;
+  font-size: 14px;
+}
+
+#boxes #dialog_content {
+	font-size: 1.3em;
+	min-height: 50px;
+	max-height: 300px;
+    overflow: auto;
+    text-align: left;
+	padding-right: 5px;
+	word-wrap: break-word;
+}
+
+a#close_right {
+	margin-right: -15px;
+	margin-top: -15px;	
+}
+

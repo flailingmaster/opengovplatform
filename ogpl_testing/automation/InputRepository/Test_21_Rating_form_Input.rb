@@ -1,0 +1,1 @@
+$comments="This article is to be rated at highest point"

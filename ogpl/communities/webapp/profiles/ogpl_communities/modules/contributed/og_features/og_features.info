@@ -1,0 +1,13 @@
+name = OG features
+description = "Turn features on and off within groups."
+package = "Organic groups"
+dependencies[] = "og"
+core = 6.x
+
+
+; Information added by drupal.org packaging script on 2012-02-14
+version = "6.x-1.3"
+core = "6.x"
+project = "og_features"
+datestamp = "1329226850"
+

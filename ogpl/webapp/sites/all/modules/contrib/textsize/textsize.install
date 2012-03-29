@@ -1,0 +1,157 @@
+<?php
+// $Id: textsize.install,v 1.1.4.5 2010/05/21 17:14:46 christianzwahlen Exp $
+
+/**
+ * @file
+ * This file update or uninstall the Text Size module.
+ */
+
+/**
+ * Implement hook_uninstall().
+ */
+function textsize_uninstall() {
+  setcookie("textsize", 76, time()-31536000, variable_get('textsize_cookie_domain', base_path()), "");
+  unset($_SESSION['textsize']);
+  variable_del('textsize_block_title');
+  variable_del('textsize_block_type');
+  variable_del('textsize_link_type');
+  variable_del('textsize_element');
+  variable_del('textsize_element_class');
+  variable_del('textsize_increment');
+  variable_del('textsize_minimum');
+  variable_del('textsize_normal');
+  variable_del('textsize_display');
+  variable_del('textsize_reset');
+  variable_del('textsize_maximum');
+  variable_del('textsize_javascript');
+  variable_del('textsize_important');
+  variable_del('textsize_message');
+  variable_del('textsize_cookie_expires');
+  variable_del('textsize_cookie_domain');
+  variable_del('textsize_display_subtitle');
+  variable_del('textsize_display_increase');
+  variable_del('textsize_display_decrease');
+  variable_del('textsize_display_normal');
+  variable_del('textsize_display_links');
+  variable_del('textsize_display_current_text_value');
+  variable_del('textsize_display_list_inline');
+  variable_del('textsize_display_current_inline');
+  // old variables
+  variable_del('textsize_list_inline');
+  variable_del('textsize_display_current_textsize');
+}
+
+/**
+ * Implement hook_update_N().
+ */
+
+/**
+ * Update 6140 for 6.x-1.4: Update variables.
+ */
+function textsize_update_6140() {
+  $ret = array();
+  // 1 Update variable "textsize_link_type".
+  if (variable_get('textsize_link_type', '') == "") {
+    variable_set('textsize_link_type', 'variable');
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6140: '. t('Variable updated:') .' "<em>textsize_link_type: variable</em>".', 'status');
+  }
+  if (variable_get('textsize_link_type', '') == "_fix") {
+    variable_set('textsize_link_type', 'fix');
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6140: '. t('Variable updated:') .' "<em>textsize_link_type: fix</em>".', 'status');
+  }
+  // 2 Update variable "textsize_list_inline".
+  if (variable_get('textsize_list_inline', '') == "") {
+    variable_set('textsize_list_inline', 'list');
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6140: '. t('Variable updated:') .' "<em>textsize_list_inline: list</em>".', 'status');
+  }
+  if (variable_get('textsize_list_inline', '') == "_inline") {
+    variable_set('textsize_list_inline', 'inline');
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6140: '. t('Variable updated:') .' "<em>textsize_list_inline: inline</em>".', 'status');
+  }
+  // 3 Update variable "textsize_display_links".
+  if (variable_get('textsize_display_links', '') == "") {
+    variable_set('textsize_display_links', 'display');
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6140: '. t('Variable updated:') .' "<em>textsize_display_links: display</em>".', 'status');
+  }
+  // 4 Update variable "textsize_display_current_textsize".
+  if (variable_get('textsize_display_current_textsize', '') == "") {
+    variable_set('textsize_display_current_textsize', 'display');
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6140: '. t('Variable updated:') .' "<em>textsize_display_current_textsize: display</em>".', 'status');
+  }
+  return $ret;
+}
+
+/**
+ * Update 6150 for 6.x-1.5: Update variables.
+ */
+function textsize_update_6150() {
+  $ret = array();
+  // 1 Update variable "textsize_javascript".
+  if (variable_get('textsize_javascript', 'js') == "js") {
+    variable_set('textsize_javascript', 1);
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable updated:') .' "<em>textsize_javascript: 1</em>".', 'status');
+  }
+  if (variable_get('textsize_javascript', 'js') == "js_no") {
+    variable_set('textsize_javascript', 0);
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable updated:') .' "<em>textsize_javascript: 0</em>".', 'status');
+  }
+  // 2 Update variable "textsize_important".
+  if (variable_get('textsize_important', '!important;') == "!important;") {
+    variable_set('textsize_important', 1);
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable updated:') .' "<em>textsize_important: 1</em>".', 'status');
+  }
+  if (variable_get('textsize_important', '!important;') == ";") {
+    variable_set('textsize_important', 0);
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable updated:') .' "<em>textsize_important: 0</em>".', 'status');
+  }
+  // 3 Update variable "textsize_display_links".
+  if (variable_get('textsize_display_links', 'display') == "display") {
+    variable_set('textsize_display_links', 1);
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable updated:') .' "<em>textsize_display_links: 1</em>".', 'status');
+  }
+  if (variable_get('textsize_display_links', 'display') == "display_hidden") {
+    variable_set('textsize_display_links', 0);
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable updated:') .' "<em>textsize_display_links: 0</em>".', 'status');
+  }
+  // 4 Update variable "textsize_display_list_inline".
+  if (variable_get('textsize_list_inline', 'list') == "list") {
+    variable_del('textsize_list_inline');
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable deleted:') .' "<del><em>textsize_list_inline: list</em></del>".');
+    variable_set('textsize_display_list_inline', 0);
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable added:') .' "<ins><em>textsize_display_list_inline: 0</em></ins>".', 'status');
+  }
+  if (variable_get('textsize_list_inline', 'list') == "inline") {
+    variable_del('textsize_list_inline');
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable deleted:') .' "<del><em>textsize_list_inline: inline</em></del>".');
+    variable_set('textsize_display_list_inline', 1);
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable added:') .' "<ins><em>textsize_display_list_inline: 1</em></ins>".', 'status');
+  }
+  // 5 Update variable "textsize_display_current_text_value".
+  if (variable_get('textsize_display_current_textsize', 'display') == "display") {
+    variable_del('textsize_display_current_textsize');
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable deleted:') .' "<del><em>textsize_display_current_textsize: text_value</em></del>".', 'status');
+    variable_set('textsize_display_current_text_value', 'text_value');
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable added:') .' "<ins><em>textsize_display_current_text_value: text_value</em></ins>".', 'status');
+  }
+  if (variable_get('textsize_display_current_textsize', 'display') == "display_hidden") {
+    variable_del('textsize_display_current_textsize');
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable deleted:') .' "<del><em>textsize_display_current_textsize: display_hidden</em></del>".');
+    variable_set('textsize_display_current_text_value', 'hidden');
+    drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6150: '. t('Variable added:') .' "<ins><em>textsize_display_current_text_value: hidden</em></ins>".', 'status');
+  }
+  return $ret;
+}
+
+/**
+ * Update 6170 for 6.x-1.7: Change the cookie domain.
+ */
+function textsize_update_6170() {
+  $ret = array();
+  // 1 Compatible to old cookies.
+  variable_set('textsize_cookie_domain', '/');
+  drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6170: '. t('Variable updated:') .' "<em>textsize_cookie_domain: /</em>".', 'status');
+  // 2 Message cookie domain.
+  $link_ts_cookie_domain = '<a title="'. t('Text Size configuration') .': '. t('Cookie Domain') .'" href="'. url('admin/settings/textsize', array( 'fragment' => 'edit-textsize-cookie-domain-wrapper')) .'">'. t('Text Size configuration') .': '. t('Cookie Domain') .'</a>';
+  drupal_set_message(t('Text Size') .' '. t('module') .'. '. t('Update') .' #6170: '. t('The cookie domain is now editable on:') .' '. $link_ts_cookie_domain .'. '. t('For a compatibility to old cookies, use:') .' "/".', 'ok');
+  return $ret;
+}

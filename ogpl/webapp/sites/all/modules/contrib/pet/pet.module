@@ -1,0 +1,432 @@
+<?php
+
+/**
+ * @file
+ * Previewable E-mail Template module.
+ */
+
+// Views support is included in includes/views/pet.views.inc
+define('PET_VIEWS_DIR', drupal_get_path('module', 'pet') . '/includes/views');
+
+/**
+ * Implementation of hook_init()
+ */
+function pet_init() {
+  drupal_add_css(drupal_get_path('module', 'pet') . '/pet.css');
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function pet_menu() {
+  $items = array();
+
+  $items['admin/build/pets'] = array(
+    'title' => 'Previewable email templates',
+    'page callback' => 'pet_admin_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer previewable email templates'),
+    'description' => 'Configure previewable email templates with token support.',
+    'file' => 'pet.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/build/pets/edit'] = array(
+    'title' => 'Edit previewable email templates',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pet_add_form'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer previewable email templates'),
+    'file' => 'pet.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/build/pets/delete'] = array(
+    'title' => 'Delete previewable email templates',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pet_delete_confirm'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer previewable email templates'),
+    'file' => 'pet.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/build/pets/list'] = array(
+    'title' => 'List',
+    'page callback' => 'pet_admin_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer previewable email templates'),
+    'file' => 'pet.admin.inc',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -1,
+  );
+  $items['admin/build/pets/add'] = array(
+    'title' => 'Add',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pet_add_form'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer previewable email templates'),
+    'file' => 'pet.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['pet/%pet'] = array(
+    'title callback' => 'pet_page_title',
+    'title arguments' => array(1),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pet_user_form', 1),
+    'access callback' => 'user_access',
+    'access arguments' => array('use previewable email templates'),
+    'file' => 'pet.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function pet_perm() {
+  return array(
+    'administer previewable email templates',
+    'use previewable email templates',
+  );
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function pet_theme() {
+  return array(
+    'pet_admin_page' => array(
+      'arguments' => array('pets' => NULL),
+    ),
+  );
+}
+
+/**
+ * Return one PET.
+ */
+function pet_load($param) {
+  if (is_numeric($param)) {
+    return db_fetch_object(db_query("SELECT * FROM {pets} WHERE pid = %d", $param));  
+  }
+  else {
+    return db_fetch_object(db_query("SELECT * FROM {pets} WHERE name='%s'", $param));  
+  }
+  
+}
+
+/**
+ * Check the validity of a loaded PET.
+ *
+ * Don't want this to be too expensive, but don't want to send bogus emails either.
+ */
+function pet_is_valid($pet) {
+  return is_object($pet) && !empty($pet->name) && is_numeric($pet->pid);
+}
+
+/**
+ * API call to insert a new PET into the database.  
+ * 
+ * @param $pet 
+ *   PET object identical to the one returned by pet_load.
+ */
+function pet_insert($pet) {
+  db_query("INSERT INTO {pets} (name, title, subject, body, object_types, recipient_callback) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", $pet->name, $pet->title, $pet->subject, $pet->body, $pet->object_types, $pet->recipient_callback);
+}
+
+/**
+ * Title callback for form template page.
+ */
+function pet_page_title($pet) {
+  return $pet->title;
+}
+
+/**
+ * Send tokenized email to each recipient.  Called once form passes validation.  Can also be
+ * called directly from code.
+ *
+ * @param $name
+ *   The unique name of the PET template.
+ * @param $recipients
+ *   An array of at least one recipient in the form <uid>|<email> where uid may be empty.
+ * @param $nid
+ *   An optional node id for token substitutions.
+ * @param $subject
+ *   An optional subject which if provided will override the subject in the PET.
+ * @param $body
+ *   An optional body which if provided which will override the body in the PET.
+ */
+function pet_send_mail($name, $recipients, $nid = NULL, $subject = NULL, $body = NULL) {
+  $pet = pet_load($name);
+  if (!$pet) {
+    watchdog('pet', 'Unable to load PET %name.', array('%name' => $name), WATCHDOG_ERROR);
+    return;
+  }
+  if (!is_array($recipients) || count($recipients) < 1) {
+    watchdog('pet', 'At least one recipient must be provided for PET %name.', array('%name' => $name), WATCHDOG_NOTICE);
+    return;
+  }
+  
+  // Override subject and body if necessary
+  $pet->subject = $subject ? $subject : $pet->subject;
+  $pet->body = $body ? $body : $pet->body;
+  
+  // Store data in params in case a module wants to act on them somehow
+  $params['pet_recipients'] = $recipients;
+  $params['pet_nid'] = $nid;
+  $params['pet_from'] = variable_get('site_mail', $GLOBALS['site_mail']);
+  
+  foreach ($recipients as $recipient) {
+    list($uid, $mail) = explode('|', $recipient);
+    $params['pet_uid'] = $uid;
+    $params['pet_to'] = $mail;
+    pet_send_one_mail($pet, $params);
+  }
+}
+
+/**
+ * Send one email, with token substitution.
+ *
+ * This may be called directly from other modules.
+ *
+ * @param $pet
+ *   The loaded PET object to use for the email
+ *     @see pet_load()
+ * @param $params
+ *   Array of parameters used when constructing the email.
+ *      pet_from (required) - a valid sender email address
+ *      pet_to (required) - a valid recipient email address
+ *      pet_recipients (optional) - if called from pet_send_mail() will contain the full recipient list
+ *      pet_uid (optional) - if provided, a valid user id for 'user' type token substitution
+ *      pet_nid (optional) - if provided, a valid node id for 'node' type token substitution
+ *   The $params array may also contain data passed in by other modules.  One use of this is for
+ *   token substitution.  
+ *     @see pet_substitutions() 
+ *     @see hook_pet_substitutions_alter() 
+ */
+function pet_send_one_mail($pet, $params) {
+  if (!pet_is_valid($pet)) {
+    watchdog('pet', 'Invalid PET object in pet_send_one_mail().', array(), WATCHDOG_ERROR);
+    return;
+  }
+
+  if (empty($params['pet_from'])) {
+    watchdog('pet', 'Missing sender email address in pet_send_one_mail() for PET \'%name\'.', array('%name' => $pet->name), WATCHDOG_ERROR);
+    return;
+  }
+
+  if (empty($params['pet_to'])) {
+    watchdog('pet', 'Missing recipient email address in pet_send_one_mail() for PET \'%name\'.', array('%name' => $pet->name), WATCHDOG_ERROR);
+    return;
+  }
+
+  $params['pet'] = $pet;
+  $substitutions = pet_substitutions($pet, $params);
+  $params['subject'] = token_replace_multiple($pet->subject, $substitutions);
+  $params['body'] = token_replace_multiple($pet->body, $substitutions);
+  drupal_mail('pet', $pet->name, $params['pet_to'], language_default(), $params, $params['pet_from']);
+}
+
+/**
+ * Load the token objects for a PET template in preparation for token substitution.
+ */
+function pet_substitutions($pet, $params) {
+  $uid = $params['pet_uid'];
+  $nid = $params['pet_nid'];
+  
+  // Standard substitutions
+  $substitutions['global'] = NULL;
+  if (!empty($uid)) {
+    $user = user_load(array('uid' => $uid));
+    $substitutions['user'] = $user;
+  }
+  if (!empty($nid)) {
+    $node = node_load($nid);
+    $substitutions['node'] = $node;
+  }
+  
+  // Custom substitutions
+  $pairs = explode("\n", $pet->object_types);
+  foreach ($pairs as $pair) {
+    if (!empty($pair)) {
+      list($type, $object) = explode('|', $pair);
+      $object = trim($object);
+      if ($object == 'node' && !empty($nid)) {
+        $substitutions[$type] = $node;
+      }
+      elseif ($object == 'user' && !empty($uid)) {
+        $substitutions[$type] = $user;
+      }
+      else {
+        $substitutions[$type] = NULL;
+      }      
+    }
+  }
+  
+  // Give modules the opportunity to add their own token types/objects
+  drupal_alter('pet_substitutions', $substitutions, $params);
+  return $substitutions;
+}
+
+/**
+ * Implementation of hook_mail()
+ *
+ * To customize, e.g. to change the content type to text/html etc, you can use hook_mail_alter()
+ * in one of your modules.
+ */
+function pet_mail($key, &$message, $params) {
+  $message['subject'] = $params['subject'];
+  $message['body'][] = $params['body'];
+}
+
+/**
+ * Return all PETs.
+ */
+function pet_get_pets() {
+  $pets = array();
+  
+  $result = db_query("SELECT * FROM {pets} ORDER BY name");
+  while ($pet = db_fetch_object($result)) {
+    $pets[] = $pet;
+  }
+  
+  return $pets;
+}
+
+/**
+ * Implementation of hook_ca_action().
+ */
+function pet_ca_action() {
+  $order_arg = array(
+    '#entity' => 'uc_order',
+    '#title' => t('Order'),
+  );
+
+  $actions['pet_email'] = array(
+    '#title' => t('Send a previewable email template based email'),
+    '#category' => t('Previewable email template'),
+    '#callback' => 'pet_action_email',
+    '#arguments' => array(
+      'order' => $order_arg,
+    ),
+  );
+
+  return $actions;
+}
+
+/**
+ * Sends an email related to an Ubercart order, triggered by a conditional action.
+ *
+ * It would be nice if this function called pet_send_mail() instead of calling drupal_mail()
+ * directly, but without some refactoring this isn't possible because PET assumes that every
+ * email sent has user tokens based on the recipient user, which doesn't match the model
+ * here, where the recipient might also include, for example, the store administrator.
+ *
+ * @see pet_action_email_form()
+ */
+function pet_action_email($order, $settings) {
+  
+  // Token replacements for the from and recipient addresses
+  $account = uc_order_user_load($order);
+  $settings['replacements'] = array(
+    'global' => NULL,
+    'order' => $order,
+    'user' => $account,
+  );
+
+  // Apply token replacements to from e-mail address.
+  $from = token_replace_multiple($settings['from'], $settings['replacements']);
+  $from = empty($from) ? uc_store_email_from() : $from;
+
+  // Apply token replacements to recipient e-mail addresses.
+  $addresses = token_replace_multiple($settings['addresses'], $settings['replacements']);
+
+  // Split up our recipient e-mail addresses.
+  $recipients = array();
+  foreach (explode("\n", $addresses) as $address) {
+    $address = trim($address);
+    // Remove blank lines
+    if (!empty($address)) {
+      $recipients[] = $address;
+    }
+  }
+
+  // Load the PET and send emails
+  $pet = pet_load($settings['pet']);
+  $params = array(
+    'pet_from' => $from,
+    'uc_order' => $order,
+  );
+  
+  foreach ($recipients as $email) {
+    $params['pet_to'] = $email;
+    $params['pet_uid'] = $account->uid;
+    pet_send_one_mail($pet, $params);
+  }
+}
+
+/**
+ * Provide action form elements for PET email Ubercart action.
+ *
+ * @see pet_action_email()
+ */
+function pet_action_email_form($form_state, $settings = array()) {
+  $form['from'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Sender'),
+    '#default_value' => isset($settings['from']) ? $settings['from'] : uc_store_email_from(),
+    '#description' => t("Enter the 'From' email addresses, or leave blank to use your store email address. You may use order tokens for dynamic email addresses."),
+    '#required' => TRUE,
+  );
+  $form['addresses'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Recipients'),
+    '#default_value' => isset($settings['addresses']) ? $settings['addresses'] : '[order-email]',
+    '#description' => t('Enter the email addresses to receive the notifications, one on each line. You may use order tokens for dynamic email addresses.'),
+    '#required' => TRUE,
+  );
+  $form['pet'] = array(
+    '#type' => 'select',
+    '#title' => t('Previewable email template'),
+    '#options' => pet_option_list(),
+    '#default_value' => $settings['pet'],
+    '#description' => t('Choose the previewable email template to send when this action is fired.'),
+    '#required' => TRUE,
+  );
+
+  return $form;
+}
+
+/**
+ * Return list of PETs for select list.
+ */
+function pet_option_list() {
+  $pets = pet_get_pets();
+  $list = array('' => t('- Choose -'));
+  
+  foreach ($pets as $pet) {
+    $list[$pet->name] = $pet->name;
+  }
+
+  return $list;
+}
+
+/**
+ * Implementation of hook_pet_substitutions_alter().
+ *
+ * Add order token type/object for Ubercart support.
+ */
+function pet_pet_substitutions_alter(&$substitutions, $params) {
+  if (isset($params['uc_order'])) {
+    $substitutions['order'] = $params['uc_order'];    
+  }
+}
+
+/**
+ * Implementation of hook_views_api().
+ */
+function pet_views_api() {
+  return array(
+    'api' => 2,
+    'path' => PET_VIEWS_DIR,
+  );
+}

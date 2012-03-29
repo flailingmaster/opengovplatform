@@ -1,0 +1,29 @@
+Agency,Agency Short Name,Sub-Agency Name,Sub-Agency Short Name,Raw Datasets (high-value),Documents (high-value),Apps (high-value),Tools (high-value),Services (high-value),Total (high-value),Date Of last Submission
+Commerce Department,COM,,,0,1,2 (1),0,2 (1),5 (2),06/02/2012
+, ,Commerce ,Com,0,0,1,0,1,2,06/02/2012
+, ,Commerce Department ,COM,0,0,1 (1),0,1 (1),2 (2),05/01/2012
+, ,Hospitals ,Hospitals,0,1,0,0,0,1,19/12/2011
+Defense Department,DEF,,,3 (1),0,2,0,0,5 (1),06/02/2012
+, ,Defence ,def,2 (1),0,0,0,0,2 (1),26/12/2011
+, ,Defense ,DF,0,0,1,0,0,1,06/02/2012
+, ,Defense Department ,DEF,1,0,1,0,0,2,18/12/2011
+Department of Energy,DOE,,,1,0,0,1,0,2,07/02/2012
+, ,Department ,Dep,1,0,0,1,0,2,07/02/2012
+Education Department,EDU,,,2,1 (1),0,1,1 (1),5 (2),07/02/2012
+, ,Department ,Dep,0,0,0,1,0,1,07/02/2012
+, ,Education ,edu,0,0,0,0,1 (1),1 (1),05/01/2012
+, ,Education Department ,EDU,2,0,0,0,0,2,18/12/2011
+, ,Office of Scientific and Technical Information,,0,1 (1),0,0,0,1 (1),19/12/2011
+Forests and Mining,FM,,,3 (2),0,0,0,0,3 (2),07/02/2012
+, ,FOREST ,Forest,3 (2),0,0,0,0,3 (2),07/02/2012
+General Services...,GSD,,,14 (1),2 (2),6 (2),1 (1),1,24 (6),07/02/2012
+, ,Airlines  ,aIR,10 (1),0,0,0,0,10 (1),02/01/2012
+, ,General ,Gen,1,0,0,0,0,1,26/12/2011
+, ,General Services ,GS,0,0,0,0,1,1,07/02/2012
+, ,General Services Department ,GSD,2,1 (1),5 (2),0,0,8 (3),19/12/2011
+, ,Retail ,Retail,0,1 (1),0,0,0,1 (1),19/12/2011
+, ,Service ,Ser,0,0,0,1 (1),0,1 (1),05/01/2012
+, ,Services Department ,SD,1,0,0,0,0,1,01/01/2012
+, ,TAC ,TAC,0,0,1,0,0,1,12/01/2012
+ 
+Total,,,,23(4),4(3),10(3),3(1),4(2),44(13),07/02/2012, 

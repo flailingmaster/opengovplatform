@@ -1,0 +1,234 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+<indexdata>
+<key name="Configuring" >
+  <topic name="Configuring Text Resize Settings" url="configuring_text_resize_settings.htm" />
+  <topic name="Configuring Image Captcha" url="configuring_image_captcha.htm" />
+  <topic name="Configuring Menu" url="configuring_menu.htm" />
+  <topic name="Configuring Date and Time Settings" url="configuring_date_and_time_settings.htm" />
+  <topic name="Configuring Themes" url="configuring_themes.htm" />
+  <topic name="Configuring the Default Delay Time" url="configuring_the_default_delay_time.htm" />
+  <topic name="Configuring General Settings for Captcha" url="configuring_general_settings_for_captcha.htm" />
+  <topic name="Configuring the Number of Items to Display in Popular Catalogs Homepage Tab" url="configuring_the_number_of_items_to_display_in_popular_catalogs_homepage_tab.htm" />
+  <topic name="Configuring the Content Bias Settings" url="configuring_the_content_bias_settings.htm" />
+  <topic name="Configuring the Apache Solr Search Server" url="configuring_the_apache_solr_search_server.htm" />
+  <topic name="Configuring reCaptcha" url="configuring_recaptcha.htm" />
+  <topic name="Configuring Site Information" url="configuring_site_information.htm" />
+  <topic name="Configuring Global Settings for Themes" url="configuring_global_settings_for_themes.htm" />
+  <topic name="Configuring the Voting API" url="configuring_the_voting_api.htm" />
+  <topic name="Configuring Date and Time Formats" url="configuring_date_and_time_formats.htm" />
+  <topic name="Configuring the Number of Items to Display in Hompage Tab" url="configuring_the_number_of_items_to_display_in_homepage_tab.htm" />
+  <topic name="Configuring Mini Panels" url="configuring_mini_panels.htm" />
+  <key name="Apache Solr Search Server" >
+    <topic name="Configuring the Apache Solr Search Server" url="configuring_the_apache_solr_search_server.htm" />
+  </key>
+  <key name="Content Bias Settings" >
+    <topic name="Configuring the Content Bias Settings" url="configuring_the_content_bias_settings.htm" />
+  </key>
+  <key name="Date" >
+    <topic name="Configuring Date and Time Settings" url="configuring_date_and_time_settings.htm" />
+    <topic name="Configuring Date and Time Formats" url="configuring_date_and_time_formats.htm" />
+  </key>
+  <key name="Default Delay Time" >
+    <topic name="Configuring the Default Delay Time" url="configuring_the_default_delay_time.htm" />
+  </key>
+  <key name="General Settings" >
+    <topic name="Configuring General Settings for Captcha" url="configuring_general_settings_for_captcha.htm" />
+  </key>
+  <key name="Global Settings" >
+    <topic name="Configuring Global Settings for Themes" url="configuring_global_settings_for_themes.htm" />
+  </key>
+  <key name="Image Captcha" >
+    <topic name="Configuring Image Captcha" url="configuring_image_captcha.htm" />
+  </key>
+  <key name="Menu" >
+    <topic name="Configuring Menu" url="configuring_menu.htm" />
+  </key>
+  <key name="Mini Panels" >
+    <topic name="Configuring Mini Panels" url="configuring_mini_panels.htm" />
+  </key>
+  <key name="Number" >
+    <topic name="Configuring the Number of Items to Display in Popular Catalogs Homepage Tab" url="configuring_the_number_of_items_to_display_in_popular_catalogs_homepage_tab.htm" />
+    <topic name="Configuring the Number of Items to Display in Hompage Tab" url="configuring_the_number_of_items_to_display_in_homepage_tab.htm" />
+  </key>
+  <key name="reCaptcha" >
+    <topic name="Configuring reCaptcha" url="configuring_recaptcha.htm" />
+  </key>
+  <key name="Site Information" >
+    <topic name="Configuring Site Information" url="configuring_site_information.htm" />
+  </key>
+  <key name="Text Resize Settings" >
+    <topic name="Configuring Text Resize Settings" url="configuring_text_resize_settings.htm" />
+  </key>
+  <key name="Themes" >
+    <topic name="Configuring Themes" url="configuring_themes.htm" />
+  </key>
+  <key name="Voting API" >
+    <topic name="Configuring the Voting API" url="configuring_the_voting_api.htm" />
+  </key>
+</key>
+<key name="Contact Admin" >
+  <topic name="Contact Admin" url="contact_admin.htm" />
+</key>
+<key name="Contact Admin Page Visits" >
+  <topic name="Tracking Contact Admin Page Visits" url="tracking_contact_admin_page_visits.htm" />
+  <key name="Tracking" >
+    <topic name="Tracking Contact Admin Page Visits" url="tracking_contact_admin_page_visits.htm" />
+  </key>
+</key>
+<key name="Contact Overview" >
+  <topic name="Point of Contact Overview" url="point_of_contact_overview.htm" />
+  <key name="Point" >
+    <topic name="Point of Contact Overview" url="point_of_contact_overview.htm" />
+  </key>
+</key>
+<key name="Contact Us Page View" >
+  <topic name="Setting the Contact Us Page View" url="setting_the_contact_us_page_view.htm" />
+  <key name="Setting" >
+    <topic name="Setting the Contact Us Page View" url="setting_the_contact_us_page_view.htm" />
+  </key>
+</key>
+<key name="Contacting" >
+  <topic name="Contacting Super Administrator" url="contacting_super_administrator.htm" />
+  <key name="Super Administrator" >
+    <topic name="Contacting Super Administrator" url="contacting_super_administrator.htm" />
+  </key>
+</key>
+<key name="Content" >
+  <topic name="Viewing the Revision History of a Content" url="viewing_the_revision_history_of_a_content.htm" />
+  <topic name="Approving Content" url="approving_content_publisher.htm" />
+  <topic name="Deleting Content" url="deleting_content.htm" />
+  <topic name="Approving Content" url="approving_content.htm" />
+  <topic name="Unpublish a Content from the OGPL Web site" url="unpublish_a_content_from_the_ogpl_web_site.htm" />
+  <topic name="Tracking the Revisions to the Content" url="tracking_the_revisions_to_the_content.htm" />
+  <topic name="Filtering the List of Content" url="filtering_the_list_of_content.htm" />
+  <topic name="Sending Content for Approval" url="sending_content_for_approval.htm" />
+  <topic name="Republishing Content" url="republishing_content.htm" />
+  <topic name="Managing Content" url="managing_content.htm" />
+  <topic name="Previewing the Content" url="previewing_the_content.htm" />
+  <key name="Approving" >
+    <topic name="Approving Content" url="approving_content_publisher.htm" />
+    <topic name="Approving Content" url="approving_content.htm" />
+  </key>
+  <key name="Deleting" >
+    <topic name="Deleting Content" url="deleting_content.htm" />
+  </key>
+  <key name="Managing" >
+    <topic name="Managing Content" url="managing_content.htm" />
+  </key>
+  <key name="Previewing" >
+    <topic name="Previewing the Content" url="previewing_the_content.htm" />
+  </key>
+  <key name="Republishing" >
+    <topic name="Republishing Content" url="republishing_content.htm" />
+  </key>
+  <key name="Sending" >
+    <topic name="Sending Content for Approval" url="sending_content_for_approval.htm" />
+  </key>
+  <key name="Unpublish" >
+    <topic name="Unpublish a Content from the OGPL Web site" url="unpublish_a_content_from_the_ogpl_web_site.htm" />
+  </key>
+</key>
+<key name="Content Back" >
+  <topic name="Sending the Content Back to the Content Creator" url="sending_the_content_back_to_the_content_creator.htm" />
+  <topic name="Sending Content Back in Workflow" url="sending_content_back_in_workflow.htm" />
+  <key name="Sending" >
+    <topic name="Sending the Content Back to the Content Creator" url="sending_the_content_back_to_the_content_creator.htm" />
+    <topic name="Sending Content Back in Workflow" url="sending_content_back_in_workflow.htm" />
+  </key>
+</key>
+<key name="Content Bias Settings" >
+  <topic name="Configuring the Content Bias Settings" url="configuring_the_content_bias_settings.htm" />
+  <topic name="Resetting Content Bias Settings" url="resetting_content_bias_settings.htm" />
+  <key name="Configuring" >
+    <topic name="Configuring the Content Bias Settings" url="configuring_the_content_bias_settings.htm" />
+  </key>
+  <key name="Resetting" >
+    <topic name="Resetting Content Bias Settings" url="resetting_content_bias_settings.htm" />
+  </key>
+</key>
+<key name="Content Creator" >
+  <topic name="Sending the Content Back to the Content Creator" url="sending_the_content_back_to_the_content_creator.htm" />
+  <topic name="Content Creator" url="content_creator.htm" />
+</key>
+<key name="Content List" >
+  <topic name="Viewing Content List" url="viewing_content_list.htm" />
+  <topic name="Filtering Content List" url="filtering_content_list.htm" />
+  <topic name="Viewing the Content List" url="viewing_the_content_list.htm" />
+  <key name="Filtering" >
+    <topic name="Filtering Content List" url="filtering_content_list.htm" />
+  </key>
+  <key name="Viewing" >
+    <topic name="Viewing Content List" url="viewing_content_list.htm" />
+    <topic name="Viewing the Content List" url="viewing_the_content_list.htm" />
+  </key>
+</key>
+<key name="Content Management System" >
+  <topic name="Understanding the Content Management System (CMS) Workflow" url="understanding_the_content_management_system_workflow_.htm" />
+  <key name="Understanding" >
+    <topic name="Understanding the Content Management System (CMS) Workflow" url="understanding_the_content_management_system_workflow_.htm" />
+  </key>
+</key>
+<key name="Content Management System Moderator" >
+  <topic name="Content Management System Moderator" url="content_management_system_moderator.htm" />
+</key>
+<key name="Content Revisions" >
+  <topic name="Tracking Content Revisions" url="tracking_content_revisions.htm" />
+  <key name="Tracking" >
+    <topic name="Tracking Content Revisions" url="tracking_content_revisions.htm" />
+  </key>
+</key>
+<key name="Country Data" >
+  <topic name="Creating Country Data" url="creating_country_data.htm" />
+  <topic name="Updating Country Data" url="updating_country_data.htm" />
+  <topic name="Updating Country Data" url="updating_country_data_content_creator.htm" />
+  <key name="Creating" >
+    <topic name="Creating Country Data" url="creating_country_data.htm" />
+  </key>
+  <key name="Updating" >
+    <topic name="Updating Country Data" url="updating_country_data.htm" />
+    <topic name="Updating Country Data" url="updating_country_data_content_creator.htm" />
+  </key>
+</key>
+<key name="Creating" >
+  <topic name="Creating FAQ" url="creating_faq.htm" />
+  <topic name="Creating Country Data" url="creating_country_data.htm" />
+  <topic name="Creating Pages" url="creating_pages.htm" />
+  <topic name="Creating Blocks" url="creating_blocks.htm" />
+  <key name="Blocks" >
+    <topic name="Creating Blocks" url="creating_blocks.htm" />
+  </key>
+  <key name="Country Data" >
+    <topic name="Creating Country Data" url="creating_country_data.htm" />
+  </key>
+  <key name="FAQ" >
+    <topic name="Creating FAQ" url="creating_faq.htm" />
+  </key>
+  <key name="Pages" >
+    <topic name="Creating Pages" url="creating_pages.htm" />
+  </key>
+</key>
+<key name="Cron" >
+  <topic name="Managing Cron" url="managing_cron.htm" />
+  <key name="Managing" >
+    <topic name="Managing Cron" url="managing_cron.htm" />
+  </key>
+</key>
+<key name="Cron Run Time Interval" >
+  <topic name="Updating Cron Run Time Interval" url="updating_cron_run_time_interval.htm" />
+  <key name="Updating" >
+    <topic name="Updating Cron Run Time Interval" url="updating_cron_run_time_interval.htm" />
+  </key>
+</key>
+<key name="Datasets Report" >
+  <topic name="Viewing the Access Denied Pages/Datasets Report" url="viewing_the_access_denied_pages_datasets_report.htm" />
+</key>
+<key name="Date" >
+  <topic name="Configuring Date and Time Settings" url="configuring_date_and_time_settings.htm" />
+  <topic name="Configuring Date and Time Formats" url="configuring_date_and_time_formats.htm" />
+  <key name="Configuring" >
+    <topic name="Configuring Date and Time Settings" url="configuring_date_and_time_settings.htm" />
+    <topic name="Configuring Date and Time Formats" url="configuring_date_and_time_formats.htm" />
+  </key>
+</key>
+
+</indexdata>

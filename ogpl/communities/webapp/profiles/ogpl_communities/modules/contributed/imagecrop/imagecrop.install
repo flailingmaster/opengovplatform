@@ -1,0 +1,77 @@
+<?php
+// $Id: imagecrop.install,v 1.1.4.3 2010/07/30 13:51:17 zuuperman Exp $
+
+/**
+ * @file
+ * Install file.
+ */
+
+/**
+ * Implementation of hook_enable().
+ */
+function imagecrop_enable() {
+  cache_clear_all('imagecache_actions', 'cache');
+}
+
+/**
+ * Implementation of hook_disable().
+ */
+function imagecrop_disable() {
+  cache_clear_all('imagecache_actions', 'cache');
+}
+
+/**
+ * Implementation of hook_schema().
+ */
+function imagecrop_schema() {
+
+  $schema['imagecrop'] = array(
+    'fields' => array(
+      'fid' => array('type' => 'int', 'not null' => TRUE, 'unsigned' => TRUE),
+      'presetid' => array('type' => 'int', 'not null' => TRUE, 'unsigned' => TRUE),
+      'reference' => array('type' => 'varchar', 'length' => '40', 'not null' => TRUE, 'default' => ''),
+      'xoffset' => array('type' => 'int', 'not null' => TRUE, 'unsigned' => TRUE),
+      'yoffset' => array('type' => 'int', 'not null' => TRUE, 'unsigned' => TRUE),
+      'width' => array('type' => 'int', 'not null' => TRUE, 'unsigned' => TRUE),
+      'height' => array('type' => 'int', 'not null' => TRUE, 'unsigned' => TRUE),
+      'scale' => array('type' => 'varchar', 'length' => '10', 'not null' => TRUE, 'default' => 'original'),
+    ),
+  );
+
+  return $schema;
+
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function imagecrop_install() {
+  drupal_install_schema('imagecrop');
+  db_query("UPDATE {system} SET weight = 1 WHERE name = 'imagecrop'");
+}
+
+/**
+ * Update 1 : set weight to 1
+ */
+function imagecrop_update_2() {
+  $ret[] = update_sql("UPDATE {system} SET weight = 1 WHERE name = 'imagecrop'");
+  return array();
+}
+
+/**
+ * Update 2 : Add extra field to imagecrop table
+ */
+function imagecrop_update_3() {
+  $ret[] = db_query("ALTER TABLE {imagecrop} ADD scale VARCHAR( 10 ) NOT NULL DEFAULT 'original'");
+  return array();
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function imagecrop_uninstall() {
+  drupal_uninstall_schema('imagecrop');
+  db_query("DELETE FROM {system} where name = 'imagecrop'");
+  variable_del('imagecrop_modules');
+  variable_del('imagecrop_fields');
+}

@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: email registration\n"
+"POT-Creation-Date: 2009-02-16 18:38+0100\n"
+"PO-Revision-Date: 2009-03-17 13:54+0100\n"
+"Last-Translator: Marco Seiz\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Spanish\n"
+"X-Poedit-Country: Spain\n"
+
+#: email_registration.module:38;43;48;53;60
+msgid "E-mail"
+msgstr "E-mail"
+
+#: email_registration.module:49
+msgid "Enter your e-mail address. You'll be sent a new password immediately."
+msgstr "Introduce tu dirección de email y recibirás una contraseña nueva de forma inmediata."
+
+#: email_registration.module:54
+msgid "Enter your e-mail address."
+msgstr "Introduce tu dirección de email."
+
+#: email_registration.module:55
+msgid "Enter the password that accompanies your e-mail."
+msgstr "Introduce la contraseña que acompaña tu direccion de email."
+
+#: email_registration.module:0
+msgid "email_registration"
+msgstr "email_registration"
+
+#: email_registration.info:0
+msgid "Email Registration"
+msgstr "Email Registration"
+
+#: email_registration.info:0
+msgid "For registration process without a username."
+msgstr "Para registrarse sin nombre de usuario."
+

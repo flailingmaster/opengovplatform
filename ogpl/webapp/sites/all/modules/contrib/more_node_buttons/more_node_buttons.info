@@ -1,0 +1,19 @@
+; $Id: more_node_buttons.info,v 1.1.4.8 2010/11/04 15:08:23 quiptime Exp $
+name = More node buttons
+description = Add an Cancel, Save and continue and an Save and create new button to node edit forms.
+package = User interface
+core = 6.x
+
+; Information added by drupal.org packaging script on 2010-05-10
+version = "6.x-1.x-dev"
+core = "6.x"
+project = "more_node_buttons"
+datestamp = "1273450252"
+
+
+; Information added by drupal.org packaging script on 2010-11-04
+version = "6.x-1.0"
+core = "6.x"
+project = "more_node_buttons"
+datestamp = "1288883795"
+

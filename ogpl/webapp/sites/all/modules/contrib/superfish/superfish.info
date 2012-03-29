@@ -1,0 +1,14 @@
+name = "Superfish"
+description = "jQuery Superfish plugin for your Drupal menus."
+package = User interface
+dependencies[] = menu
+dependencies[] = jquery_update
+dependencies[] = libraries
+core = 6.x
+
+; Information added by drupal.org packaging script on 2011-03-27
+version = "6.x-1.8"
+core = "6.x"
+project = "superfish"
+datestamp = "1301244069"
+

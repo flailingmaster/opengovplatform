@@ -1,0 +1,28 @@
+Index: quicktabs.module
+===================================================================
+--- quicktabs.module	(revision 3822)
++++ quicktabs.module	(working copy)
+@@ -378,7 +378,11 @@
+       if (module_exists('i18nstrings')) {
+         $tab['title'] = tt("quicktabs:tab:{$quicktabs['machine_name']}--$tabkey:title", $tab['title']);
+       }
+-      $output .= '<li'. $attributes_li .'>'. l($tab['title'], $_GET['q'], $options) .'</li>';
++      if(trim($quicktabs['machine_name']) == 'catalog_tab'){
++        $output .= '<li'. $attributes_li .'>'. l('<span>'.$tab['title'].'</span>', $_GET['q'], $options) .'</li>';
++      } else {
++        $output .= '<li'. $attributes_li .'>'. l($tab['title'], $_GET['q'], $options) .'</li>';
++      }
+       $index++;
+     }
+   }
+@@ -417,7 +421,9 @@
+     'query' => $query,
+     'fragment' => 'quicktabs-'. $qt_name,
+   );
+-
++  if(trim($quicktabs['machine_name']) == 'catalog_tab'){
++    $link_options['html'] = TRUE;
++  }
+   return $link_options;
+ }
+ 

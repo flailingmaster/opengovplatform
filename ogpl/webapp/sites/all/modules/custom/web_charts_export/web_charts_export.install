@@ -1,0 +1,60 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: alan_lobo
+ * Date: 2/29/12
+ * Time: 11:11 AM
+ * To change this template use File | Settings | File Templates.
+ */
+
+function web_charts_export_install()
+{
+    drupal_install_schema('web_charts_export');
+}
+
+function web_charts_export_uninstall()
+{
+    drupal_uninstall_schema('web_charts_export');
+}
+
+function web_charts_export_schema()
+{
+    $schema['charts_export_visitor_summary'] = array(
+        'description' => 'Stores visitor count per country per city.',
+        'fields' => array(
+            'id' => array(
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'count' => array(
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => FALSE,
+                'default' => 0
+            ),
+            'month' => array(
+                'type' => 'datetime',
+                'not null' => FALSE,
+                'default' => '0000-00-00 00:00:00'
+            ),
+            'country' => array(
+                'type' => 'varchar',
+                'length' => 50,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'city' => array(
+                'type' => 'varchar',
+                'length' => 50,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+        ),
+        'primary key' => array('id'),
+        'unique keys' => array(
+            'month_country_city' => array('month', 'country', 'city')
+        ),
+    );
+    return $schema;
+}

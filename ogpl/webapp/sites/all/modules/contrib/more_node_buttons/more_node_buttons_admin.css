@@ -1,0 +1,40 @@
+/* $Id: more_node_buttons_admin.css,v 1.1.2.6 2010/11/04 15:08:23 quiptime Exp $ */
+
+#more-node-buttons-admin h3 {
+  margin: 0.75em 0 0.5em 0;
+}
+.mnb-admin-table thead th, .mnb-admin-table th, .mnb-admin-table tbody {
+  border: none;
+}
+.mnb-admin-table thead th {
+  padding-bottom: 1em;
+}
+.mnb-admin-table .odd, .mnb-admin-table .even {
+  background-color: inherit;
+  border: none;
+}
+.mnb-admin-table .odd-mnb {
+  background-color: #EDF5FA;
+}
+.mnb-admin-table .even-mnb {
+  background-color: #FFF;
+}
+.mnb-admin-table .odd-mnb-type td, .mnb-admin-table .even-mnb-type td {
+  padding-top: 0.5em;
+}
+.mnb-admin-table .odd-mnb-elements td, .mnb-admin-table .even-mnb-elements td {
+  padding-bottom: 1em;
+}
+#more-node-buttons-admin p {
+  margin: 0 0 0.5em;
+}
+#more-node-buttons-admin .form-submit {
+  margin: 0.75em 0.5em 1em 0;
+}
+.mnb-values-first, .mnb-values-last {
+  display: inline;
+  float: left;
+}
+.mnb-values-last {
+  margin: 0 0 0 3em ;
+}

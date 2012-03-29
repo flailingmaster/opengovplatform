@@ -1,0 +1,6 @@
+; $Id$
+name = Workflow customizations.
+description = Workflow module specific customizations.
+core = 6.x
+dependencies[] = workflow
+package = DMS customizations

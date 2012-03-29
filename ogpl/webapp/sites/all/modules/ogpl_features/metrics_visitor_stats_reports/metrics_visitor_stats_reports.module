@@ -1,0 +1,3 @@
+<?php
+
+include_once('metrics_visitor_stats_reports.features.inc');

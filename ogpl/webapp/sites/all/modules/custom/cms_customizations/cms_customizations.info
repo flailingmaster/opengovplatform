@@ -1,0 +1,5 @@
+; $Id$
+name = CMS repository for orphaned Drupal hook implementations.
+description = CMS repository for orphaned Drupal hook implementations.
+core = 6.x
+package = CMS customizations

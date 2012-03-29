@@ -1,0 +1,294 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Adobe RoboHelp 9" />
+<title>Configuring the Apache Solr Search Server</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="JavaScript">//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+        origWidth = innerWidth;
+        origHeight = innerHeight;
+        onresize = reDo;
+}
+onerror = null; 
+//]]></script>
+<script type="text/javascript" language="javascript1.2" src="./whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="./whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whtopic.js"></script>
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addTocInfo("Content Management System Administrator\nManaging Global and Advanced Search\nConfiguring the Apache Solr Search Server");
+addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("<a href=\"cms_administrator.htm\">Content Management System Administrator<\/a> > <a href=\"managing_global_advanced_search.htm\">Managing Global and Advanced Search<\/a> > Configuring the Apache Solr Search Server<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<?rh-region_start id="header" style="width: 100%; position: relative;" ?>
+<?rh-region_end ?>
+<h1>Configuring the Apache Solr Server</h1>
+<p>You can configure the Apache Solr server and specify the number of results 
+ that must appear on the search page, the number of items to index for 
+ each cron job, and other additional settings, such as help messages, alternative 
+ results that must appear when the Apache Solr server is unavailable or 
+ there is no match found for the searched keyword.</p>
+<p>To configure Apache Solr server:</p>
+<ol type="1">
+	<li><p>In the navigation menu, point to <span class="UI">Configurable 
+	 Items</span>, <span class="UI">Manage Header Content</span>, and then 
+	 click <span class="UI">Manage Global/Advance Search</span>.<br />
+	The <span class="UI">Apache Solr</span> page appears.</p></li>
+	<li><p>Enter appropriate information in each field. The following table 
+	 lists each field and its description.</p></li>
+</ol>
+<p class="TableCaption" style="margin-left: 36px;"><span>Table: Description 
+ of fields in the Apache Solr page</span></p>
+<table style="margin-left: 40px;" cellspacing="0" width="93.191%">
+	<col style="width: 26.753%;" />
+	<col style="width: 73.247%;" />
+	<tr>
+		<td style="border: Solid 1px #000000;" bgcolor="#E8E8E8"><p class="TableHeading">Field</p></td>
+		<td style="border-top: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;" bgcolor="#E8E8E8"><p class="TableHeading"><span><b 
+		 style="font-weight: bold;">Description</b></span></p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Solr host name</span><br />
+		<span style="font-weight: bold;"><b><b>(Required)</b></b></span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Enter 
+		 the host name or the IP address of the Apache Solr server that 
+		 you want to use.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Solr port</span><br />
+		<span style="font-weight: bold;"><b><b>(Required)</b></b></span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Enter 
+		 the port number that the Apache Solr server must use to communicate 
+		 with the OGPL Web site. The default port used by Apache Solr is 
+		 8983</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Solr path</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p><span>Enter 
+		 the path to location where you have installed the Apache Solr 
+		 server.</span></p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Number of items to index per cron run</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Click 
+		 the maximum number of items that must be indexed in each cron 
+		 job. For more information on cron, see &lt;topic for cron&gt;.</p>
+		<p>For example, if you want to index 200 items for each cron job, 
+		 click <span class="UI">200</span>.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Results per page</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Enter 
+		 the number of search results that must appear on the <span class="UI">Search</span> 
+		 page of the OGPL Web site. For example, if you want to display 
+		 10 results per page, enter <span class="UI">10</span>.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">On Failure</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Click 
+		 the alternative result that must appear when the Apache Solr server 
+		 is not available.</p>
+		<p>For example, if you want to display an error message when the 
+		 Apache Solr server is not available, click <span class="UI">Show 
+		 error message</span>.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Advanced Configuration</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>This 
+		 section provides you additional options to configure the search 
+		 functionality on the OGPL Web site</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Extra help messages for administrators</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>If 
+		 you enable help messages that provide more information to the 
+		 administrators of the OGPL Web site, click <span class="UI">Enabled</span>.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Index write access</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>If 
+		 you want the cron to send the updates made to the content to the 
+		 Apache Solr server, click <span class="UI">Read and write (normal)</span>.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Make Apache Solr Search the default</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>If 
+		 you want to use the Apache Solr server as the default search server 
+		 for the OGPL Web site, click <span class="UI">Enabled</span>.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Use Apache Solr for Taxonomy links</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>If 
+		 you have used Taxonomy tags to group the content and if you want 
+		 the Apache Solr to use these tags for searching the keyword, click 
+		 <span class="UI">Enabled</span>.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Autocomplete 
+		 widget to use</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>If 
+		 you want to display the suggestions for the keyword when a visitor 
+		 enters the search query, click <span class="UI">Custom autocomplete 
+		 widget</span>. This allows visitors to enter a few characters 
+		 and select the appropriate keyword from the suggested keywords.</p>
+		<p>If you want the visitor to press <span class="UI">ENTER</span> 
+		 or click <span class="UI">Search</span> before displaying the 
+		 search results, click <span class="UI">Drupal core autocomplete 
+		 widget</span>.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Enable 
+		 additional keyword suggestions on the autocomplete widget</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>If 
+		 you want to provide related word suggestions for a search query 
+		 below the search box while the visitor enters words in the search 
+		 box, select this check box.</p>
+		<p>For example, if a visitor enters the word <span class="UI">Technology</span> 
+		 in the search box, the word <span class="UI">Technologies</span> 
+		 appears below the search box.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;"><span>Enable 
+		 spellchecker suggestions on the autocomplete widget</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>If 
+		 you want to provide suggestions for the correct spelling of a 
+		 word when a visitor enters a wrong spelling for a search query, 
+		 select this check box.</p>
+		<p>For example, if a visitor enters <span class="UI">Tecchnologies</span>, 
+		 the word <span class="UI">Technologies</span> appears.</p></td>
+	</tr>
+</table>
+<ol start="3" type="1">
+	<li><p>Click <span class="UI">Save Configuration</span>.<br />
+	The Apache Solr server is configured.</p></li>
+</ol>
+<?rh-region_start id="footer" style="width: 100%; position: relative;" ?>
+<p>&#160;</p>
+<?rh-region_end ?><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

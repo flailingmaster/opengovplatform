@@ -1,0 +1,10 @@
+name = "Message Jammer"
+description = "Filter status messages set by drupal_set_message()."
+package = Jammer
+core = 6.x
+; Information added by drupal.org packaging script on 2011-05-24
+version = "6.x-1.7"
+core = "6.x"
+project = "jammer"
+datestamp = "1306247815"
+

@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <meta name="generator" content="Adobe RoboHelp 9" />
+<title>Configuring Date and Time Format for the Pages that Use Drupal Views</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="JavaScript">//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+        origWidth = innerWidth;
+        origHeight = innerHeight;
+        onresize = reDo;
+}
+onerror = null; 
+//]]></script>
+<script type="text/javascript" language="javascript1.2" src="./whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="./whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whtopic.js"></script>
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addTocInfo("Super Administrator\nConfiguring Date and Time\nConfiguring the Date and Time Format for the Pages that Use Drupal Views");
+addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("<a href=\"super_administrator.htm\">Super Administrator<\/a> > <a href=\"configuring_date_and_time_formats.htm\">Configuring Date and Time<\/a> > Configuring the Date and Time Format for the Pages that Use Drupal Views<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<h1>Configuring the Date and Time Format for Pages that Use Drupal Views</h1>
+<p>OGPL Web pages, such as \<span class="UI">Suggested Datasets</span>, 
+ <span class="UI">Suggested Apps</span>, <span class="UI">Valuable suggestions</span> 
+ <span class="UI">and ideas</span><span class="UI" style="font-weight: normal;">,</span> 
+ and <span class="UI">Latest Pages In Last 7 Days</span><span class="UI" 
+	 style="font-weight: normal;">,</span> use Drupal Views to fetch and 
+ display data. The format of the date and time that appears on these pages 
+ are defined in the <span style="font-weight: bold;"><b><b>Views</b></b></span> 
+ that these pages use as their content source. You can configure a <span 
+	 style="font-weight: bold;"><b><b>View</b></b></span> and specify the format 
+ of the date and time that must appear when a page users this view.</p>
+<p>The following image illustrates the date and time format displayed on 
+ the <span style="font-weight: bold;"><b><b>Suggested Datasets</b></b></span> 
+ page of the OGPL Web site:</p>
+<p><img src="date_and_time_views.png" alt="date_and_time_views.png" style="border: none;" 
+		 width="600" height="141" border="0" /></p>
+<p>To configure the date and time format for a view:</p>
+<ol type="1">
+	<li><p>In the Drupal menu, point to <span class="UI">Site building</span>, 
+	 <span class="UI">Views</span>, and then click <span class="UI">List</span>.<br />
+	The <span class="UI">Views</span> page appears and displays the list 
+	 of views for different blocks of the OGPL Web site.</p></li>
+	<li><p>Navigate to the content source for the page that you want to 
+	 configure, and click the <span class="UI">Edit</span> link. For example, 
+	 if you want to configure the date and time format for the <span class="UI">Suggested 
+	 Datasets</span> page, navigate to the <span class="UI">suggested_dataset</span> 
+	 view, and click the <span class="UI">Edit</span> link.<br />
+	The <span class="UI">Edit View</span> <span class="UI" style="font-style: italic;"><i><i>View_Name</i></i></span> 
+	 page appears, where <span class="UI" style="font-style: italic;"><i><i>View_Name</i></i></span> 
+	 is the name of the view that you selected.</p></li>
+	<li><p>In the left pane, click the name of the view for which you want 
+	 to update the date and time format. For example, if you want to update 
+	 the date and time format for the <span class="UI">Suggested Datasets</span> 
+	 view, click <span class="UI">Suggested Datasets</span>.<br />
+	The details of the view that you selected appear in the right pane.</p></li>
+	<li><p>In the <span class="UI">Fields</span> section, click the <span 
+	 class="UI">Node: Post date</span> link.<br />
+	The <span class="UI" style="font-style: italic;"><i><i>View_Name</i></i></span><span 
+	 class="UI">: Configure field Node: Post date</span> section appears, 
+	 where <span class="UI" style="font-style: italic;"><i><i>View_Name</i></i></span> 
+	 is the name of the view that you selected.</p></li>
+	<li><p>Scroll down until you see the <span class="UI">Custom date format</span> 
+	 box.</p></li>
+	<li><p>In the <span class="UI">Custom date format</span> box, enter 
+	 the format for the date and time that must appear on the page that 
+	 uses this view as the content source. For example, if you want the 
+	 page to display the date in <span class="UI">dd-mm-yyyy</span> format, 
+	 in the <span class="UI">Custom date format</span> box, enter <span 
+	 class="UI">d-m-Y</span>.<br />
+	<span style="font-weight: bold;"><b><b>Tip:</b></b></span> If you want to 
+	 view the list of available date formats, click the <span class="UI">PHP 
+	 docs</span> link.</p></li>
+	<li><p>Click <span class="UI">Update</span>.</p></li>
+	<li><p>Click <span class="UI">Save</span>.<br />
+	The date and time format on the page that uses this view is updated.</p></li>
+</ol>
+<?rh-region_start id="footer" style="width: 100%; position: relative;" ?>
+<p>&#160;</p>
+<?rh-region_end ?><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

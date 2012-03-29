@@ -1,0 +1,15 @@
+name = Module Grants
+package = Access control
+description = Enables access control for unpublished content and allows modules that operate on access grants to work together in the expected way.
+core = "6.x"
+; Depends on Node Tools for node_tools_nodeapi()
+dependencies[] = node_tools
+version = "6.x-3.dev"
+
+
+; Information added by drupal.org packaging script on 2012-03-03
+version = "6.x-3.8"
+core = "6.x"
+project = "module_grants"
+datestamp = "1330736749"
+

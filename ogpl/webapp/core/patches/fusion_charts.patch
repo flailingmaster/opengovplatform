@@ -1,0 +1,19 @@
+Index: FusionCharts.php
+===================================================================
+--- FusionCharts.php	(revision 5974)
++++ FusionCharts.php	(working copy)
+@@ -140,12 +140,12 @@
+ $HTML_chart = <<<HTMLCHART
+ 	<!-- START Code Block for Chart $chartId -->
+ 	<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="$chartWidth" height="$chartHeight" id="$chartId">
+-		<param name="allowScriptAccess" value="always" />
++		<param name="allowScriptAccess" value="sameDomain" />
+ 		<param name="movie" value="$chartSWF"/>		
+ 		<param name="FlashVars" value="$strFlashVars&registerWithJS=$nregisterWithJS" />
+ 		<param name="quality" value="high" />
+ 		<param name="wmode" value="$nsetTransparent" />
+-		<embed src="$chartSWF" FlashVars="$strFlashVars&registerWithJS=$nregisterWithJS" quality="high" width="$chartWidth" height="$chartHeight" name="$chartId" allowScriptAccess="always" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" wmode="$nsetTransparent" />
++		<embed src="$chartSWF" FlashVars="$strFlashVars&registerWithJS=$nregisterWithJS" quality="high" width="$chartWidth" height="$chartHeight" name="$chartId" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" wmode="$nsetTransparent" />
+ 	</object>
+ 	<!-- END Code Block for Chart $chartId -->
+ HTMLCHART;

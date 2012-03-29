@@ -1,0 +1,117 @@
+<?php
+function web_feed_aggregator_perm(){
+    return array('view feed aggregator');
+}
+function web_feed_aggregator_menu() {
+    $items['listrssfeeds'] = array(
+    'title' => 'RSS Feeds',
+    'description' => 'Rss Feeds',
+    'page callback' => 'display_page_content',
+    'access callback' => true,
+    'access arguments' => true,
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 10,
+    );
+    return $items;
+}
+function web_feed_aggregator_block($op = 'list', $delta = 0) {
+  switch ($op) {
+    case 'list':
+      $blocks[0]['info'] = t('Feed Aggregator');
+      $blocks[0]['cache'] = BLOCK_NO_CACHE;
+      return $blocks;
+    case 'view':
+      $block['subject'] = t('Feed Aggregator');
+	  $block['content'] = (strstr($_SERVER['QUERY_STRING'],"whats-new")) ? display_block_content_whats_new():display_block_content() ;
+      return $block;    
+  }
+}
+
+function display_page_content(){
+    try {
+        $page_content = '';
+        $relative_path = base_path();
+        $rss_feed = db_query("SELECT fid, title FROM aggregator_feed ORDER BY title ASC");
+		$page_content .='<p>RSS Feeds exposed by various Open Data Sites of the world are aggregated here for consumption:</p>';
+        $page_content .= '<div class="feed-aggregator">';
+        $page_content .= '<ul>';
+        while ($row = db_fetch_object($rss_feed)){
+            if(!empty($row->title)){
+                $page_content .= '<li><a href="'.$relative_path.'aggregator/sources/'.$row->fid.'" title="'.$row->title.'">' . $row->title . '</a></li>';
+            }
+        }
+        $page_content .= '</ul>';
+        $page_content .= '</div>';
+        return $page_content;
+    } catch (Exception $e) {}
+}
+
+function display_block_content(){
+    try {
+        $block_content = '';
+        $rss_feed = db_query("SELECT fid, title FROM aggregator_feed ORDER BY title ASC");
+        $block_content .= '<div class="rss-feed-aggregator item-list">';
+        $block_content .= '<ul>';
+        $i = 1;
+        $relative_path = base_path();
+        while ($row = db_fetch_object($rss_feed)){
+            if(!empty($row->title)){
+                $row->title = trim($row->title);
+                $title = $row->title;
+                if(strlen($row->title) > 35){
+                    $title = substr($title, 0, 35).'...';
+                }
+                if($i <= 5){
+                    $i++;
+                    $block_content .= '<li><a href="'.$relative_path.'aggregator/sources/'.$row->fid.'" title="'.$row->title.'">' . $title . '</a></li>';
+                }
+                if($i > 6){
+                    break;
+                }
+            }
+        }
+        $block_content .= '</ul>';
+        if($i > 5){
+            $block_content .= '<div class="rss-feed-link whats-new-more-link"><a href="'.$relative_path.'listrssfeeds" title="More">More</a></div>';
+        }
+        $block_content .= '</div>';
+        return $block_content;
+    } catch (Exception $e) {}
+}
+
+function display_block_content_whats_new(){
+	global $base_url;
+    try {
+        $block_content = '';
+        $rss_feed = db_query("SELECT fid, title FROM aggregator_feed ORDER BY title ASC");
+        $block_content .= '<div style="position:absolute;margin:-32px 0 0 240px;"><a href="#button" id="play" title="Play" style="margin:0 3px 0 0;"><img src="'.$base_url.'/'.drupal_get_path("theme","ogpl_css3").'/images/play_button.png" alt="Play button" style="background:#303030;" /></a><a href="#button" title="Stop" id="stop"><img src="'.$base_url.'/'.drupal_get_path("theme","ogpl_css3").'/images/stop_button.png" alt="Stop button" style="background:#303030;" /></a></div>';
+		$block_content .= '<div class="rss-whats-new-block-content">RSS Feeds exposed by various Open Data Sites of the world are aggregated here for consumption:</div><div class="rss-feed-aggregator item-list" id="rss-feed-aggregator" style="height:260px;overflow:auto;width:295px;"><div id="scroll-content">';		
+		$block_content .= '<ul style="height:auto;">';
+        $i = 1;
+        $relative_path = base_path();
+        while ($row = db_fetch_object($rss_feed)){
+            if(!empty($row->title)){
+                $row->title = trim($row->title);
+                $title = $row->title;
+                if(strlen($row->title) > 35){
+                    $title = substr($title, 0, 35).'...';
+                }
+				$block_content .= '<li><a href="'.$relative_path.'aggregator/sources/'.$row->fid.'" title="'.$row->title.'">' . $title . '</a></li>';
+                /*if($i <= 5){
+                    $i++;
+                    $block_content .= '<li><a href="'.$relative_path.'aggregator/sources/'.$row->fid.'" title="'.$row->title.'">' . $title . '</a></li>';
+                }
+                if($i > 6){
+                    break;
+                }*/
+            }
+        }
+        $block_content .= '</ul></div>';
+        if($i > 5){
+            $more = '<div class="rss-feed-link whats-new-more-link" style="position:absolute;margin:0 0 0 250px;"><a href="'.$relative_path.'listrssfeeds" 	title="More">More</a></div>';
+        }
+        $block_content .= '<div id="fs2" style="width:290px;height:260px;"></div></div>'.$more;
+        return str_replace("{{MORE}}",$more,$block_content);
+    } catch (Exception $e) {}
+}
+?>

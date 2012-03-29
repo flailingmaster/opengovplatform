@@ -1,0 +1,170 @@
+$Id: CHANGELOG.txt,v 1.1.2.7 2011/01/05 12:31:21 christianzwahlen Exp $
+
+Text Size 6.x Releases
+======================
+
+Text Size 6.x-1.9, 2011-01-05
+-----------------------------
+- Fixed variable "textsize_reset".
+- Fixed: German translation.
+- Czech translation by Jan Mědílek.
+
+Text Size 6.x-1.8, 2010-06-04
+-----------------------------
+- #796170 by mgifford: Fixed display_hidden invisible to screen readers.
+- #739004 by billsdesk: Fixed CSS3 Validator Generates Warnings.
+- #747266 by leon.nk: Added feature remove increase and decrease link.
+
+Text Size 6.x-1.7, 2010-01-05
+-----------------------------
+- Edited: Cookie domain required.
+- Edited: Cookie domain validation.
+- Fixed: German translation.
+
+Text Size 6.x-1.7-rc1, 2009-12-28
+---------------------------------
+- Added: Description text for the default settings.
+
+Text Size 6.x-1.7-beta1, 2009-12-11
+-----------------------------------
+- #648692 by mrfelton: Fixed upgrading variables.
+- #646796 by schoolcraft13: Added feature loop back to normal size.
+- Fixed: Same cookie expires by PHP and JavaScript.
+- Added feature: Editable cookie expires and cookie domain.
+
+Text Size 6.x-1.6, 2009-11-20
+-----------------------------
+- #637374 by blixxxa: Fixed Module breaks Admin module.
+- #636854 by christine1126: Fixed Appear block.
+- Optimized images and source.
+
+Text Size 6.x-1.5, 2009-11-18
+-----------------------------
+- #606406 by GiorgosK: Fixed displaying block in header.
+- #357057 by activelyOUT: Fixed title cannot be placed alongside pics of resize.
+- #502896 by multiple_prime: Fixed unwanted "messages status".
+- Fixed: Correct calculation of minimum and maximum textsize.
+- Fixed: Filtered XHTML element class.
+- Fixed: Save validated text size settings.
+- Fixed: Allowed values 1-1000%.
+- Fixed: RTL on the help page.
+- Added feature: Display subtitle and text size normal.
+- Added feature: Display only the current value and remove text and value in the source code.
+- Added feature: Display inline: Subtitle, list and select menu and the current text size.
+- Added feature: Display abbreviation text "Min." or "Max." in red with JavasSript in the current text size value for minimum and maximum text size.
+- Added feature: Uninstall function available.
+- Added feature: a:ctive and a:focus images with CSS and JavaScript.
+
+Text Size 6.x-1.4, 2009-10-02
+-----------------------------
+- Fixed: Rounding error, warning if text size normal is not 100%, help text.
+- Fixed: Fixed links.
+- Fixed: Configuration message bug.
+- Added feature: Configuration: No JavaScript support available.
+
+Text Size 6.x-1.4-beta1, 2009-10-01
+-----------------------------------
+- #442454 by hopfrog: Fixed alter CSS, removing of "!important" value in the css available.
+- #585692 by BarisW: Added feature styles and js to external files.
+- #234015 by duvien: Added feature more text size values available (0 - 999%).
+- Added feature: ID and class support.
+- Added feature: Block title "Text Size" or "Zoom".
+- Added feature: No Cookies required.
+- Added feature: By default, compatible to the Drupal standard Theme: "Garland".
+- Edited: Redesigned PHP and JavaScript code.
+
+Text Size 6.x-1.4-alpha1, 2009-09-17
+------------------------------------
+- #579968 by mrfelton: Fixed call_user_func_array() error.
+- #399694 by mgifford: Fixed busted multisite.
+- #569374 by activelyOUT: Fixed undefined function.
+- #518394 by brian_c: Fixed inefficient removeBC().
+- #504356 by jimyhuang: Fixed jump to top of page.
+- #570532 by ramsalt: Fixed CSS class interfere with admin module.
+- #474020 by DrupalFan: Added feature: Display direction right to left (rtl) support.
+
+Text Size 6.x-1.3, 2009-08-28
+-----------------------------
+- #405432 by mrfelton: Fixed empty hook_init.
+
+Text Size 6.x-1.2, 2009-04-22
+-----------------------------
+- #399694 by mgifford: Fixed busted multisite.
+- #405432 by mrfelton: Fixed maintanance-theme breaks.
+- #429032 by mrfelton: Fixed W3C HTML validation fails.
+
+Text Size 6.x-1.1, 2009-03-11
+-----------------------------
+- #375836 by mrfelton: Fixed split module into several smaller files.
+- #319112 by greggles: Fixed php notices.
+
+Text Size 6.x-1.0, 2009-02-01
+-----------------------------
+- #358229 by mgifford: Fixed stable release.
+- #237985 by pht3k: Fixed no rederict to home page.
+
+Text Size 6.x-1.x-rc3, 2009-01-30
+---------------------------------
+- Fixed some bugs.
+
+Text Size 6.x-1.x-rc2, 2009-01-29
+---------------------------------
+- #361238 by zoo: Fixed 5% increase/decrease steps.
+- Added feature: Selectable XHTML element and class for the resize process.
+
+Text Size 6.x-1.x-rc1, 2009-01-08
+---------------------------------
+- Added feature: Caching mode: "Normal" and "Aggressive" compatible.
+- Added feature: Form template.
+
+Text Size 6.x-1.x-beta1, 2008-12-24
+------------------------------------
+- Added feature: Minimum and maximum text size.
+- Added feature: Templates (tpl).
+
+Text Size 6.x-1.x-dev, 2008-03-05
+---------------------------------
+- For Drupal 6.x.
+
+
+Text Size Releases outside Drupal CVS
+=====================================
+
+Text Size 1.x, 2007-11-19
+-------------------------
+- For Drupal 5.x and 6.x.
+
+Text Size 0.1.5, 2007-15-11
+---------------------------
+- Fixed: Works on IE 6/7.
+- Added feature: Show the current text size.
+- Added feature: Normal text size is first active.
+
+Text Size 0.1.4, 2007-09-15
+---------------------------
+- Added feature: More settings.
+- Added feature: Language indipendend icon design.
+- Added: German translation.
+
+Text Size 0.1.3.1, 2007-08-22
+-----------------------------
+- Fixed: Hover bug.
+- Added feature: Help page.
+
+Text Size 0.1.3, 2007-08-18
+---------------------------
+- Added feature: Icons as background.
+- Added: More settings.
+
+Text Size 0.1.2, 2007-08-01
+---------------------------
+- Added: Gnome 2.18 icons.
+
+Text Size 0.1.1, 2007-07-28
+---------------------------
+- Added feature: Display the current text size.
+- Added feature: Settings in Drupal: "Text Size Normal".
+
+Text Size 0.1.0, 2007-07-25
+---------------------------
+- First release.

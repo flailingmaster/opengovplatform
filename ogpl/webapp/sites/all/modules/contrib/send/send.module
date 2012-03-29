@@ -1,0 +1,175 @@
+<?php // $Id: send.module,v 1.33 2007/12/07 19:45:24 vauxia Exp
+
+/**
+ * @file
+ * A "send this page" module with crm integration and a history of sent items
+ */
+
+// Include the Send API on every request.
+require dirname(__FILE__). '/includes/send.api.inc';
+
+/**
+ * Implementation of hook_menu().
+ */
+function send_menu() {
+  // Account for any new contact tables from hook_send_mode_info().
+  foreach (drupal_get_schema() as $table => $schema) {
+    if (substr($table, 0, 13) == 'send_contact_') {
+      if (!db_table_exists($table)) db_create_table($ret, $table, $schema);
+    }
+  }
+
+  // Load the menu items from our send.menu.inc file.
+  module_load_include('inc', 'send', 'includes/send.menu');
+  return send_menu_menu();
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function send_perm() {
+  return array('administer send', 'view send statistics');
+}
+
+/**
+ * Access callback for send forms.
+ */
+function send_access($profile, $nids = array()) {
+  if (!$profile = send_profile_load($profile)) return FALSE;
+  if ($nids) {
+    $profile->nids = ($nids && !is_array($nids)) ? explode(' ', $nids) : $nids;
+  }
+  return $profile->access();
+}
+
+/**
+ * Implementation of hook_nodeapi().
+ */
+function send_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  switch ($op){
+    case 'delete':
+      // Remove message history entries for this node.
+      return db_query("DELETE FROM {send_node} WHERE nid = %d", $node->nid);
+  }
+}
+
+/**
+ * Implementation of hook_elements().
+ * Add elements for the send form, its contact items, and a message format.
+ * This permits us to build, validate and render a variety of send forms.
+ */
+function send_elements() {
+  return array(
+    'send' => array(
+      '#input' => TRUE,
+      '#tree' => TRUE,
+      '#process' => array('send_process'),
+     ),
+    'send_contact' => send_element_defaults(),
+    'send_user' => send_element_defaults(),
+    'send_multiple' => send_element_defaults(),
+    'send_message_edit' => send_element_defaults(),
+    'send_message_compose' => send_element_defaults(),
+  );
+}
+
+/**
+ * A #process callback for send_form elements.
+ * Responsible for loading the required files and building out the form.
+ */
+function send_process($element, $edit, &$form_state, $complete_form) {
+  module_load_include('inc', 'send', 'includes/send.form');
+  if (function_exists($func = $element['#type'] .'_element_process')) {
+    $element = $func($element, $edit, $form_state, $complete_form);
+  }
+  unset($element['#required']);
+  return $element;
+}
+
+/**
+ * Implementation of hook_user().
+ */
+function send_user($op, &$edit, &$user) {
+  switch ($op) {
+
+    case 'insert' :
+      // If user has been a sender or recipient, update their uid.
+      db_query("UPDATE {send_contact} c
+        INNER JOIN {send_contact_mail} m USING ( scid )
+        SET c.uid = %d WHERE m.mail = '%s'", $user->uid, $user->mail);
+      return;
+
+    case 'update' :
+      // If user has changed her email address, update it here.
+      if ($edit['mail'] != $user->mail) {
+
+        // This email address already exists. Adopt it!
+        if ($scid = db_result(db_query("SELECT scid FROM {send_contact_mail}
+          WHERE mail = '%s'", $edit['mail']))) {
+
+          db_query("UPDATE {send_contact}
+            SET uid = %d WHERE scid = %d", $user->uid, $scid);
+        }
+        // Simply update the existing send_contact_mail entry.
+        else {
+          db_query("UPDATE {send_contact_mail} m
+            INNER JOIN {send_contact} c USING ( scid )
+            SET m.mail = '%s' WHERE c.uid = %d", $edit['mail'], $user->uid);
+        }
+      }
+      return;
+
+    case 'delete':
+      // Disown any send_contact records that are attached to this user.
+      db_query("UPDATE {send_contact} SET uid = 0 WHERE uid = %d", $user->uid);
+      return;
+  }
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function send_theme() {
+  module_load_include('theme.inc', 'send', 'theme/send');
+  return send_theme_theme();
+}
+
+/**
+ * Implementation of hook_views_api().
+ */
+function send_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'send') .'/includes/views',
+  );
+}
+
+/**
+ * Implementation of Send module's hook_send_profile_info().
+ */
+function send_send_profile_info($profile_name = NULL, $options = array()) {
+  return array(
+    'send' => array(
+      'file' => 'send.inc',
+      'path' => drupal_get_path('module', 'send') .'/includes/handlers',
+      'class' => 'SendProfile',
+    ),
+  );
+}
+
+/**
+ * Implementation of Send module's hook_send_mode_info().
+ */
+function send_send_mode_info() {
+  return array(
+    'mail' => array(
+      'callback' => 'send_deliver_mail',
+      'database columns' => array(
+        'mail' => array('type' => 'varchar', 'length' => 64),
+        'name' => array('type' => 'varchar', 'length' => 100),
+      ),
+      'unique keys' => array('mail' => array('mail')),
+      'user only' => FALSE,
+    ),
+  );
+}

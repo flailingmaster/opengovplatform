@@ -1,0 +1,10 @@
+name = Download Count
+description = Tracks file downloads for files stored in the drupal files table.
+core = 6.x
+
+; Information added by drupal.org packaging script on 2011-07-01
+version = "6.x-2.0"
+core = "6.x"
+project = "download_count"
+datestamp = "1309536415"
+

@@ -1,0 +1,4 @@
+name = Cms Theme Files Uploader
+description = A module to upload theme files.
+core = 6.x
+package = Theme Files Uploader

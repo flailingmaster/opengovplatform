@@ -1,0 +1,1246 @@
+<?php
+
+/**
+ * @file
+ * mp3player main module file.
+ */
+
+
+/**
+ * Used to count unique IDs when theming.
+ */
+global $mp3_player_id;
+$mp3_player_id = 0;
+
+
+/** ========================================
+ * GENERAL FUNCTIONS
+ */
+
+
+/**
+ * Implementation of hook_help().
+ */
+function mp3player_help($path, $arg) {
+  $output = '';
+  switch ($path) {
+    case "admin/help#mp3player":
+      $output = '<p>'. t("A module to integrate the WordPress Audio Player into Drupal.") .'</p>';
+      break;
+  }
+  return $output;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function mp3player_perm() {
+  return array('administer mp3player');
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function mp3player_menu() {
+  $items = array();
+  $items['admin/settings/mp3player'] = array(
+    'title' => 'MP3 Player',
+    'page callback' => 'mp3player_player_list',
+    'page arguments' => array('mp3player_player_list'),
+    'access arguments' => array('administer mp3player')
+  );
+  $items['admin/settings/mp3player/player-list'] = array(
+    'title' => 'Player List',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['admin/settings/mp3player/add-new-player'] = array(
+    'title' => 'Add new player',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mp3player_player_add'),
+    'access arguments' => array('administer mp3player'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/settings/mp3player/global-settings'] = array(
+    'title' => 'Global Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mp3player_settings'),
+    'access arguments' => array('administer mp3player'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/settings/mp3player/player/%'] = array(
+    'title callback' => 'mp3player_title_callback',
+    'title arguments' => array('Edit player: !name', 4),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mp3player_player_edit', 4),
+    'access arguments' => array('administer mp3player'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/settings/mp3player/player/%/delete'] = array(
+    'title callback' => 'mp3player_title_callback',
+    'title arguments' => array('Delete player: !name', 4),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mp3player_player_delete', 4),
+    'access arguments' => array('administer mp3player'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+
+/** ========================================
+ * ADMIN FUNCTIONS
+ */
+
+/**
+ * Return formatted list of mp3 players.
+ */
+function mp3player_player_list() {
+  $header = array(t('Player Name'), t('Actions'));
+  $rows = array();
+  foreach (mp3player_players() as $player) {
+    $row = array();
+    $row[] = l($player['name'], 'admin/settings/mp3player/player/'. $player['pid']);
+    $links = array();
+    $links[] = l(t('Edit'), 'admin/settings/mp3player/player/'. $player['pid']);
+    if($player['name'] != 'Default') {
+      $links[] = l(t('Delete'), 'admin/settings/mp3player/player/'. $player['pid'] .'/delete');
+    }
+    $row[] = implode('&nbsp;&nbsp;&nbsp;&nbsp;', $links);
+    $rows[] = $row;
+  }
+  $output = theme('table', $header, $rows);
+
+  return $output;
+}
+
+/**
+ * Custom titles for certain pages.
+ */
+function mp3player_title_callback($title, $pid = 0) {
+  $replacements = array();
+  $player = mp3player_players($pid);
+  $replacements['!name'] = $player['name'];
+  return t($title, $replacements);
+}
+
+/**
+ * Return list of all available players along with settings.
+ */
+function mp3player_players($pid = NULL) {
+  $players = array();
+    $result = db_query('SELECT * FROM {mp3player_players} ORDER BY name');
+    while ($player = db_fetch_array($result)) {
+      $players[$player['pid']] = $player;
+    }
+  if($pid != NULL && isset($players[$pid])) {
+    return $players[$pid];
+  }
+  else {
+    return $players;
+  }
+}
+
+/**
+ * Form to add a new player.
+ */
+function mp3player_settings() {
+  if (user_access('administer mp3player')) {
+    $form['mp3player_library_path'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Path to mp3 library'),
+      '#default_value' => variable_get('mp3player_library_path', drupal_get_path('module', 'mp3player') . '/mp3player'),
+      '#description' => t("This Player requires the <a href='!mp3_url'>standalone WordPress Audio Player</a>, enter the directory where the two required files can be found, by default this is set to sites/all/modules/mp3player/mp3player", array('!mp3_url' => 'http://wpaudioplayer.com/download')),
+    );
+  
+    $form['mp3player_encode'] = array(
+      '#type' => 'select',
+      '#title' => t('Encode Audio File URLs'),
+      '#default_value' => variable_get('mp3player_encode', 'no'),
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('Indicates that the mp3 file urls are encoded.'),
+    );
+    
+    $form['mp3player_suppress'] = array(
+      '#type' => 'select',
+      '#title' => t('Suppress cache messages'),
+      '#default_value' => variable_get('mp3player_suppress', 'no'),
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('Suppress all messages about the MP3 Player cache being rebuilt.'),
+    );
+    
+    if (module_exists('filefieldmp3player')) {
+      $form['mp3player_description'] = array(
+        '#type' => 'select',
+        '#title' => t('FileField Description Value'),
+        '#default_value' => variable_get('mp3player_description', 'description'),
+        '#options' => array('description' => t('Description'), 'id3' => t('ID3 Template')),
+        '#description' => t('Either use default description field or ID3 template file.'),
+      );
+    }
+    
+    $form['#submit'][] = 'mp3player_settings_submit';
+    
+    return system_settings_form($form);
+  }
+}
+
+/**
+ * Force the mp3player cache to be rebuilt.
+ */
+function mp3player_settings_submit($form, &$form_state) {
+  cache_clear_all('mp3player_default', 'cache');
+}
+
+/**
+ * Form to add a new player.
+ */
+function mp3player_player_add($form_state) {
+  if (user_access('administer mp3player')) {
+    $form['namegroup'] = array(
+      '#type' => 'fieldset', 
+      '#title' => t('Player Name'), 
+      '#weight' => -2, 
+      '#collapsible' => FALSE, 
+      '#collapsed' => FALSE,
+    );
+    
+    $form['namegroup']['name'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Name'),
+      '#default_value' => '',
+      '#required' => TRUE,
+      '#size' => '20',
+      '#description' => t('Unique name of player. Please only use alphanumeric characters, underscores (_), and hyphens (-) for player names.'),
+    );
+
+    $form['options'] = array(
+      '#type' => 'fieldset', 
+      '#title' => t('Player Options'), 
+      '#weight' => -1, 
+      '#collapsible' => FALSE, 
+      '#collapsed' => FALSE,
+    );
+
+    $form['options']['autostart'] = array(
+      '#type' => 'select',
+      '#title' => t('Auto-start'),
+      '#default_value' => 'no',
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('If yes, player starts automatically.'),
+    );
+    $form['options']['loopaudio'] = array(
+      '#type' => 'select',
+      '#title' => t('Loop Audio'),
+      '#default_value' => 'no',
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('If yes, player loops audio.'),
+    );
+    $form['options']['animation'] = array(
+      '#type' => 'select',
+      '#title' => t('Animate'),
+      '#default_value' => 'yes',
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('If no, player is always open.'),
+    );
+    $form['options']['remaining'] = array(
+      '#type' => 'select',
+      '#title' => t('Time Remaining'),
+      '#default_value' => 'no',
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('If yes, shows remaining track time rather than elapsed time.'),
+    );
+    $form['options']['noinfo'] = array(
+      '#type' => 'select',
+      '#title' => t("Don't display information"),
+      '#default_value' => 'no',
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('If yes, disables the track information display.'),
+    );
+    $form['options']['initialvolume'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Initial Volume'),
+      '#default_value' => '60',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#description' => t('Initial volume level (from 0 to 100).'),
+    );
+    $form['options']['buffer'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Buffer Time'),
+      '#default_value' => '5',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#description' => t('Buffering time in seconds.'),
+    );
+    $form['options']['encode'] = array(
+      '#type' => 'select',
+      '#title' => t('Encode'),
+      '#default_value' => 'no',
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('Indicates that the mp3 file urls are encoded.'),
+    );
+    $form['options']['checkpolicy'] = array(
+      '#type' => 'select',
+      '#title' => t('Check Policy'),
+      '#default_value' => 'no',
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('Tells Flash to look for a policy file when loading mp3 files (this allows Flash to read ID3 tags from files hosted on a different domain.'),
+    );
+    $form['options']['rtl'] = array(
+      '#type' => 'select',
+      '#title' => t('Text Right-to-Left'),
+      '#default_value' => 'no',
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('Switches the layout to RTL (right to left) for Hebrew and Arabic languages.'),
+    );
+    $form['options']['width'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Player Width'),
+      '#default_value' => '290',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#description' => t('Width of the player. e.g. 290 (290 pixels) or 100%.'),
+    );
+    $form['options']['transparentpagebg'] = array(
+      '#type' => 'select',
+      '#title' => t('Transparent Player Background'),
+      '#default_value' => 'no',
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('If yes, the player background is transparent (matches the page background).'),
+    );
+    $form['options']['pagebg'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Player Background Colour'),
+      '#default_value' => '',
+      '#required' => FALSE,
+      '#size' => '20',
+      '#field_prefix' => '#',
+      '#description' => t("Player background colour (set it to your page background when transparentbg is set to 'no')."),
+    );
+    
+    $form['colours'] = array(
+      '#type' => 'fieldset', 
+      '#title' => t('Player Colour Scheme'), 
+      '#weight' => 0, 
+      '#collapsible' => FALSE, 
+      '#collapsed' => FALSE,
+    );
+    
+    $form['colours']['bg'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Background'),
+      '#default_value' => 'E5E5E5',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['leftbg'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Left Background'),
+      '#default_value' => 'CCCCCC',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+      '#description' => t('Speaker icon/Volume control background.'),
+    );
+    $form['colours']['lefticon'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Speaker Icon'),
+      '#default_value' => '333333',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['voltrack'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Volume Track Background'),
+      '#default_value' => 'F2F2F2',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['volslider'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Volume Track Slider'),
+      '#default_value' => '666666',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['rightbg'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Right Background'),
+      '#default_value' => 'B4B4B4',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+      '#description' => t('Play/Pause button background.'),
+    );
+    $form['colours']['rightbghover'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Right Background Hover'),
+      '#default_value' => '999999',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+      '#description' => t('Play/Pause button background (hover state).'),
+    );
+    $form['colours']['righticon'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Play/Pause Icon'),
+      '#default_value' => '333333',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['righticonhover'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Play/Pause Icon (hover state)'),
+      '#default_value' => 'FFFFFF',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['loader'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Loading Bar'),
+      '#default_value' => '009900',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['track'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Track Backgrounds'),
+      '#default_value' => 'FFFFFF',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+      '#description' => t('Loading/Progress bar track background.'),
+    );
+    $form['colours']['tracker'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Progress Track'),
+      '#default_value' => 'DDDDDD',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['border'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Progress Track Border'),
+      '#default_value' => 'CCCCCC',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['skip'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Previous/Next Buttons'),
+      '#default_value' => '666666',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['text'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Text'),
+      '#default_value' => '333333',
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Add new player'),
+    );
+
+    $form['#validate'][]  = 'mp3player_player_validate';
+    $form['#submit'][]    = 'mp3player_player_submit';
+
+    return $form;
+  }
+}
+
+/**
+ * Form to edit a player.
+ */
+function mp3player_player_edit($form_state, $pid = 0) {
+  if (user_access('administer mp3player')) {
+    $player = mp3player_players($pid);
+    
+    $form['namegroup'] = array(
+      '#type' => 'fieldset', 
+      '#title' => t('Player Name'), 
+      '#weight' => -2, 
+      '#collapsible' => FALSE, 
+      '#collapsed' => FALSE,
+    );
+    
+    $form['namegroup']['name'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Name'),
+      '#default_value' => $player['name'],
+      '#required' => TRUE,
+      '#size' => '20',
+      '#description' => t('Unique name of player. Please only use alphanumeric characters, underscores (_), and hyphens (-) for player names.'),
+    );
+
+    if($player['name'] == 'Default') {
+      $form['namegroup']['#type'] = 'hidden';
+      $form['namegroup']['name']['#type'] = 'hidden';
+    }
+
+    $form['options'] = array(
+      '#type' => 'fieldset', 
+      '#title' => t('Player Options'), 
+      '#weight' => -1, 
+      '#collapsible' => FALSE, 
+      '#collapsed' => FALSE,
+    );
+
+    $form['options']['autostart'] = array(
+      '#type' => 'select',
+      '#title' => t('Auto-start'),
+      '#default_value' => $player['autostart'],
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('If yes, player starts automatically.'),
+    );
+    $form['options']['loopaudio'] = array(
+      '#type' => 'select',
+      '#title' => t('Loop Audio'),
+      '#default_value' => $player['loopaudio'],
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('If yes, player loops audio.'),
+    );
+    $form['options']['animation'] = array(
+      '#type' => 'select',
+      '#title' => t('Animate'),
+      '#default_value' => $player['animation'],
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('If no, player is always open.'),
+    );
+    $form['options']['remaining'] = array(
+      '#type' => 'select',
+      '#title' => t('Time Remaining'),
+      '#default_value' => $player['remaining'],
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('If yes, shows remaining track time rather than elapsed time.'),
+    );
+    $form['options']['noinfo'] = array(
+      '#type' => 'select',
+      '#title' => t("Don't display information"),
+      '#default_value' => $player['noinfo'],
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('If yes, disables the track information display.'),
+    );
+    $form['options']['initialvolume'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Initial Volume'),
+      '#default_value' => $player['initialvolume'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#description' => t('Initial volume level (from 0 to 100).'),
+    );
+    $form['options']['buffer'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Buffer Time'),
+      '#default_value' => $player['buffer'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#description' => t('Buffering time in seconds.'),
+    );
+    $form['options']['encode'] = array(
+      '#type' => 'select',
+      '#title' => t('Encode'),
+      '#default_value' => $player['encode'],
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('Indicates that the mp3 file urls are encoded.'),
+    );
+    $form['options']['checkpolicy'] = array(
+      '#type' => 'select',
+      '#title' => t('Check Policy'),
+      '#default_value' => $player['checkpolicy'],
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('Tells Flash to look for a policy file when loading mp3 files (this allows Flash to read ID3 tags from files hosted on a different domain).'),
+    );
+    $form['options']['rtl'] = array(
+      '#type' => 'select',
+      '#title' => t('Text Right-to-Left'),
+      '#default_value' => $player['rtl'],
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('Switches the layout to RTL (right to left) for Hebrew and Arabic languages.'),
+    );
+    $form['options']['width'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Player Width'),
+      '#default_value' => $player['width'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#description' => t('Width of the player. e.g. 290 (290 pixels) or 100%.'),
+    );
+    $form['options']['transparentpagebg'] = array(
+      '#type' => 'select',
+      '#title' => t('Transparent Player Background'),
+      '#default_value' => $player['transparentpagebg'],
+      '#options' => array('no' => t('No'), 'yes' => t('Yes')),
+      '#description' => t('If yes, the player background is transparent (matches the page background).'),
+    );
+    $form['options']['pagebg'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Player Background Colour'),
+      '#default_value' => $player['pagebg'],
+      '#required' => FALSE,
+      '#size' => '20',
+      '#field_prefix' => '#',
+      '#description' => t("Player background colour (set it to your page background when transparentbg is set to 'no')."),
+    );
+    
+    $form['colours'] = array(
+      '#type' => 'fieldset', 
+      '#title' => t('Player Colour Scheme'), 
+      '#weight' => 0, 
+      '#collapsible' => FALSE, 
+      '#collapsed' => FALSE,
+    );
+    
+    $form['colours']['bg'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Background'),
+      '#default_value' => $player['bg'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['leftbg'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Left Background'),
+      '#default_value' => $player['leftbg'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+      '#description' => t('Speaker icon/Volume control background.'),
+    );
+    $form['colours']['lefticon'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Speaker Icon'),
+      '#default_value' => $player['lefticon'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['voltrack'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Volume Track Background'),
+      '#default_value' => $player['voltrack'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['volslider'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Volume Track Slider'),
+      '#default_value' => $player['volslider'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['rightbg'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Right Background'),
+      '#default_value' => $player['rightbg'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+      '#description' => t('Play/Pause button background.'),
+    );
+    $form['colours']['rightbghover'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Right Background Hover'),
+      '#default_value' => $player['rightbghover'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+      '#description' => t('Play/Pause button background (hover state).'),
+    );
+    $form['colours']['righticon'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Play/Pause Icon'),
+      '#default_value' => $player['righticon'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['righticonhover'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Play/Pause Icon (hover state)'),
+      '#default_value' => $player['righticonhover'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['loader'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Loading Bar'),
+      '#default_value' => $player['loader'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['track'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Track Backgrounds'),
+      '#default_value' => $player['track'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+      '#description' => t('Loading/Progress bar track background.'),
+    );
+    $form['colours']['tracker'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Progress Track'),
+      '#default_value' => $player['tracker'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['border'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Progress Track Border'),
+      '#default_value' => $player['border'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['skip'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Previous/Next Buttons'),
+      '#default_value' => $player['skip'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+    $form['colours']['text'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Text'),
+      '#default_value' => $player['text'],
+      '#required' => TRUE,
+      '#size' => '10',
+      '#field_prefix' => '#',
+    );
+
+    $form['pid'] = array(
+      '#type' => 'hidden',
+      '#value' => $pid,
+    );
+
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save changes to player'),
+    );
+
+    $form['#validate'][]  = 'mp3player_player_validate';
+    $form['#submit'][]    = 'mp3player_player_edit_submit';
+
+    return $form;
+  }
+}
+
+/**
+ * Custom validation function for the system settings form.
+ */
+function mp3player_player_validate($form, &$form_state) {
+  $players = mp3player_players();
+  if(isset($form_state['values']['pid'])) {
+    unset($players[$form_state['values']['pid']]);
+  }
+  foreach($players as $pid => $player) {
+    if($player['name'] == $form_state['values']['name']) {
+      form_set_error('name', t('Player name has to be unique.'));
+    }
+  }
+  if (preg_match('/[^0-9a-zA-Z_-]/', $form_state['values']['name'])) {
+    form_set_error('name', t('Please only use alphanumeric characters, underscores (_), and hyphens (-) for player names.'));
+  }
+  if($form_state['values']['name'] != '' && strlen($form_state['values']['name']) >= 20) {
+    form_set_error('name', t('Player name must be 20 characters long or shorter.'));
+  }
+  if ($form_state['values']['initialvolume'] < 0 || $form_state['values']['initialvolume'] > 100) {
+    form_set_error('initialvolume', t('Volume must be between 0 and 100.'));
+  }
+  if (!is_numeric($form_state['values']['buffer'])) {
+    form_set_error('buffer', t('Buffer must be an integer.'));
+  }
+  $percentage = strstr($form_state['values']['width'], '%');
+  if (!is_numeric($form_state['values']['width']) && $percentage != '%') {
+    form_set_error('width', t('Width must be an integer or percentage.'));
+  }
+  if($form_state['values']['pagebg'] != '' && strlen($form_state['values']['pagebg']) != 6) {
+    form_set_error('pagebg', t('HEX code must be 6 characters long.'));
+  }
+  
+  if(strlen($form_state['values']['bg']) != 6) {
+    form_set_error('bg', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['leftbg']) != 6) {
+    form_set_error('leftbg', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['lefticon']) != 6) {
+    form_set_error('lefticon', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['voltrack']) != 6) {
+    form_set_error('voltrack', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['volslider']) != 6) {
+    form_set_error('volslider', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['rightbg']) != 6) {
+    form_set_error('rightbg', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['rightbghover']) != 6) {
+    form_set_error('rightbghover', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['righticon']) != 6) {
+    form_set_error('righticon', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['righticonhover']) != 6) {
+    form_set_error('righticonhover', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['loader']) != 6) {
+    form_set_error('loader', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['track']) != 6) {
+    form_set_error('track', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['tracker']) != 6) {
+    form_set_error('tracker', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['border']) != 6) {
+    form_set_error('border', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['skip']) != 6) {
+    form_set_error('skip', t('HEX code must be 6 characters long.'));
+  }
+  if(strlen($form_state['values']['text']) != 6) {
+    form_set_error('text', t('HEX code must be 6 characters long.'));
+  }
+}
+
+/**
+ * Add a new player.
+ */
+function mp3player_player_submit($form, &$form_state) {
+  drupal_write_record('mp3player_players', $form_state['values']);
+  drupal_set_message(t("New MP3 Player %name added.", array('%name' => $form_state['values']['name'])));
+  mp3player_rebuild_cache();
+  $form_state['redirect'] = 'admin/settings/mp3player';
+}
+
+/**
+ * Edit a player.
+ */
+function mp3player_player_edit_submit($form, &$form_state) {
+  drupal_write_record('mp3player_players', $form_state['values'], 'pid');
+  drupal_set_message(t("MP3 Player %name updated.", array('%name' => $form_state['values']['name'])));
+  mp3player_rebuild_cache();
+  $form_state['redirect'] = 'admin/settings/mp3player';
+}
+
+/**
+ * Form to delete a player.
+ */
+function mp3player_player_delete($form_state, $pid = NULL) {
+  $player = mp3player_players($pid);
+  if (empty($player)) {
+    drupal_set_message(t('The specified player was not found.'), 'error');
+    drupal_goto('admin/settings/mp3player');
+  }
+  if($player['name'] == 'Default') {
+    drupal_set_message(t('You cannot delete the Default player.'), 'error');
+    drupal_goto('admin/settings/mp3player');
+  }
+
+  $form = array();
+  $form['pid'] = array('#type' => 'value', '#value' => $pid);
+  return confirm_form(
+    $form,
+    t('Are you sure you want to delete the player %name?',
+      array('%name' => $player['name'])
+    ),
+    'admin/settings/mp3player',
+    t('This action cannot be undone.'),
+    t('Delete'),  t('Cancel')
+  );
+}
+
+/**
+ * Delete a player.
+ */
+function mp3player_player_delete_submit($form, &$form_state) {
+  $player = mp3player_players($form_state['values']['pid']);
+  db_query('DELETE FROM {mp3player_players} where pid = %d', $player['pid']);
+  drupal_set_message(t('MP3 Player %name was deleted.', array('%name' => $player['name'])));
+  mp3player_rebuild_cache();
+  $form_state['redirect'] = 'admin/settings/mp3player';
+}
+
+/**
+ * Returns a string of audio player settings.
+ */
+function mp3player_player_default_settings() {
+  $player = mp3player_players(1);
+  
+  $js_audio_settings = 'AudioPlayer.setup("' . base_path() . variable_get('mp3player_library_path', drupal_get_path('module', 'mp3player') . '/mp3player') .'/player.swf", {';
+  $js_audio_settings .= 'width:'.$player['width'].',';
+  
+  if($player['autostart'] != 'no') {
+    $js_audio_settings .= 'autostart: "yes",';
+  }
+  if($player['loopaudio'] != 'no') {
+    $js_audio_settings .= 'loop: "yes",';
+  }
+  if($player['animation'] != 'yes') {
+    $js_audio_settings .= 'animation: "no",';
+  }
+  if($player['remaining'] != 'no') {
+    $js_audio_settings .= 'remaining: "yes",';
+  }
+  if($player['noinfo'] != 'no') {
+    $js_audio_settings .= 'noinfo: "yes",';
+  }
+  if($player['initialvolume'] != '60') {
+    $js_audio_settings .= 'initialvolume: '.$player['initialvolume'].',';
+  }
+  if($player['buffer'] != '5') {
+    $js_audio_settings .= 'buffer: '.$player['buffer'].',';
+  }
+  if($player['encode'] != 'no') {
+    $js_audio_settings .= 'encode: "yes",';
+  }
+  if($player['checkpolicy'] != 'no') {
+    $js_audio_settings .= 'checkpolicy: "yes",';
+  }
+  if($player['rtl'] != 'no') {
+    $js_audio_settings .= 'rtl: "yes",';
+  }
+  if($player['transparentpagebg'] != 'no') {
+    $js_audio_settings .= 'transparentpagebg: "yes",';
+  }
+  if($player['pagebg'] != NULL) {
+    $js_audio_settings .= 'pagebg: "'.$player['pagebg'].'",';
+  }
+
+  if($player['bg'] != 'E5E5E5') {
+    $js_audio_settings .= 'bg: "'.$player['bg'].'",';
+  }
+  if($player['leftbg'] != 'CCCCCC') {
+    $js_audio_settings .= 'leftbg: "'.$player['leftbg'].'",';
+  }
+  if($player['lefticon'] != '333333') {
+    $js_audio_settings .= 'lefticon: "'.$player['lefticon'].'",';
+  }
+  if($player['voltrack'] != 'F2F2F2') {
+    $js_audio_settings .= 'voltrack: "'.$player['voltrack'].'",';
+  }
+  if($player['volslider'] != '666666') {
+    $js_audio_settings .= 'volslider: "'.$player['volslider'].'",';
+  }
+  if($player['rightbg'] != 'B4B4B4') {
+    $js_audio_settings .= 'rightbg: "'.$player['rightbg'].'",';
+  }
+  if($player['rightbghover'] != '999999') {
+    $js_audio_settings .= 'rightbghover: "'.$player['rightbghover'].'",';
+  }
+  if($player['righticon'] != '333333') {
+    $js_audio_settings .= 'righticon: "'.$player['righticon'].'",';
+  }
+  if($player['righticonhover'] != 'FFFFFF') {
+    $js_audio_settings .= 'righticonhover: "'.$player['righticonhover'].'",';
+  }
+  if($player['loader'] != '009900') {
+    $js_audio_settings .= 'loader: "'.$player['loader'].'",';
+  }
+  if($player['track'] != 'FFFFFF') {
+    $js_audio_settings .= 'track: "'.$player['track'].'",';
+  }
+  if($player['tracker'] != 'DDDDDD') {
+    $js_audio_settings .= 'tracker: "'.$player['tracker'].'",';
+  }
+  if($player['border'] != 'CCCCCC') {
+    $js_audio_settings .= 'border: "'.$player['border'].'",';
+  }
+  if($player['skip'] != '666666') {
+    $js_audio_settings .= 'skip: "'.$player['skip'].'",';
+  }
+  if($player['text'] != '333333') {
+    $js_audio_settings .= 'text: "'.$player['text'].'",';
+  }
+
+  //Remove the last comma otherwise IE will throw a big hissy fit like a little girl
+  $js_audio_settings = substr($js_audio_settings, 0, -1);
+
+  $js_audio_settings .= '});';
+
+  return $js_audio_settings;
+}
+
+/**
+ * Returns a string of audio player settings.
+ */
+function mp3player_player_settings($pid = 1) {
+  $players = mp3player_players();
+  $default = $players[1];
+  $player = $players[$pid];
+  
+  $js_audio_settings = NULL;
+  
+  if($player['width'] != $default['width']) {
+    $js_audio_settings .= 'width:'.$player['width'].',';
+  }
+  if($player['autostart'] != $default['autostart']) {
+    $js_audio_settings .= 'autostart: "'.$player['autostart'].'",';
+  }
+  if($player['loopaudio'] != $default['loopaudio']) {
+    $js_audio_settings .= 'loop: "'.$player['loopaudio'].'",';
+  }
+  if($player['animation'] != $default['animation']) {
+    $js_audio_settings .= 'animation: "'.$player['animation'].'",';
+  }
+  if($player['remaining'] != $default['remaining']) {
+    $js_audio_settings .= 'remaining: "'.$player['remaining'].'",';
+  }
+  if($player['noinfo'] != $default['noinfo']) {
+    $js_audio_settings .= 'noinfo: "'.$player['noinfo'].'",';
+  }
+  if($player['initialvolume'] != $default['initialvolume']) {
+    $js_audio_settings .= 'initialvolume: '.$player['initialvolume'].',';
+  }
+  if($player['buffer'] != $default['buffer']) {
+    $js_audio_settings .= 'buffer: '.$player['buffer'].',';
+  }
+  if($player['encode'] != $default['encode']) {
+    $js_audio_settings .= 'encode: "'.$player['encode'].'",';
+  }
+  if($player['checkpolicy'] != $default['checkpolicy']) {
+    $js_audio_settings .= 'checkpolicy: "'.$player['checkpolicy'].'",';
+  }
+  if($player['rtl'] != $default['rtl']) {
+    $js_audio_settings .= 'rtl: "'.$player['rtl'].'",';
+  }
+  if($player['transparentpagebg'] != $default['transparentpagebg']) {
+    $js_audio_settings .= 'transparentpagebg: "'.$player['transparentpagebg'].'",';
+  }
+  if($player['pagebg'] != $default['pagebg']) {
+    $js_audio_settings .= 'pagebg: "'.$player['pagebg'].'",';
+  }
+
+  if($player['bg'] != $default['bg']) {
+    $js_audio_settings .= 'bg: "'.$player['bg'].'",';
+  }
+  if($player['leftbg'] != $default['leftbg']) {
+    $js_audio_settings .= 'leftbg: "'.$player['leftbg'].'",';
+  }
+  if($player['lefticon'] != $default['lefticon']) {
+    $js_audio_settings .= 'lefticon: "'.$player['lefticon'].'",';
+  }
+  if($player['voltrack'] != $default['voltrack']) {
+    $js_audio_settings .= 'voltrack: "'.$player['voltrack'].'",';
+  }
+  if($player['volslider'] != $default['volslider']) {
+    $js_audio_settings .= 'volslider: "'.$player['volslider'].'",';
+  }
+  if($player['rightbg'] != $default['rightbg']) {
+    $js_audio_settings .= 'rightbg: "'.$player['rightbg'].'",';
+  }
+  if($player['rightbghover'] != $default['rightbghover']) {
+    $js_audio_settings .= 'rightbghover: "'.$player['rightbghover'].'",';
+  }
+  if($player['righticon'] != $default['righticon']) {
+    $js_audio_settings .= 'righticon: "'.$player['righticon'].'",';
+  }
+  if($player['righticonhover'] != $default['righticonhover']) {
+    $js_audio_settings .= 'righticonhover: "'.$player['righticonhover'].'",';
+  }
+  if($player['loader'] != $default['loader']) {
+    $js_audio_settings .= 'loader: "'.$player['loader'].'",';
+  }
+  if($player['track'] != $default['track']) {
+    $js_audio_settings .= 'track: "'.$player['track'].'",';
+  }
+  if($player['tracker'] != $default['tracker']) {
+    $js_audio_settings .= 'tracker: "'.$player['tracker'].'",';
+  }
+  if($player['border'] != $default['border']) {
+    $js_audio_settings .= 'border: "'.$player['border'].'",';
+  }
+  if($player['skip'] != $default['skip']) {
+    $js_audio_settings .= 'skip: "'.$player['skip'].'",';
+  }
+  if($player['text'] != $default['text']) {
+    $js_audio_settings .= 'text: "'.$player['text'].'",';
+  }
+
+  //Remove the last comma otherwise IE will throw a big hissy fit like a little girl
+  $js_audio_settings = substr($js_audio_settings, 0, -1);
+
+  return $js_audio_settings;
+}
+
+
+/**
+ * Rebuild player settings cache.
+ */
+function mp3player_rebuild_cache() {
+  $players = mp3player_players();
+
+  foreach($players as $pid => $player) {
+    if($pid == 1) {
+      //Default Player
+      cache_set('mp3player_default', mp3player_player_default_settings());
+    }
+    else {
+      cache_set('mp3player_player_'. $player['name'], mp3player_player_settings($pid));
+    }
+  }
+
+  drupal_rebuild_theme_registry();
+
+  if (variable_get('mp3player_suppress', 'no') == 'no') {
+    drupal_set_message(t('MP3 Player cache updated.'));
+  }
+}
+
+/** ========================================
+ * THEME FUNCTIONS
+ */
+
+
+/**
+ * Implementation of hook_theme().
+ */
+function mp3player_theme() {
+  return array(
+    'mp3player' => array(
+      'arguments' => array(
+        'player' => 'Default',
+        'file' => NULL,
+        'title' => NULL,
+        'artist' => NULL,
+        'description' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * Setup theme function for the MP3 Player.
+ */
+function theme_mp3player($player = 'Default', $file = NULL, $title = NULL, $artist = NULL, $description = NULL) {
+  // Add JS
+  drupal_add_js(variable_get('mp3player_library_path', drupal_get_path('module', 'mp3player') . '/mp3player') . '/audio-player.js', 'module', 'footer');
+  drupal_add_js(drupal_get_path('module', 'mp3player') . '/mp3player.js', 'module', 'footer');
+  
+  //If cache isn't set, set it.
+  if(cache_get('mp3player_default') == '') {
+    mp3player_rebuild_cache();
+  }
+  
+  $js_audio_settings = cache_get('mp3player_default');
+  
+  drupal_add_js($js_audio_settings->data, 'inline', 'footer');
+  
+  // Setup player
+  static $mp3_player_id;
+  $mp3_player_id++;
+  
+  $extras = NULL;
+  if($title != NULL) {
+    $extras .= ', titles: "'.addslashes($title).'"';
+  }
+  if($artist !=NULL) {
+    $extras .= ', artists: "'.addslashes($artist).'"';
+  }
+
+  //Get Player Settings
+  if($player != 'Default') {
+    $js_audio_settings = cache_get('mp3player_player_'. $player);
+    $extras .= ', '.$js_audio_settings->data;
+  }
+
+  if($description != NULL) {
+    $description = '<p class="mp3player_description">'. $description .'</p>';
+  }
+  
+  if (module_exists('simplecdn')) {
+    $file = simplecdn_rewrite_url($file, 'mp3player');
+  }
+  
+  if(variable_get('mp3player_encode', 'no') == 'yes') {
+    $audio_url = mp3player_encodeSource($file);
+  }
+  else {
+    $audio_url = $file;
+  }
+  
+  $extras = str_replace('"', "", $extras);
+  $extras = str_replace(":", "=", $extras);
+  $extras = str_replace(" ", "", $extras);
+  $extras = str_replace(",", "&", $extras);
+
+  return '<p id="mp3player_'.$mp3_player_id.'" class="mp3player" data="soundFile='.$audio_url.$extras.'">'.t("You may need: <a href='http://get.adobe.com/flashplayer/'>Adobe Flash Player</a>.").'</p>'. $description;
+}
+
+/**
+ * Encode a URL.
+ */
+function mp3player_encodeSource($string) {
+  $source = utf8_decode($string);
+  $ntexto = "";
+  $codekey = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+  for ($i = 0; $i < strlen($string); $i++) {
+    $ntexto .= substr("0000".base_convert(ord($string{$i}), 10, 2), -8);
+  }
+  $ntexto .= substr("00000", 0, 6-strlen($ntexto)%6);
+  $string = "";
+  for ($i = 0; $i < strlen($ntexto)-1; $i = $i + 6) {
+    $string .= $codekey{intval(substr($ntexto, $i, 6), 2)};
+  }
+  
+  return $string;
+}
+
+/**
+ * Implementation of hook_simplecdnapi().
+ */
+function mp3player_simplecdnapi($op) {
+  switch ($op) {
+    case 'load':
+      return array(
+        'eid' => 'mp3player',
+        'name' => 'MP3 Player',
+      );
+      break;
+  }
+}
+
+/**
+ * Return TRUE if current path is disabled for mp3player according to
+ * mp3player_page_list and mp3player_page_init_action.
+ */
+function mp3player_exclude_these_paths() {
+  $action = variable_get('mp3player_page_init_action', 'page_disable');
+  $page_list = variable_get('mp3player_page_list', '');
+
+  if (!empty($page_list)) {
+    // Retrieve Drupal alias for the current path (if exists).
+    $alias = drupal_get_path_alias($_GET['q']);
+
+    if (drupal_match_path($_GET['q'], $page_list) || drupal_match_path($alias, $page_list)) {
+      return ($action == 'page_disable' ? 1 : 0);
+    }
+  }
+
+  return ($action == 'page_disable' ? 0 : 1);
+}

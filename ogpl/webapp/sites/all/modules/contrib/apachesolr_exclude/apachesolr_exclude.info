@@ -1,0 +1,11 @@
+name = Apache Solr Exclude
+description = A module for excluding specific results from being indexed by Solr.
+package = Apache Solr
+core = 6.x
+
+; Information added by drupal.org packaging script on 2011-04-07
+version = "6.x-1.0"
+core = "6.x"
+project = "apachesolr_exclude"
+datestamp = "1302205615"
+

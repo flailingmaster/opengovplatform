@@ -1,0 +1,202 @@
+# $Id: more_node_buttons.es.po,v 1.2.2.2 2010/11/04 15:08:23 quiptime Exp $
+#
+# Spanish translation of More node buttons
+# Copyright 2010 Juan Morejon <jcmc.devel@gmail.com>
+# Generated from files:
+#  more_node_buttons.admin.inc
+#  more_node_buttons.module
+#  more_node_buttons.info
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2010-08-23 15:31+0200\n"
+"PO-Revision-Date: 2010-08-23 17:31+0200\n"
+"Last-Translator: Juan Morejon <jcmc.devel@gmail.com>\n"
+"Language-Team: Spanish <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: more_node_buttons.admin.inc:36 more_node_buttons.module:160;551
+msgid "None"
+msgstr "Ninguno"
+
+#: more_node_buttons.admin.inc:37 more_node_buttons.module:161
+msgid "Left"
+msgstr "Izquerda"
+
+#: more_node_buttons.admin.inc:38 more_node_buttons.module:162
+msgid "Right"
+msgstr "Derecha"
+
+#: more_node_buttons.admin.inc:65
+msgid "Button and tab values"
+msgstr "Valores de botón y solapa"
+
+#: more_node_buttons.admin.inc:66
+msgid "Use your own names for the buttons and the tab. These names are translatable with the translation interface. Do not enter translated texts here."
+msgstr "Nombre botones y solapas. Estos nombres podran ser traducidos a travéz de la interfáz de traduccíon. No ingresar traduciones aquí."
+
+#: more_node_buttons.admin.inc:72 more_node_buttons.module:158
+msgid "Cancel button"
+msgstr "Botón para cancelar"
+
+#: more_node_buttons.admin.inc:80 more_node_buttons.module:169
+msgid "Save and continue button"
+msgstr "Botón para guardar y seguír"
+
+#: more_node_buttons.admin.inc:88 more_node_buttons.module:186
+msgid "Save and create new button"
+msgstr "Botón para guardar y crear nuevo"
+
+#: more_node_buttons.admin.inc:96;133 more_node_buttons.module:194
+msgid "Create new tab"
+msgstr "Crear Solapa"
+
+#: more_node_buttons.admin.inc:106
+msgid "Save"
+msgstr "Guardar"
+
+#: more_node_buttons.admin.inc:111
+msgid "Reset to defaults"
+msgstr "Restablecer valores predeterminados"
+
+#: more_node_buttons.admin.inc:130
+msgid "Settings"
+msgstr "Opciones"
+
+#: more_node_buttons.admin.inc:131
+msgid "Which @module functions are used by the content types."
+msgstr "Que funciones de @module son utilizadas por el tipo de contenido."
+
+#: more_node_buttons.admin.inc:131;227;246;248;248 more_node_buttons.module:17 more_node_buttons.info:0
+msgid "More node buttons"
+msgstr "More node buttons"
+
+#: more_node_buttons.admin.inc:133;233
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: more_node_buttons.admin.inc:133
+msgid "Save and continue"
+msgstr "Guardar y continuar"
+
+#: more_node_buttons.admin.inc:133
+msgid "Save and create new"
+msgstr "Guardar y crear nuevo"
+
+#: more_node_buttons.admin.inc:140
+msgid "For the content type %type no settings can be made."
+msgstr "El tipo de contenido %type no se puede configurar"
+
+#: more_node_buttons.admin.inc:152
+msgid "Edit this content type"
+msgstr "Editar este tipo de contenido"
+
+#: more_node_buttons.admin.inc:179
+msgid "Module development by <a href=\"@development-url\">Quiptime Group</a>."
+msgstr "Módulo desarrollado por <a href=\"@development-url\">Quiptime Group</a>."
+
+#: more_node_buttons.admin.inc:211
+msgid "Your changes have been saved."
+msgstr "Sus cambios fueron guardados"
+
+#: more_node_buttons.admin.inc:227
+msgid "Are you sure you want to reset all %module settings?"
+msgstr "Está seguro que desea reestablecer todas las configuraciones para %module"
+
+#: more_node_buttons.admin.inc:231
+msgid "This action cannot be undone."
+msgstr "Esta acción no se podrá deshacer."
+
+#: more_node_buttons.admin.inc:232
+msgid "Reset"
+msgstr "Restablecer"
+
+#: more_node_buttons.admin.inc:246;248
+msgid "The %module settings have been set back."
+msgstr "Las configuraciones para %module han sido reestablecidas"
+
+#: more_node_buttons.admin.inc:248
+msgid "view"
+msgstr "vista"
+
+#: more_node_buttons.module:89
+msgid "@tabcn"
+msgstr "@tabcn"
+
+#: more_node_buttons.module:150
+msgid "Button settings"
+msgstr "Configuración de botones"
+
+#: more_node_buttons.module:170;183
+msgid "What does +? Further to the right or further to the left."
+msgstr "Que hace +? Más a la derecha o más a la izquierda"
+
+#: more_node_buttons.module:178
+msgid "Create new content"
+msgstr "Crear contenido"
+
+#: more_node_buttons.module:179
+msgid "Provide alternative options to create new content from this typ."
+msgstr "Proporciona opciones alternativas para crear nuevos contenidos de este tipo."
+
+#: more_node_buttons.module:182
+msgid "What is this? Save the node and forwarding to the \"Create new content\" form of this content type."
+msgstr "Qué hace? Guardar artículo y abrir un nuevo formulario \"Crear contenido nuevo\" de este tipo de contenido."
+
+#: more_node_buttons.module:195
+msgid "Provide an \"Create new\" tab in addition to the \"!edit\" tab."
+msgstr "Añade la solapa \"Crear nuevo\" al lado de la solapa \"edit\""
+
+#: more_node_buttons.module:195
+msgid "Edit"
+msgstr "Editar"
+
+#: more_node_buttons.module:242
+msgid "@sac-value"
+msgstr "@sac-value"
+
+#: more_node_buttons.module:268
+msgid "@sacn-value"
+msgstr "@sacn-value"
+
+#: more_node_buttons.module:299
+msgid "@cancel-value"
+msgstr "@cancel-value"
+
+#: more_node_buttons.module:552
+msgid "Left of Save"
+msgstr "Izquierda de Guardar"
+
+#: more_node_buttons.module:553
+msgid "Left + of Save"
+msgstr "Izquierda + de guardar"
+
+#: more_node_buttons.module:554
+msgid "Right of Save"
+msgstr "Derecha de Guardar"
+
+#: more_node_buttons.module:555
+msgid "Right + of Save"
+msgstr "Derecha + de Guardar"
+
+#: more_node_buttons.module:18
+msgid "An overview of what content type uses buttons/functions of the Mnb module."
+msgstr "Visión general sobre tipos de contenido que usan botones y funciones del módulo Mnb."
+
+#: more_node_buttons.module:33
+msgid "Create new"
+msgstr "Crear nuevo"
+
+#: more_node_buttons.info:0
+msgid "Add an Cancel, Save and continue and an Save and create new button to node edit forms."
+msgstr "Añadir un \"Cancelar"\, \"Guardar y seguir\" y un \"Guardar y crear nuevo\" "
+
+#: more_node_buttons.info:0
+msgid "User interface"
+msgstr "Interfáz de usuario"
+

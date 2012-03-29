@@ -1,0 +1,5 @@
+name = DMS Dataset Upload
+description = Enable speadsheet or xml file upload to populate DMS dataset nodes. 
+core = 6.x
+package = DMS customizations
+dependencies[] = content

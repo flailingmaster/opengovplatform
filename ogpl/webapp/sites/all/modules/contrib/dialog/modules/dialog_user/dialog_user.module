@@ -1,0 +1,105 @@
+<?php
+// $Id$
+
+/**
+ * Implementation of hook_menu().
+ */
+function dialog_user_menu() {
+  $items['user/login/%ctools_js'] = array(
+    'title' => 'Log in',
+    'page callback' => 'dialog_get_form',
+    'page arguments' => array('user_login', 2),
+    'access callback' => 'user_is_anonymous',
+    'type' => MENU_CALLBACK,
+    'file' => 'user.pages.inc',
+    'file path' => drupal_get_path('module', 'user'),
+  );
+
+  $items['user/register/%ctools_js'] = array(
+    'title' => 'Create new account',
+    'page callback' => 'dialog_get_form',
+    'page arguments' => array('user_register', 2),
+    'access callback' => 'user_register_access',
+    'type' => MENU_CALLBACK,
+    'file' => 'user.pages.inc',
+    'file path' => drupal_get_path('module', 'user'),
+  );
+
+  $items['user/password/%ctools_js'] = array(
+    'title' => 'Request new password',
+    'page callback' => 'dialog_get_form',
+    'page arguments' => array('user_pass', 2),
+    'access callback' => 'user_is_anonymous',
+    'type' => MENU_CALLBACK,
+    'file' => 'user.pages.inc',
+    'file path' => drupal_get_path('module', 'user'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_block().
+ */
+function dialog_user_block($op = 'list', $delta = 0, $edit = array()) {
+  global $user;
+
+  if ($op == 'list') {
+    $blocks[0]['info'] = t('Dialog user login');
+    // Not worth caching.
+    $blocks[0]['cache'] = BLOCK_NO_CACHE;
+
+    return $blocks;
+  }
+  else if ($op == 'view') {
+    $block = array();
+
+    switch ($delta) {
+      case 0:
+        if (user_is_anonymous()) {
+          dialog_add_js();
+          $links = array();
+          $links[] = l(t('Log in'), 'user/login/nojs', array('attributes' => array('class' => 'ctools-use-dialog')));
+          $links[] = l(t('Create a new account'), 'user/register/nojs', array('attributes' => array('class' => 'ctools-use-dialog')));
+
+          $block = array(
+            'subject' => t('User login'),
+            'content' => theme('item_list', $links),
+          );
+          return $block;
+        }
+    }
+  }
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function dialog_user_form_alter(&$form, $form_state, $form_id) {
+  // Specify the submit buttons to be used as the dialog buttons.
+  if ($form_id == 'user_login' && !empty($form_state['ajax'])) {
+    $form['submit']['#attributes']['class'] = 'ctools-dialog-button';
+
+    // Add links like the user_form_block does.
+    $items = array();
+    if (variable_get('user_register', 1)) {
+      $items[] = l(t('Create new account'), 'user/register/nojs', array('attributes' => array('title' => t('Create a new user account.'), 'class' => 'ctools-use-dialog')));
+    }
+    $items[] = l(t('Request new password'), 'user/password/nojs', array('attributes' => array('title' => t('Request new password via e-mail.'), 'class' => 'ctools-use-dialog')));
+    $form['links'] = array('#value' => theme('item_list', $items));
+  }
+  elseif ($form_id == 'user_register' && !empty($form_state['ajax'])) {
+    $form['submit']['#attributes']['class'] = 'ctools-dialog-button';
+  }
+}
+
+/**
+ * dialog_success handler for the user password form.  The standard password
+ * form submit handler sets a message and redirects to 'user', leaving the
+ * user on the login form. That is emulated here by redirecting to
+ * the ajax version of the user login form.  Since this function is only ever
+ * called in an ajax context, it is safe to redirect to another ajax handler.
+ */
+function user_pass_dialog_success($form_state) {
+  drupal_goto('user/login/ajax');
+}

@@ -1,0 +1,16 @@
+Index: branches/qa/sites/all/modules/CMS/loginlogout/loginlogout.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/CMS/loginlogout/loginlogout.module	(revision )
++++ branches/qa/sites/all/modules/CMS/loginlogout/loginlogout.module	(revision 4540)
+@@ -7,7 +7,7 @@
+ function loginlogout_user($op, &$edit, &$account, $category = NULL) {
+   switch ($op) {
+     case 'logout':
+-      if (!$_REQUEST['destination']) break;
++      if (!$_REQUEST['destination']) $_REQUEST['destination'] = "user/login";
+       global $user ;
+       $user_temp = $user;
+       $user = user_load(0);

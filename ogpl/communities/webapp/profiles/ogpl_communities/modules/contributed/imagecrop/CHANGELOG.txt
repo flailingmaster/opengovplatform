@@ -1,0 +1,8 @@
+;$Id: CHANGELOG.txt,v 1.1.4.4 2008/11/13 18:23:48 zuuperman Exp $
+
+6.x.1-0
+-------
+Port of imagecrop to Drupal 6
+- #325318 by neochief: crop actions don't catch presetid if files directory is not default.
+- #325314 by neochief: Option to skip javascript crop if no region is found from database.
+- testing

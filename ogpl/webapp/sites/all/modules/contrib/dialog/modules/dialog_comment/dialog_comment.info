@@ -1,0 +1,13 @@
+; $Id$
+name = Dialog Comment
+description = Provides Dialog integration for the core comment module.
+core = 6.x
+dependencies[] = dialog
+dependencies[] = comment
+
+; Information added by drupal.org packaging script on 2011-03-17
+version = "6.x-1.0-alpha2"
+core = "6.x"
+project = "dialog"
+datestamp = "1300400767"
+

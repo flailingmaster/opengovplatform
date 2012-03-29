@@ -1,0 +1,253 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+<indexdata>
+<key name="Access Denied Pages" >
+  <topic name="Viewing the Access Denied Pages/Datasets Report" url="viewing_the_access_denied_pages_datasets_report.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing the Access Denied Pages/Datasets Report" url="viewing_the_access_denied_pages_datasets_report.htm" />
+  </key>
+</key>
+<key name="Accessibility Options" >
+  <topic name="Managing Accessibility Options" url="managing_accessibility_options.htm" />
+  <key name="Managing" >
+    <topic name="Managing Accessibility Options" url="managing_accessibility_options.htm" />
+  </key>
+</key>
+<key name="Action Status" >
+  <topic name="Managing the Action Status for a Feedback" url="managing_the_action_status_for_a_feedback.htm" />
+  <topic name="Tracking Updates for an Action Status" url="tracking_updates_for_an_action_status.htm" />
+  <topic name="Selecting Action Status" url="selecting_action_status.htm" />
+  <topic name="Deleting an Action Status for a Feedback" url="deleting_an_action_status_for_a_feedback.htm" />
+  <topic name="Updating an Action Status for a Feedback" url="updating_an_action_status_for_a_feedback.htm" />
+  <key name="Deleting" >
+    <topic name="Deleting an Action Status for a Feedback" url="deleting_an_action_status_for_a_feedback.htm" />
+  </key>
+  <key name="Managing" >
+    <topic name="Managing the Action Status for a Feedback" url="managing_the_action_status_for_a_feedback.htm" />
+  </key>
+  <key name="Selecting" >
+    <topic name="Selecting Action Status" url="selecting_action_status.htm" />
+  </key>
+  <key name="Updating" >
+    <topic name="Updating an Action Status for a Feedback" url="updating_an_action_status_for_a_feedback.htm" />
+  </key>
+</key>
+<key name="Activating" >
+  <topic name="Activating Blocked Users" url="activating_blocked_users.htm" />
+  <key name="Blocked Users" >
+    <topic name="Activating Blocked Users" url="activating_blocked_users.htm" />
+  </key>
+</key>
+<key name="Adding" >
+  <topic name="Adding Notes to a Feedback" url="adding_notes_to_a_feedback_poc.htm" />
+  <topic name="Adding a Feedback Review" url="adding_a_feedback_review_vrm_admin.htm" />
+  <topic name="Adding a Menu Item to a Menu" url="adding_a_menu_item_to_a_menu.htm" />
+  <topic name="Adding a New Action Status" url="adding_a_new_action_status.htm" />
+  <topic name="Adding Users" url="adding_users.htm" />
+  <topic name="Adding a Feedback Review" url="adding_a_feedback_review.htm" />
+  <topic name="Adding Images to the Featured Gallery" url="adding_images_to_the_featured_gallery.htm" />
+  <topic name="Adding Mini Panels" url="adding_mini_panels.htm" />
+  <topic name="Adding Homepage Tab to the Quicktab Block" url="adding_homepage_tab_to_the_quicktab_block.htm" />
+  <topic name="Adding a New Feedback Category" url="adding_a_new_feedback_category.htm" />
+  <topic name="Adding a Feedback Review" url="adding_a_feedback_review_poc.htm" />
+  <topic name="Adding Notes to a Feedback" url="adding_notes_to_a_feedback_pmo.htm" />
+  <topic name="Adding Notes to a Feedback" url="adding_notes_to_a_feedback.htm" />
+  <key name="Feedback Review" >
+    <topic name="Adding a Feedback Review" url="adding_a_feedback_review_vrm_admin.htm" />
+    <topic name="Adding a Feedback Review" url="adding_a_feedback_review.htm" />
+    <topic name="Adding a Feedback Review" url="adding_a_feedback_review_poc.htm" />
+  </key>
+  <key name="Homepage Tab" >
+    <topic name="Adding Homepage Tab to the Quicktab Block" url="adding_homepage_tab_to_the_quicktab_block.htm" />
+  </key>
+  <key name="Images" >
+    <topic name="Adding Images to the Featured Gallery" url="adding_images_to_the_featured_gallery.htm" />
+  </key>
+  <key name="Menu Item" >
+    <topic name="Adding a Menu Item to a Menu" url="adding_a_menu_item_to_a_menu.htm" />
+  </key>
+  <key name="Mini Panels" >
+    <topic name="Adding Mini Panels" url="adding_mini_panels.htm" />
+  </key>
+  <key name="New Action Status" >
+    <topic name="Adding a New Action Status" url="adding_a_new_action_status.htm" />
+  </key>
+  <key name="New Feedback Category" >
+    <topic name="Adding a New Feedback Category" url="adding_a_new_feedback_category.htm" />
+  </key>
+  <key name="Notes" >
+    <topic name="Adding Notes to a Feedback" url="adding_notes_to_a_feedback_poc.htm" />
+    <topic name="Adding Notes to a Feedback" url="adding_notes_to_a_feedback_pmo.htm" />
+    <topic name="Adding Notes to a Feedback" url="adding_notes_to_a_feedback.htm" />
+  </key>
+  <key name="Users" >
+    <topic name="Adding Users" url="adding_users.htm" />
+  </key>
+</key>
+<key name="Advanced Search" >
+  <topic name="Managing Global and Advanced Search" url="managing_global_advanced_search.htm" />
+</key>
+<key name="Agencies" >
+  <topic name="Managing Agencies" url="managing_agencies.htm" />
+  <key name="Managing" >
+    <topic name="Managing Agencies" url="managing_agencies.htm" />
+  </key>
+</key>
+<key name="Agency Details" >
+  <topic name="Updating Agency Details" url="updating_agency_details.htm" />
+  <key name="Updating" >
+    <topic name="Updating Agency Details" url="updating_agency_details.htm" />
+  </key>
+</key>
+<key name="Agency List" >
+  <topic name="Viewing Agency List" url="viewing_agency_list.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing Agency List" url="viewing_agency_list.htm" />
+  </key>
+</key>
+<key name="Apache Solr Search Server" >
+  <topic name="Configuring the Apache Solr Search Server" url="configuring_the_apache_solr_search_server.htm" />
+  <key name="Configuring" >
+    <topic name="Configuring the Apache Solr Search Server" url="configuring_the_apache_solr_search_server.htm" />
+  </key>
+</key>
+<key name="Apache Solr Server Settings" >
+  <topic name="Resetting Apache Solr Server Settings" url="resetting_apache_solr_server_settings.htm" />
+  <key name="Resetting" >
+    <topic name="Resetting Apache Solr Server Settings" url="resetting_apache_solr_server_settings.htm" />
+  </key>
+</key>
+<key name="Approval" >
+  <topic name="Sending Content for Approval" url="sending_content_for_approval.htm" />
+</key>
+<key name="Approving" >
+  <topic name="Approving Content" url="approving_content_publisher.htm" />
+  <topic name="Approving Content" url="approving_content.htm" />
+  <key name="Content" >
+    <topic name="Approving Content" url="approving_content_publisher.htm" />
+    <topic name="Approving Content" url="approving_content.htm" />
+  </key>
+</key>
+<key name="Archiving" >
+  <topic name="Archiving a Feedback" url="archiving_a_feedback.htm" />
+  <key name="Feedback" >
+    <topic name="Archiving a Feedback" url="archiving_a_feedback.htm" />
+  </key>
+</key>
+<key name="Arranging" >
+  <topic name="Arranging Menu Items" url="arranging_menu_items.htm" />
+  <key name="Menu Items" >
+    <topic name="Arranging Menu Items" url="arranging_menu_items.htm" />
+  </key>
+</key>
+<key name="Assignee Wise VRM Statistics Report" >
+  <topic name="Viewing the Assignee Wise VRM Statistics Report" url="viewing_the_assignee_wise_vrm_statistics_report.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing the Assignee Wise VRM Statistics Report" url="viewing_the_assignee_wise_vrm_statistics_report.htm" />
+  </key>
+</key>
+<key name="Assigning" >
+  <topic name="Assigning a Feedback" url="assigning_a_feedback.htm" />
+  <key name="Feedback" >
+    <topic name="Assigning a Feedback" url="assigning_a_feedback.htm" />
+  </key>
+</key>
+<key name="Bc" >
+  <topic name="Updating Blocks" url="updating_blocks.htm" />
+  <topic name="Updating Rotating Panels" url="updating_rotating_panels.htm" />
+  <topic name="Updating Pages" url="updating_pages.htm" />
+  <topic name="Tracking Content Revisions" url="tracking_content_revisions.htm" />
+  <topic name="Updating FAQ" url="updating_faq.htm" />
+  <topic name="Managing Global and Advanced Search" url="managing_global_advanced_search.htm" />
+  <topic name="Viewing Content List" url="viewing_content_list.htm" />
+  <topic name="Updating Country Data" url="updating_country_data_content_creator.htm" />
+  <topic name="Viewing Revision History" url="viewing_revision_history.htm" />
+  <topic name="Managing Menus" url="managing_menus.htm" />
+  <topic name="Updating Featured Gallery" url="updating_featured_gallery.htm" />
+  <topic name="Filtering Content List" url="filtering_content_list.htm" />
+</key>
+<key name="Blocked Users" >
+  <topic name="Activating Blocked Users" url="activating_blocked_users.htm" />
+  <key name="Activating" >
+    <topic name="Activating Blocked Users" url="activating_blocked_users.htm" />
+  </key>
+</key>
+<key name="Blocks" >
+  <topic name="Updating Blocks" url="updating_blocks.htm" />
+  <topic name="Blocking Users" url="blocking_users.htm" />
+  <topic name="Updating a Block" url="updating_a_block.htm" />
+  <topic name="Creating Blocks" url="creating_blocks.htm" />
+  <key name="Creating" >
+    <topic name="Creating Blocks" url="creating_blocks.htm" />
+  </key>
+  <key name="Updating" >
+    <topic name="Updating Blocks" url="updating_blocks.htm" />
+    <topic name="Updating a Block" url="updating_a_block.htm" />
+  </key>
+  <key name="Users" >
+    <topic name="Blocking Users" url="blocking_users.htm" />
+  </key>
+</key>
+<key name="Blocks Content" >
+  <topic name="Managing Blocks Content" url="managing_blocks_content.htm" />
+  <topic name="Updating Blocks Content" url="updating_blocks_content.htm" />
+  <topic name="Viewing Blocks Content" url="viewing_blocks_content.htm" />
+  <key name="Managing" >
+    <topic name="Managing Blocks Content" url="managing_blocks_content.htm" />
+  </key>
+  <key name="Updating" >
+    <topic name="Updating Blocks Content" url="updating_blocks_content.htm" />
+  </key>
+  <key name="Viewing" >
+    <topic name="Viewing Blocks Content" url="viewing_blocks_content.htm" />
+  </key>
+</key>
+<key name="Blocks List" >
+  <topic name="Viewing Blocks List" url="viewing_blocks_list.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing Blocks List" url="viewing_blocks_list.htm" />
+  </key>
+</key>
+<key name="Captcha" >
+  <topic name="Configuring General Settings for Captcha" url="configuring_general_settings_for_captcha.htm" />
+  <topic name="Managing Captcha" url="managing_captcha.htm" />
+  <topic name="Resetting Captcha" url="resetting_captcha.htm" />
+  <topic name="Deleting Captcha" url="deleting_captcha.htm" />
+  <key name="Deleting" >
+    <topic name="Deleting Captcha" url="deleting_captcha.htm" />
+  </key>
+  <key name="Managing" >
+    <topic name="Managing Captcha" url="managing_captcha.htm" />
+  </key>
+  <key name="Resetting" >
+    <topic name="Resetting Captcha" url="resetting_captcha.htm" />
+  </key>
+</key>
+<key name="Captcha Examples" >
+  <topic name="Viewing Captcha Examples" url="viewing_captcha_examples.htm" />
+  <key name="Viewing" >
+    <topic name="Viewing Captcha Examples" url="viewing_captcha_examples.htm" />
+  </key>
+</key>
+<key name="Cloning" >
+  <topic name="Cloning Mini Panels" url="cloning_mini_panels.htm" />
+  <key name="Mini Panels" >
+    <topic name="Cloning Mini Panels" url="cloning_mini_panels.htm" />
+  </key>
+</key>
+<key name="Closing" >
+  <topic name="Closing a Feedback" url="closing_a_feedback.htm" />
+  <key name="Feedback" >
+    <topic name="Closing a Feedback" url="closing_a_feedback.htm" />
+  </key>
+</key>
+<key name="CMS" >
+  <topic name="Understanding the Content Management System (CMS) Workflow" url="understanding_the_content_management_system_workflow_.htm" />
+</key>
+<key name="CMS Administrator" >
+  <topic name="CMS Administrator" url="cms_administrator.htm" />
+</key>
+<key name="CMS Reports" >
+  <topic name="CMS Reports" url="cms_reports.htm" />
+</key>
+
+</indexdata>

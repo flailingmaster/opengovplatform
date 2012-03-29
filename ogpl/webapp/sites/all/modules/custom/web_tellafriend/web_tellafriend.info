@@ -1,0 +1,4 @@
+name = Web Tell A Friend
+description = Forward this page module
+core = "6.x"
+

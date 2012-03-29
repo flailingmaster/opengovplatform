@@ -1,0 +1,6 @@
+; $Id$
+name = DMS Save Settings
+description = "Allows forms to be saved without verifying the required field.
+Allowing full validation to be done at a later time."
+core = 6.x
+package = DMS customizations

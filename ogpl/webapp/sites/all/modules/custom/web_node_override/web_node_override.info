@@ -1,0 +1,5 @@
+name = override node URL
+description = Custom module to override node URL.
+core = 6.x
+~
+

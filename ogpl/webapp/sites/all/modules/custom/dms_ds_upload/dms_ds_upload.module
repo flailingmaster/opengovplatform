@@ -1,0 +1,325 @@
+<?php
+
+/**
+ * @file
+ * A module to enable pupolating dataset node with file upload.
+ */
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function dms_ds_upload_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id != 'dataset_node_form') {
+    return;
+  }
+
+  //does this form have a node, ie, is it adding or editing a node?
+  if (empty($form['nid']['#value'])) {
+    //include the js to add a populate button for uploaded file.
+    drupal_add_js(
+      drupal_get_path('module', 'dms_ds_upload') .
+          '/js/dms_ds_upload.js'
+    );
+
+    //change description of Upload description to add /dataset/template link.
+    $form['#after_build'][] = 'dms_ds_upload_cck_alter';
+  }
+  else {
+    //hide upload field for existing node.
+    unset($form['field_ds_file']);
+  }
+}
+
+/**
+ * Change any CCK form element here.
+ */
+function dms_ds_upload_cck_alter($form, &$form_state) {
+  $cck_fields = array('group_ds_upload');
+  $form['group_ds_upload']['#description'] = t('Optionally a spreadsheet can be uploaded to populate all form fields. See a list of <a href="!link">Template files</a> for multiple spreadsheet formats.', array('!link' => url('dataset/template')));
+  return $form;
+}
+
+
+/**
+ * Implementatation of hook_menu().
+ */
+function dms_ds_upload_menu() {
+
+  //allow user to download dataset as csv, xml, xls
+  $download_menu = array(
+    array(
+      'name' => t('CSV'),
+      'type' => 'csv',
+      'weight' => 1,
+    ),
+    array(
+      'name' => t('XML'),
+      'type' => 'xml',
+      'weight' => 2,
+    ),
+    array(
+      'name' => t('MS Excel'),
+      'type' => 'xls',
+      'weight' => 3,
+    ),
+  );
+  foreach($download_menu as $download) {
+    $items['node/%/view/' . $download['type']] = array(
+      'title' => t('Download @format', array('@format' => $download['name'])),
+      'page callback' => 'dms_ds_upload_download_nodes',
+      'page arguments' => array(1, 3),
+      'access callback' => 'dms_ds_upload_download_dataset',
+      'access arguments' => array(1),
+      'type' => MENU_LOCAL_TASK,
+      'weight' => $download['weight'],
+      'file' => 'dms_ds_upload.files.inc',
+    );
+  }
+
+  //url to create node with uploaded file.
+  //keep path 'dataset/populate' same as in the js value
+  $items['dataset/populate/%'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => t('Dataset populate process'),
+    'page callback' => 'dms_ds_upload_add_dataset',
+    'page arguments' => array(2),
+    'access callback' => 'user_access',
+    'access arguments' => array('create dataset content'),
+    'file' => 'dms_ds_upload.nodes.inc',
+  );
+
+  //url to view template page.
+  $items['dataset/template'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => t('Download dataset templates'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dms_ds_upload_template_form'),
+    'access callback' => 'user_access',
+    'access arguments' => array('access content'),
+  );
+
+  //download template for % format. 
+  $items['dataset/template/%'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'dms_ds_upload_download_template',
+    'page arguments' => array(2),
+    'access callback' => 'user_access',
+    'access arguments' => array('access content'),
+    'file' => 'dms_ds_upload.files.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Display dataset template page content.
+ */
+function dms_ds_upload_template_form(){
+
+  $form['templates'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Available formats'),
+    '#description' => t('Click to download template file. You can insert multiple rows to create multiple dataset records.'),
+  );
+
+  $form['templates']['list'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<ul>',
+    '#suffix' => '</ul>',
+  );
+
+  $form['templates']['list']['csv'] = array(
+    '#value' => t('<a href="!link">CSV</a>',array('!link' => url('dataset/template/csv'))),
+    '#prefix' => '<li>',
+    '#suffix' => '</li>',
+  );
+  $form['templates']['list']['xml'] = array(
+    '#value' => t('<a href="!link">XML</a>',array('!link' => url('dataset/template/xml'))),
+    '#prefix' => '<li>',
+    '#suffix' => '</li>',
+  );
+  $form['templates']['list']['xls'] = array(
+    '#value' => t('<a href="!link">MS Excel</a>',array('!link' => url('dataset/template/xls'))),
+    '#prefix' => '<li>',
+    '#suffix' => '</li>',
+  );
+
+  $form['fieldvalues'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Allowed values'),
+    '#description' => t('Certain fields can only use a list of valid entries. Click each field name to view the list.'),
+  );
+
+
+  //create its own fieldset for each fields that has allowable values.
+  require_once ('dms_ds_upload.fields.inc');
+  //get a list of dataset fields in the right order.
+  $ordered_list = dms_ds_upload_get_sequenced_fields('dataset', $GLOBALS['dms_ds_upload_exclude_group']);
+  //integrate child nodes into it.
+  $fields = dms_ds_upload_display_sequenced_fields($ordered_list);
+
+  for($i=0; $i < count($fields['fieldname']); $i++) {
+    if (!empty($fields['settings'][$i]['referenceable_types'])) {//nodereference
+      $form['fieldvalues'][$fields['fieldname'][$i]] = array(
+        '#type' => 'fieldset',
+        '#title' => t($fields['fieldname'][$i]) . ' [' . t($fields['fieldlabel'][$i]) . ']',
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      );
+
+      $form['fieldvalues'][$fields['fieldname'][$i]]['list'] = array(
+        '#type' => 'markup',
+        '#prefix' => '<ul>',
+        '#suffix' => '</ul>',
+      );
+
+      $child_content_type = '';
+      //what is the content_type this referenced to?
+      foreach ($fields['settings'][$i]['referenceable_types'] as $key => $value) {
+        if (!empty($value)) {
+          $child_content_type = $value;
+          break;
+        }
+      }
+
+      //give me an array of valid entries in the format of ($node_title => $nid) for all $child_content_type nodes
+      $valid_entries = dms_ds_upload_get_nodereference_entries($child_content_type);
+
+      foreach ($valid_entries as $key => $value) {
+        $form['fieldvalues'][$fields['fieldname'][$i]]['list'][$key] = array(
+          '#value' => t($key),
+          '#prefix' => '<li>',
+          '#suffix' => '</li>',
+        );
+      }
+
+    }
+    elseif (!empty($fields['settings'][$i]['item_types'])) {//flexifield
+      $form['fieldvalues'][$fields['fieldname'][$i]] = array(
+        '#type' => 'fieldset',
+        '#title' => t($fields['fieldname'][$i]) . ' [' . t($fields['fieldlabel'][$i]) . ']',
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      );
+
+      $form['fieldvalues'][$fields['fieldname'][$i]]['list'] = array(
+        '#type' => 'markup',
+        '#prefix' => '<ul>',
+        '#suffix' => '</ul>',
+      );
+
+      $child_content_types = array();
+      foreach($fields['settings'][$i]['item_types'] as $key => $value) {
+        if (!empty($value)){
+          $child_content_types[] = $value;
+        }
+      }
+      foreach($child_content_types as $child_fieldname) {
+        $fieldlabel = content_types($child_fieldname);
+        $fieldlabel = $fieldlabel['name'];
+        $form['fieldvalues'][$fields['fieldname'][$i]]['list'][$child_fieldname] = array(
+          '#value' => t($fieldlabel),
+          '#prefix' => '<li>',
+          '#suffix' => '</li>',
+        );
+      }
+    }
+    elseif (!empty($fields['settings'][$i]['allowed_values'])) {//regular text field
+      $form['fieldvalues'][$fields['fieldname'][$i]] = array(
+        '#type' => 'fieldset',
+        '#title' => t($fields['fieldname'][$i]) . ' [' . t($fields['fieldlabel'][$i]) . ']',
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      );
+
+      $form['fieldvalues'][$fields['fieldname'][$i]]['list'] = array(
+        '#type' => 'markup',
+        '#prefix' => '<ul>',
+        '#suffix' => '</ul>',
+      );
+      $value_list = explode("\n", $fields['settings'][$i]['allowed_values']);
+      foreach($value_list as $value) {
+        $form['fieldvalues'][$fields['fieldname'][$i]]['list'][$value] = array(
+          '#value' => t($value),
+          '#prefix' => '<li>',
+          '#suffix' => '</li>',
+        );
+      }
+    }
+  }
+
+  return $form;
+}
+
+/**
+ * Display download tab only to dataset node type.
+ */
+function dms_ds_upload_download_dataset($nid) {
+  $node = node_load($nid, $revision = NULL, $reset = NULL);
+  $access = 0;
+  if($node->type == 'dataset') {
+    $access = user_access('access content');
+  }
+  else {
+    $access = FALSE;
+  }
+
+  return $access;
+}
+
+/**
+ * Implementation of hook_action_info().
+ */
+function dms_ds_upload_action_info() {
+  return array(
+    'dms_ds_upload_download_node_csv_action' => array(
+      'type' => 'node',
+      'description' => t('Download node in csv format'),
+      'configurable' => FALSE,
+      'aggregate' => TRUE,
+      'hooks' => array(
+        'nodeapi' => array('presave'),
+        'comment' => array('insert', 'update'),
+        'workflow' => array('any'),
+      ),
+    ),
+  );
+}
+
+/**
+ * Action callback for bulk download of nodes as CSV.
+ */
+function dms_ds_upload_download_node_csv_action($node, $context) {
+  require_once ('dms_ds_upload.files.inc');
+  dms_ds_upload_download_nodes($node);
+}
+
+/**
+ * Get all possible field-type that dataset or its child node are using.
+ */
+function dms_ds_upload_init() {
+  //get supported types and put into a global value
+  //so that we dont have to hit db whenever we need it.  
+  $all_types = array();
+
+  $query = "SELECT DISTINCT type FROM content_node_field";
+  $data = db_query($query);
+  while ($a = db_fetch_array($data)) {
+    //we dont support fileupload field
+    if ($a['type'] == 'filefield') {
+      continue;
+    }
+    $all_types[] = $a['type'];
+  }
+
+  $GLOBALS['dms_ds_upload_supported_types'] = $all_types;
+
+  //hide fields within this group to all users except admin.
+  $GLOBALS['dms_ds_upload_exclude_group'] = 'group_ds_profile';
+
+  //multiple values delimiter
+  $GLOBALS['dms_ds_upload_delimiter']['xml']['tag'] = 'item';
+  //use tag_replacement so the tag can bypass htmlentities() function.
+  $GLOBALS['dms_ds_upload_delimiter']['xml']['tag_replacement_left']  = '|.item|';
+  $GLOBALS['dms_ds_upload_delimiter']['xml']['tag_replacement_right'] = '|item.|';
+}

@@ -1,0 +1,27 @@
+<?php
+// $Id: skip_validation_user_form.module,v 1.1 2009/10/13 04:17:57 cdale Exp $
+
+/**
+ * @file
+ *
+ * Adds a feature which skips required field validations on user deletion.
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function skip_validation_user_form_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#skip_validation_user_form':
+      return '<p>'. t('Adds a feature which skips validations on user deletion.') .'</p>';
+      break;
+  }
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function skip_validation_user_form_form_user_profile_form_alter(&$form, &$form_state){
+  $form['delete']['#skip_validation'] = TRUE;
+}
+

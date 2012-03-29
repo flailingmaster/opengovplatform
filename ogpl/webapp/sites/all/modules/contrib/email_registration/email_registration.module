@@ -1,0 +1,141 @@
+<?php
+// $Id: email_registration.module,v 1.5.2.13 2010/02/25 21:25:07 chrisherberte Exp $
+
+/**
+ * @file
+ * For registration process without a username
+ *
+ */
+
+/**
+ * Implementation of hook_user().
+ *
+ */
+function email_registration_user($op, &$edit, &$account, $category = NULL) {
+  switch ($op) {
+    case 'insert':
+      // Other modules may implement hook_email_registration_name($edit, $account)
+      // to generate a username (return a string to be used as the username, NULL
+      // to have email_registration generate it)
+      $names = module_invoke_all('email_registration_name', $edit, $account);
+      // Remove any empty entries
+      $names = array_filter($names);
+
+      if (empty($names)) {
+        // Default implementation of name generation
+        $namenew = preg_replace('/@.*$/', '', $edit['mail']);
+        // Remove unwanted characters
+        $namenew = preg_replace('/[^a-zA-Z0-9.-]/', '', $namenew);
+
+        // if username generated from email record already exists, append underscore and number eg:(chris_123)
+        if (db_result(db_query("SELECT count(*) FROM {users} WHERE uid <> %d AND LOWER(name) = LOWER('%s')", $account->uid, $namenew)) > 0) {
+          // find the next number available to append to the name
+          $sql = "SELECT SUBSTRING_INDEX(name,'_',-1) FROM {users} WHERE name REGEXP '%s' ORDER BY CAST(SUBSTRING_INDEX(name,'_',-1) AS UNSIGNED) DESC LIMIT 1";
+          $nameidx = db_result(db_query($sql, '^'. $namenew .'_[0-9]+$'));
+          $namenew .= '_'. ($nameidx + 1);
+        }
+      }
+      else {
+        // One would expect a single implementation of the hook, but if there
+        // are multiples out there use the last one
+        $namenew = array_pop($names);
+      }
+
+      // replace with generated username
+      if (db_query("UPDATE {users} SET name = '%s' WHERE uid = '%s'", $namenew, $account->uid)) {
+        $edit['name'] = $namenew; // update in the user array for access by other modules
+      }
+
+      // if email verification is off and a new user is the one creating account, log the new user in with correct name
+      global $user;
+      if (!variable_get('user_email_verification', 1) && $user->uid == 0) {
+        $user = $account;
+        $user->name = $namenew;
+      }
+      $account->name = $namenew;
+      break;
+  }
+  return;
+}
+
+/**
+ * Implementation of hook_form_alter().
+ *
+ */
+function email_registration_form_alter(&$form, $form_state, $form_id) {
+  switch ($form_id) {
+    case 'user_register':
+      if (isset($form['account']) && is_array($form['account'])) {
+        $form['account']['name']['#type'] = 'hidden';
+        $form['account']['name']['#value'] = user_password();
+        $form['account']['mail']['#title'] = t('E-mail');
+      }
+      else {
+        $form['name']['#type'] = 'hidden';
+        $form['name']['#value'] = user_password();
+        $form['mail']['#title'] = t('E-mail');
+      }
+      $form['#submit'][] = 'custom_email_registration_name_submit';
+      break;
+
+    case 'user_pass':
+      $form['name']['#title'] = t('E-mail');
+      $form['name']['#description'] = t('Enter your e-mail address. You\'ll be sent a new password immediately.');
+      break;
+
+    case 'user_login':
+      $form['name']['#title'] = t('E-mail');
+      $form['name']['#description'] = t('Enter your e-mail address.');
+      $form['pass']['#description'] = t('Enter the password that accompanies your e-mail.');
+      $form['name']['#element_validate'][] = 'email_registration_user_login_validate';
+      break;
+
+    case 'user_login_block':
+      $form['name']['#title'] = t('E-mail');
+      $form['name']['#element_validate'][] = 'email_registration_user_login_validate';
+      break;
+  }
+}
+
+
+/**
+ * Custom submit handler to fix redirect for immediate logins
+ * #648450
+ *
+ */
+function custom_email_registration_name_submit($form, &$form_state) {
+  if (!isset($form_state['user'])) {
+    return;
+  }
+
+  $admin = user_access('administer users');
+  $account = $form_state['user'];
+
+  if (!variable_get('user_email_verification', TRUE) && $account->status && !$admin) {
+    // No e-mail verification is required, create new user account, and login
+    // user immediately.
+    $auth = array(
+      'pass' => $form_state['values']['pass'],
+      'name' => $account->name,
+    );
+    if (user_authenticate($auth)) {
+      // Authenticated, add a message and go to the users account
+      // Since the standard workflow doesn't work, no other messages should appear.
+      drupal_set_message(t('Registration successful. You are now logged in.'));
+      $form_state['redirect'] = 'user/'. $account->uid;
+    }
+  }
+}
+
+/**
+ * Custom validation function for user login form.
+ * Allows users to authenticate by email only, which is our preferred method.
+ *
+ */
+function email_registration_user_login_validate($form, &$form_state) {
+  if (isset($form_state['values']['name'])) {
+    if ($name = db_result(db_query("SELECT name FROM {users} WHERE LOWER(mail) = LOWER('%s')", $form_state['values']['name']))) {
+      $form_state['values']['name'] = $name;
+    }
+  }
+}

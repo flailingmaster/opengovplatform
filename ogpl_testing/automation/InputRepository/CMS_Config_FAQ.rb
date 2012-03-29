@@ -1,0 +1,11 @@
+$CMS_Site_URL="http://203.199.26.72/ogpl_auto/user"
+$CMS_Admin_User_Email="Priya_CMSadmin@data.gov"
+$CMS_Admin_User_Passwd="Priya_CMSadmin123"
+$Title="How does OGPL maintain privacy?"
+$Question_Details="Privacy"
+$Menu_Title="Enter Menu Title"
+$Answer="OGPL guarantees the security of the reader.
+Read more at: http://www.ndtv.com/article/cities/children-waiting-in-line-with-nursery-forms-faint-in-patna-reports-170891?pfrom=home-topstories&cp"
+$Edit_log="Error"
+$Days="20"
+$exp_date="1 Feb 2012"

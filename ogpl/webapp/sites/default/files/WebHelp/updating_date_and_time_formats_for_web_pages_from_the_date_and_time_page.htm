@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <meta name="generator" content="Adobe RoboHelp 9" />
+<title>Updating Date and Time Formats for Web pages from the Date and Time Page</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="JavaScript">//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+        origWidth = innerWidth;
+        origHeight = innerHeight;
+        onresize = reDo;
+}
+onerror = null; 
+//]]></script>
+<script type="text/javascript" language="javascript1.2" src="./whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="./whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whtopic.js"></script>
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addTocInfo("Super Administrator\nConfiguring Date and Time\nUpdating Date and Time Formats for Web Pages");
+addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("<a href=\"super_administrator.htm\">Super Administrator<\/a> > <a href=\"configuring_date_and_time_formats.htm\">Configuring Date and Time<\/a> > Updating Date and Time Formats for Web Pages<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<h1>Updating Date and Time Formats for Web Pages</h1>
+<p>You can change the formats for date and time that appear on various 
+ pages of the OGPL Web site such as <span class="UI">Feedback Details</span> 
+ and <span class="UI">Agency Wise</span> page. When you change the format 
+ of date and time for any of the date and time formats types, the date 
+ and time format of the page that uses this format type gets updated automatically. 
+ For example, the <span class="UI">Agency Wise</span> page displays the 
+ date and time of dataset submission in the format that you specified for 
+ the <span class="UI">front date format</span> type in the <span class="UI">Date 
+ and Time</span> page. If you change the date and time format for the <span 
+	 class="UI">front date format</span> type from <span class="UI">dd-mm-yyyy</span> 
+ format to <span class="UI">d-month-yyyy – h:mm</span> format, the date 
+ and time on the <span class="UI">Agency Wise</span> page is updated and 
+ displays the date and time in the new format that you specified. The following 
+ images illustrate the above example:</p>
+<p>The date and time before the update:</p>
+<p><img src="date_and_time_default.png" alt="date_and_time_default.png" 
+		 style="border: none;" width="600" height="169" border="0" /></p>
+<p>The date and time after the update:</p>
+<p><img src="date_and_time_updated.png" alt="date_and_time_updated.png" 
+		 style="border: none;" width="600" height="191" border="0" /></p>
+<p>&#160;</p>
+<p class="MsoNormal"><span lang="EN-IN" xml:lang="EN-IN">To update Date 
+ and Time format for various Web pages:</span></p>
+<ol start="1" type="1">
+	<li><p><span lang="EN-IN" xml:lang="EN-IN" style="mso-fareast-font-family: 'Times New Roman'; 
+				 mso-bidi-font-family: 'Times New Roman';">In the Drupal 
+	 menu, point to <b>Site configuration</b>, <b style="mso-bidi-font-weight: normal;">Date 
+	 and time</b>, <b style="mso-bidi-font-weight: normal;">formats</b>, 
+	 and then click <b style="mso-bidi-font-weight: normal;">Configure</b>.<br />
+	The <b style="mso-bidi-font-weight: normal;">Date And Time</b> page 
+	 appears.</span></p></li>
+	<li><p><span lang="EN-IN" xml:lang="EN-IN" style="mso-fareast-font-family: 'Times New Roman'; 
+				 mso-bidi-font-family: 'Times New Roman';">In the <b style="mso-bidi-font-weight: normal;">Date 
+	 formats</b> section, click the appropriate information. The following 
+	 table lists each field and its description:</span></p></li>
+</ol>
+<p class="TableCaption" style="margin-left: 36px;"><span lang="EN-IN" xml:lang="EN-IN" 
+														 style="mso-fareast-font-family: 'Times New Roman'; 
+														 mso-bidi-font-family: 'Times New Roman';">T</span><span>able: 
+ List of format types in the Date formats section</span></p>
+<table width="100%">
+	<tr>
+		<td><table style="margin-left: 40px;" cellspacing="0" width="93.191%" 
+					 align="left">
+			<col style="width: 29.077%;" />
+			<col style="width: 70.923%;" />
+			<tr>
+				<td style="border: Solid 1px #000000;" bgcolor="#E8E8E8"><p 
+					 class="TableHeading">Format Type</p></td>
+				<td style="border-top: Solid 1px #000000; border-right: Solid 1px #000000; 
+					 border-bottom: Solid 1px #000000;" bgcolor="#E8E8E8"><p 
+					 class="TableHeading"><span><b style="font-weight: bold;">Description</b></span></p></td>
+			</tr>
+			<tr>
+				<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+					 border-bottom: Solid 1px #000000;"><p class="TableText" 
+															 style="font-weight: bold;">Long 
+				 date format</p></td>
+				<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Click 
+				 the appropriate date and time format that you want to 
+				 display on the pages that use this date and time format 
+				 type to display date and time on the OGPL Web site. For 
+				 example, <span class="UI">Tuesday, March 6, 2012 – 18:53</span>.</p></td>
+			</tr>
+			<tr>
+				<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+					 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+				 class="UI">Medium date format</span></p></td>
+				<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Click 
+				 the appropriate date and time format that you want to 
+				 display on the pages that use this date and time format 
+				 type to display date and time on the OGPL Web site. For 
+				 example, <span class="UI">06-03-2012 18:53:49</span>.</p></td>
+			</tr>
+			<tr>
+				<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+					 border-bottom: Solid 1px #000000;"><p class="TableText" 
+															 style="font-weight: bold;"><span 
+				 class="UI">Short date format</span></p></td>
+				<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+					 style="mso-bidi-language: AR-SA;"><span>Click the 
+				 appropriate date and time format that you want to display 
+				 on the pages that use this date and time format type to 
+				 display date and time on the OGPL Web site. For example,</span> 
+				 <span class="UI">06-03-2012 18:53</span><span>.</span></p></td>
+			</tr>
+			<tr>
+				<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+					 border-bottom: Solid 1px #000000;"><p class="TableText" 
+															 style="font-weight: bold;"><span>front 
+				 date format</span></p></td>
+				<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+					 style="mso-bidi-language: AR-SA;"><span>Click the 
+				 appropriate date and time format that you want to display 
+				 on the pages that use this date and time format type to 
+				 display date and time on the OGPL Web site. For example,</span> 
+				 <span class="UI">06-03-2012</span><span>.</span></p></td>
+			</tr>
+			<tr>
+				<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+					 border-bottom: Solid 1px #000000;"><p class="TableText" 
+															 style="font-weight: bold;"><span>notify 
+				 date format</span></p></td>
+				<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+					 style="mso-bidi-language: AR-SA;"><span>Click the 
+				 appropriate date and time format that you want to display 
+				 on the pages that use this date and time format type to 
+				 display date and time on the OGPL Web site. For example,</span> 
+				 <span class="UI">2012-03-06</span><span>.</span></p></td>
+			</tr>
+		</table></td>
+	</tr>
+</table>
+<p>&#160;</p>
+<ol start="3" type="1">
+	<li><p>Click <span class="UI">Save configuration</span>.<br />
+	The date and time format for the pages that use this format type is 
+	 updated.</p></li>
+</ol>
+<?rh-region_start id="footer" style="width: 100%; position: relative;" ?>
+<p>&#160;</p>
+<?rh-region_end ?><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

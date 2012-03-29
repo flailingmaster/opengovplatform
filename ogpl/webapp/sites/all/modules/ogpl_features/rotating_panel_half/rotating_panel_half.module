@@ -1,0 +1,3 @@
+<?php
+
+include_once('rotating_panel_half.features.inc');

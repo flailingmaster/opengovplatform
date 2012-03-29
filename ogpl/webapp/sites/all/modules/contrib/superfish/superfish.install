@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Superfish module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function superfish_uninstall() {
+  db_query("DELETE FROM {variable} WHERE name like '%%superfish%%'", $name);
+  db_query("DELETE FROM {blocks} WHERE module = 'superfish'", $name);
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function superfish_requirements($phase) {
+  $requirements = array();
+  // Ensure translations do not break at install time
+  $t = get_t();
+
+  if ($phase == 'install' && !module_exists('libraries')) {
+    $requirements['superfish']['severity'] = REQUIREMENT_ERROR;
+    $requirements['superfish']['description'] = $t('Superfish module requires the <a href="@url">Libraries module</a> to be installed.', array('@url' => 'http://drupal.org/project/libraries'));
+  }
+  if (module_exists('libraries')) {
+    $requirements['superfish']['title'] = $t('Superfish library');
+    $library = libraries_get_libraries();
+    if (isset($library['superfish'])) {
+      $requirements['superfish']['value'] = $t('Installed');
+      $requirements['superfish']['severity'] = REQUIREMENT_OK;
+    }
+    else {
+      $requirements['superfish']['value'] = $t('Not installed');
+      $requirements['superfish']['severity'] = REQUIREMENT_ERROR;
+      $requirements['superfish']['description'] = $t('Please download the Superfish library from <a href="@url">@url</a>.', array('@url' => 'http://drupal.org/project/superfish'));
+    }
+    return $requirements;
+  }
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function superfish_update_6100() {
+  $ret = array();
+  $ret[] = update_sql("UPDATE {variable} SET value = REPLACE(REPLACE(value, 'false', '0'), 'true', '1') WHERE name LIKE 'superfish_arrow_%'");
+  $ret[] = update_sql("UPDATE {variable} SET value = REPLACE(REPLACE(value, 'false', '0'), 'true', '1') WHERE name LIKE 'superfish_shadow_%'");
+  $ret[] = update_sql("UPDATE {variable} SET value = REPLACE(REPLACE(value, 'false', 'none'), 'true', 'down') WHERE name LIKE 'superfish_slide_%'");
+  $ret[] = update_sql("UPDATE {variable} SET name = REPLACE(name, 'count', 'itemcount') WHERE name LIKE 'superfish_count_%'");
+  $ret[] = update_sql("UPDATE {variable} SET name = REPLACE(name, 'extracss', 'pathcss') WHERE name LIKE 'superfish_extracss_%'");
+  $ret[] = update_sql("UPDATE {variable} SET name = REPLACE(name, 'extraclass', 'ulclass') WHERE name LIKE 'superfish_extraclass_%'");
+  $ret[] = update_sql("UPDATE {variable} SET name = REPLACE(name, 'linkwrapper', 'wrapli') WHERE name LIKE 'superfish_linkwrapper_%'");
+  $ret[] = update_sql("UPDATE {variable} SET name = REPLACE(name, 'linktextwrapper', 'wraphlt') WHERE name LIKE 'superfish_linktextwrapper_%'");
+  $ret[] = update_sql("UPDATE {variable} SET name = REPLACE(name, 'mulwrapper', 'wrapmul') WHERE name LIKE 'superfish_mulwrapper_%'");
+  return $ret;
+}

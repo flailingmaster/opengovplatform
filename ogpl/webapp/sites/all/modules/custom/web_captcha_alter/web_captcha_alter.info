@@ -1,0 +1,5 @@
+name = Web Captcha Alter
+description = "Custom module to alter captcha form."
+dependencies[] = captcha
+package = "Spam control"
+core = 6.x

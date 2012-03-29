@@ -1,0 +1,3 @@
+<?php
+
+include_once('cms_workflow_summary.features.inc');

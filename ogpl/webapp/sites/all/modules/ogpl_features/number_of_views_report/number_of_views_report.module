@@ -1,0 +1,3 @@
+<?php
+
+include_once('number_of_views_report.features.inc');

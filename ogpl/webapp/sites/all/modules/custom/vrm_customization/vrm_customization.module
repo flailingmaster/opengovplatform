@@ -1,0 +1,1473 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: alan_lobo
+ * Date: 1/13/12
+ * Time: 2:59 PM
+ * To change this template use File | Settings | File Templates.
+ */
+
+define('FEEDBACK_CATEGORY_ID', 2);
+define('FEEDBACK_COMMENTS', 'Feedback: Comments');
+define('FEEDBACK_CONTACT_US', 'Feedback: Contact us');
+define('FEEDBACK_WEBSITE_RELATED', 'Feedback: Website related');
+define('FEEDBACK_SUGGEST_DATASET', 'Feedback: Suggest Dataset');
+define('VRM_ASSIGNED_STATE', 27);
+define('VRM_SOURCE_CONTACT_US', 12);
+define('VRM_SOURCE_FEEDBACK', 13);
+define('VRM_SOURCE_RATINGS', 14);
+define('VRM_SOURCE_SUGGESTION', 15);
+
+function vrm_customization_perm()
+{
+    return array('View VRM notes tab', 'View Reply / Review Tab');
+}
+
+function vrm_customization_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL)
+{
+    if ($node->type == 'feedback' and $op == 'view') {
+		global $user;
+		$roles = $user->roles;
+		if($node->field_feedback_type[0]['value']==NULL && isset($roles[1]))
+		{
+			drupal_access_denied();
+			exit();
+		}
+        drupal_set_title('Feedback Details');
+        $workflow_state = workflow_get_state($node->_workflow);
+        $node->content['workflow_status'] = array(
+            '#weight' => 50,
+            '#value' => '<div class="field field-type-workflow-status field-field-workflow-status">
+                          <div class="field-label">Feedback Status: </div>
+                          <div class="field-items"><div class="field-item odd">' . $workflow_state['state'] . '</div></div>
+                        </div>'
+        );
+    }
+
+    // Send a reply mail to the user after a reply is saved
+    if ($node->type == 'feedback_reply' && $op == 'insert') {
+        global $user;
+        $referred_node = node_load($node->field_feedback_id[0]['nid']);
+        $params['pet_from'] = $user->mail;
+        $params['pet_to'] = $node->field_reply_to[0]['value'];
+        $params['pet_cc'] = $node->field_reply_cc[0]['value'];
+        $params['pet_uid'] = $user->uid;
+        $params['assignee-comments'] = nl2br($node->field_feedback_reply_body[0]['value']);
+        $params['assignee-subject'] = $node->title;
+        $params['feedback_date'] = date('j-m-y H:i:s', $referred_node->created);
+        $params['feedback_body'] = nl2br($referred_node->field_feedback_body[0]["value"]);
+        $params['pet_bcc'] = 'dpmisra@nic.in';
+
+        $pet = pet_load('feedback_reply_template');
+        $substitutions = pet_substitutions($pet, array('pet_nid' => $node->nid));
+
+        $pet->subject = token_replace_multiple($pet->subject, $substitutions);
+        $pet->body = token_replace_multiple($pet->body, $substitutions);
+
+        pet_send_one_mail($pet, $params);
+    }
+}
+
+function vrm_customization_menu()
+{
+    $items['vrm_dashboard'] = array(
+        'title' => '',
+		'access callback'=>'vrm_customization_is_vrm_pmo_poc',
+        'page callback' => 'blank_page',
+        'type' => MENU_CALLBACK,
+        'page arguments' => null,
+        'description' => 'VRM Dashboard for Admin',
+    );
+    $items['manage/delay/time'] = array(
+        'title' => '',
+        'access arguments' => array('access content'),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('vrm_customization_defaultdelaytime'),
+        'type' => MENU_CALLBACK,
+    );
+    $items['node/%feedback_no/note'] = array(
+        'title' => 'Notes',
+        'access arguments' => array(1, 'View VRM notes tab'),
+        'access callback' => 'vrm_tabs_access',
+        'page callback' => 'display_notes',
+        'type' => MENU_LOCAL_TASK,
+        'page arguments' => null,
+    );
+    $items['node/%feedback_no/reply-review'] = array(
+        'title' => 'Reply / Review',
+        'page callback' => 'display_replies_reviews',
+        'page arguments' => null,
+        'access callback' => 'vrm_tabs_access',
+        'access arguments' => array(1, 'View Reply / Review Tab'),
+        'type' => MENU_LOCAL_TASK,
+    );
+    $items['manage/add/actions'] = array(
+        'title' => '',
+        'access arguments' => array('access content'),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('vrm_customization_add_actions'),
+        'type' => MENU_CALLBACK,
+    );
+    $items['manage/add/categories'] = array(
+        'title' => '',
+        'access arguments' => array('access content'),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('vrm_customization_add_categories'),
+        'type' => MENU_CALLBACK,
+    );
+    $items['vrm/build/views/edit/%views_ui_cache'] = array(
+        'title' => 'Edit',
+        'page callback' => 'views_ui_edit_page',
+        'page arguments' => array(4),
+        'type' => MENU_CALLBACK,
+        'access arguments' => array('access content'),
+        'file' => '../../contrib/views/includes/admin.inc',
+    );
+    return $items;
+}
+function vrm_customization_is_vrm_pmo_poc ()
+{
+	global $user;
+	$roles = $user->roles;
+	if(isset($roles[15])||isset($roles[4])||isset($roles[6]))
+		return true;
+	else
+		return false;
+} 
+function vrm_tabs_access($node, $perm)
+{
+    return (node_access('view', $node) && user_access($perm));
+}
+
+function feedback_no_load($nid)
+{
+    if (!is_numeric($nid)) {
+        return FALSE;
+    }
+    $node = node_load($nid);
+    if (!isset($node->type) || $node->type != 'feedback') {
+        return FALSE;
+    }
+    return $node;
+}
+
+function display_notes()
+{
+    $note_url = 'node/' . arg(1) . '/type/note';
+    drupal_goto($note_url);
+}
+
+function display_replies_reviews()
+{
+    drupal_set_title('Reply/Review');
+    vrm_customization_create_breadcrumb('reply-review');
+    return views_embed_view('node_replies_reviews', 'default', arg(1));
+}
+
+function vrm_customization_manage_delay_time()
+{
+    require_once(drupal_get_path('module', 'content') . '/content.module');
+    require_once(drupal_get_path('module', 'content') . '/includes/content.admin.inc');
+    $form = drupal_get_form('content_field_edit_form', 'feedback', 'field_delay_time');
+    drupal_set_title('');
+    return ($form);
+}
+
+function vrm_customization_add_actions()
+{
+    drupal_set_title('Actions');
+    $form = array();
+    $form['#prefix'] = '<h2 style="padding-top:10px;" class="title">Add Action Status</h2>';
+    $form['add_action'] = array(
+        '#type' => 'fieldset',
+        '#collapsable' => false,
+        'name' =>
+        array(
+            '#type' => 'textfield',
+            '#title' => t('Action Status Name'),
+            '#rules' => array('length[0,35]'),
+            '#maxlength' => 35,
+            '#size' => 60,
+            '#required' => TRUE,
+        ),
+    );
+
+    $form['#redirect'] = array('vrm_dashboard', array('quicktabs_vrm_admin_tabs' => '1'), 'fragment' => 'quicktabs-vrm_admin_tabs');
+    $form['add_action']['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Add'),
+    );
+    global $base_url;
+    $form['add_action']['cancel'] = array(
+        '#type' => 'submit',
+        '#value' => 'Cancel',
+        '#attributes' => array('onClick' => 'window.location.replace("' . $base_url . '/vrm_dashboard?quicktabs_vrm_admin_tabs=1"); return false;'),
+    );
+    return $form;
+}
+
+function vrm_customization_add_actions_validate($form, &$form_state)
+{
+    $name = trim($form_state['values']['name']);
+    $result = db_query("select * from {term_data} where name = '%s' and vid = 1", $name);
+    if (db_fetch_object($result)) {
+        form_set_error('', 'Two actions can not have same name');
+        drupal_goto('vrm_dashboard', array('quicktabs_vrm_admin_tabs' => '1', 'quicktabs_vrm_manage_actions' => '1', 'quicktabs-vrm_manage_actions'));
+        return false;
+    }
+    return true;
+}
+
+function vrm_customization_add_actions_submit($form, &$form_state)
+{
+    $action_type = db_query("SELECT vid FROM {vocabulary} WHERE name='Action Status'");
+    $vid = 3;
+    while ($row = db_fetch_object($action_type)) {
+        $vid = (int)$row->vid;
+    }
+    $name = trim(strip_tags($form_state['values']['name']));
+    if ($name == '') {
+        return false;
+    }
+    $name_check = db_query("SELECT name FROM {term_data} WHERE vid=$vid AND name='%s'", $name);
+    while ($namecheck = db_fetch_object($name_check)) {
+        drupal_set_message(t('Name already exist'));
+        return false;
+    }
+
+    $result = db_query("INSERT INTO {term_data} (vid, name) VALUES ($vid,'%s')", $name);
+    $get_tid = db_query("SELECT tid FROM {term_data} WHERE vid=$vid AND name='%s'", $name);
+    $tid = db_fetch_object($get_tid)->tid;
+    $result_tid = db_query("INSERT INTO {term_hierarchy} (tid, parent) VALUES ($tid, 0)");
+
+    if ($result && $result_tid) {
+        drupal_set_message(t('Action successfully added.'));
+        global $user;
+        $now = time();
+        db_query("INSERT INTO {vrm_admin_actions_log}
+            (id, vid, tid, term_name, variable, operation, old_value, new_value, uid, timestamp)
+        VALUES (0, $vid, $tid, '%s', null, 'inserted', null, '%s', $user->uid, $now)", array($name, $name));
+    }
+}
+
+function vrm_customization_form_alter($form, &$form_state, $form_id)
+{
+    global $user;
+    $roles = $user->roles;
+    if (($form_id == 'views_bulk_operations_form__1' || $form_id == 'views_bulk_operations_form__2') && isset($roles['15'])) {
+        drupal_add_js(drupal_get_path('module', 'vrm_customization') . '/validation/vrm_bulk_operation.js');
+        $form['target_sid']['#options'] = array('32' => 'Archived', '33' => 'Closed');
+        $form['target_sid']['#title'] = 'Target Status';
+        $form['target_sid']['#description'] = '';
+        $form['#prefix'] = '<div id="vrm-bulk-operation-form">';
+        $form['#suffix'] = '</div>';
+        $form['force']['#type'] = 'hidden';
+        $form['workflow_comment']['#type'] = 'hidden';
+        $form['#validate']['vrm_customization'] = 'vrm_customization_bulk_update_validate';
+        if ($form_id == 'views_bulk_operations_form__1') {
+            $form['#redirect'] = array('vrm_dashboard', array('quicktabs_vrm_admin_tabs_list' => '4'), 'fragment' => 'quicktabs-vrm_admin_tabs');
+        } else {
+            $form['#redirect'] = array('vrm_dashboard', array('quicktabs_vrm_admin_tabs_list' => '5'), 'fragment' => 'quicktabs-vrm_admin_tabs');
+        }
+    }
+
+    if ($form_id == 'taxonomy_overview_terms' && ($form['#vocabulary']['name'] == 'Action Status' || $form['#vocabulary']['name'] == 'Feedback Category')) {
+        unset($form['submit']);
+        unset($form['reset_alphabetical']);
+    }
+
+    if ($form_id == 'views_exposed_form' && isset($form['sid']['#options']['Visitor Review Management '])) {
+        $temp = array();
+        foreach ($form['sid']['#options']['Visitor Review Management '] as $key => $value)
+        {
+            $temp[$key] = $value;
+        }
+        asort($temp);
+        $form['sid']['#options']['Visitor Review Management '] = $temp;
+
+    }
+
+    // Used to add additional help text on Previewable Email template form
+    if ($form_id == 'pet_add_form') {
+        $form['subject']['#description'] .= '<br>Additional Tokens:<br>[assignee-subject] Used for only Forward form .i.e. in "Feedback_forward_template"<br>';
+        $form['mail_body']['#description'] .= '<br>Additional Tokens:<br>
+    											[assignee-comments] Used for replacing Comments entered by the Assignee in Forward and Reply form.<br>';
+    }
+	if($form_id == 'feedback_reply_node_form' || $form_id=='print_mail_form' || $form_id == 'feedback_review_node_form')
+	{
+		$logged_in_uid = $user->uid;
+		switch($form_id)
+		{
+			case'feedback_reply_node_form':
+			case'feedback_review_node_form':$nid=arg(3);
+			break;
+			case'print_mail_form':$nid=arg(1);
+			break;
+		}
+		$node = node_load($nid);
+		$assigned_uid = $node->field_assigned_to[0]['uid'];
+		if($assigned_uid != $logged_in_uid || $node->_workflow != '27')
+		{
+			$form['#access']=false;
+			$breadcrumb[] = l('Home', '<front>');
+			drupal_set_breadcrumb($breadcrumb);
+			drupal_access_denied();
+		}
+		
+	}
+}
+
+function vrm_customization_bulk_update_validate($form, &$form_state)
+{
+    $checked_count = count($form_state['clicked_button']['#post']['objects']['selection']);
+    $form_state['values']['force'] = true;
+    if ($form_state['values']['target_sid'] == 32) {
+        drupal_set_message('Successfully archived ' . $checked_count . ' feedback');
+    }
+    if ($form_state['values']['target_sid'] == 33)
+        drupal_set_message('Successfully closed ' . $checked_count . ' feedback');
+}
+
+function vrm_customization_add_categories()
+{
+    drupal_set_title('VRM');
+    drupal_add_js(drupal_get_path('module', 'vrm_customization') . '/vrm_customization.js');
+    $form = array();
+    $form['#prefix'] = '<h2 style="padding-top:10px;" class="title">Add Category</h2>';
+    $form['add_category'] = array(
+        '#type' => 'fieldset',
+        '#collapsable' => false,
+        'name' =>
+        array(
+            '#type' => 'textfield',
+            '#title' => t('Category Name'),
+            '#size' => 60,
+            '#maxlength' => 60,
+            '#required' => TRUE,
+        ),
+        'description' => array(
+            '#title' => 'Pre-defined Text',
+            '#type' => 'textarea',
+            '#description' => '<span id="feedback-textarea-limit-count"></span> characters left.',
+            '#attributes' => array('id' => 'comment', 'onkeydown' => 'return textCounter(3000,"edit-description")', 'onkeyup' => 'return textCounter(3000,"edit-description")', 'maxlength' => '3000'),
+        ),
+        'is_contact_cat' => array(
+            '#type' => 'checkbox',
+            '#title' => t('Contact Category?'),
+            '#description' => t("Check to have this category on contact form."),
+        ),
+    );
+
+    $form['add_category']['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Add'),
+    );
+    global $base_url;
+    $form['add_category']['cancel'] = array(
+        '#type' => 'button',
+        '#value' => 'Cancel',
+        '#attributes' => array('onClick' => 'window.location.replace("' . $base_url . '/vrm_dashboard?quicktabs_vrm_admin_tabs=2"); return false;'),
+    );
+
+    $form['#redirect'] = array('vrm_dashboard', array('quicktabs_vrm_admin_tabs' => '2'), 'fragment' => 'quicktabs-vrm_admin_tabs');
+    return $form;
+}
+
+function vrm_customization_add_categories_validate($form, &$form_state)
+{
+    $name = trim($form_state['values']['name']);
+    $result = db_query("select * from {term_data} where name = '%s' and vid = 2", $name);
+    if (db_fetch_object($result)) {
+        form_set_error('', 'Two categories can not have same name');
+        drupal_goto('vrm_dashboard', array('quicktabs_vrm_admin_tabs' => '2', 'quicktabs_vrm_manage_categories' => '1', 'quicktabs-vrm_manage_categories'));
+        return false;
+    }
+    return true;
+}
+
+function vrm_customization_add_categories_submit($form, &$form_state)
+{
+    $action_type = db_query("SELECT vid FROM {vocabulary} WHERE name='Feedback Category'");
+    $vid = 1;
+    while ($row = db_fetch_object($action_type)) {
+        $vid = (int)$row->vid;
+    }
+    $name = trim(strip_tags($form_state['values']['name']));
+    $description = trim(strip_tags($form_state['values']['description']));
+    $is_contact_cat = (int)$form_state['values']['is_contact_cat'];
+    if ($name == '') {
+        return false;
+    }
+    $name_check = db_query("SELECT name FROM {term_data} WHERE vid=$vid AND name='%s'", $name);
+    while ($namecheck = db_fetch_object($name_check)) {
+        drupal_set_message(t('Category already exist'));
+        return false;
+    }
+    if ($is_contact_cat == 1) {
+        $result = db_query("INSERT INTO {term_data} (vid, name, description, is_contact_cat) VALUES ($vid, '%s', '%s', 1)", $name, $description);
+    } else {
+        $result = db_query("INSERT INTO {term_data} (vid, name, description) VALUES ($vid, '%s', '%s')", $name, $description);
+    }
+    $get_tid = db_query("SELECT tid FROM {term_data} WHERE vid=$vid AND name='%s'", $name);
+    $tid = db_fetch_object($get_tid)->tid;
+    $result_tid = db_query("INSERT INTO {term_hierarchy} (tid, parent) VALUES ($tid, 0)");
+
+    if ($result && $result_tid) {
+        drupal_set_message(t('Category successfully added.'));
+        global $user;
+        $now = time();
+        db_query("INSERT INTO {vrm_admin_actions_log}
+            (id, vid, tid, term_name, variable, operation, old_value, new_value, uid, timestamp)
+        VALUES (0, $vid, $tid, '%s', null, 'inserted', null, '%s', $user->uid, $now)", array($name, $name));
+    }
+}
+
+function vrm_customization_block($op = 'list', $delta = 0, $edit = array())
+{
+    switch ($op) {
+        case 'list' :
+            $blocks [0] ['info'] = t(FEEDBACK_COMMENTS);
+            $blocks [0] ['pages'] = "";
+            $blocks [0] ['cache'] = BLOCK_CACHE_GLOBAL;
+            $blocks [0] ['region'] = 'content';
+            $blocks [0] ['custom'] = true;
+            $blocks [0] ['status'] = true;
+
+            $blocks [1] ['info'] = t(FEEDBACK_CONTACT_US);
+            $blocks [1] ['pages'] = "";
+            $blocks [1] ['cache'] = BLOCK_CACHE_GLOBAL;
+            $blocks [1] ['region'] = 'content';
+            $blocks [1] ['custom'] = true;
+            $blocks [1] ['status'] = true;
+
+            $blocks [2] ['info'] = t(FEEDBACK_SUGGEST_DATASET);
+            $blocks [2] ['pages'] = "";
+            $blocks [2] ['cache'] = BLOCK_CACHE_GLOBAL;
+            $blocks [2] ['region'] = 'content';
+            $blocks [2] ['custom'] = true;
+            $blocks [2] ['status'] = true;
+
+            $blocks [3] ['info'] = t(FEEDBACK_WEBSITE_RELATED);
+            $blocks [3] ['pages'] = "";
+            $blocks [3] ['cache'] = BLOCK_CACHE_GLOBAL;
+            $blocks [3] ['region'] = 'content';
+            $blocks [3] ['custom'] = true;
+            $blocks [3] ['status'] = true;
+
+            return $blocks;
+        case 'view' :
+            switch ($delta) {
+                case 0 :
+                    $_SESSION['feedback_type'] = FEEDBACK_COMMENTS;
+                    $_SESSION['feedback_source'] = VRM_SOURCE_RATINGS;
+                    break;
+                case 1 :
+                    $_SESSION['feedback_type'] = FEEDBACK_CONTACT_US;
+                    $_SESSION['feedback_source'] = VRM_SOURCE_CONTACT_US;
+                    break;
+                case 2 :
+                    $_SESSION['feedback_type'] = FEEDBACK_SUGGEST_DATASET;
+                    $_SESSION['feedback_source'] = VRM_SOURCE_SUGGESTION;
+                    break;
+                case 3:
+                    $_SESSION['feedback_type'] = FEEDBACK_WEBSITE_RELATED;
+                    $_SESSION['feedback_source'] = VRM_SOURCE_FEEDBACK;
+                    break;
+            }
+            return vrm_generate_custom_feedback_edit_form();
+    }
+}
+
+function vrm_customization_form_feedback_node_form_alter(&$form, &$form_state)
+{
+    global $base_url, $user;
+
+    if ($user->uid !== 0) {
+        if ($user->uid == $form['#node']->field_assigned_to[0]['uid'] &&
+            isset($form['#node']->_workflow) && $form['#node']->_workflow == VRM_ASSIGNED_STATE
+        ) {
+            $form['buttons']['forward'] = array(
+                '#value' => "<a class='form-submit' href='$base_url/printmail/{$form['nid']['#value']}'>Forward</a>",
+                '#weight' => 6,
+            );
+
+            if (trim($form['#node']->field_email[0]['email']) == '') {
+                $form['buttons']['reply'] = array(
+                    '#value' => "<a class='form-submit' href='$base_url/node/add/feedback-review/{$form['nid']['#value']}'>Review</a>",
+                    '#weight' => 6,
+                );
+            } else {
+                $form['buttons']['reply'] = array(
+                    '#value' => "<a class='form-submit' href='$base_url/node/add/feedback-reply/{$form['nid']['#value']}'>Reply</a>",
+                    '#weight' => 6,
+                );
+            }
+        }
+    }
+
+    $form['#validate'][] = 'vrm_check_assigned_email_on_changing_to_workflow_assigned';
+    $form['#after_build'][] = 'vrm_customization_change_form';
+}
+
+function vrm_customization_form_feedback_reply_node_form_alter(&$form, &$form_state)
+{
+    $form['#after_build'][] = 'vrm_customization_change_feedback_reply_form';
+	$form['#validate'][]='vrm_customization_reply_form_validate';
+}
+
+function vrm_customization_form_feedback_review_node_form_alter(&$form, &$form_state)
+{
+    $form['#after_build'][] = 'vrm_customization_change_feedback_review_form';
+	$form['#validate'][]='vrm_customization_review_review_form_validate';
+}
+
+function vrm_customization_form_views_exposed_form_alter(&$form, &$form_state)
+{
+    global $user;
+    $res_aid = db_query("select content_type_profile.field_prof_agency_nid as aid from content_type_profile,node where content_type_profile.nid=node.nid and node.type='profile' and node.uid=$user->uid");
+    $res1_aid = db_fetch_object($res_aid);
+    if (empty($res1_aid->aid))
+        $user_condition = "1";
+    else
+        $user_condition = "content_type_feedback.field_agency_value=$res1_aid->aid";
+    //echo "aid".$res1_aid->aid;
+    if ($form_state['view']->name == 'VRM_all_feedback_list')
+        drupal_set_title('VRM');
+    if ($form['#id'] == 'views-exposed-form-poc-VRM-delay-analysis-page-1') {
+        $result = db_query("SELECT distinct(users.uid) as field_assigned_to_uid ,users.name as name FROM `users`,content_type_feedback WHERE users.uid=content_type_feedback.field_assigned_to_uid and $user_condition order by users.name");
+        $options["All"] = "<Any>";
+        while ($row = db_fetch_array($result)) {
+            $options[$row['field_assigned_to_uid']] = $row['name'];
+        }
+        $form['field_assigned_to_uid']['#options'] = $options;
+
+    }
+    if ($form['#id'] == 'views-exposed-form-VRM-delay-analysis-page-1') {
+        $result = db_query("SELECT distinct(users.uid) as field_assigned_to_uid ,users.name as name FROM `users`,content_type_feedback WHERE users.uid=content_type_feedback.field_assigned_to_uid order by users.name");
+        $options["All"] = "<Any>";
+        while ($row = db_fetch_array($result)) {
+            $options[$row['field_assigned_to_uid']] = $row['name'];
+        }
+        $form['field_assigned_to_uid']['#options'] = $options;
+
+    }
+	if(isset($user->roles[6])){
+         $options=array();
+         if ($form['#id'] == 'views-exposed-form-VRM-delay-analysis-page-1') {
+           $result = db_query("SELECT sid,state as state FROM workflow_states WHERE wid=7 and sid <>25 and sid<> 26 and sid <> 30 and sid <> 31 order by state");
+            while ($row = db_fetch_array($result)) {
+                $options[$row['sid']] = $row['state'];
+            }
+            $form['sid']['#options']["Visitor Review Management "] = $options;
+        }
+	
+	}
+
+}
+
+function vrm_customization_taxonomy($op, $type, $array = NULL)
+{
+    if ($type <> 'term') return;
+    $insertQuery = $insertValues = array();
+    $now = time();
+    global $user;
+    switch ($op)
+    {
+        case 'delete':
+            $insertQuery[] = "(0, {$array['vid']}, {$array['tid']}, '%s', null, 'deleted', '%s', null, $user->uid, $now)";
+            $insertValues[] = $array['name'];
+            $insertValues[] = $array['name'];
+            break;
+
+        case 'insert':
+            $insertQuery[] = "(0, {$array['vid']}, {$array['tid']}, '%s', null, 'inserted', null, '%s', $user->uid, $now)";
+            $insertValues[] = $array['name'];
+            $insertValues[] = $array['name'];
+            break;
+
+        case 'update':
+            $term = taxonomy_get_term($array['tid']);
+            if ($term->name <> $array['name']) {
+                $insertQuery[] = "(0, {$array['vid']}, {$array['tid']}, '%s', 'name', 'updated', '%s', '%s', $user->uid, $now)";
+                $insertValues[] = $term->name;
+                $insertValues[] = $term->name;
+                $insertValues[] = $array['name'];
+            }
+            if ($term->description <> $array['description']) {
+                $insertQuery[] = "(0, {$array['vid']}, {$array['tid']}, '%s', 'description', 'updated', '%s', '%s', $user->uid, $now)";
+                $insertValues[] = $term->name;
+                $insertValues[] = $term->description;
+                $insertValues[] = $array['description'];
+            }
+            break;
+    }
+    if (count($insertQuery))
+        db_query("INSERT INTO {vrm_admin_actions_log}
+                (id, vid, tid, term_name, variable, operation, old_value, new_value, uid, timestamp)
+            VALUES " . implode(',', $insertQuery), $insertValues);
+}
+
+function vrm_customization_form_taxonomy_overview_terms_alter(&$form, &$form_state)
+{
+    drupal_set_title('VRM');
+}
+
+function vrm_customization_form_taxonomy_form_term_alter(&$form, &$form_state)
+{
+    if ($form['#vocabulary']['module'] == 'features_action_status') {
+
+        drupal_set_title('Edit Action Status');
+        $form['identification']['name']['#title'] = t('Action Status Name');
+        $form['identification']['name']['#rules'] = array('length[0,35]');
+        $form['identification']['name']['#maxlength'] = 35;
+        $form['identification']['description']['#type'] = 'hidden';
+        $form['identification']['name']['#description'] = '';
+        unset($form['identification']['#title']);
+        $form['identification']['#collapsible'] = false;
+        $form['#validate']['vrm_customization'] = 'vrm_customization_taxonomy_action_validate';
+        unset($form['advanced']);
+        global $base_url;
+        $form['actions']['cancel'] = array(
+            '#type' => 'submit',
+            '#value' => 'Cancel',
+            '#attributes' => array('onClick' => 'window.location.replace("' . $base_url . '/vrm_dashboard?quicktabs_vrm_admin_tabs=1"); return false;'),
+        );
+        $form['actions']['#weight'] = 99;
+        $form['#redirect'] = array('vrm_dashboard', array('quicktabs_vrm_admin_tabs' => '1'), 'fragment' => 'quicktabs-vrm_admin_tabs');
+        if ((isset($form_state['confirm_delete']))) {
+            $cancelpath = $_GET['q'];
+            $destination = $_GET['destination'];
+            global $base_url;
+            $form['actions']['cancel'] = array(
+                '#type' => 'submit',
+                '#value' => 'Cancel',
+                '#attributes' => array('onClick' => 'window.location.replace("' . $base_url . '/' . $cancelpath . '?quicktabs_vrm_admin_tabs=1&destination=' . $destination . '"); return false;'),
+            );
+        }
+        $breadcrumb_link = l('Manage Actions', 'vrm_dashboard', array('query' => array('quicktabs_vrm_manage_actions' => '0', 'quicktabs_vrm_admin_tabs' => '1'), 'fragment' => 'quicktabs-vrm_admin_tabs'));
+    }
+    else if ($form['#vocabulary']['name'] == 'VRM workflow states') {
+        $default = $form['identification']['name']['#default_value'];
+        drupal_set_title('Edit Status Description');
+        drupal_add_js(drupal_get_path('module', 'vrm_customization') . '/vrm_customization.js');
+        $form['identification']['#title'] = t('Status');
+        $form['identification']['name']['#title'] = t('Status');
+        $form['identification']['name']['#description'] = ' ';
+        $form['identification']['name']['#disabled'] = true;
+        $form['identification']['name']['#required'] = false;
+        $form['identification']['name']['#value'] = $default;
+        unset($form['advanced']);
+        $form['identification']['description']['#description'] = '<span id="feedback-textarea-limit-count"> 3000 </span> characters left.';
+        $form['identification']['description']['#attributes'] = array('id' => 'comment', 'onkeydown' => 'return textCounter(3000,"edit-description")', 'onkeyup' => 'return textCounter(3000,"edit-description")', 'maxlength' => '3000');
+        $form['#redirect'] = array('vrm_dashboard', array('quicktabs_vrm_admin_tabs' => '4'), 'fragment' => 'quicktabs-vrm_admin_tabs');
+        $form['delete']['#type'] = 'hidden';
+        $form['Cancel'] = array('#type' => 'submit', '#value' => 'Cancel', '#weight' => 99);
+        $form['#validate']['vrm_status_submit'] = 'vrm_customization_states_cancel';
+        $breadcrumb_link = l('Status', 'vrm_dashboard', array('query' => array('quicktabs_vrm_manage_actions' => '0', 'quicktabs_vrm_manage_categories' => '0', 'quicktabs_vrm_admin_tabs' => '4'), 'fragment' => 'quicktabs-vrm_admin_tabs'));
+    }
+    else if ($form['#vocabulary']['module'] == 'features_feedback_category') {
+        if ((isset($form_state['confirm_delete']))) {
+
+            drupal_set_title('Edit Category');
+            $cancelpath = $_GET['q'];
+            $destination = $_GET['destination'];
+            global $base_url;
+            $form['actions']['cancel'] = array(
+                '#type' => 'submit',
+                '#value' => 'Cancel',
+                '#attributes' => array('onClick' => 'window.location.replace("' . $base_url . '/' . $cancelpath . '?quicktabs_vrm_admin_tabs=2&destination=' . $destination . '"); return false;'),
+            );
+            $form['actions']['#weight'] = 99;
+        }
+        else
+        {
+            unset($form['identification']['#title']);
+            $form['identification']['#collapsible'] = false;
+            drupal_add_js(drupal_get_path('module', 'vrm_customization') . '/vrm_customization.js');
+            drupal_set_title('Edit Category');
+            $url = drupal_get_path_alias($_GET['q']);
+            $url = explode('/', $url);
+            $tid = $url[count($url) - 1];
+            $form['identification']['name']['#title'] = t('Category name');
+            $form['identification']['description']['#title'] = 'Pre-defined Text';
+            $form['identification']['description']['#description'] = '<span id="feedback-textarea-limit-count"> 3000 </span> characters left.';
+            $form['identification']['description']['#attributes'] = array('id' => 'comment', 'onkeydown' => 'return textCounter(3000,"edit-description")', 'onkeyup' => 'return textCounter(3000,"edit-description")', 'maxlength' => '3000');
+            $default_value = db_fetch_object(db_query('select is_contact_cat from {term_data} where tid = ' . $tid))->is_contact_cat ? true : false;
+            $form['identification']['is_contact_cat'] =
+                array(
+                    '#type' => 'checkbox',
+                    '#title' => t('Contact Category ?'),
+                    '#default_value' => $default_value,
+                    '#description' => t("Check to have this category on contact form."),
+                );
+            $form['#submit']['vrm_customization'] = 'vrm_customization_taxonomy_submit';
+            $form['#validate']['vrm_customization'] = 'vrm_customization_taxonomy_category_validate';
+            $form['identification']['name']['#description'] = '';
+            unset($form['advanced']);
+            global $base_url;
+            $cancelpath = 'vrm_dashboard';
+            $form['actions']['cancel'] = array(
+                '#type' => 'submit',
+                '#value' => 'Cancel',
+                '#attributes' => array('onClick' => 'window.location.replace("' . $base_url . '/' . $cancelpath . '?quicktabs_vrm_admin_tabs=2"); return false;'),
+            );
+            $form['actions']['#weight'] = 99;
+        }
+        $breadcrumb_link = l('Manage Categories', 'vrm_dashboard', array('query' => array('quicktabs_vrm_manage_actions' => '0', 'quicktabs_vrm_manage_categories' => '0', 'quicktabs_vrm_admin_tabs' => '2'), 'fragment' => 'quicktabs-vrm_admin_tabs'));
+        $form['#redirect'] = array('vrm_dashboard', array('quicktabs_vrm_admin_tabs' => '2'), 'fragment' => 'quicktabs-vrm_admin_tabs');
+    }
+    if (isset($breadcrumb_link)) {
+        $breadcrumb = array();
+        $breadcrumb[] = l('Home', '<front>');
+        $breadcrumb[] = $breadcrumb_link;
+        drupal_set_breadcrumb($breadcrumb);
+    }
+}
+
+function vrm_customization_taxonomy_category_validate($form, $form_state)
+{
+
+    if ($_POST['op'] == 'Delete') {
+        if ($form_state['values']['tid'] == '7' || $form_state['values']['tid'] == '8' || $form_state['values']['tid'] == '11') {
+            form_set_error('', 'Can\'t delete this category.');
+            return false;
+        }
+        $query = "select * from {content_field_category} where field_category_value = '" . $form_state['values']['tid'] . "';";
+        $result = db_query($query);
+        if (db_fetch_object($result)) {
+            form_set_error('', 'Unable to delete, category selected is associated with a feedback.');
+            return false;
+        }
+        return true;
+    }
+    $name = trim($form_state['values']['name']);
+    $result = db_query("select * from {term_data} where name = '%s' and vid = 2 and tid != {$form_state['values']['tid']}", $name);
+    if (db_fetch_object($result)) {
+        form_set_error('', 'Two categories can not have same name');
+        return false;
+    }
+    return true;
+}
+
+function vrm_customization_taxonomy_submit($form, $form_state)
+{
+    if ($form_state['values']['is_contact_cat']) {
+        db_query("update {term_data} set is_contact_cat = 1 where tid = {$form_state['values']['tid']}");
+    }
+    else {
+        db_query("update {term_data} set is_contact_cat =  NULL where tid = {$form_state['values']['tid']}");
+    }
+    global $user;
+    $now = time();
+
+    $old_value = $form['#term']['is_contact_cat'] == 1 ? 'ON' : 'OFF';
+    $new_value = $form_state['values']['is_contact_cat'] == 1 ? 'ON' : 'OFF';
+    if ($old_value <> $new_value)
+        db_query("INSERT INTO {vrm_admin_actions_log}
+            (id, vid, tid, term_name, variable, operation, old_value, new_value, uid, timestamp)
+        VALUES (0, {$form['#term']['vid']}, {$form_state['values']['tid']}, '%s', 'contact flag', 'updated',
+                '$old_value', '$new_value', $user->uid, $now)", $form_state['values']['name']);
+}
+
+function vrm_customization_taxonomy_action_validate($form, $form_state)
+{
+    if ($_POST['op'] == 'Delete') {
+        $query = "select * from {content_type_feedback} where field_action_status_value = {$form_state['values']['tid']}";
+        $result = db_query($query);
+        if (db_fetch_object($result)) {
+            form_set_error('', 'Unable to delete, action selected is associated with a feedback.');
+            return false;
+        }
+        return true;
+    }
+    $name = trim($form_state['values']['name']);
+    $result = db_query("select * from {term_data} where name = '%s' and vid = 1 and tid != {$form_state['values']['tid']}", $name);
+    if (db_fetch_object($result)) {
+        form_set_error('', 'Two actions can not have same name');
+        return false;
+    }
+    return true;
+}
+
+function vrm_customization_form_print_mail_form_alter(&$form, &$form_state)
+{
+    drupal_add_js(drupal_get_path('module', 'vrm_customization') . '/vrm_customization.js');
+    drupal_add_css(drupal_get_path('module', 'vrm_customization') . '/vrm_forward_form.css');
+
+    $rid = 6;
+    $users_pmo = $users_poc = array();
+    $result = db_query("SELECT u.uid, u.name,u.mail, u.status FROM {users} u
+						INNER JOIN {users_roles} ur ON u.uid=ur.uid WHERE ur.rid = %d
+						AND u.status = 1", $rid);
+    while ($u = db_fetch_object($result)) {
+        $users_pmo[$u->mail] = $u->name;
+
+    }
+    // Sort the list in alphabetical order
+    natcasesort($users_pmo);
+
+    global $user;
+    unset($users_pmo[$user->mail]);
+    $form['PMO'] = array(
+        '#type' => 'select',
+        '#title' => 'PMO',
+        '#options' => $users_pmo,
+        '#multiple' => true,
+        '#size' => 5,
+        '#description' => 'Use CTRL key to Select Multiple Users'
+    );
+
+    $rid = 4;
+    $result = db_query("SELECT u.uid, u.name,u.mail, u.status FROM {users} u
+						INNER JOIN {users_roles} ur ON u.uid=ur.uid WHERE ur.rid = %d
+						AND u.status = 1", $rid);
+    while ($u = db_fetch_object($result)) {
+        $users_poc[$u->mail] = $u->name;
+    }
+    // Sort the list in alphabetical order
+    natcasesort($users_poc);
+
+    // remove the current assignee from the PMO list
+    unset($users_poc[$user->mail]);
+    $form['POC'] = array(
+        '#type' => 'select',
+        '#title' => 'POC',
+        '#options' => $users_poc,
+        '#multiple' => true,
+        '#size' => 5,
+        '#description' => 'Use CTRL key to Select Multiple Users'
+    );
+
+    $form['fld_from_name']['#title'] = 'Your Name';
+
+    $form['fld_from_addr']['#title'] = 'Forwarded By';
+    $form['fld_from_addr']['#required'] = 0;
+
+    $form['txt_message']['#title'] = 'Comments';
+    $form['txt_to_addrs']['#description'] = '';
+    $form['txt_to_addrs']['#attributes'] = array('readonly' => 'readonly');
+
+    drupal_set_title('Forward Feedback');
+    $form['fld_title']['#type'] = 'hidden';
+
+    $form['fld_subject']['#default_value'] = NULL;
+    $form['txt_message']['#description'] = '<span id="forward-textarea-limit-count">3000</span> characters left.';
+
+    $form['and_emails'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Add New Emails',
+        '#maxlength' => 500,
+        '#description' => 'Enter multiple addresses by separating them with commas.'
+    );
+
+    // assign weights to the form elements
+    $form['fld_from_addr']['#weight'] = 0;
+    $form['fld_from_name']['#weight'] = 1;
+    $form['txt_to_addrs']['#weight'] = 2;
+    $form['PMO']['#weight'] = 3;
+    $form['POC']['#weight'] = 4;
+    $form['and_emails']['#weight'] = 5;
+    $form['fld_subject']['#weight'] = 6;
+    $form['txt_message']['#weight'] = 7;
+    $form['btn_submit']['#weight'] = 8;
+    $form['btn_clear']['#weight'] = 9;
+    $form['btn_cancel']['#weight'] = 10;
+
+    $form['btn_submit']['#value'] = 'Submit';
+    unset($form['fld_from_name']);
+    unset($form['btn_clear']);
+
+    // Remove the required attribute of the Send to which was added by default by print module
+    $form['txt_to_addrs']['#required'] = FALSE;
+    $form['txt_to_addrs']['#title'] .= ' <span class="form-required" title="This field is required.">(Required)</span>';
+    vrm_customization_create_breadcrumb('forward');
+    $form['#submit'][] = 'vrm_update_assigned_to_users_after_mail';
+}
+
+function vrm_customization_change_form($form, &$form_state)
+{
+    switch ($_SESSION['feedback_type'])
+    {
+        case FEEDBACK_COMMENTS:
+            $form['field_category'] = NULL;
+            $form['field_feedback_subject'] = NULL;
+            $form['title'] = NULL;
+            $form['field_sender_name'] = NULL;
+            $form['field_email'] = NULL;
+            $form['field_feedback_body'][0]['value']['#title'] = 'Comments';
+            $form['field_feedback_body'][0]['value']['#required'] = true;
+            $form['field_feedback_body'][0]['value']['#description'] = '<span id="feedback-textarea-limit-count"> 3000 </span> characters left.';
+            $form['field_feedback_body'][0]['value']['#attributes'] = array('onkeydown' => 'return textCounter(3000,"edit-field-feedback-body-0-value")', 'onkeyup' => 'return textCounter(3000,"edit-field-feedback-body-0-value")', 'maxlength' => '3000');
+            $form['field_refer_nodeid'][0]['value'] = $form['#node']->nid;
+            $form['cancel'] = null;
+            $form['buttons']['cancel'] = null;
+            $form['buttons']['submit']['#attributes'] = array('title' => 'Click here to submit the form');
+            $form['#redirect'] = array('ratings/ack', array('destination' => drupal_get_path_alias($_GET['q'])));
+            break;
+        case FEEDBACK_CONTACT_US:
+            $contact_options = array();
+            $result = db_query('select * from {term_data} where is_contact_cat = 1 order by name');
+            while ($obj = db_fetch_object($result))
+            {
+                $contact_options["$obj->tid"] = $obj->name;
+            }
+            $form['field_category']['value']['#multiple'] = false;
+            $form['field_category']['value']['#name'] = 'field_category[value][]';
+            $form['field_category']['value']['#required'] = false;
+            $form['title']['#title'] = 'Your Name';
+            $form['field_email'][0]['email']['#title'] = 'Your E-mail Address';
+            $form['field_sender_name'][0]['value']['#title'] = 'Your Name';
+            $form['field_sender_name'][0]['value']['#required'] = true;
+            $form['field_feedback_subject'][0]['value']['#required'] = true;
+            $form['field_feedback_subject']['#required'] = true;
+            $form['field_feedback_subject']['_error_element']['#required'] = true;
+            $form['field_feedback_subject'][0]['#required'] = true;
+            $form['field_feedback_body'][0]['value']['#title'] = 'Message';
+            $form['field_feedback_body'][0]['value']['#required'] = true;
+            $form['field_feedback_body'][0]['value']['#description'] = '<span id="feedback-textarea-limit-count"> 3000 </span> characters left.';
+            $form['field_feedback_body'][0]['value']['#attributes'] = array('onkeydown' => 'return textCounter(3000,"edit-field-feedback-body-0-value")', 'onkeyup' => 'return textCounter(3000,"edit-field-feedback-body-0-value")', 'maxlength' => '3000');
+            $form['cancel'] = null;
+            $form['#redirect'] = 'contact/ack';
+            $form['field_category']['value']['#options'] = $contact_options;
+            $form['buttons']['cancel'] = null;
+            $form['buttons']['submit']['#attributes'] = array('title' => 'Click here to submit the form');
+            drupal_add_js(drupal_get_path('module', 'clientside_validation') . '/jquery-validate/jquery.validate.js');
+            drupal_add_js(drupal_get_path('module', 'vrm_customization') . '/validation/contactus.js');
+            break;
+        case FEEDBACK_SUGGEST_DATASET:
+            $form['field_category'] = NULL;
+            $form['field_feedback_subject'] = NULL;
+            $form['title']['#title'] = 'Your Name';
+            $form['field_sender_name'][0]['value']['#title'] = 'Your Name';
+            $form['field_sender_name'][0]['value']['#required'] = true;
+            $form['field_feedback_body'][0]['value']['#required'] = true;
+            $form['field_feedback_body'][0]['value']['#title'] = 'Suggestion';
+            $form['field_feedback_body'][0]['value']['#description'] = '<span id="feedback-textarea-limit-count"> 3000 </span> characters left.';
+            $form['field_feedback_body'][0]['value']['#attributes'] = array('onkeydown' => 'return textCounter(3000,"edit-field-feedback-body-0-value")', 'onkeyup' => 'return textCounter(3000,"edit-field-feedback-body-0-value")', 'maxlength' => '3000');
+            $form['field_email'][0]['email']['#title'] = 'Your E-mail Address';
+            $form['cancel'] = null;
+            $form['#redirect'] = 'suggest/ack';
+            $form['buttons']['cancel'] = null;
+            $form['buttons']['submit']['#attributes'] = array('title' => 'Click here to submit the form');
+            drupal_add_js(drupal_get_path('module', 'clientside_validation') . '/jquery-validate/jquery.validate.js');
+            drupal_add_js(drupal_get_path('module', 'vrm_customization') . '/validation/suggestion.js');
+            break;
+        case FEEDBACK_WEBSITE_RELATED:
+            $form['field_category'] = NULL;
+            $form['field_feedback_subject'] = NULL;
+            $form['field_email'][0]['email']['#title'] = 'Your E-mail Address';
+            $form['field_sender_name'][0]['value']['#title'] = 'Your Name';
+            $form['field_sender_name'][0]['value']['#required'] = true;
+            $form['field_sender_name'][0]['#required'] = true;
+            $form['field_sender_name']['#required'] = '1';
+            $form['field_feedback_body'][0]['value']['#required'] = true;
+            $form['field_feedback_body'][0]['value']['#description'] = '<span id="feedback-textarea-limit-count"> 3000 </span> characters left.';
+            $form['field_feedback_body'][0]['value']['#attributes'] = array('onkeydown' => 'return textCounter(3000,"edit-field-feedback-body-0-value")', 'onkeyup' => 'return textCounter(3000,"edit-field-feedback-body-0-value")', 'maxlength' => '3000');
+            $form['cancel'] = null;
+            $form['#redirect'] = 'feedback/ack';
+            $form['buttons']['cancel'] = null;
+            $form['buttons']['submit']['#attributes'] = array('title' => 'Click here to submit the form');
+            drupal_add_js(drupal_get_path('module', 'clientside_validation') . '/jquery-validate/jquery.validate.js');
+            drupal_add_js(drupal_get_path('module', 'vrm_customization') . '/validation/website_related.js');
+            break;
+        default:
+            $workflow_state = workflow_get_state($form['#node']->_workflow);
+            $form['field_email'][0]['email']['#attributes'] = array('readonly' => 'readonly', 'class' => 'text');
+            $form['field_sender_name'][0]['value']['#attributes'] = array('readonly' => 'readonly', 'class' => 'text');
+            $form['field_feedback_body'][0]['value']['#attributes'] = array('readonly' => 'readonly');
+            $form['field_feedback_subject'][0]['value']['#attributes'] = array('readonly' => 'readonly', 'class' => 'text');
+            $form['vrm_workflow_state'] = array(
+                '#type' => 'textfield',
+                '#title' => t('Feedback Status'),
+                '#value' => $workflow_state['state'],
+                '#size' => 60,
+                '#maxlength' => 128,
+                '#weight' => 50,
+                '#attributes' => array('readonly' => 'readonly', 'class' => 'text'),
+            );
+            drupal_set_title("Feedback Details Edit");
+            vrm_customization_create_breadcrumb('edit');
+            drupal_set_breadcrumb($breadcrumb);
+    }
+
+    $form['body_field']['#prefix'] = null;
+    $form['body_field']['#suffix'] = null;
+    $form['print'] = NULL;
+    $form['body_field']['teaser_include'] = null;
+    $form['field_refer_nodeid'] = null;
+    $form['body_field']['format'][6] = null;
+    $form['#submit']['vrm'] = 'vrm_customization_handle_changes_submit';
+    $form['field_feed_orig_action_status']['value']['#type'] = 'hidden';
+    unset($_SESSION['feedback_type']);
+    return ($form);
+}
+
+function vrm_customization_handle_changes_submit($form, &$form_state)
+{
+    $nid = $form['nid']['#value'];
+    if ($nid) {
+        $sid = db_fetch_object(db_query("select sid from {workflow_node} where nid = '" . $nid . "' "))->sid;
+        if ($sid == '31' || $sid == '26' || $form_state['values']['op'] == "Move to \"Assigned\"") {
+            $form_state['values']['field_feed_orig_action_status'][0]['value'] = $form_state['values']['field_action_status'][0]['value'];
+        }
+        if ((($sid == '32' || $sid == '33') && $form_state['values']['op'] == "Move to \"Assigned\"")||$form_state['values']['op'] == "Move to \"Reverted\"") {
+            $form_state['values']['field_forwarded_to'] = array();
+            $form_state['values']['field_forwarded_to_nonmembers'] = array();
+        }
+    }
+}
+
+function vrm_customization_change_feedback_reply_form($form, &$form_state)
+{
+	if($form['#access']===false)
+		return;
+    if ($form_state['submitted']) return $form;
+    global $base_url;
+    $node = node_load(arg(3));
+    $user = user_load($node->field_assigned_to[0]['uid']);
+    $category_list = array(0);
+    if (is_array($node->field_category))
+        foreach ($node->field_category as $category)
+        {
+            $category_list[] = $category['value'];
+        }
+    $category_list = implode(',', $category_list);
+    $vocabulary_id = FEEDBACK_CATEGORY_ID;
+    $result = db_query("SELECT d.tid, d.name, d.description
+                        FROM {term_data} d
+                        WHERE d.vid = $vocabulary_id
+                        AND d.tid IN ( $category_list )
+                        AND LENGTH( TRIM( d.description ) ) > 0
+                        GROUP BY d.tid
+                        ORDER BY d.name");
+    $itemsJS = "var pre_formatted_text_for_categories = [];\n";
+    $selectOptions = array('' => '--Select One--');
+    while ($category = db_fetch_object($result)) {
+        $category->description = str_replace("\r\n", '\n', $category->description);
+        $itemsJS .= "pre_formatted_text_for_categories['$category->tid'] = '$category->description'\n";
+        $selectOptions[$category->tid] = $category->name;
+    }
+    drupal_add_js($itemsJS . '
+        jQuery(document).ready( function () {
+            jQuery("#pre_configured_text_select").change( function (values) {
+                jQuery("#edit-field-feedback-reply-body-0-value").val(jQuery(this).val() == "" ? "" : pre_formatted_text_for_categories[jQuery(this).val()]);
+				textCounter(3000,"edit-field-feedback-reply-body-0-value");
+            });
+        });
+        ', 'inline');
+
+    $form['field_feedback_id']['nid']['nid']['#type'] = 'hidden';
+    $form['field_feedback_id']['nid']['nid']['#value'] = $node->nid;
+    $form['field_reply_to'][0]['value']['#value'] = $node->field_email[0]['email'];
+    $form['field_reply_cc'][0]['value']['#value'] = $user->mail;
+    $form['field_feedback_reply_body'][0]['value']['#description'] = '<span id="feedback-textarea-limit-count">3000</span> characters left.';
+    $form['field_feedback_reply_body'][0]['value']['#attributes'] = array('id' => 'comment', 'onkeydown' => 'return textCounter(3000,"edit-field-feedback-reply-body-0-value")', 'onkeyup' => 'return textCounter(3000,"edit-field-feedback-reply-body-0-value")', 'maxlength' => '3000');
+    $form['buttons']['cancel']['#attributes'] = array('onClick' => "location.href = '$base_url/node/' + location.href.split('/').pop() + '/edit';return false;");
+
+    $form['field_reply_to']['#weight'] = 1;
+    $form['field_reply_cc']['#weight'] = 2;
+    $form['title']['#weight'] = 8;
+    $form['field_feedback_reply_body']['#weight'] = 10;
+
+    if (count($selectOptions) > 1)
+        $form['pre_formatted_categories'] = array(
+            '#id' => 'pre_configured_text_select',
+            '#type' => 'select',
+            '#title' => t('Pre-Formatted Response'),
+            '#options' => $selectOptions,
+            '#weight' => 9,
+        );
+
+    $form['replied_by'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Replied by'),
+        '#value' => $user->mail,
+        '#size' => 60,
+        '#maxlength' => 128,
+        '#weight' => 7,
+        '#attributes' => array('readonly' => 'readonly', 'class' => 'text'),
+    );
+    drupal_add_js(drupal_get_path('module', 'vrm_customization') . '/vrm_customization.js');
+
+    $form['print'] = NULL;
+    drupal_add_js(drupal_get_path('module', 'vrm_customization') . '/vrm_customization.js');
+    vrm_customization_create_breadcrumb('reply');
+    return $form;
+}
+function vrm_customization_reply_form_validate ($form, $form_state)
+{
+	$node = node_load(arg(3));
+	if($node->_workflow != '27')
+	{
+		form_set_error('','Cannot create reply as the feedback is in replied state.');
+		return false;
+	}
+
+}
+function vrm_customization_change_feedback_review_form($form, &$form_state)
+{
+	if($form['#access']===false)
+		return;
+    if ($form_state['submitted']) return $form;
+    global $base_url;
+    $node = node_load(arg(3));
+    $user = user_load($node->field_assigned_to[0]['uid']);
+    $form['field_feedback_id']['nid']['nid']['#type'] = 'hidden';
+    $form['field_feedback_id']['nid']['nid']['#value'] = $node->nid;
+    $form['field_feedback_review_body'][0]['value']['#description'] = '<span id="feedback-textarea-limit-count">3000</span> characters left.';
+    $form['field_feedback_review_body'][0]['value']['#attributes'] = array('id' => 'comment', 'onkeydown' => 'return textCounter(3000,"edit-field-feedback-review-body-0-value")', 'onkeyup' => 'return textCounter(3000,"edit-field-feedback-review-body-0-value")', 'maxlength' => '3000');
+    $form['print'] = NULL;
+    $form['buttons']['cancel']['#attributes'] = array('onClick' => "location.href = '$base_url/node/' + location.href.split('/').pop() + '/edit';return false;");
+
+    $form['reviewed_by'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Reviewed by'),
+        '#value' => $user->mail,
+        '#size' => 60,
+        '#maxlength' => 128,
+        '#attributes' => array('readonly' => 'readonly', 'class' => 'text'),
+    );
+    drupal_add_js(drupal_get_path('module', 'vrm_customization') . '/vrm_customization.js');
+    vrm_customization_create_breadcrumb('review');
+    return $form;
+}
+function vrm_customization_review_review_form_validate ($form, $form_state)
+{
+	$node = node_load(arg(3));
+	if($node->_workflow != '27')
+	{
+		form_set_error('','Cannot create review as the feedback is in reviewed state.');
+		return false;
+	}
+
+}
+
+function vrm_generate_custom_feedback_edit_form()
+{
+    module_load_include('inc', 'node', 'node.pages');
+    $title = drupal_get_title();
+    $form = node_add('feedback');
+    drupal_set_title($title);
+
+    return array(
+        'subject' => t('feedback form'),
+        'content' => $form,
+    );
+}
+
+function vrm_customization_views_pre_execute(&$view)
+{
+    if ($view->name == "feedback_category" || $view->name == "poc_feedback_category") {
+        $search = array('SELECT COUNT(node.nid) AS nid,');
+        $replace = array('SELECT COUNT(DISTINCT node.nid) AS nid,');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+    }
+    if ($view->name == "feedback_category") {
+        if ($view->current_display = 'page_3') {
+            $search = array('GROUP BY node_data_field_source_field_source_value, node_type, node_vid');
+            $replace = array('GROUP BY node_data_field_source_field_source_value');
+            $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+            $view->build_info['count_query'] = $view->build_info['query'];
+        }
+    }
+    if ($view->name == "feedback_category") {
+        if ($view->current_display = 'page_2') {
+            $search = array('GROUP BY node_data_field_action_status_field_action_status_value, node_type, node_vid');
+            $replace = array('GROUP BY node_data_field_action_status_field_action_status_value');
+            $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+            $view->build_info['count_query'] = $view->build_info['query'];
+        }
+    }
+    if ($view->name == "poc_feedback_category") {
+        if ($view->current_display = 'page_3') {
+            $search = array('GROUP BY node_data_field_source_field_source_value, node_type, node_vid');
+            $replace = array('GROUP BY node_data_field_source_field_source_value');
+            $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+            $view->build_info['count_query'] = $view->build_info['query'];
+        }
+    }
+    if ($view->name == "poc_feedback_category") {
+        if ($view->current_display = 'page_2') {
+            $search = array('GROUP BY node_data_field_action_status_field_action_status_value, node_type, node_vid');
+            $replace = array('GROUP BY node_data_field_action_status_field_action_status_value');
+            $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+            $view->build_info['count_query'] = $view->build_info['query'];
+        }
+    }
+    if ($view->name == 'ownerwise_feedback_listing_poc') {
+        $view->build_info['query'] = str_replace("GROUP BY vid", "GROUP BY content_type_feedback.field_assigned_to_uid", $view->build_info['query']);
+    }
+    if ($view->name == 'ownerwise_feedback_listing') {
+        $view->build_info['query'] = str_replace("GROUP BY vid", "GROUP BY content_type_feedback.field_assigned_to_uid", $view->build_info['query']);
+    }
+    if ($view->name == "VRM_delay_analysis") {
+            $search = array('node_node_data_field_feedback_id.created AS node_node_data_field_feedback_id_created');
+            $replace = array('if(workflow_node.sid = 27 or workflow_node.sid = 30 ,null, max(node_node_data_field_feedback_id.created)) AS node_node_data_field_feedback_id_created');
+            $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+            $view->build_info['count_query'] = $view->build_info['query'];
+			$search = array('ORDER BY node_created DESC');
+            $replace = array('GROUP BY node.nid ORDER BY node_created DESC');
+            $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+            $view->build_info['count_query'] = $view->build_info['query'];
+			
+    }
+	if ($view->name == "poc_VRM_delay_analysis") {
+            $search = array('node_node_data_field_feedback_id.created AS node_node_data_field_feedback_id_created');
+            $replace = array('if(workflow_node.sid = 27 or workflow_node.sid = 30,null, max(node_node_data_field_feedback_id.created)) AS node_node_data_field_feedback_id_created');
+            $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+            $view->build_info['count_query'] = $view->build_info['query'];
+			$search = array('ORDER BY node_created DESC');
+            $replace = array('GROUP BY node.nid ORDER BY node_created DESC');
+            $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+            $view->build_info['count_query'] = $view->build_info['query'];
+    }
+    if ($view->name == 'vrm_admin_actions_log') {
+        $view->build_info['query'] = str_replace("ASC", "DESC", $view->build_info['query']);
+    }
+}
+
+function blank_page()
+{
+    return '';
+}
+
+function vrm_update_assigned_to_users_after_mail($form, &$form_state)
+{
+    // Store email ids only if Submit is clicked
+    if ($form_state['clicked_button']['#name'] == 'submit') {
+        // get the node id from the path
+        $node_path = explode('/', drupal_get_normal_path($form['path']['#value']));
+        $node = node_load($node_path[1]);
+
+        $member_email_ids = $form["path"]["#post"]["txt_to_addrs"];
+        $non_member_email_ids = $form_state['values']['and_emails'];
+
+        // Add the emails to the Forwarded TO user reference field
+        $emails = explode(',', $member_email_ids);
+        array_walk($emails, 'trim');
+        foreach ($emails as $email)
+        {
+            if (!($user = user_load(array('mail' => $email)))) continue;
+            // Prevent duplicate values
+            $duplicate = false;
+            foreach ($node->field_forwarded_to as $forwarded_to_user) {
+                if ($forwarded_to_user['uid'] == $user->uid) {
+                    $duplicate = true;
+                    break;
+                }
+            }
+            if (!$duplicate) {
+                $node->field_forwarded_to[] = array('uid' => $user->uid);
+            }
+        }
+
+        // Store the nonmbers email ids in CCK field
+        $prefix = ',';
+        if (trim($non_member_email_ids) == '') {
+            $prefix = '';
+        }
+        $non_members_to_save = $node->field_forwarded_to_nonmembers[0]['value'] . $prefix . $non_member_email_ids;
+        $non_members_to_save = explode(',', $non_members_to_save);
+        foreach ($non_members_to_save as $key => &$nonmember_id) {
+            $nonmember_id = trim($nonmember_id);
+            if ($nonmember_id == '') {
+                unset($non_members_to_save[$key]);
+            }
+            $nonmember_id = strtolower($nonmember_id);
+        }
+        $non_members_to_save = array_unique($non_members_to_save);
+
+        $nid = $node_path[1];
+        global $user;
+        $uid = $user->uid;
+        $uname = $user->name;
+        $comment = addslashes($form_state['values']['txt_message']);
+        // collect the members
+        $emails = implode(',', $emails);
+        // collect the non members
+        $prefix = ',';
+        if (trim($member_email_ids) == '' || trim($non_member_email_ids) == '') {
+            $prefix = '';
+        }
+        $emails .= $prefix . $non_member_email_ids;
+        $timestamp = time();
+        // save the comments, and emails addresses in vrm_forward_log
+        $sql = "INSERT INTO {vrm_forward_log} VALUES(NULL, '$uid', '$uname', '$nid', '$comment', '$emails', '$timestamp')";
+        db_query($sql);
+        $node->field_forwarded_to_nonmembers[0]['value'] = implode(',', $non_members_to_save);
+        node_save($node);
+        drupal_get_messages('status');
+        drupal_set_message('Successfully forwarded the feedback.');
+    }
+}
+
+function vrm_check_assigned_email_on_changing_to_workflow_assigned($form, &$form_state)
+{
+    if ($form_state['clicked_button']['#post']['op'] == 'Move to "Assigned"') {
+        if ($form_state['clicked_button']['#post']['field_assigned_to']['uid']['uid'] == '')
+            form_set_error('field_assigned_to', t('Please choose an option for field Assign To.'));
+        else {
+            global $user;
+            $timestamp = time();
+            $emails = $form['field_assigned_to']["uid"]["uid"]["#options"][$form['field_assigned_to']['#value']['uid']['uid']];
+            db_query("INSERT INTO {vrm_forward_log}
+                    ( id, uid, uname, nid, comment, emails, timestamp )
+                  VALUES
+                    (NULL, '$user->uid', '$user->name', '{$form['#node']->nid}', 'vrm-assigned', '$emails', '$timestamp')");
+        }
+    }
+}
+
+function vrm_customization_defaultdelaytime()
+{
+    global $base_url;
+    $result = db_query("SELECT widget_settings FROM {content_node_field_instance} WHERE field_name='field_delay_time'");
+    $options = db_result($result, "widget_settings");
+    $options1 = unserialize($options);
+    $form['#prefix'] = '<h2 style="padding-top:10px;" class="title">Manage Delay Time</h2>';
+    $form ['delaytime'] = array(
+        '#type' => 'fieldset',
+
+        'default_delay_time' =>
+        array(
+            '#type' => 'textfield',
+            '#title' => t('Default Delay Time'),
+            '#description' => 'in hours',
+            '#default_value' => t($options1['default_value'][0]['value']),
+            '#required' => true,
+            '#attributes' => array('onkeypress' => 'return isNumberKey(event)'),
+        ),
+        'submit' =>
+        array(
+            '#type' => 'submit',
+            '#value' => 'Update',
+        ),
+        'cancel' =>
+        array(
+            '#type' => 'submit',
+            '#value' => 'Cancel',
+            '#attributes' => array('onclick' => "window.location.replace('$base_url/vrm_dashboard?quicktabs_vrm_admin_tabs=3#quicktabs-vrm_admin_tabs');"),
+
+        ),
+
+
+    );
+    $form['#redirect'] = array('vrm_dashboard', array('quicktabs_vrm_admin_tabs' => '3'), 'fragment' => 'quicktabs-vrm_admin_tabs');
+    return ($form);
+}
+
+function vrm_customization_defaultdelaytime_submit($form, &$form_state)
+{
+    if ($_POST['op'] == 'Update') {
+        $result = db_query("SELECT widget_settings FROM content_node_field_instance WHERE field_name='field_delay_time'");
+        $old_value = unserialize(db_result($result));
+        $options1['default_value'][0]['value'] = $form_state['values']['default_delay_time'];
+        $serialed_obj = serialize($options1);
+        $name = 'field_delay_time';
+        db_query("update {content_node_field_instance set widget_settings  = '%s' WHERE field_name='%s'", $serialed_obj, $name);
+        db_query("TRUNCATE TABLE cache_content");
+
+        global $user;
+        $now = time();
+        db_query("INSERT INTO {vrm_admin_actions_log}
+                    (id, variable, operation, old_value, new_value, uid, timestamp)
+                VALUES (0, 'default delay time', 'updated', '{$old_value['default_value'][0]['value']}', '{$form_state['values']['default_delay_time']}', $user->uid, $now)");
+
+        drupal_set_message('Successfully updated Default delay time.');
+    }
+}
+
+function vrm_customization_states_cancel($form, &$form_state)
+{
+    if ($_POST['op'] == 'Cancel') {
+        drupal_goto('vrm_dashboard', array('quicktabs_vrm_admin_tabs' => '4', 'quicktabs-vrm_admin_tabs', 'quicktabs-vrm_admin_tabs'));
+
+        //drupal_goto('vrm_dashboard?0=quicktabs-vrm_admin_tabs&1=quicktabs-vrm_admin_tabs&quicktabs_vrm_admin_tabs=4#quicktabs-vrm_admin_tabs');
+    }
+}
+
+function vrm_customization_mail_alter($message)
+{
+    // This makes the Forward mail and Reply mail to be HTML capable.
+    if ($message['id'] == 'pet_feedback_forward_template' || $message['id'] == 'pet_feedback_reply_template') {
+        $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
+    }
+    if ($message['id'] == 'pet_feedback_reply_template') {
+        $message['headers']['Cc'] = $message['params']['pet_cc'];
+        $message['headers']['Bcc'] = $message['params']['pet_bcc'];
+    }
+}
+
+function vrm_customization_pet_substitutions_alter(&$substitutions, &$params)
+{
+    // Replace the tokens in mails.
+    $replace = array('assignee-comments', 'feedback_date', 'feedback_body');
+
+    foreach ($replace as $token) {
+        if (array_key_exists($token, $params)) {
+            $params['pet']->body = str_replace('[' . $token . ']', $params[$token], $params['pet']->body);
+        }
+    }
+
+    $replace = array('assignee-subject');
+    foreach ($replace as $token) {
+        if (array_key_exists($token, $params)) {
+            $params['pet']->subject = str_replace('[' . $token . ']', $params[$token], $params['pet']->subject);
+        }
+    }
+}
+
+function vrm_customization_create_breadcrumb($type)
+{
+    global $user;
+    $roles = $user->roles;
+    $is_vrm = false;
+    $is_pmo = false;
+    $is_poc = false;
+    $breadcrumb = array();
+    $path = drupal_get_path_alias($_GET['q']);
+    $path = explode('/', $path);
+    $nid = $path[count($path) - 1];
+    if (isset($roles[15]))
+        $is_vrm = true;
+    else if (isset($roles[6]))
+        $is_pmo = true;
+    else if (isset($roles[4]))
+        $is_poc = true;
+    switch ($type)
+    {
+        case'reply':
+        case'review':
+        case'forward':
+            $breadcrumb[] = l('Home', '<front>');
+            if ($is_pmo || $is_poc) $breadcrumb[] = l('VRM', 'vrm_dashboard');
+			$breadcrumb[] = l('Feedback Details', 'node/' . $nid);
+            $breadcrumb[] = l('Feedback Details Edit', 'node/' . $nid . '/edit');
+            break;
+        case'notes':
+            $nid = $path[count($path) - 3];
+            $breadcrumb[] = l('Home', '<front>');
+            if ($is_pmo || $is_poc) $breadcrumb[] = l('VRM', 'vrm_dashboard');
+            $breadcrumb[] = l('Feedback Details', 'node/' . $nid);
+            break;
+        case'track':
+        case'reply-review':
+        case'history':
+            $nid = $path[count($path) - 2];
+            $breadcrumb[] = l('Home', '<front>');
+            if ($is_pmo || $is_poc) $breadcrumb[] = l('VRM', 'vrm_dashboard');
+            $breadcrumb[] = l('Feedback Details', 'node/' . $nid);
+            break;
+        case'view':
+            $breadcrumb[] = l('Home', '<front>');
+            if ($is_pmo || $is_poc) $breadcrumb[] = l('VRM', 'vrm_dashboard');
+            break;
+		case'edit':
+			$breadcrumb[] = l('Home', '<front>');
+			$nid = $path[count($path) - 2];
+			if ($is_pmo || $is_poc) $breadcrumb[] = l('VRM', 'vrm_dashboard');
+			 $breadcrumb[] = l('Feedback Details', 'node/' . $nid);
+    }
+    drupal_set_breadcrumb($breadcrumb);
+}

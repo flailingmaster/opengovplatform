@@ -1,0 +1,231 @@
+<?php
+
+/**
+ * @file
+ * A node revisioning module based on workflow states defined by the workflow module.
+ */
+
+
+/**
+ * Implementation of hook_menu().
+ */
+function workflow_node_revisions_menu() {
+  $items['admin/settings/workflow_node_revisions'] = array(
+    'title' => 'Workflow Node Revisions',
+    'access arguments' => array('administer workflow node revisions'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('workflow_node_revisions_overview_form'),
+    'description' => 'Allows the creation of workflow based node: revisions to existing content types.',
+    'file' => 'workflow_node_revisions.admin.inc',
+  );
+
+  $items['node/%node/update_request'] = array(
+    'access callback' => 'workflow_node_revisions_access_check',
+    'access arguments' => array(1),
+    'page callback' => 'workflow_node_revisions_create_revision',
+    'page arguments' => array(1, 2),
+    'title' => 'Update Dataset',
+    'weight' => 10,
+    'file' => 'workflow_node_revisions.pages.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['node/%node/delete_request'] = array(
+    'access callback' => 'workflow_node_revisions_access_check',
+    'access arguments' => array(1),
+    'page callback' => 'workflow_node_revisions_create_revision',
+    'page arguments' => array(1, 2),
+    'title' => 'Delete Dataset',
+    'weight' => 11,
+    'file' => 'workflow_node_revisions.pages.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+
+/**
+ * Implementing access permission check for Dataset update and delete operations.
+ */
+function workflow_node_revisions_access_check($node) {
+  global $user;
+  $permissions = variable_get('workflow_node_revision_role_permissions', array(3 => 3, 4 => 4, 6 => 6, 10 => 10));
+  $role_check = FALSE;
+
+  foreach($user->roles as $rid => $role) {
+    if(in_array($rid, $permissions)) {
+      $role_check = TRUE;
+      break;
+    }
+  }
+  
+  $wid = workflow_get_workflow_for_type($node->type);
+  $sid = workflow_node_current_state($node);
+  $published_state = variable_get("workflow_node_revision_published_state_$wid", '');
+  $access = (!empty($published_state) && !empty($sid) &&  $published_state == $sid && $role_check);
+
+  return $access;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function workflow_node_revisions_perm() {
+  return array('administer workflow node revisions');
+}
+
+/**
+ * Implementation of hook_workflow().
+ *
+ * This hook invokes an API to create,update, read and delete datasets.
+ */
+function workflow_node_revisions_workflow($op, $old_sid, $sid, $node) {
+  switch ($op) {
+    case 'transition pre':
+      $wid = workflow_get_workflow_for_type($node->type);
+      $published_state = variable_get("workflow_node_revision_published_state_$wid", 10);
+      $deleted_state = variable_get("workflow_node_revision_deleted_state_$wid", 11);
+      $archived_state = variable_get("workflow_node_revision_archived_state_$wid", 12);
+      $unique_field_value = variable_get("workflow_node_revision_unique_field_$wid", 'field_ds_unique_id');
+      $unique_field = $node->$unique_field_value;
+      $requestTypeFieldName = variable_get("workflow_node_revision_request_type", 'field_request_type');
+      $requestTypeField = $node->$requestTypeFieldName;
+
+      if ($old_sid != $sid && $published_state == $sid) { //The transition is to a publish state
+        $op = $requestTypeField[0]['value'];
+        $result = workflow_node_revisions_internal_api($op, $node);
+
+        if ($result['op_status'] == $op) {
+          switch ($op) {
+            case 'Create':
+              $node->$unique_field_value = array(0 => array('value' => $result['data']));
+              node_save($node);
+              watchdog('workflow_node_revisions', "API Result Create:" . $result['status_message']);
+              return TRUE;
+              break;
+
+            case 'Update':
+              workflow_node_revisions_archive_older_versions($published_state, $archived_state, $deleted_state, $unique_field_value, $node, $op);
+              watchdog('workflow_node_revisions', "API Result Update:" . $result['status_message']);
+              return TRUE;
+              break;
+
+            case 'Delete':
+              workflow_node_revisions_archive_older_versions($published_state, $archived_state, $deleted_state, $unique_field_value, $node, $op);
+              watchdog('workflow_node_revisions', "API Result Delete:" . $result['status_message']);
+              return FALSE;
+              break;
+          
+            default:
+              watchdog('workflow_node_revisions', "API Result Default:" . $result['status_message']);
+              return TRUE;
+              break;
+          }
+        }
+        else {
+          watchdog('workflow_node_revisions', "API returned unknown result: %result.", array('%result' => var_export($result, TRUE)), WATCHDOG_NOTICE);
+          return FALSE;
+        }
+      }
+
+      break;
+
+    default:
+      break;
+  }
+}
+
+/**
+ * Archive older versions of content based on unique field values.
+ */
+function workflow_node_revisions_archive_older_versions($published_state, $archived_state, $deleted_state, $unique_field_name, $node, $action) {
+  $type = $node->type;
+  $nid = $node->nid;
+  $unique_item = $node->$unique_field_name;
+  $unique_field_value = $unique_item[0]['value'];
+  $archive_list = array();
+  $result = db_query("SELECT ctd.nid FROM {%s} ctd LEFT JOIN  workflow_node wn ON ctd.nid = wn.nid WHERE ctd.%s = '%s' AND wn.sid = %d", "content_type_$type", $unique_field_name . '_value', $unique_field_value, $published_state);
+
+  while ($data = db_fetch_object($result)) {
+    $archive_list[] = $data->nid;
+  }
+
+  switch ($action) {
+    case 'Update':
+      foreach ($archive_list as $key => $nid) {
+        $arch_node = node_load($nid);
+        workflow_execute_transition($arch_node, $archived_state, t('Archiving older version'), $force = TRUE);
+      }
+    break;
+
+    case 'Delete':
+      foreach ($archive_list as $key => $nid) {
+        $arch_node = node_load($nid);
+        workflow_execute_transition($arch_node, $archived_state, t('Archiving older version'), $force = TRUE);
+      }
+      workflow_execute_transition($node, $deleted_state, t('Deleting version'), $force = TRUE);
+    break;
+  }
+}
+
+/**
+ * Make Create, Update and Delete calls for datasets
+ */
+function workflow_node_revisions_internal_api($op, $node) {
+
+  $result = array();
+
+  if (isset($node->field_ds_unique_id[0]['value'])) {
+    $dataset_unique_id = $node->field_ds_unique_id[0]['value'];
+  }
+  else {
+    $dataset_unique_id = FALSE;
+  }
+
+  switch ($op) { 
+    case 'Create':
+      if ($dataset_unique_id) {
+        $result['op_status'] = 'Error';
+        $result['status_message'] = "Error: A unique ID is already specified for operation:$op. This dataset already exists and cannot be created. DATASET UNIQUE ID: $dataset_unique_id";
+      }
+      else {      
+        $dataset_unique_id = sha1(uniqid($node->title));
+        $result['op_status'] = $op;
+        $result['status_message'] = 'Created the dataset with unique ID ' . $dataset_unique_id;
+        $result['data'] = $dataset_unique_id;
+      }
+      break;
+
+    case 'Update':
+      if (!$dataset_unique_id) {
+        $result['op_status'] = 'Error';
+        $result['status_message'] = "Error: No unique ID specified for operation:$op. This dataset does not exist and cannot be updated.";
+      }
+      else {
+        $result['op_status'] = $op;
+        $result['status_message'] = 'Updated the dataset with unique ID ' . $dataset_unique_id;
+      }
+
+      break;
+
+    case 'Delete':
+      if (!$dataset_unique_id) {
+        $result['op_status'] = 'Error';
+        $result['status_message'] = "Error: No unique ID specified for operation:$op. This dataset does not exist and cannot be deleted.";
+      }
+      else {
+        $result['op_status'] = $op;
+        $result['status_message'] = 'Deleted the dataset with unique ID ' . $dataset_unique_id;
+      }
+      break;
+
+    default:
+      $result['op_status'] = 'Unknown operation : ' . $op;
+      $result['status_message'] = 'Unknown operation : ' . $op;
+      $result['data'] = $op;
+      break;
+  }
+
+  return $result;
+}

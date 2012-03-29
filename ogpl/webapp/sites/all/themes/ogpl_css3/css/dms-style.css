@@ -1,0 +1,1833 @@
+/* DATA.GOV IN A BOX DMS
+-------------------------------------------------------------- */
+
+
+/* Basic Typography & Colors
+-------------------------------------------------------------- */
+/* Add general site styling here for typography and background */
+body {
+  font-size: 75%;   /* also set in fusion_starter.info: settings[base-font-size] = font-size-12 */
+  font: 12px Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;
+}
+
+p {
+    font-size: 1em !important;
+    line-height:1.5em;
+    margin:  1em 0;
+    color: #444444;
+}
+
+p.featured {
+    font-size:1.2em !important;
+}
+
+ul.featured li {
+    font-size:1.2em !important;
+}
+
+
+
+/* Default link styles - separate a:visited for a different visited link style */
+a,
+a:link,
+a:visited {
+    color: #21759B;
+}
+
+/* Hover/active link styles. Don't forget :focus for accessibility */
+a:hover,
+a:focus,
+a:active {
+    text-decoration:underline;
+}
+
+img {
+    border-color: #6a6868 !important;
+}
+
+/* Specific Typography
+-------------------------------------------------------------- */
+#site-name {
+  font-size: 300%;
+  line-height: 150%;
+}
+
+.footer-message {
+  font-size: 90%;
+}
+
+
+/* HTML Elements
+-------------------------------------------------------------- */
+body {
+}
+
+/* Site Info
+-------------------------------------------------------------- */
+/* Wrapper around logo, site name, and slogan */
+.header-site-info span {
+  display: block;
+}
+
+/* Add float here to put logo and site name side by side, also add margins as
+  needed */
+#logo {
+}
+
+/* Link and hover styles for site name */
+#site-name a:link,
+#site-name a:visited,
+#site-name a:hover,
+#site-name a:active {
+}
+
+/* Typography for site slogan */
+#slogan {
+}
+
+
+/* User Navigation Area
+-------------------------------------------------------------- */
+.user-navigation {
+    color:#6a6868 !important;
+    line-height:20px;
+    vertical-align: middle;
+}
+
+.user-navigation .block {
+    margin: 0 !important;
+}
+
+
+.user-navigation a {
+    color:#6a6868;
+    text-decoration:none;
+}
+
+.user-navigation ul li {
+    display:inline !important;
+    line-height: 20px;
+    text-align: right;
+}
+
+.user-navigation a:active, .user-navigation ul li a.active {
+    color:#6a6868;
+    display:inline !important;
+}
+
+.user-navigation a:hover {
+    color:#6a6868;
+    text-decoration:underline;
+}
+
+.user-navigation ul.menu {
+    text-align:right !important;
+}
+
+/* Regions
+
+  Classes (.region-name) should always be used instead of IDs (#region-name) so
+  that Skinr styles can override them with a class later
+-------------------------------------------------------------- */
+
+/* All Regions
+-------------------------------------------------------------- */
+/* By default this wrapper is set to 100% width and centered -- override here to
+  narrow wrapper or align left or right */
+#page {
+        background: url('../images/dms/dms-bg.png') top left repeat-x;
+}
+
+/* The 0 values here remove padding and spacing at the bottom of the page.
+  Remove to add a gap at the very bottom of the page */
+.page-inner {
+  border: 0;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+
+/* Header Regions
+-------------------------------------------------------------- */
+
+/* Header Top region which sits above the header */
+/* Works well with inline login or inline menu block style */
+#header-top-wrapper {
+    height:130px;
+    background: url('../images/dms/DMS-gradient.png') left top no-repeat;
+    overflow: visible;
+    position:relative;
+}
+
+#header-top {
+    min-width:960px;
+    position:relative;
+    overflow: visible;
+}
+
+/* Header Top region to the bottom of Header region */
+/* For full-width header background, add background image/color here */
+#header-group-wrapper {
+    overflow: visible;
+    position:relative;
+}
+
+#header-group {
+    padding: 0;
+    min-width:960px;
+    position:relative;
+}
+
+.logo-block {
+    position:absolute;
+    left:5px;
+    top:10px;
+    min-width:150px;
+}
+
+#block-blockify-blockify-logo .gutter {
+    margin: 0;
+    padding: 0;
+}
+
+/* Primary Menu
+/-------------------------------------------------------------- */
+/* Add general styles for primary menu here, such as typography, borders, floats,
+  or spacing above/below */
+
+ul#superfish-1 {
+    text-align:center;
+    margin: auto;
+    position:relative;
+}
+
+#block-menu-primary-links, .primary-navigation {
+    position:absolute;
+    top:57px;
+    right:0;
+    font-family:Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;
+    text-align:center;
+    color:#fff !important;
+    height:50px !important;
+    overflow: visible;
+    padding: 0;
+    margin: auto;
+    background: #214472;
+    background: -moz-linear-gradient(left, #214472 0%, #59718e 60%, #214472 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#214472), color-stop(60%,#59718e), color-stop(100%,#214472)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left, #214472 0%,#59718e 60%,#214472 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left, #214472 0%,#59718e 60%,#214472 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left, #214472 0%,#59718e 60%,#214472 100%); /* IE10+ */
+    background: linear-gradient(left, #214472 0%,#59718e 60%,#214472 100%); /* W3C */
+    border-radius: 10px 10px 0px 0px;
+    -moz-border-radius: 10px 10px 0px 0px;
+    -webkit-border-radius: 10px 10px 0px 0px;
+    border: 1px transparent solid;
+}
+
+.primary-navigation div.content {
+    position:relative;
+}
+
+#block-menu-primary-links a, .primary-navigation a {
+    color:#fff !important;
+    text-decoration:none;
+    font-weight:bolder;
+    padding: 0 !important;
+}
+#block-menu-primary-links ul.menu, .primary-navigation .sf-menu {
+    margin:0;
+    list-style-type:none !important;
+    text-align: center;
+    position:relative;
+}
+
+#block-menu-primary-links ul.menu li, .primary-navigation .sf-menu li {
+    font-size:14px !important;
+    display:inline;
+    height:46px !important;
+   /* float:left; */
+    padding: 0 !important;
+    margin: 0 15px !important;
+    line-height:50px !important;
+    overflow: visible;
+    border: 0 !important;
+    background: none;
+}
+
+#block-menu-primary-links ul.menu li:hover, .primary-navigation .sf-menu li:hover; {
+ border-bottom: 4px solid #f1c851 !important;
+    padding: 0 !important;
+}
+
+#block-menu-primary-links ul.menu li.active-trail, .primary-navigation .sf-menu li.active-trail {
+    border-bottom: 4px solid #deac1c !important;
+}
+
+#block-menu-primary-links ul.menu li.first, ul.primary-navbar li.first {
+    padding-left:35px !important;
+    background: transparent url(../images/dms/home.png) no-repeat left 8px !important;
+    height:46px !important;
+   /* float:left; */
+}
+
+#block-menu-primary-links ul.menu li.first:hover, ul.primary-navbar li.first:hover {
+    padding:0 0 0 35px !important;
+    background: transparent url(../images/dms/home.png) no-repeat left 8px !important;
+    border-bottom: 4px solid #f1c851 !important;
+
+}
+
+#block-menu-primary-links ul.menu li.first.active-trail, .primary-navigation .sf-menu li.first.active-trail {
+    border-bottom: 4px solid #deac1c !important;
+    filter:none;
+}
+
+#block-menu-primary-links ul.menu li a, .primary-navigation .sf-menu li a {
+    text-decoration:none;
+}
+
+#block-menu-primary-links ul.menu li a:hover, #block-menu-primary-links ul.menu li a, .primary-navigation .sf-menu li a:hover, .primary-navigation .sf-menu li a  {
+    text-decoration:none;
+}
+
+#block-menu-primary-links ul.menu li a.active, .primary-navigation .sf-menu li a.active {
+    color:#fff;
+}
+
+#block-menu-primary-links ul.menu li.first a.active {
+}
+
+/* Primary Navigation Superfish Dropdown Styles
+/-------------------------------------------------------------- */
+ul.primary-navbar li.menuparent:hover, ul.primary-navbar li.menuparent:active, ul.primary-navbar li.sf-no-children:hover, ul.primary-navbar li.sf-no-children:active {
+    border-bottom: 4px solid #f1c851 !important;
+}
+ul.primary-navbar li ul {
+    background: #f1c851 !important;
+    margin: 10px 0 0 0 !important;
+    padding: 0 !important;
+    padding-right:15px !important;
+    overflow: visible;
+    text-align:left;
+    line-height:30px !important;
+}
+
+ul.primary-navbar li ul li.sf-depth-2, ul.primary-navbar li ul li.sf-depth-2:hover, ul.primary-navbar li ul li.first, ul.primary-navbar li ul li.first:hover, ul.primary-navbar li ul li.sf-no-children:hover, ul.primary-navbar li ul li.sf-no-children:active {
+    margin: 0 !important;
+    padding-left:15px !important;
+    padding-right:15px;
+    background: none !important;
+    height:30px !important;
+   /* float:left; */
+    border: 0 !important;
+    overflow: visible;
+    text-align:left;
+    font-size:1em !important;
+    font-weight:500 !important;
+    line-height:30px;
+    color:#214472 !important;
+    font-family:Calibri, Helvetica,Tahoma,Arial,clean,sans-serif !important;
+}
+
+ul.primary-navbar li ul li a {
+    line-height:30px !important;
+    color: #214472 !important;
+    padding-left:15px !important;
+    font-weight:500 !important;
+    border: 0 !important;
+}
+
+ul.primary-navbar li ul li a:hover {
+    margin: 0 !important;
+    line-height:30px !important;
+    color:#003366 !important;
+    background: url("../images/dms/menu-arrow-blue.png") left center no-repeat;
+    border:0 !important;
+}
+
+.sf-menu li li {
+    z-index:1000;
+    position:relative;
+}
+
+/* Secondary menu
+-------------------------------------------------------------- */
+/* This menu usually appears in the header as a set of simple text links */
+.secondary-menu {
+}
+
+/* Set general style for menu here -- background, alignment, etc. */
+.secondary-menu-inner ul.links {
+}
+
+/* Add a border-right here for a separator */
+.secondary-menu-inner ul.links li {
+}
+
+/* Add border-right: 0; here to remove right separator on last menu item */
+.secondary-menu-inner ul.links li.last {
+}
+
+/* Styles for links */
+.secondary-menu-inner ul.links li a:link,
+.secondary-menu-inner ul.links li a:visited {
+  padding: 3px;
+}
+
+.secondary-menu-inner ul.links li a:hover,
+.secondary-menu-inner ul.links li a:focus,
+.secondary-menu-inner ul.links li a.active {
+}
+
+/* Header - Search
+-------------------------------------------------------------- */
+#block-blockify-blockify-breadcrumb {
+    position:absolute;
+    top:125px;
+    right:195px;
+    text-align:right;
+}
+
+
+/* Header - Search
+-------------------------------------------------------------- */
+.block-search {
+    margin: 0 !important;
+}
+
+#search-block-form {
+    border: 1px solid #6a6868;
+    background:#fff;
+    margin-top:4px !important;
+    margin-bottom:0 !important;
+    text-align:left;
+    padding: 0;
+    height:25px;
+    min-width:165px;
+}
+
+#search-block-form form {
+    margin: 0;
+}
+
+#search-block-form .form-item {
+    margin-top:0 !important;
+    margin-bottom:0 !important;
+}
+
+#search-block-form input[type='text'] {
+    border: 0;
+    background: transparent;
+    width:130px;
+    margin-left:5px;
+    margin-top:4px;
+    color:#6a6868;
+    float:left;
+    vertical-align: middle;
+}
+#search-block-form input.form-submit {
+    margin-top:3px;
+    width:20px;
+    border: 0;
+    background: transparent url("../images/dms/search.png") no-repeat right top;
+    text-indent:-9999px;
+    overflow: hidden;
+    float:right;
+    line-height:25px;
+    vertical-align: middle;
+}
+
+
+/*  Preface Regions
+-------------------------------------------------------------- */
+/* The Preface Top region sits between the header and the Main Area
+ (columns, sidebars, and main content).  The Preface Bottom region
+ is inside the Main Area. */
+.preface-top-wrapper {
+}
+
+.preface-top {
+    position:relative;
+}
+
+.preface-top-inner {
+}
+
+.preface-bottom-wrapper {
+    clear:both;
+}
+
+.preface-bottom {
+    position:relative;
+}
+
+.preface-bottom-inner {
+}
+
+/* What's New Ticker
+-------------------------------------------------------------- */
+.whats-new-ticker {
+    max-width:425px !important;
+    height:25px !important;
+    background: #fff;
+    border: 1px solid #6a6868;
+    vertical-align: middle;
+    font-size:10px;
+    position:absolute;
+    top:120px;
+    right:195px;
+    padding:  0px 2px 0 0;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.whats-new-ticker h2.title {
+    font-size:120% !important;
+    line-height:25px !important;
+    overflow: hidden;
+}
+
+.ticker-1 {
+    float:left;
+    width:80px;
+    vertical-align: middle;
+    height:25px;
+
+}
+
+.ticker-2 {
+    float:right;
+    width:325px;
+    color:#444444;
+    text-align:left;
+    line-height:25px !important;
+}
+
+/* Slideshow Views Block
+-------------------------------------------------------------- */
+#block-views-Slideshow-block_1 .inner {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#slideshow {
+    position:relative;
+    margin: 0;
+    overflow: hidden;
+    z-index:0;
+    height:315px;
+    padding: 0;
+}
+#slideshow .slideshow-left {
+   position:absolute;
+    top:50px;
+   left:60px;
+    width:450px;
+}
+
+#slideshow .slideshow-left h1{
+    color: #999999;
+    font-size: 18px;
+    font-family: Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;
+    font-weight: bold;
+    line-height: 30px;
+    text-shadow: 0 3px 8px #000000;
+}
+
+#slideshow .slideshow-left h1 span{
+    font-size:36px;
+    color:#fff;
+}
+
+#slideshow .slideshow-left p {
+    color: #DDDDDD !important;
+    font-family: Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;
+    font-size: 20px !important;
+    text-align: justify;
+    text-shadow: 0 3px 3px #000000;
+    line-height: 1.5em !important;
+}
+
+#slideshow .slideshow-right {
+    position:absolute;
+    top:40px;
+    right:60px;
+    width:260px;
+}
+
+#slideshow .slideshow-right h2 {
+    color: #FFFFFF;
+    font-family: Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;
+    font-size: 24px;
+    line-height: 24px;
+    text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);
+}
+
+#slideshow .slideshow-right p {
+    color: #FFFFFF;
+    font-family: Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;
+    font-size: 18px !important;
+    font-weight: normal !important;
+    line-height: 18px !important;
+    margin-top:2px !important;
+}
+
+#slideshow .slideshow-right a img, #slideshow .slideshow-right img {
+    border: 5px solid #fff!important;
+}
+
+#curve {
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+}
+
+#block-views-slideshow-block {
+    margin: 0;
+    padding: 0;
+}
+
+#block-views-slideshow-block .gutter {
+    margin: 0;
+    padding: 0;
+}
+
+/*  Blocks for Front Page
+-------------------------------------------------------------- */
+
+.feature-block {
+    float:left !important;
+    margin: 0 25px 0 10px;
+    padding: 0 !important;
+    width:285px !important;
+    overflow: visible !important;
+}
+.feature-block .gutter {
+    margin: 0;
+    padding: 0;
+}
+
+.feature-block h1 {
+    color: #666666;
+    font-family: Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;
+    font-size: 1.75em;
+    font-weight: bold;
+    font-style: normal !important;
+    line-height: 1.5em;
+}
+
+.feature-block p {
+    color: #333333 !important;
+    font-family: Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;
+    font-size: 14px !important;
+}
+
+
+/*  Main Area (content + sidebars + preface bottom + postscript top)
+-------------------------------------------------------------- */
+.main-wrapper {
+    position:relative;
+}
+
+#main {
+    min-width:960px;
+    position:relative;
+    margin-top:20px;
+}
+
+/* Sidebar Regions
+-------------------------------------------------------------- */
+/* Sidebar widths can be controlled through theme settings */
+.sidebar-first {
+    padding-top:70px;
+}
+
+.sidebar-last {
+    padding-top:70px;
+}
+
+
+/* Content Regions
+-------------------------------------------------------------- */
+
+h1.gutter {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.content-top {
+    margin-top:15px;
+}
+
+.content {
+    font-size: 1em;
+    line-height: 1.5em;
+}
+
+.content-inner {
+    margin-top:15px;
+	
+}
+
+.content-bottom {
+}
+
+/* This region only appears on full node pages. It's useful for ads or other
+  content between the body of the node and its comments */
+.node-bottom {
+}
+
+#content-inner div .gutter {
+    margin: 0;
+    padding: 0;
+}
+
+.FGDC-link {
+    margin-left: 50px !important;
+    border-left:solid 1px #c4c3c3;
+}
+
+.FGDC-link div p {
+    margin: 0;
+    padding: 0;
+}
+
+.page-examples {
+  /*  clear:both; */
+}
+
+.page-examples .page-examples-left {
+    float:left;
+    width:70px;
+}
+.page-examples .page-examples-right {
+    float:left;
+    width:325px;
+    margin-left:10px;
+}
+
+p.attribution, p.attribution a {
+    font-size:10px !important;
+    color:#656565;
+    line-height:12px;
+    margin-top:2px !important;
+    padding: 0;
+}
+
+
+
+/*  Postscript & Footer Regions
+-------------------------------------------------------------- */
+.postscript-top {
+    border-top: 1px solid #CCCCCC;
+}
+
+.postscript-top-inner {
+    margin-top:15px;
+}
+
+.postscript-bottom-wrapper {
+}
+
+.postscript-bottom {
+}
+
+.postscript-bottom-inner {
+}
+
+#footer-wrapper {
+padding-top: 10px;
+}
+
+#footer {
+    border-top: 1px solid #CCCCCC;
+    min-width:960px;
+    position:relative;
+}
+
+#footer-inner {
+}
+
+#footer-message-wrapper {
+}
+
+#footer-message {
+}
+
+#footer-message-inner {
+}
+
+#footer-message-text {
+}
+
+
+/* Page titles
+/-------------------------------------------------------------- */
+/* Page and full node titles */
+h1.title {
+color: #024672;
+    font-family: Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;
+    font-size: 180%;
+    font-style: normal !important;
+    line-height: 1.5em;
+}
+
+
+/* Default node styles
+/-------------------------------------------------------------- */
+/* Change unpublished and preview colors for dark background themes */
+.node-unpublished {
+  background-color: #fff4f4;
+}
+.preview .node {
+  background-color: #ffffea;
+}
+
+/* Typography for node titles */
+h2.title {
+    color: #024672;
+    font-family: Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;
+    font-size: 150%;
+    font-style: normal !important;
+    line-height: 1.3em;
+}
+
+/* Colors and styles for linked node titles, ie. teaser listing at /node */
+h2.title a:link,
+h2.title a:visited {
+}
+
+h2.title a:hover,
+h2.title a:focus,
+h2.title a:active {
+}
+
+/* Separators and padding for node teasers */
+.teaser {
+}
+
+/* Author/date info */
+.meta {
+}
+
+.submitted {
+}
+
+/* Links for nodes (taxonomy, commenting, read more, etc) */
+.node ul.links li {
+}
+.node ul.links a {
+}
+
+/* Only more/read more links */
+div.node .read-more a,
+div.node .more-link a {
+}
+
+/* Drupal Messages
+/-------------------------------------------------------------- */
+/* General style for all errors/messages (border, padding, etc.) */
+div.content-messages div.messages,
+div.content-help div.help {
+}
+
+/* Status messages: green */
+div.content-messages-inner div.status {
+}
+
+/* Warning messages: yellow */
+div.content-messages-inner div.warning {
+}
+
+/* Error messages: red */
+div.content-messages-inner div.error {
+}
+
+/* Help messages: blue */
+div.content-help-inner div.help {
+}
+
+/* Error that appears when a required form field is not filled out */
+.form-item input.error,
+.form-item textarea.error,
+.form-item select.error {
+  border: 1px solid #aa1144;
+}
+
+/* "New" text and required form field asterisk (default = red) */
+.marker,
+.form-required {
+  color: #aa1144;
+}
+
+
+/* Default block title styles
+/-------------------------------------------------------------- */
+h2.block-title {
+}
+
+
+/* Breadcrumbs
+-------------------------------------------------------------- */
+.breadcrumbs {
+}
+
+.breadcrumbs a:link,
+.breadcrumbs a:visited {
+}
+
+
+/* Tab Menus
+/-------------------------------------------------------------- */
+#content-tabs, .content-tabs {
+  background-color: transparent;
+  float: left; /* LTR */
+  margin: 20px 0;
+  padding: 0;
+}
+
+#content-tabs ul.primary,
+#content-tabs ul.secondary,
+.content-tabs ul.menu {
+  clear: both;
+  float: left; /* LTR */
+  margin: 0;
+  padding: 0 10px;
+  width:99%;
+}
+
+#content-tabs ul.primary, .content-tabs ul.menu {
+    border-bottom: 1px solid #ccc;
+}
+
+#content-tabs ul.secondary {
+    border-bottom:1px solid #ccc;
+    margin-top: 10px; 
+  text-transform:capitalize;
+}
+
+#content-tabs ul.primary li,
+#content-tabs ul.secondary li,
+.content-tabs ul.menu li {
+  border-style: none;
+  display: inline;
+  float: left; /* LTR */
+  list-style: none;
+  margin: 0 10px;
+  padding: 0;
+  
+}
+
+#content-tabs ul.primary li a, .content-tabs ul.menu li a {
+    line-height:180% !important;
+    padding: 2px 12px 0 12px !important;
+    border-radius: 10px 10px 0px 0px;
+    -moz-border-radius: 10px 10px 0px 0px;
+    -webkit-border-radius: 10px 10px 0px 0px;
+	 /*background-color: #FAF8CC;*/
+}
+
+#content-tabs ul.secondary li a {
+    line-height:180% !important;
+    padding: 0 8px 2px 8px !important;
+    vertical-align: bottom;
+	/*background-color: #808080;*/
+    border-radius: 10px 10px 0px 0px;
+    -moz-border-radius:  10px 10px 0px 0px;
+    -webkit-border-radius:  10px 10px 0px 0px;
+}
+
+#content-tabs ul.primary li a:link,
+#content-tabs ul.primary li a:visited,
+#content-tabs ul.secondary li a:link,
+#content-tabs ul.secondary li a:visited,
+.content-tabs ul.menu li a:link,
+.content-tabs ul.menu li a:visited {
+  background: transparent;
+  border: none;
+  color: #000;
+  float: left; /* LTR */
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  white-space: nowrap;
+}
+#content-tabs ul.secondary li a:link,
+#content-tabs ul.secondary li a:visited {
+background: #FAF8CC;
+}
+#content-tabs ul.primary li a:link,
+#content-tabs ul.primary li a:visited{
+background: #FAF8CC;
+}
+#content-tabs ul.secondary li a:link,
+#content-tabs ul.secondary li a:visited {
+  color: #555;
+}
+
+#content-tabs ul.primary li a.active:link,
+#content-tabs ul.primary li a.active:visited
+.content-tabs ul.menu li a.active:link,
+.content-tabs ul.menu li a.active:visited, 
+.content-tabs ul.menu li a.active,
+#content-tabs ul.primary li.active a:visited{
+  display:block;
+  border-bottom: 0 transparent;
+  background: #f1c851 !important;
+  background-color: #f1c851 !important;
+  color: #555;
+  padding-bottom: 2px;
+}
+
+#content-tabs ul.secondary li a.active:link,
+#content-tabs ul.secondary li a.active:visited {
+  /* border-bottom: 4px solid #555; */
+  color: #777;
+  background: #f0f0f0;
+  margin: 0;
+  border-bottom: 0 transparent;
+}
+
+#content-tabs ul.primary li a:hover,
+#content-tabs ul.primary li a:focus,
+.content-tabs ul.menu li a:hover,
+.content-tabs ul.menu li a:focus {
+  border: transparent;
+  color: #777;
+  background: #ffe688 !important;
+}
+
+#content-tabs ul.secondary li a:hover,
+#content-tabs ul.secondary li a:focus {
+  color: #777;
+  border-bottom: 0 transparent;
+  background: #f5f5f5;
+}
+
+/* Pagers
+-------------------------------------------------------------- */
+ul.pager {
+}
+
+ul.pager li {
+}
+
+ul.pager a,
+ul.pager li.pager-current {
+  border-color: #333;
+}
+
+ul.pager li.pager-current {
+  background-color: #777;
+  color: #fff;
+}
+
+ul.pager a:hover,
+ul.pager a:active,
+ul.pager a:focus {
+  background-color: #777;
+  border-color: #333;
+  color: #fff;
+}
+
+/* Forms
+/-------------------------------------------------------------- */
+/* Typography and backgrounds for all form buttons */
+form input.form-submit {
+  margin: 2px;
+  padding: 3px 5px;
+}
+
+/* Hover style for form buttons */
+form input.form-submit:hover,
+form input.form-submit.hover,
+form input.form-submit:focus {
+}
+
+/* Typography, background, borders, padding for form fields */
+.form-item input,
+.form-item select,
+.form-item textarea {
+}
+
+/* Remove backgrounds and border on radios and checkboxes */
+.form-item .form-radio,
+.form-item .form-checkbox {
+  background: none;
+  border: none !important;
+}
+
+/* Fieldset wrapper around groups of form elements -- add border here */
+fieldset {
+}
+
+/* Typography and spacing for legend of fieldsets */
+fieldset legend {
+}
+
+/* Link style for legend of fieldsets */
+fieldset legend,
+legend.collapse-processed,
+legend.collapse-processed a:link,
+legend.collapse-processed a:visited {
+}
+
+/* Custom icons on (open) collapsible fieldsets */
+html.js fieldset.collapsible legend a:link,
+html.js fieldset.collapsible legend a:visited {
+}
+
+/* Custom icons on (closed) collapsible fieldsets */
+html.js fieldset.collapsed legend a:link,
+html.js fieldset.collapsed legend a:visited {
+}
+
+.description p {
+    margin: 0 0 1em 0;
+}
+
+/* Tables
+-------------------------------------------------------------- */
+table {
+border: 1px solid #CDCDCD;
+}
+
+/* Body of tables */
+tbody {
+  border-top: 1px solid #ccc;
+}
+
+/* Header of tables */
+thead th,
+th {
+	background: none repeat scroll 0 0 #CDCDCD;
+    border-bottom: medium none;
+    padding: 3px;
+}
+
+tbody th {
+  border-bottom: 1px solid #ccc;
+}
+
+/* Alternating row background styles */
+tr.even,
+tr.even td {
+  background-color: #eee;
+  border-bottom: 1px solid #ccc;
+}
+
+tr.odd,
+tr.odd td {
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+}
+
+td.active {
+}
+
+tr.drag td,
+tr.drag-previous td {
+  color: #000;
+}
+
+
+/* Maintenance Page
+/-------------------------------------------------------------- */
+/* Maintenance page tpl file in Fusion Core has simplified layout, but you can
+  also add specific styles, such as a background, just for your offline page */
+.in-maintenance  {
+}
+
+
+/*--------------------------------------------------------------*/
+/* Module styles
+/-------------------------------------------------------------- */
+
+
+/* Book
+/-------------------------------------------------------------- */
+.book-navigation .menu {
+  border-top: 1px solid #ccc;
+}
+
+.book-navigation .page-links {
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+
+/* Comments
+/-------------------------------------------------------------- */
+/* Style for each individual comment */
+div.comment {
+}
+
+/* Subject (title) of each comment */
+div.comment h3.title {
+}
+
+/* Links (edit, reply, delete) for each comment */
+div.comment div.links a,
+div.comment ul.links a {
+}
+
+/* Alternating styles for even/odd comments */
+.comments div.odd {
+  background-color: #fff;
+}
+
+.comments div.even {
+  background-color: #eee;
+}
+
+/* A special highlight style for a comment by the author of the node */
+.comments div.comment-by-author {
+  background-color: #ddd;
+}
+
+/* Comment signatures */
+.signature {
+  border-top: 1px solid #d6ddb9;
+}
+
+/* User avatars in comments */
+.comment-wrapper .picture img {
+}
+
+
+/* Forum
+/-------------------------------------------------------------- */
+#forum .description {
+}
+
+.forum-topic-navigation {
+  border-top: 1px solid #888;
+  border-bottom: 1px solid #888;
+}
+
+
+/* Poll
+/-------------------------------------------------------------- */
+div.poll div.bar {
+  background-color: #ddd;
+}
+
+div.poll div.bar div.foreground {
+  background-color: #999;
+}
+
+
+/* Profiles
+/-------------------------------------------------------------- */
+.profile .picture {
+  float: none;
+}
+
+/* Styles for sub-headings on user profiles */
+.profile dt {
+  background-color: #ccc;
+}
+
+div.field-type-text {
+    margin: 8px 0;
+}
+
+
+/* Ubercart - catalog
+/-------------------------------------------------------------- */
+
+/* Horizontal list of subcategories in catalog */
+ul.uc-categories {
+}
+
+.uc-categories li a {
+  font-weight: bold;
+  padding: 0 5px 0 3px;
+}
+
+/* Product and category names */
+.catalog-grid-title a:link,
+.catalog-grid-title a:visited,
+.category a:link,
+.category a:visited {
+}
+
+.catalog-grid-title a:hover,
+.catalog-grid-title a:focus,
+.category a:hover,
+.category a:focus {
+}
+
+/* Sell price in Ubercart catalog */
+.category-grid-products .catalog-grid-sell-price {
+}
+
+/* Ubercart - add to cart buttons
+/-------------------------------------------------------------- */
+
+/* Add to cart buttons */
+input.node-add-to-cart,
+input.list-add-to-cart {
+
+
+}
+
+/* Hover and focus styles, with .hover class added for IE6 support */
+input.node-add-to-cart:hover,
+input.node-add-to-cart.hover,
+input.node-add-to-cart:focus,
+input.list-add-to-cart:hover,
+input.list-add-to-cart.hover,
+input.list-add-to-cart:focus {
+}
+
+/* Ubercart - product nodes
+/-------------------------------------------------------------- */
+
+#field-group {
+}
+
+#price-group {
+}
+
+/* Product images */
+.product-image a img {
+}
+
+.product-image a:hover img,
+.product-image a:focus img {
+}
+
+/* Display price on full product nodes */
+.full-node .product-group .uc-price-display {
+}
+
+/* Product attributes on full nodes */
+.full-node .product-group .attributes {
+}
+
+/* Ubercart - general / checkout
+/-------------------------------------------------------------- */
+
+/* For optional "Powered by Ubercart" footer message */
+#store-footer {
+}
+
+#store-footer a:link,
+#store-footer a:visited {
+}
+
+/* View cart/Checkout links in Ubercart cart block */
+.cart-block-summary-links ul.links li a {
+}
+
+.cart-block-summary-links ul.links li.cart-block-checkout a:link,
+.cart-block-summary-links ul.links li.cart-block-checkout a:visited {
+}
+
+/* Key checkout process buttons: Checkout, Continue, and Submit Order */
+#uc-cart-view-form #edit-checkout,
+#uc-cart-checkout-form #edit-continue,
+#uc-cart-checkout-review-form #edit-submit {
+}
+
+/* Table on final order review page */
+.order-review-table {
+}
+
+#cart-form-products table th {
+  border-bottom: 3px solid #dec2c3;
+}
+
+/* Dataset Workflow Summary Table View
+/-------------------------------------------------------------- */
+
+div.workflow-summary-table .view-content {
+ border: 1px solid #CCC;
+}
+
+div.workflow-summary-table tr td {
+    text-align:center;
+}
+
+div.views-field-state {
+    font-weight:700;
+    text-decoration:underline;
+    margin: 4px 0;
+}
+
+div.views-field-nid {
+    color:#333;
+}
+
+/* Dataset Workflow Progress Bar
+/-------------------------------------------------------------- */
+.workflow-progress ul {
+    display:table !important;
+    width:100%
+}
+.workflow-progress ul li {
+    display:table-cell !important;
+    text-align: center;
+}
+
+
+
+/* Dataset Administration Buttons
+/-------------------------------------------------------------- */
+current-workflow-state {
+    display:block;
+}
+
+.approve-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/approve.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.clone-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/clone.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.delete-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/delete.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.deleterequest-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/deleterequest.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.delete-request-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/deleterequest.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.download-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/download.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.download-csv-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/download.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.edit-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/edit.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.preview-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/preview.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.publish-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/publish.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.save-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/save.png") no-repeat center center;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.sendback-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/sendback.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.submit-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/submit.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.updaterequest-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/updaterequest.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.update-request-link {
+    height:15px;
+    width:15px;
+    margin: 3px 2px;
+    background: transparent url("../images/dms/icons/updaterequest.png") no-repeat center center;
+    display:block;
+    text-indent:-9999px;
+    float:left;
+    position:relative;
+}
+
+.create-dataset {
+    background:transparent url("../images/dms/create-dataset-bg.png") right top no-repeat;
+    position:absolute;
+    right:0;
+    top:110px;
+    width:185px !important;
+    height: 45px;
+}
+
+.create-dataset:hover {
+    background:transparent url("../images/dms/create-dataset-bg-hover.png") right top no-repeat;
+}
+.create-dataset p {
+    margin: 0 8px 0 0 !important;
+    line-height: 45px;
+    font-weight:bold;
+    text-align:right;
+    font-size: 15px !important;
+    height:45px;
+    width:175px;
+    display:block;
+    float:right;
+}
+
+.create-dataset a {
+    height:45px;
+    width:175px;
+    padding: 0;
+    margin: 0;
+    display:block;
+}
+
+/* Skinr
+/-------------------------------------------------------------- */
+
+/* This is a sample Skinr style to get you started. See fusion_starter.info */
+.fusion-example-stylename .inner {
+  /* When setting the background color, also set foreground colors for text and
+    links, even if it's similar to the default body style. Remember, this block
+    style may be used in regions with other foreground colors, thus making text
+    invisible if left unspecified */
+  background-color: #ccc;
+  color: #000;
+  /* All padding and borders should go on the .inner div, so as not to break
+    the widths of the grid */
+  border: 3px solid #000;
+  padding: 10px;
+}
+
+.block{
+}
+
+.fusion-callout .inner {
+    font-weight:500 !important;
+    font-size:125% !important;
+    line-height:180% !important;
+}
+
+.ul-2-menu ul {
+    margin: 10px !important;
+    padding: 0;
+	list-style-type: none;
+    list-style-image: none;
+}
+
+.ul-2-menu ul li {
+    display: inline;
+    padding: 3px 10px !important;
+    border-left:1px solid #ccc
+}
+
+.ul-2-menu ul li:first-child {
+border-left:none
+}
+
+.add-10px-margintop {
+    margin-top:10px !important;
+}
+
+.add-rounded-corners {
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+.blue-background {
+    padding: 15px;
+    color:#fff !important;
+    background:#214472 !important;
+}
+.blue-background a {
+    color:#fff !important;
+}
+
+.blue-background h1, .blue-background h2, .blue-background h3 {
+    color: #fff !important;
+}
+
+.blue-background .block {
+    margin: 0 !important;
+}
+
+.yellow-background {
+    padding: 15px;
+    color:#fff !important;
+    background:#f1c851 !important;
+}
+.yellow-background a {
+    color:#fff !important;
+}
+
+.yellow-background h1, .yellow-background h2, .yellow-background h3 {
+    color: #fff !important;
+}
+
+.yellow-background .block {
+    margin: 0 !important;
+}
+
+.sidebar-title-underline h2.block-title {
+      border-bottom: 1px solid #f1c851 !important;
+}
+
+/* Upload Input Fix
+/-------------------------------------------------------------- */
+.filefield-element, .filefield-element input.form-submit, .filefield-element input.form-file {
+    height:20px;
+    margin: 0;
+    padding: 0;
+    line-height:20px;
+    font-size:11px;
+    font-weight:normal;
+}
+
+.form-item select {
+    margin:0;
+    padding: 0;
+    line-height:20px;
+    font-size:12px;
+    font-weight:normal;
+}
+
+.form-item input {
+    height:20px;
+    margin: 0;
+    padding: 0;
+    line-height:20px;
+    font-size:12px;
+    font-weight:normal;
+}
+/*Custom css starts here*/
+.breadcrumbs a:last-child {
+    font-weight: bold;
+}
+textarea, .form-item input, .form-item select, #content-region input.form-text,.form-item select {
+    font: 12px Arial;
+}
+label.error {
+    display: inline !important;
+}
+#node-form .form-submit,#views-bulk-operations-form--1 .form-submit,#workflow-tab-form .form-submit,a.cancel-button{
+	cursor: pointer;
+	padding: 5px 10px; !important
+	margin-bottom: 1em;
+	text-align: center;
+	font-weight: normal;
+	font-size: 1.1em;
+	font-family: Arial,Verdana,sans-serif;
+	border: 1px solid #E4E4E4;
+	border-bottom: 1px solid #B4B4B4;
+	background: url(/dms2/sites/all/themes/seven/images/buttons.png) 0 0 repeat-x;
+	border-radius: 15px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 15px;
+	font-weight:bold;
+	float:none;
+	margin-top: -1px;
+	color: #000000 !important;
+	text-decoration: none !important;
+}
+input.form-checkbox,input.form-radio{
+	height: auto !important;
+}
+.workflow_history caption{
+    color: #024672;
+    font-family: Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;
+    font-size: 150%;
+    font-weight: bold;
+    line-height: 1.3em;
+}
+#workflow-tab-form {
+    margin-bottom: 20px;
+}
+table.workflow_history {
+    margin-bottom: 20px;
+}
+form#node-form{
+	margin-bottom: 20px;
+}
+/*Custom css ends here*/
+
+.nested {
+	margin: 10px !important;
+}
+
+div.indentation{width:20px;height:1.7em;margin:-0.4em 0.2em -0.4em -0.4em;padding:0.42em 0 0.42em 0.6em;float:left;}
+div.tree-child{background:url(/dms/misc/tree.png) no-repeat 11px center;}
+div.tree-child-last{background:url(/dms/misc/tree-bottom.png) no-repeat 11px center;}
+div.tree-child-horizontal{background:url(/dms/misc/tree.png) no-repeat -11px center;}.error{color:#e55;}
+div.error{border:1px solid #d77;}div.error,tr.error{background:#fcc;color:#200;padding:2px;}.warning{color:#e09010;}
+div.warning{border:1px solid #f0c020;}div.warning,tr.warning{background:#ffd;color:#220;padding:2px;}.ok{color:#008000;}
+div.ok{border:1px solid #00aa00;}div.ok,tr.ok{background:#dfd;color:#020;padding:2px;}
+.item-list .icon{color:#555;float:right;padding-left:0.25em;clear:right;}.item-list .title{font-weight:bold;}
+.item-list ul{margin:0 0 0.75em 0;padding:0;}.item-list ul li{margin:0 0 0.25em 1.5em;padding:0;list-style:disc;}
+ol.task-list li.active{font-weight:bold;}.form-item{margin-top:1em;margin-bottom:1em;}
+tr.odd .form-item,tr.even .form-item{margin-top:0;margin-bottom:0;white-space:nowrap;}
+tr.merge-down,tr.merge-down td,tr.merge-down th{border-bottom-width:0 !important;}
+tr.merge-up,tr.merge-up td,tr.merge-up th{border-top-width:0 !important;}
+.form-item input.error,.form-item textarea.error,.form-item select.error{border:2px solid red;}
+.form-item .description{font-size:0.85em;}.form-item label{display:block;font-weight:bold;}
+.form-item label.option{display:inline;font-weight:normal;}.form-checkboxes,.form-radios{margin:1em 0;}
+.form-checkboxes .form-item,.form-radios .form-item{margin-top:0.4em;margin-bottom:0.4em;}
+.marker,.form-required{color:#f00;}.more-link{text-align:right;}.more-help-link{font-size:0.85em;text-align:right;}
+.nowrap{white-space:nowrap;}.item-list .pager{clear:both;text-align:center;}
+.item-list .pager li{background-image:none;display:inline;list-style-type:none;padding:0.5em;}
+
+
+
+
+
+html,body,div,span,p,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,form,fieldset,input,textarea{margin:0;padding:0;}
+img,abbr,acronym{border:0;}p{margin:1em 0;}h1,h2,h3,h4,h5,h6{margin:0 0 0.5em 0;}
+#user-login-form{text-align:left;}
+#user-login-form .item-list{margin-top:1em;}
+#user-login-form .item-list ul{margin-left:0;}
+#user-login-form div.item-list ul li{list-style-type:none;margin:0;}
+#user-login-form li.openid-link a,#user-login li.openid-link a{background-position:0 0;padding:0 0 0 20px;}
+
+
+
+
+body{font-family:Arial,Helvetica,Verdana,"Bitstream Vera Sans",sans-serif;font-size:81.25%;line-height:150%;}
+.form-text{font-family:Arial,Helvetica,Verdana,"Bitstream Vera Sans",sans-serif;}
+h1{font-size:180%;}
+h2{font-size:142.85%;}
+h3{font-size:114.28%;}h4{font-size:100%;}
+h5{font-size:90%;}h6{font-size:80%;}
+#footer{font-size:95%;}
+.submitted,.terms{font-size:95%;}
+.terms{line-height:130%;}
+.node .read-more,.node .more-link,.node .links{font-size:95%;}
+div.comment div.links a,div.comment ul.links a{font-size:90%;}
+.signature{font-size:91.6%;}.breadcrumbs{font-size:90%;line-height:100%;}
+ul.pager{font-size:90%;line-height:150%;}ul.pager li{line-height:250%;}
+li,li.leaf,ul.menu li,.item-list ul li{line-height:150%;}.form-submit{font-size:80%;}
+.form-item .description{font-size:95%;line-height:130%;}.block-region{font-size:130%;}
+#content-tabs ul.primary li a:link,#content-tabs ul.primary li a:visited{font-size:110%;line-height:120%;}
+#content-tabs ul.secondary li a:link,#content-tabs ul.secondary li a:visited{font-size:100%;line-height:110%;}
+.block-poll .poll div.title{font-size:120%;}#forum .description{font-size:90%;}.fusion-callout .inner{font-size:150%;}
+.fusion-multicol-menu .inner ul li{font-size:115%;}.fusion-multicol-menu .inner ul li.expanded ul{font-size:75%;}
+.fusion-multicol-menu .inner ul li.expanded ul li ul{font-size:85%;}.fusion-horiz-login#block-user-0 #user-login-form label{font-size:90%;}
+
+
+body{font-size:12px;font-family:Myriad,Helvetica,Tahoma,Arial,sans-serif;}
+p{font-size:12px !important;line-height:18px;margin:12px 0;color:#444444;}
+p.featured{font-size:14px !important;}
+ul.featured li{font-size:14px !important;}
+a,a:link,a:visited{color:#21759B;}a:hover,a:focus,a:active{text-decoration:underline;}img{border-color:#6a6868 !important;}
+#site-name{font-size:300%;line-height:150%;}
+.footer-message{font-size:90%;}body{}
+.header-site-info span{display:block;}#logo{}#site-name a:link,#site-name a:visited,#site-name a:hover,#site-name a:active{}#slogan{}
+.user-navigation{color:#6a6868 !important;line-height:20px;vertical-align:middle;}.user-navigation .block{margin:0 !important;}
+.user-navigation a{color:#21759B;text-decoration:none;}.user-navigation ul li{display:inline !important;line-height:20px;text-align:right;}
+.user-navigation a:active,.user-navigation ul li a.active{color:#21759B;display:inline !important;}.user-navigation a:hover{color:#21759B;text-decoration:underline;}
+.user-navigation ul.menu{text-align:right !important;}#page{background:url(../images/dms/dms-bg.png) top left repeat-x;}.page-inner{border:0;margin-bottom:0;padding:0;}
+#header-top-wrapper{height:130px;background:url(../images/dms/DMS-gradient.png) left top no-repeat;overflow:visible;position:relative;}
+#header-top{min-width:960px;position:relative;overflow:visible;}#header-group-wrapper{overflow:visible;position:relative;}#header-group{padding:0;min-width:960px;position:relative;}
+.logo-block{position:absolute;left:5px;top:10px;min-width:150px;}#block-blockify-blockify-logo .gutter{margin:0;padding:0;}
+ul#superfish-1{text-align:center;margin:auto;position:relative;}
+
+h1.title{color:#024672;font-family:Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;font-size:180%;font-style:normal !important;line-height:18px;}
+.node-unpublished{background-color:#fff4f4;}.preview .node{background-color:#ffffea;}h2.title{color:#024672;font-family:Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;font-size:150%;font-style:normal !important;line-height:15px;}h2.title a:link,h2.title a:visited{}h2.title a:hover,h2.title a:focus,h2.title a:active{}.teaser{}.meta{}.submitted{}.node ul.links li{}.node ul.links a{}div.node .read-more a,div.node .more-link a{}div.content-messages div.messages,div.content-help div.help{}div.content-messages-inner div.status{}div.content-messages-inner div.warning{}div.content-messages-inner div.error{border:1px solid #ccc !important;background:#f3f3f3 !important;padding:5px !important;}div.content-help-inner div.help{border:2px solid #024672;padding:5px 10px !important;}.form-item input.error,.form-item textarea.error,.form-item select.error{border:1px solid #aa1144;}.marker,.form-required{color:#aa1144;}h2.block-title{}.breadcrumbs{}.breadcrumbs a:link,.breadcrumbs a:visited{}#content-tabs,.content-tabs{background-color:transparent;float:left;margin:20px 0;padding:0;}#content-tabs ul.primary,#content-tabs ul.secondary,.content-tabs ul.menu{clear:both;float:left;margin:0;padding:0 10px;width:99%;}#content-tabs ul.primary,.content-tabs ul.menu{border-bottom:1px solid #ccc;}#content-tabs ul.secondary{border-bottom:0 transparent;text-transform:capitalize;}#content-tabs ul.primary li,#content-tabs ul.secondary li,.content-tabs ul.menu li{border-style:none;display:inline;float:left;list-style:none;margin:0 10px;padding:0;}#content-tabs ul.primary li a,.content-tabs ul.menu li a{line-height:180% !important;padding:2px 12px 0 12px !important;border-radius:10px 10px 0px 0px;-moz-border-radius:10px 10px 0px 0px;-webkit-border-radius:10px 10px 0px 0px;display:block;}#content-tabs ul.secondary li a{line-height:180% !important;padding:0 8px 2px 8px !important;vertical-align:bottom;border-radius:0px 0px 10px 10px;-moz-border-radius:0px 0px 10px 10px;-webkit-border-radius:0px 0px 10px 10px;display:block;}#content-tabs ul.primary li a:link,#content-tabs ul.primary li a:visited,#content-tabs ul.secondary li a:link,#content-tabs ul.secondary li a:visited,.content-tabs ul.menu li a:link,.content-tabs ul.menu li a:visited{background:transparent;border:none;color:#000;float:left;font-weight:bold;margin:0;padding:0;text-decoration:none;white-space:nowrap;}#content-tabs ul.secondary li a:link,#content-tabs ul.secondary li a:visited{color:#555;}#content-tabs ul.primary li a.active:link,#content-tabs ul.primary li a.active:visited,.content-tabs ul.menu li a.active:link,.content-tabs ul.menu li a.active:visited,.content-tabs ul.menu li a.active{display:block;border-bottom:0 transparent;background:#f1c851 !important;background-color:#f1c851 !important;color:#555;padding-bottom:2px;}#content-tabs ul.secondary li a.active:link,#content-tabs ul.secondary li a.active:visited{color:#777;background:#f0f0f0;margin:0;border-bottom:0 transparent;}#content-tabs ul.primary li a:hover,#content-tabs ul.primary li a:focus,.content-tabs ul.menu li a:hover,.content-tabs ul.menu li a:focus{border:transparent;color:#777;background:#ffe688 !important;}#content-tabs ul.secondary li a:hover,#content-tabs ul.secondary li a:focus{color:#777;border-bottom:0 transparent;background:#f5f5f5;}ul.pager{}ul.pager li{}ul.pager a,ul.pager li.pager-current{border-color:#333;}ul.pager li.pager-current{background-color:#777;color:#fff;}ul.pager a:hover,ul.pager a:active,ul.pager a:focus{background-color:#777;border-color:#333;color:#fff;}form input.form-submit{color:#777;margin:0 4px;!important;height:25px;padding:0 8px;background:#ffe688;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;border:0 solid #214472;display:inline-block;font-size:11px !important;font-family:Myriad,Helvetica,Tahoma,Arial,sans-serif !important;font-weight:bold;line-height:25px;vertical-align:middle;}form input.form-submit:hover,form input.form-submit.hover,form input.form-submit:focus,#edit-field-ds-file-0-filefield-populate:hover,#edit-field-ds-file-0-filefield-populate.hover,#edit-field-ds-file-0-filefield-populate:focus{color:#555;background:#f1c851;}.form-item input,.form-item select,.form-item textarea{}div.container-inline{margin-top:10px;}.form-item-cancel{display:inline-block !important;margin:0 !important;}.cancel-button-div{padding:10px 10px 10px 0;margin:10px 10px 10px 0;}a.cancel-button,.cancel-button a{display:inline-block;color:#777;margin:0 4px;height:25px;padding:0 8px !important;background:#ffe688;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;border:0 solid #214472;font-size:11px !important;font-family:Myriad,Helvetica,Tahoma,Arial,sans-serif !important;font-weight:bold;line-height:25px;vertical-align:middle;}.cancel-button a:hover,.cancel-button a.hover,.cancel-button a:focus,a.cancel-button:hover,a.cancel-button.hover,a.cancel-button:focus{color:#555 !important;background:#f1c851 !important;text-decoration:none;}form#node-delete-confirm div div.container-inline a{display:inline-block;color:#777;height:25px;margin:0 4px;padding:0 8px !important;background:#ffe688;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;border:0 solid #214472;font-size:11px !important;font-family:Myriad,Helvetica,Tahoma,Arial,sans-serif !important;font-weight:bold;line-height:25px;vertical-align:middle;}form#node-delete-confirm div div.container-inline a:hover,form#node-delete-confirm div div.container-inline a.hover,form#node-delete-confirm div div.container-inline a:focus{color:#555 !important;background:#f1c851 !important;text-decoration:none;}@-moz-document url-prefix() {form#node-delete-confirm div div.container-inline a{height:0px;line-height:0px !important;padding-top:14px !important;padding-bottom:12px !important;position:relative;top:1px;}}#edit-field-ds-file-0-filefield-populate{color:#777;margin:10px 4px 10px 0;!important;height:25px;padding:0 8px;background:#ffe688;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;border:0 solid #214472;display:block;font-size:11px !important;font-family:Myriad,Helvetica,Tahoma,Arial,sans-serif !important;font-weight:bold;line-height:25px;vertical-align:middle;}.form-item .form-radio,.form-item .form-checkbox{background:none;border:none !important;}fieldset{}fieldset legend{}fieldset legend,legend.collapse-processed,legend.collapse-processed a:link,legend.collapse-processed a:visited{}html.js fieldset.collapsible legend a:link,html.js fieldset.collapsible legend a:visited{}html.js fieldset.collapsed legend a:link,html.js fieldset.collapsed legend a:visited{}.description p{margin:0 0 12px 0;}table{}tbody{border-top:1px solid #ccc;}thead th,th{border-bottom:3px solid #ccc;}tbody th{border-bottom:1px solid #ccc;}tr.even,tr.even td{background-color:#eee;border-bottom:1px solid #ccc;}tr.odd,tr.odd td{background-color:#fff;border-bottom:1px solid #ccc;}td.active{}tr.drag td,tr.drag-previous td{color:#000;}.in-maintenance{}.book-navigation .menu{border-top:1px solid #ccc;}.book-navigation .page-links{border-top:1px solid #ccc;border-bottom:1px solid #ccc;}div.comment{}div.comment h3.title{}div.comment div.links a,div.comment ul.links a{}.comments div.odd{background-color:#fff;}.comments div.even{background-color:#eee;}.comments div.comment-by-author{background-color:#ddd;}.signature{border-top:1px solid #d6ddb9;}.comment-wrapper .picture img{}#forum .description{}.forum-topic-navigation{border-top:1px solid #888;border-bottom:1px solid #888;}div.poll div.bar{background-color:#ddd;}div.poll div.bar div.foreground{background-color:#999;}.profile .picture{float:none;}.profile dt{background-color:#ccc;}div.field-type-text{margin:8px 0;}ul.uc-categories{}.uc-categories li a{font-weight:bold;padding:0 5px 0 3px;}.catalog-grid-title a:link,.catalog-grid-title a:visited,.category a:link,.category a:visited{}.catalog-grid-title a:hover,.catalog-grid-title a:focus,.category a:hover,.category a:focus{}.category-grid-products .catalog-grid-sell-price{}input.node-add-to-cart,input.list-add-to-cart{}input.node-add-to-cart:hover,input.node-add-to-cart.hover,input.node-add-to-cart:focus,input.list-add-to-cart:hover,input.list-add-to-cart.hover,input.list-add-to-cart:focus{}#field-group{}#price-group{}.product-image a img{}.product-image a:hover img,.product-image a:focus img{}.full-node .product-group .uc-price-display{}.full-node .product-group .attributes{}#store-footer{}#store-footer a:link,#store-footer a:visited{}.cart-block-summary-links ul.links li a{}.cart-block-summary-links ul.links li.cart-block-checkout a:link,.cart-block-summary-links ul.links li.cart-block-checkout a:visited{}#uc-cart-view-form #edit-checkout,#uc-cart-checkout-form #edit-continue,#uc-cart-checkout-review-form #edit-submit{}.order-review-table{}#cart-form-products table th{border-bottom:3px solid #dec2c3;}div.workflow-summary-table .view-content{border:1px solid #ccc;}div.workflow-summary-table tr th,div.workflow-summary-table tr td{text-align:center;padding:5px;border:1px solid #ccc;}div.workflow-summary-table tr th{border-bottom:2px solid #ccc;background:#EEEEEE;}div.views-field-state{font-weight:700;text-decoration:underline;margin:4px 0;}div.views-field-nid{color:#333;}#views-bulk-operations-select{margin:auto;width:40%;}.workflow-progress ul{display:table !important;width:100%}.workflow-progress ul li{display:table-cell !important;text-align:center;}current-workflow-state{display:block;}.approve-link{height:15px;width:15px;margin:3px 2px;background:transparent url(../images/dms/icons/approve.png) no-repeat center center;display:block;text-indent:-9999px;float:left;position:relative;}.clone-link{height:15px;width:15px;margin:3px 2px;background:transparent url(../images/dms/icons/clone.png) no-repeat center center;display:block;text-indent:-9999px;float:left;position:relative;}.delete-link{height:15px;width:15px;margin:3px 2px;background:transparent url(../images/dms/icons/delete.png) no-repeat center center;display:block;text-indent:-9999px;float:left;position:relative;}.deleterequest-link{height:15px;width:15px;margin:3px 2px;background:transparent url(../images/dms/icons/deleterequest.png) no-repeat center center;display:block;text-indent:-9999px;float:left;position:relative;}.delete-request-link{height:15px;width:15px;margin:3px 2px;background:transparent url(../images/dms/icons/deleterequest.png) no-repeat center center;display:block;text-indent:-9999px;float:left;position:relative;}.download-link{height:15px;width:15px;margin:3px 2px;background:transparent url(../images/dms/icons/download.png) no-repeat center center;display:block;text-indent:-9999px;float:left;position:relative;}
+.save-link{height:15px;width:15px;margin:3px 2px;background:transparent url(../images/dms/icons/save.png) no-repeat center center;text-indent:-9999px;float:left;position:relative;}
+.submit-link{height:15px;width:15px;margin:3px 2px;background:transparent url(../images/dms/icons/submit.png) no-repeat center center;display:block;text-indent:-9999px;float:left;position:relative;}
+

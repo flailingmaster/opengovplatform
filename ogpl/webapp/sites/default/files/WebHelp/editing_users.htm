@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Adobe RoboHelp 9" />
+<title>Editing Users</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addTocInfo("Super Administrator\nManaging Users\nEditing Users");
+addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("<a href=\"super_administrator.htm\">Super Administrator<\/a> > <a href=\"setting_user_permissions.htm\">Managing Users<\/a> > Editing Users<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<h1>Editing Users</h1>
+<p>You can update the information about a user, such as the username, password, 
+ roles, by performing the following steps:</p>
+<ol type="1">
+	<li>In the Drupal menu, point to <span class="UI">User Management</span>, 
+	 <span class="UI">Users</span>, and then click <span class="UI">List</span>.<br />
+	The <span class="UI">Users</span> page appears.</li>
+	<li><p style="line-height: 150%;">In the <span class="UI">Users</span> 
+	 page, under the <span class="UI">Operations</span> column, click the 
+	 <span class="UI">Edit</span> link for the user that you want to update.<br />
+	<span>A page that displays the user account information appears.</span></p></li>
+	<li><p style="line-height: 150%;">Update the appropriate information 
+	 in each field. The following table lists each field and its description.</p></li>
+</ol>
+<p class="TableCaption" style="margin-left: 36px;"><span>Table: Description 
+ of fields in the Users page</span></p>
+<table style="margin-left: 40px;" cellspacing="0" width="93.191%">
+	<col style="width: 26.753%;" />
+	<col style="width: 73.247%;" />
+	<tr>
+		<td style="border: Solid 1px #000000;" bgcolor="#E8E8E8"><p class="TableHeading"><span>Title</span></p></td>
+		<td style="border-top: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;" bgcolor="#E8E8E8"><p class="TableHeading"><span 
+		 style="font-weight: bold;"><b>Description</b></span></p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Username</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p><span>Update 
+		 the user name of this user.</span></p>
+		<p><span>A</span>ll instances of this username in the <span>OGPL Control Panel</span> application 
+		 are updated.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">E-mail 
+		 address</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p><span>Update 
+		 the e-mail address of this user.</span></p>
+		<p><span>A</span>ll instances of this e-mail address in the <span>OGPL Control Panel</span> application 
+		 are updated.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Password</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>If 
+		 you want to assign a new password to this user, enter a password.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Confirm Password</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p><span 
+		 style="mso-ansi-language: EN-US; mso-fareast-language: EN-US; 
+		 mso-bidi-language: AR-SA;">Enter the same password that you entered 
+		 in the Password box.</span></p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Status</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p><span>By 
+		 default, this is set to </span><span style="font-weight: bold;"><b>Active</b></span><span>.</span></p>
+		<p>When the <span style="font-weight: bold;"><b>Status</b></span> is set 
+		 to <span style="font-weight: bold;"><b>active</b></span>, the user can 
+		 log in to and access the areas of the <span>OGPL Control Panel 
+		 </span>application that are designated to the role that this user 
+		 is assigned to.</p>
+		<p><span>If you want to block this user from logging in to the 
+		 OGPL Control Panel</span><span> 
+		 application, click </span><span style="font-weight: bold;"><b>Blocked</b></span><span>.</span></p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Roles</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Select 
+		 the appropriate check box to update the roles for the user.</p>
+		<p><span style="font-weight: bold;"><b>Note:</b></span> You can assign 
+		 more than one role to a user.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Force 
+		 password change on next logon</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>If 
+		 you want the user to change the password when the user logs on 
+		 to the OGPL Control Panel 
+		 application, select this check box.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Theme 
+		 Configuration</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Update 
+		 the theme of the application that user must have access to.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Default 
+		 time zone</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Click 
+		 the appropriate time zone for the location of this user.</p></td>
+	</tr>
+</table>
+<ol start="3" type="1">
+	<li>Click <span class="UI">Save</span><span class="UI" style="font-weight: normal;">.<br />
+	The information for this user is updated in the OGPL Control Panel 
+	 application.</span></li>
+</ol>
+<script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

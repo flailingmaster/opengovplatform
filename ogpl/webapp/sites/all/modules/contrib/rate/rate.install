@@ -1,0 +1,68 @@
+<?php
+
+/**
+ * Implements hook_uninstall().
+ */
+function rate_uninstall() {
+  variable_del('rate_widgets');
+}
+
+/**
+ * Update css and js attributes in the widget objects.
+ * 
+ * This function has to be called when the information from hook_rate_templates() is changed.
+ */
+function _rate_update_templates_data() {
+  $templates = array();
+  foreach (module_implements('rate_templates') as $module) {
+    foreach (module_invoke($module, 'rate_templates') as $name => $template) {
+      $templates[$name] = $template;
+    }
+  }
+
+  $widgets = variable_get('rate_widgets', array());
+  foreach ($widgets as $widget_id => $widget) {
+    $template = isset($widget->template) ? $widget->template : NULL;
+    if (isset($templates[$template])) {
+      if (isset($widget->css)) {
+        unset($widget->css);
+      }
+      if (isset($templates[$template]->css)) {
+        $widget->css = $templates[$template]->css;
+      }
+      if (isset($widget->js)) {
+        unset($widget->js);
+      }
+      if (isset($templates[$template]->js)) {
+        $widget->js = $templates[$template]->js;
+      }
+    }
+    $widgets[$widget_id] = $widget;
+  }
+  variable_set('rate_widgets', $widgets);
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function rate_update_6000() {
+  $widgets = variable_get('rate_widgets', array());
+  foreach ($widgets as $widget_id => $widget) {
+    $template = isset($widget->template) ? $widget->template : NULL;
+    // "helpful" template was renamed to "yesno".
+    if ($template == 'helpful') {
+      $widget->template = 'yesno';
+    }
+    $widgets[$widget_id] = $widget;
+  }
+  variable_set('rate_widgets', $widgets);
+  return array();
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function rate_update_6001() {
+  _rate_update_templates_data();
+  return array();
+}

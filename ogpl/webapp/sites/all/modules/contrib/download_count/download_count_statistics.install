@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * @file
+ * Installation code for the download_count_statistics module.
+ */
+
+/**
+ * Implementation of hook_schema().
+ */
+function download_count_statistics_schema() {
+  $schema['download_count_statistics'] = array(
+    'description' => t('Table used for download_count module statistics.'),
+    'fields' => array(
+      'fid' => array(
+        'description' => t('The id from the drupal files table of the file downloaded.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'datestamp' => array(
+        'description' => t('The date the file was downloaded.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'count' => array(
+        'description' => t('Number of times a file was downloaded in one day.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('fid', 'datestamp'),
+  );
+  return $schema;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function download_count_statistics_install() {
+  drupal_install_schema('download_count_statistics');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function download_count_statistics_uninstall() {
+  drupal_uninstall_schema('download_count_statistics_day');
+  variable_del('download_count_statistics_last_processed');
+  variable_del('download_count_statistics_daily');
+  variable_del('download_count_statistics_daily_limit');
+  variable_del('download_count_statistics_monthly');
+  variable_del('download_count_statistics_monthly_limit');
+  variable_del('download_count_statistics_weekly');
+  variable_del('download_count_statistics_weekly_limit');
+  variable_del('download_count_statistics_yearly');
+  variable_del('download_count_statistics_yearly_limit');
+  variable_del('download_count_statistics_sparklines');
+  variable_del('download_count_statistics_sparkline_type');
+  variable_del('download_count_statistics_sparkline_min');
+  variable_del('download_count_statistics_sparkline_height');
+  variable_del('download_count_statistics_sparkline_width');
+
+}

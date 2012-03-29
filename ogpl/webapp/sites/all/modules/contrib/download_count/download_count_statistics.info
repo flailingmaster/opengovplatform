@@ -1,0 +1,11 @@
+name = Download Count Statistics
+description = Provides daily, weekly, monthly, and yearly statistics for download_count module data.
+core = 6.x
+dependencies[] = download_count
+
+; Information added by drupal.org packaging script on 2011-07-01
+version = "6.x-2.0"
+core = "6.x"
+project = "download_count"
+datestamp = "1309536415"
+

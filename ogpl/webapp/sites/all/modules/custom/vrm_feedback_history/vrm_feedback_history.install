@@ -1,0 +1,63 @@
+<?php
+
+function vrm_feedback_history_install()
+{
+drupal_set_message('Installing History module');
+	drupal_install_schema('vrm_feedback_history');
+	
+}
+
+function vrm_feedback_history_uninstall() {
+  drupal_uninstall_schema('vrm_feedback_history');
+}
+
+function vrm_feedback_history_schema()
+{
+	$schema['vrm_forward_log'] = array(
+    'fields' => array(
+		  'id' => array(
+		  'description' => t('Log Id'),
+			'type' => 'serial',
+			'size' => 'big',
+			'not null' => TRUE,
+		  ),
+		  'uid' => array(
+		  'description' => t('User ID'),
+			'type' => 'int',
+			'size' => 'big',
+			'not null' => TRUE,
+		  ),
+		  'uname'=>array(
+			'description' => t('User Name'),
+			'type' => 'varchar',
+			'not null' => false,
+			'length'=>60,
+		  ),
+		  'nid'=>array(
+				'description' => t('Node ID'),
+				'type'=>'int',
+				'size' => 'big',
+				'not null'=>FALSE,
+			),
+		  'comment'=>array(
+			'description' => t('Forward Commnent'),
+			'type' => 'varchar',
+			'not null' => false,
+			'length'=>5000,
+		  ),
+		  'emails'=>array(
+			'description' => t('Sent to Emails'),
+			'type' => 'varchar',
+			'not null' => false,
+			'length'=>1000,
+		  ),
+		  'timestamp'=>array(
+			'description' => t('Timestamp'),
+			'type' => 'int',
+			'not null' => false,
+		  ),
+	  ),
+	  'primary key'=>array('id'),
+	);
+	return($schema);
+}

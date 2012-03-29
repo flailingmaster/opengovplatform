@@ -1,0 +1,39 @@
+Index: flexifield-widget.inc
+===================================================================
+--- flexifield-widget.inc	(revision 4509)
++++ flexifield-widget.inc	(working copy)
+@@ -229,6 +229,34 @@
+   }
+   $aElement = $aElement['value'];
+   
++  // Preserve the default value for each field.
++  $aFields = content_types($aElement['#flexifield_item_type']);
++  $aFields = $aFields['fields'];
++  if (!empty($aFields)) {
++    foreach ($aFields as $sField => $aContent) {
++      if ($aContent['widget']['default_value_php']) {
++        $aDefaultValues = eval($aContent['widget']['default_value_php']);
++      }
++      else {
++        $aDefaultValues = $aContent['widget']['default_value'];
++      }
++
++      // For now, we only deal with text and nodereference types.
++      // More will be handled if needed.
++      switch ($aContent['type']) {
++
++        case 'nodereference':
++          $aElement[$sField]['nid']['nid']['#value'] = $aDefaultValues[0]['nid'];
++          break;
++
++        case 'text':
++          $aElement[$sField][0]['value']['#value'] = $aDefaultValues[0]['value'];
++          break;
++
++      }
++    }
++  }
++
+   // Return the rendered element as an ahah response
+   $aElement['#flexifield_from_ahah'] = TRUE;
+   print theme('ahah_response', drupal_render($aElement));

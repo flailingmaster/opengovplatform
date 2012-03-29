@@ -1,0 +1,10 @@
+;  Copyright 2009-2011 United States Government. 
+;
+;  This software is licensed under the GNU General Public License
+;  version 2 (see the file LICENSE for details)
+
+name = Views Fusion Charts
+description = "Views style plugin to render a view as a Fusion Chart"
+package = REI Dashboard Platform
+core = 6.x
+dependencies[] = views

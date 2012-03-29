@@ -1,0 +1,12 @@
+; $Id: skip_validation_user_form.info,v 1.1 2009/10/13 04:17:57 cdale Exp $
+name = User Form Skip Validation
+description = Adds a feature which skips validations on user deletion.
+dependencies[] = skip_validation
+core = 6.x
+
+; Information added by drupal.org packaging script on 2009-10-13
+version = "6.x-1.4"
+core = "6.x"
+project = "skip_validation"
+datestamp = "1255408261"
+

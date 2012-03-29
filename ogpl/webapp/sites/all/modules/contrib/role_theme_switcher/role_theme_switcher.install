@@ -1,0 +1,46 @@
+<?php
+
+function role_theme_switcher_uninstall()
+{
+  $roles = user_roles();
+
+  // Get all themes
+  $themes = list_themes();
+
+  foreach ($roles as $id => $role)
+    variable_del(strtolower('role_theme_switcher_'.$id.'_theme'));
+}
+
+function role_theme_switcher_install() {}
+
+
+/**
+ * Variable names are changed
+ * Was: <role_name>_theme
+ * Now: role_theme_switcher_<role_id>_theme
+ * Thus we avoid translation collisions, when Role Names were translated
+ */
+function role_theme_switcher_update_6001()
+{
+  $roles = user_roles();
+
+  // Get all themes
+  $themes = list_themes();
+  $themes_list = array_merge(array(t('Default')), array_keys($themes));
+
+  // Copy value from old variable to a new one, and delete old variable
+  foreach ($roles as $id => $role)
+  {
+    $assigned_theme = str_replace(' ', '_', $role).'_theme';
+    $val = variable_get(strtolower($assigned_theme), '');
+
+    if (!empty($val))
+      variable_set('role_theme_switcher_'.$id.'_theme', $val);
+
+    variable_del($assigned_theme);
+  }
+
+  $ret[] = array('success' => TRUE, 'query' => 'Changed names of old ROLE THEME SWITCHER variables');
+
+  return $ret;
+}

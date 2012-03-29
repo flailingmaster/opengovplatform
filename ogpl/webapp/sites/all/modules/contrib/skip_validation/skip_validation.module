@@ -1,0 +1,101 @@
+<?php
+// $Id: skip_validation.module,v 1.5 2009/10/13 04:17:56 cdale Exp $
+
+/**
+ * @file
+ *
+ * Provides an API which allows developers to skip validation procedures on select submit buttons.
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function skip_validation_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#skip_validation':
+      return '<p>'. t('Provides an API which allows developers to skip validation procedures on select submit buttons.') .'</p>';
+      break;
+  }
+}
+
+/**
+ * Implementation of hook_elements().
+ */
+function skip_validation_elements() {
+  return array('form' => array('#after_build' => array('skip_validation_after_build')));
+}
+
+/**
+ * After build callback which handles processing of skip validation options.
+ */
+function skip_validation_after_build($form, &$form_state) {
+  if (!empty($form_state['submitted'])) {
+    if (!empty($form_state['clicked_button']['#skip_validation'])) {
+      // Recursively set all children as validated.
+      _skip_validation_skip_validation($form, 'full');
+    }
+    elseif (!empty($form_state['clicked_button']['#skip_core_validation'])) {
+      // Recursively remove #needs_validation from all children.
+      _skip_validation_skip_validation($form, 'core');
+    }
+
+    // Check for skip required validations.
+    if (!empty($form_state['clicked_button']['#skip_required_validation'])) {
+      // Recursively remove #required from all children.
+      _skip_validation_skip_validation($form, 'required');
+    }
+  }
+
+  return $form;
+}
+
+/**
+ * Recursive helper function to set the validated property.
+ *
+ * @param &$elements
+ *   The elements that are currently being processed.
+ * @param $type
+ *   The type of validation to skip.
+ *   Accepted values are:
+ *     o full               - Skips all validation, which includes core (see below)
+ *                            and all #validate and #element_validate callbacks.
+ *     o core               - Skips core validation routines, which includes
+ *                            #required, #maxlength, and #options checking.
+ *     o required           - Skips #required validations.
+ */
+function _skip_validation_skip_validation(&$elements, $type = '') {
+  switch ($type) {
+    case 'full':
+      $elements['#validated'] = TRUE;
+      break;
+    case 'core':
+      unset($elements['#needs_validation']);
+      break;
+    case 'required':
+      // Set a pre render hook so we can tell the
+      // theme to reset the required option for
+      // rendering on validation errors.
+      if (!empty($elements['#required'])) {
+        $elements['#pre_render'][] = 'skip_validation_pre_render';
+      }
+
+      unset($elements['#required']);
+      break;
+    default:
+      return;
+  }
+  foreach (element_children($elements) as $key) {
+    _skip_validation_skip_validation($elements[$key], $type);
+  }
+}
+
+/**
+ * Pre render callback to correct required validation
+ * skipping on validation errors. This only corrects
+ * the theme layer. Thankfully, the #required option
+ * appears to be reset on form submission.
+ */
+function skip_validation_pre_render($element) {
+  $element['#required'] = TRUE;
+  return $element;
+}

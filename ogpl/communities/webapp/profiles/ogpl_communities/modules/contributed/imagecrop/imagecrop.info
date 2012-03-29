@@ -1,0 +1,15 @@
+; $Id: imagecrop.info,v 1.1.4.2 2008/10/17 14:27:03 swentel Exp $
+name = Imagecache javascript crop
+description = Provides a javascript crop toolbox via the imagecache action.
+package = ImageCache
+dependencies[] = imagecache
+dependencies[] = imageapi
+dependencies[] = jquery_ui
+core = 6.x
+version = VERSION
+; Information added by drupal.org packaging script on 2010-10-11
+version = "6.x-1.x-dev"
+core = "6.x"
+project = "imagecrop"
+datestamp = "1286799014"
+

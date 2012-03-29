@@ -1,0 +1,210 @@
+# $Id: more_node_buttons.pot,v 1.1.4.3 2010/11/04 15:08:23 quiptime Exp $
+#
+# LANGUAGE translation of More node buttons
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  more_node_buttons.admin.inc
+#  more_node_buttons.module
+#  more_node_buttons.info
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2010-11-04 14:06+0100\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: more_node_buttons.admin.inc:36 more_node_buttons.module:160;564
+msgid "None"
+msgstr ""
+
+#: more_node_buttons.admin.inc:37 more_node_buttons.module:161
+msgid "Left"
+msgstr ""
+
+#: more_node_buttons.admin.inc:38 more_node_buttons.module:162
+msgid "Right"
+msgstr ""
+
+#: more_node_buttons.admin.inc:70
+msgid "Button and tab values"
+msgstr ""
+
+#: more_node_buttons.admin.inc:71
+msgid "Use your own names for the buttons and the tab. These names are translatable with the translation interface. Do not enter translated texts here."
+msgstr ""
+
+#: more_node_buttons.admin.inc:77 more_node_buttons.module:158
+msgid "Cancel button"
+msgstr ""
+
+#: more_node_buttons.admin.inc:85 more_node_buttons.module:176
+msgid "Save and continue button"
+msgstr ""
+
+#: more_node_buttons.admin.inc:93 more_node_buttons.module:193
+msgid "Save and create new button"
+msgstr ""
+
+#: more_node_buttons.admin.inc:101;138 more_node_buttons.module:201
+msgid "Create new tab"
+msgstr ""
+
+#: more_node_buttons.admin.inc:111
+msgid "Save"
+msgstr ""
+
+#: more_node_buttons.admin.inc:116
+msgid "Reset to defaults"
+msgstr ""
+
+#: more_node_buttons.admin.inc:135
+msgid "Settings"
+msgstr ""
+
+#: more_node_buttons.admin.inc:136
+msgid "Which @module functions are used by the content types."
+msgstr ""
+
+#: more_node_buttons.admin.inc:136;234;253;255;255 more_node_buttons.module:17 more_node_buttons.info:0
+msgid "More node buttons"
+msgstr ""
+
+#: more_node_buttons.admin.inc:138;240
+msgid "Cancel"
+msgstr ""
+
+#: more_node_buttons.admin.inc:138 more_node_buttons.module:169
+msgid "- referer redirection"
+msgstr ""
+
+#: more_node_buttons.admin.inc:138
+msgid "Save and continue"
+msgstr ""
+
+#: more_node_buttons.admin.inc:138
+msgid "Save and create new"
+msgstr ""
+
+#: more_node_buttons.admin.inc:145
+msgid "For the content type %type no settings can be made."
+msgstr ""
+
+#: more_node_buttons.admin.inc:157
+msgid "Edit this content type"
+msgstr ""
+
+#: more_node_buttons.admin.inc:185
+msgid "Module development by <a href=\"@development-url\">Quiptime Group</a>."
+msgstr ""
+
+#: more_node_buttons.admin.inc:218
+msgid "Your changes have been saved."
+msgstr ""
+
+#: more_node_buttons.admin.inc:234
+msgid "Are you sure you want to reset all %module settings?"
+msgstr ""
+
+#: more_node_buttons.admin.inc:238
+msgid "This action cannot be undone."
+msgstr ""
+
+#: more_node_buttons.admin.inc:239
+msgid "Reset"
+msgstr ""
+
+#: more_node_buttons.admin.inc:253;255
+msgid "The %module settings have been set back."
+msgstr ""
+
+#: more_node_buttons.admin.inc:255
+msgid "view"
+msgstr ""
+
+#: more_node_buttons.module:89
+msgid "@tabcn"
+msgstr ""
+
+#: more_node_buttons.module:150
+msgid "Button settings"
+msgstr ""
+
+#: more_node_buttons.module:170
+msgid "The <em>Cancel button referer redirection</em> allows the redirection to the page was started the action to create or edit a node if this action is canceled."
+msgstr ""
+
+#: more_node_buttons.module:177;190
+msgid "What does +? Further to the right or further to the left."
+msgstr ""
+
+#: more_node_buttons.module:185
+msgid "Create new content"
+msgstr ""
+
+#: more_node_buttons.module:186
+msgid "Provide alternative options to create new content from this typ."
+msgstr ""
+
+#: more_node_buttons.module:189
+msgid "What is this? Save the node and forwarding to the \"Create new content\" form of this content type."
+msgstr ""
+
+#: more_node_buttons.module:202
+msgid "Provide an \"Create new\" tab in addition to the \"!edit\" tab."
+msgstr ""
+
+#: more_node_buttons.module:202
+msgid "Edit"
+msgstr ""
+
+#: more_node_buttons.module:249
+msgid "@sac-value"
+msgstr ""
+
+#: more_node_buttons.module:275
+msgid "@sacn-value"
+msgstr ""
+
+#: more_node_buttons.module:312
+msgid "@cancel-value"
+msgstr ""
+
+#: more_node_buttons.module:565
+msgid "Left of Save"
+msgstr ""
+
+#: more_node_buttons.module:566
+msgid "Left + of Save"
+msgstr ""
+
+#: more_node_buttons.module:567
+msgid "Right of Save"
+msgstr ""
+
+#: more_node_buttons.module:568
+msgid "Right + of Save"
+msgstr ""
+
+#: more_node_buttons.module:18
+msgid "An overview of what content type uses buttons/functions of the Mnb module."
+msgstr ""
+
+#: more_node_buttons.module:33
+msgid "Create new"
+msgstr ""
+
+#: more_node_buttons.info:0
+msgid "Add an Cancel, Save and continue and an Save and create new button to node edit forms."
+msgstr ""
+
+#: more_node_buttons.info:0
+msgid "User interface"
+msgstr ""
+

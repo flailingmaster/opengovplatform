@@ -1,0 +1,3 @@
+<?php
+
+include_once('recent_ideas_view.features.inc');

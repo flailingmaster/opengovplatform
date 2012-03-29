@@ -1,0 +1,145 @@
+<?php
+/**
+ * Display help and module information
+ * @param path which path of the site we're displaying help
+ * @param arg array that holds the current path as would be returned from arg() function
+ * @return help text for the path
+ */
+function vrm_feedback_history_perm()
+{
+    return array('View History tab');
+}
+
+function vrm_feedback_history_help($path, $arg)
+{
+    $output = ''; //declare your output variable
+    switch ($path) {
+        case "admin/help#history":
+            $output = '<p>' . t("Displays history of cck fields for Feedback Content type") . '</p>';
+            break;
+    }
+    return $output;
+} // function onthisdate_help
+
+function vrm_feedback_history_menu()
+{
+    $items['node/%history_no/history'] = array(
+        'title' => t('History'),
+        'page callback' => 'history_display',
+        'page arguments' => array(1),
+        'access callback' => 'access_history',
+        'access arguments' => array(1, 'View History tab'),
+        'type' => MENU_LOCAL_TASK,
+        'weight' => 10,
+    );
+    return $items;
+}
+
+function access_history($node, $perm) {
+	return ( node_access('view', $node) && user_access($perm));
+}
+
+function history_no_load($nid) {
+  if (!is_numeric($nid)) {
+    return FALSE;
+  }
+  $node = node_load($nid);
+  if (!isset($node->type) || $node->type != 'feedback') {
+    return FALSE;
+  }
+  return $node;
+}
+
+/**
+ * Implementing the page callback function
+ * for the my_tab
+ */
+function history_display($node)
+{
+	$items_per_page = 30;
+	drupal_set_title('History');
+    if ($node = node_load(arg(1))) {
+        $header = array(
+            array('data' => t('Time'), 'field' => 'stamp', 'sort' => 'desc'),
+            array('data' => t('Details')),
+        );
+        
+        // Do a union of logs from workflow table and vrm_forward_log
+        $query = "SELECT u.name, u.uid, h.stamp, ws.state AS old_state, ws2.state AS new_state, 1 AS comment , 1 AS emails
+                    FROM workflow_node_history h
+               LEFT JOIN users u
+                      ON h.uid = u.uid
+			   LEFT JOIN workflow_states ws
+			          ON ws.sid = h.old_sid
+			   LEFT JOIN workflow_states ws2
+			          ON ws2.sid = h.sid
+			       WHERE nid = %d
+			         AND ws.state != '(creation)'
+			         AND ws2.state != 'Opened'
+			       UNION
+			      SELECT vrm.uname, vrm.uid, timestamp,
+			             IF(comment = 'vrm-assigned', 'vrm-assigned', 'vrm-forward') AS old_state,
+			             IF(comment = 'vrm-assigned', 'vrm-assigned', 'vrm-forward') AS new_state,
+			             comment , emails
+			        FROM vrm_forward_log vrm
+			       WHERE nid = %d";
+        
+        // count the total logs
+        $count_query = "SELECT COUNT(*) + (SELECT COUNT(*) FROM  vrm_forward_log WHERE nid = %d) FROM workflow_node_history h
+        	LEFT JOIN users u ON h.uid = u.uid
+			LEFT JOIN workflow_states ws ON ws.sid = h.old_sid
+			LEFT JOIN workflow_states ws2 ON ws2.sid = h.sid
+			WHERE nid =%d AND ws.state!= '(creation)' AND ws2.state!='Opened'";
+        
+        $result = pager_query($query . tablesort_sql($header), $items_per_page, 0, $count_query, array($node->nid, $node->nid));
+		
+        $rows = array();
+        while ($log = db_fetch_object($result)) {
+            $username = ($log->name == '') ? 'Anonymous' : l($log->name, 'user/' . $log->uid);
+            if ($log->old_state == 'vrm-forward' && $log->new_state == 'vrm-forward') {
+                // add the forward related logs
+                $rows[] = array(
+                    array('data' => format_date($log->stamp), 'class' => 'nowrap workflow-history-date'),
+                    array('data' => $username . ' Forwarded to ' . str_replace(',', ', ', $log->emails), 'class' => 'workflow-history-details'),
+                );
+            } else if ($log->old_state == 'vrm-assigned' && $log->new_state == 'vrm-assigned') {
+                // add the assigned to logs
+                $rows[] = array(
+                    array('data' => format_date($log->stamp), 'class' => 'nowrap workflow-history-date'),
+                    array('data' => $username . ' Assigned to ' . $log->emails, 'class' => 'workflow-history-details'),
+                );
+            } else if (!($log->old_state == "(creation)" && $log->new_state == "Opened") && $log->old_state != 1) {
+                $rows[] = array(
+                    array('data' => format_date($log->stamp), 'class' => 'nowrap workflow-history-date'),
+                    array('data' => $username . ' Changed Status From ' . $log->old_state . ' To ' . $log->new_state, 'class' => 'workflow-history-details'),
+                );
+            }
+        } 
+        if (empty($rows)) {
+            $rows[] = array(array('data' => t('No History available.'), 'colspan' => 4));
+        }
+
+        //drupal_set_title(check_plain($node->title));
+        $output = theme('table', $header, $rows);
+        $output .= theme('pager', NULL, $items_per_page, 0);
+		require_once(drupal_get_path('module','vrm_customization').'/vrm_customization.module');
+		vrm_customization_create_breadcrumb('history');
+        return $output;
+    }
+}
+
+/**
+ * Implementing an access callback function
+ * for my_tab
+ **/
+function my_tab_access($node)
+{
+    //gives access to the tab only if you are
+    //visiting a feedback node
+    if ($node->type == "feedback" && user_access('access statistics')) {
+        return true;
+    }
+    return false;
+}
+
+?>

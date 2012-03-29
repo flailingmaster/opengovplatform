@@ -1,0 +1,5 @@
+
+Installation
+____________
+
+The module doesn't require any configuration, just enable it and it will change the way Drupal loads CSS files automatically. It works well with built-in Drupal 6 CSS compression.

@@ -1,0 +1,107 @@
+<?php
+
+/**
+ * @file
+ * Provides statistics for download_count module data.
+ */
+
+/**
+ * Implementation of hook_init().
+ */
+function download_count_statistics_init() {
+  if (arg(0) == 'download_count' && arg(2) == 'details' && variable_get('download_count_statistics_sparklines', 0)) {
+    drupal_add_js(drupal_get_path('module', 'download_count_statistics') . '/jquery.sparkline.min.js');
+  }
+}
+
+/**
+ * Implementation of hook_help().
+ */
+function download_count_statistics_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#download_count_statistics':
+      return '<p>' . t("Provides daily, weekly, monthly, and yearly statistics for <a href=@link>download_count module</a> data. Statistics are cached and updated via cron.", array('@link' => url('http://drupal.org/project/download_count'))) . '</p>';
+  }
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function download_count_statistics_perm() {
+  $perms = array('view download count statistics');
+  return $perms;
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function download_count_statistics_menu() {
+  $items = array();
+  $items['admin/settings/download_count/statistics'] = array(
+    'title' => 'Statistics',
+    'description' => 'Tracks file downloads for files stored in the drupal files table.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('download_count_statistics_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'weight' => 2,
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'includes/download_count_statistics.admin.inc',
+  );
+  $items['download_count/%download_count_statistics_entry/details'] = array(
+    'title' => 'Download Count Details',
+    'page callback' => 'download_count_statistics_details_page',
+    'page arguments' => array(1),
+    'access arguments' => array('view download count statistics'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/download_count_statistics.pages.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Menu wildcard loader.
+ */
+function download_count_statistics_entry_load($dcid) {
+  return $dcid == 'all' ? $dcid : db_fetch_array(db_query('SELECT dc.dcid, dc.fid, dc.nid, f.filename FROM {download_count} dc JOIN {files} f ON dc.fid = f.fid WHERE dcid = %d', $dcid));
+}
+
+
+/**
+ * Implementation of hook_cron().
+ */
+function download_count_statistics_cron() {
+  $today = format_date(time(), 'custom', 'Y-m-d');
+  $last_processed_day = variable_get('download_count_statistics_last_processed_day', '0');
+  if ($today > $last_processed_day) {
+    $files = db_query("SELECT fid, DATE(FROM_UNIXTIME(timestamp)) as date, COUNT(dcid) as count FROM {download_count} WHERE DATE(FROM_UNIXTIME(timestamp)) > '$last_processed_day' AND DATE(FROM_UNIXTIME(timestamp)) < '$today' GROUP BY DATE(FROM_UNIXTIME(timestamp)), fid ORDER BY DATE(FROM_UNIXTIME(timestamp)) ASC");
+    while ($row = db_fetch_object($files)) {
+      $result = db_query("INSERT INTO {download_count_statistics} VALUES ($row->fid, UNIX_TIMESTAMP('$row->date'), $row->count)");
+      if (!$result) {
+        watchdog('download_count_statistics', 'Download count for fid %fid was unable to be included in the download count statisitcs for %today.', array('%fid' => $row->fid, '%today' => $today), WATCHDOG_ERROR);
+      }
+    }
+    watchdog('download_count_statistics', 'Download count statistics processed for %day.', array('%day' => $today), WATCHDOG_NOTICE);
+    variable_set('download_count_statistics_last_processed_day', $today);
+  }
+}
+
+
+/**
+ * Get the download count for a specific file on a specific day.
+ *
+ * @param $fid
+ *   The file_id from the files table for which to count downloads.
+ *
+ * @param $date
+ *   The day (in YYYY-MM-DD format) for which to return the count
+ *   data of the specified file.
+ *
+ * @return
+ *   An integer representing the total number of times $fid was downloaded
+ *   on $date FALSE if unable to return the data.
+ */
+function download_count_statistics_get_daily_count($fid, $date) {
+  $sql = "SELECT * FROM {download_count_statistics} WHERE fid = $fid AND DATE(FROM_UNIXTIME(timestamp)) = '$date'";
+  return db_result(db_query($sql, $fid, $date));
+}

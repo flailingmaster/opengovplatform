@@ -1,0 +1,149 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+<tocdata>
+<book name="Managing Users" url="managing_users.htm" >
+  <item name="Filtering the User List" url="filtering_user_list.htm" />
+  <item name="Adding Users" url="adding_users.htm#bc-1" />
+  <item name="Updating User Details" url="updating_user_details.htm" />
+  <item name="Deleting Users" url="deleting_users.htm#bc-1" />
+</book>
+<book name="Managing Content" >
+  <item name="Viewing the Content List" url="viewing_content_list.htm" />
+  <item name="Filtering the Content List" url="filtering_content_list.htm" />
+  <book name="Working with Blocks" >
+    <item name="Creating Blocks" url="creating_blocks.htm" />
+    <item name="Updating Blocks" url="updating_blocks.htm" />
+  </book>
+  <book name="Working with FAQs" >
+    <item name="Creating FAQs" url="creating_faq.htm" />
+    <item name="Updating FAQs" url="updating_faq.htm" />
+  </book>
+  <book name="Working with Pages" >
+    <item name="Creating Pages" url="creating_pages.htm" />
+    <item name="Updating Pages" url="updating_pages.htm" />
+  </book>
+  <book name="Working with Country Data" >
+    <item name="Creating Country Data" url="creating_country_data.htm" />
+    <item name="Updating Country Data" url="updating_country_data_content_creator.htm" />
+  </book>
+  <book name="Working with Featured Galleries" >
+    <item name="Adding Images to a Featured Gallery" url="adding_images_to_the_featured_gallery.htm" />
+    <item name="Updating a Featured Gallery" url="updating_featured_gallery.htm" />
+  </book>
+  <book name="Working with Rotating Panels" >
+    <item name="Creating Rotating Panels" url="creating_rotating_panels.htm" />
+    <item name="Updating Rotating Panels" url="updating_rotating_panels.htm" />
+  </book>
+  <item name="Uploading Reference Documents" url="uploading_reference_documents.htm#bc-1" />
+  <item name="Previewing Content" url="previewing_the_content.htm" />
+  <item name="Sending Content for Approval" url="sending_content_for_approval.htm" />
+  <item name="Viewing the Revision History of a Content" url="viewing_the_revision_history_of_a_content.htm" />
+  <item name="Tracking Revisions of a Content" url="tracking_the_revisions_to_the_content.htm" />
+</book>
+<book name="Managing Agencies" url="managing_agencies.htm" >
+  <item name="Viewing the Agency List" url="viewing_agency_list.htm" />
+  <item name="Updating Agency Details" url="updating_agency_details.htm" />
+</book>
+<book name="Configuring Site Information" url="configuring_site_information.htm" >
+  <item name="Resetting Site Information" url="resetting_site_information.htm" />
+  <item name="Setting the Contact Us Page View" url="setting_the_contact_us_page_view.htm" />
+</book>
+<book name="Managing Captcha" url="managing_captcha.htm" >
+  <item name="Configuring General Settings for Captcha" url="configuring_general_settings_for_captcha.htm" />
+  <item name="Configuring Image Captcha" url="configuring_image_captcha.htm" />
+  <item name="Configuring reCaptcha" url="configuring_recaptcha.htm" />
+  <item name="Viewing Captcha Examples" url="viewing_captcha_examples.htm" />
+  <item name="Resetting Captcha" url="resetting_captcha.htm" />
+  <item name="Deleting Captcha" url="deleting_captcha.htm" />
+</book>
+<book name="Managing Themes" url="managing_themes.htm" >
+  <item name="Viewing the List of Themes" url="viewing_list_of_themes.htm" />
+  <item name="Configuring Themes" url="configuring_themes.htm" />
+  <item name="Configuring Global Settings for Themes" url="configuring_global_settings_for_themes.htm" />
+  <item name="Enabling Themes" url="enabling_themes.htm" />
+  <item name="Selecting Default Theme" url="selecting_default_theme.htm" />
+  <item name="Resetting Themes" url="resetting_themes.htm" />
+</book>
+<book name="Managing RSS Feeds" url="managing_rss_feeds.htm" >
+  <item name="Viewing the List of RSS Feeds" url="viewing_the_list_of_rss_feeds.htm" />
+  <item name="Adding RSS Feeds" url="adding_rss_feeds.htm" />
+  <item name="Updating RSS Feeds" url="updating_rss_feeds.htm" />
+  <item name="Updating Items in RSS Feeds" url="updating_items_in_rss_feeds.htm" />
+  <item name="Removing Items from RSS Feeds" url="removing_items_from_rss_feeds.htm" />
+  <item name="Deleting RSS Feeds" url="deleting_rss_feeds.htm" />
+</book>
+<book name="Managing Accessibility Options" url="managing_accessibility_options.htm" >
+  <book name="Configuring Text Settings" >
+    <item name="Configuring Text Resize Settings" url="configuring_text_resize_settings.htm" />
+    <item name="Resetting Text Resize Settings" url="resetting_text_resize_settings.htm" />
+  </book>
+  <book name="Configuring Color Themes" url="configuring_color_themes.htm" >
+    <item name="Adding Color Themes" url="adding_color_themes.htm" />
+    <item name="Viewing the List of Color Themes" url="viewing_the_list_of_color_themes.htm" />
+    <item name="Updating Color Themes" url="updating_color_themes.htm" />
+    <item name="Deleting Color Themes" url="deleting_color_themes.htm" />
+  </book>
+  <book name="Configuring Contrast Options" url="configuring_contrast_options.htm" >
+    <item name="Adding Contrast Options" url="adding_contrast_options.htm" />
+    <item name="Viewing the List of Contrast Options" url="viewing_the_list_of_contrast_options.htm" />
+    <item name="Updating Contrast Options" url="updating_contrast_options.htm" />
+    <item name="Deleting Contrast Options" url="deleting_contrast_options.htm" />
+  </book>
+</book>
+<book name="Managing Menus and Menu Items" url="managing_menus.htm" >
+  <item name="Configuring Menus" url="configuring_menu.htm" />
+  <item name="Updating Menus" url="updating_menus.htm" />
+  <item name="Deleting Menus" url="deleting_menus.htm" />
+  <item name="Viewing Menu Items in a Menu" url="viewing_menu_items_in_a_menu.htm" />
+  <item name="Adding a Menu Item to a Menu" url="adding_a_menu_item_to_a_menu.htm" />
+  <item name="Arranging Menu Items" url="arranging_menu_items.htm" />
+  <item name="Updating a Menu Item" url="updating_menu_item.htm" />
+  <item name="Deleting a Menu Item" url="deleting_a_menu_item.htm" />
+</book>
+<book name="Managing Homepage Tabs" url="managing_homepage_tabs.htm" >
+  <item name="Updating Homepage Tabs" url="updating_homepage_tabs.htm" />
+  <item name="Adding Homepage Tab to the Quicktab Block" url="adding_homepage_tab_to_the_quicktab_block.htm" />
+  <item name="Deleting a Quicktab block" url="deleting_a_quicktab_block.htm" />
+  <item name="Deleting a Homepage Tab from the Quicktab Block" url="deleting_a_homepage_tab_from_the_quicktab_block.htm" />
+</book>
+<book name="Managing Blocks Content" url="managing_blocks_content.htm" >
+  <item name="Viewing Blocks List" url="viewing_blocks_list.htm" />
+  <item name="Updating Blocks Content" url="updating_blocks_content.htm" />
+</book>
+<book name="Managing Global and Advanced Search" url="managing_global_advanced_search.htm" >
+  <item name="Configuring the Apache Solr Search Server" url="configuring_the_apache_solr_search_server.htm" />
+  <item name="Resetting Apache Solr Server Settings" url="resetting_apache_solr_server_settings.htm" />
+  <item name="Updating the Search Index" url="updating_the_search_index.htm" />
+  <item name="Deleting the Search Index" url="deleting_the_search_index.htm" />
+  <item name="Enabling the Search Filters" url="enabling_the_search_filters.htm" />
+  <item name="Configuring the Content Bias Settings" url="configuring_the_content_bias_settings.htm" />
+  <item name="Resetting Content Bias Settings" url="resetting_content_bias_settings.htm" />
+  <item name="Specifying the Weightage for the Search Fields" url="specifying_weightage_to_the_search_fields.htm" />
+  <item name="Resetting the Weightage for Search Fields" url="resetting_the_weightage_for_search_fields.htm" />
+</book>
+<book name="Reports" url="viewing_reports.htm#bc-1" >
+  <book name="CMS Reports" url="cms_reports.htm#bc-1" >
+    <item name="Viewing the Access Denied Pages/Datasets Report" url="viewing_the_access_denied_pages_datasets_report.htm#bc-1" />
+    <item name="Viewing the Page Not Found Error Report" url="viewing_the_page_not_found_error_report.htm#bc-1" />
+    <item name="Viewing the Top Pages Report" url="viewing_the_top_pages_report.htm#bc-1" />
+    <item name="Viewing the Top Referrer Report" url="viewing_the_top_referrer_report.htm#bc-1" />
+    <item name="Viewing the Top Visitors Report" url="viewing_the_top_visitors_report.htm#bc-1" />
+    <item name="Viewing the Top Search Phrases Report" url="viewing_the_top_search_phrases_report.htm#bc-1" />
+  </book>
+  <book name="VRM Reports" url="vrm_reports.htm#bc-1" >
+    <item name="Viewing the VRM Action Metrics Report" url="viewing_the_vrm_action_metrics_report.htm#bc-1" />
+    <item name="Viewing the VRM Source Metrics Report" url="viewing_the_vrm_source_metrics_report.htm#bc-1" />
+    <item name="Viewing the VRM Status Metrics Report" url="viewing_the_vrm_status_metrics_report.htm#bc-1" />
+    <item name="Viewing the VRM Delay Analysis Report" url="viewing_the_vrm_delay_analysis_report.htm#bc-1" />
+    <item name="Viewing the Assignee Wise VRM Statistics Report" url="viewing_the_assignee_wise_vrm_statistics_report.htm#bc-1" />
+    <item name="Viewing the VRM Category Metrics Report" url="viewing_the_vrm_category_metrics_report.htm#bc-1" />
+  </book>
+</book>
+<book name="Reference Documents" >
+  <item name="Uploading Reference Documents" url="uploading_reference_documents.htm#bc-2" />
+</book>
+<book name="Support Information" url="contact_admin.htm" >
+  <item name="Contacting the Super Administrator" url="contacting_super_administrator.htm" />
+  <item name="Tracking Contact Admin Page Visits" url="tracking_contact_admin_page_visits.htm" />
+</book>
+
+</tocdata>

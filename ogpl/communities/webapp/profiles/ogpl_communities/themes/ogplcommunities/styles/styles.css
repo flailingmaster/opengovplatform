@@ -1,0 +1,151 @@
+h1#site-name {
+  margin-bottom: 0;
+}
+
+#site-header,
+#site-subheader,
+#footer-region,
+.column,
+.node,
+.comment,
+.block {
+  margin-bottom: 1.5em;
+}
+
+/*alignment classes
+-----------------------------------------------------------------*/
+.align-center {
+	text-align:center;
+}
+.align-right {
+	text-align:right;
+}
+.align-left {
+	text-align:left;
+}
+.valign-middle {
+	vertical-align:middle;
+}
+.valign-bottom {
+	vertical-align:bottom;
+}
+
+/* this is defined in ogplcommunities.css
+body {
+	background:#fff url(../images/body-bg.gif) repeat-y scroll center top;
+	font:14px/1.5 Arial,Helvetica,sans-serif;
+}
+*/
+
+/*top stuff
+--------------------------------------------------------------------*/
+
+#banner-container {
+	background:#0a3163 url(../images/banner-container-bg.gif) repeat-y scroll center top;
+	font-family:Tahoma,Arial,Helvetica,sans-serif;
+	font-size:12px;
+	color:#fff;
+	height:22px;
+	padding:auto;
+}
+
+#banner-container-inner {
+}
+
+/* user login */
+#login-container {
+	padding: 10px 0px;
+	display: block;
+}
+
+.user-login, .user-signup {
+	font-size:12px;
+	padding-left:15px;
+	padding-right:5px;
+	float: right
+}
+.user-login {
+	background:transparent url(../images/icon-login.gif) no-repeat scroll left center;
+	border-right:1px solid #036;
+}
+
+.user-signup {
+	background:transparent url(../images/icon-signup.gif) no-repeat scroll left center;
+	padding-right: 20px;
+}
+
+#content-container {
+	background:#fff url(../images/content-container-bg.gif) repeat-y scroll center top;
+	padding: 5px  auto auto;
+}
+
+#logo-container {
+	background:transparent url(../images/logo-container-bg.gif) repeat-x scroll left bottom;
+	height:55px;
+	padding-top: 5px;
+}
+#logo-left {
+	background:transparent url(../images/logo-container-left.gif) no-repeat scroll left bottom;
+	height:55px;
+	line-height:55px;
+}
+.logo-right {
+	background:transparent url(../images/logo-container-right.gif) no-repeat scroll right bottom;
+	height:55px;
+	line-height:55px;
+}
+.logo-search {
+	background:transparent url(../images/logo-search-bg.jpg) no-repeat scroll right bottom;
+	height:55px;line-height:55px;
+}
+.nav-container {
+	background:#0a3163 url(../images/nav-container-bg.gif) repeat-x scroll left bottom;
+	height:36px;
+}
+
+/*sidebars*/
+.region {
+
+}
+
+#sidebar-left {
+
+}
+
+#sidebar-right {
+
+}
+
+/* hidden elements */
+.hidden {
+	position:absolute;
+	top:-999px;
+	width:1px;
+	height:1px;
+	overflow:hidden;
+}
+
+/*
+** Formatting for administration page
+**
+** The admin panel styles are a mess. IE has problems with this so this is
+** only a temporary fix. This should be fixed in core.
+*/
+div.admin-panel {
+  padding: 0;
+}
+
+div.admin-panel .body {
+  padding: 0 !important;
+}
+
+div.admin .left,
+div.admin .right {
+  width: 50%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+div.admin .right .admin-panel {
+  margin-left: 10px;
+}

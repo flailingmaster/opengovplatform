@@ -1,0 +1,13 @@
+name = Module Grants Views
+package = Access control
+description = Module Grants integration with Views module.
+core = "6.x"
+dependencies[] = module_grants
+dependencies[] = views
+
+; Information added by drupal.org packaging script on 2012-03-03
+version = "6.x-3.8"
+core = "6.x"
+project = "module_grants"
+datestamp = "1330736749"
+

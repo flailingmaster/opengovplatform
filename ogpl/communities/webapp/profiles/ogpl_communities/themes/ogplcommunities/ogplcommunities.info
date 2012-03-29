@@ -1,0 +1,70 @@
+name = OGPL Communities
+description = OGPL Communties theme customized for organic group based communities.
+screenshot = images/screenshot.png
+core = 6.x
+engine = phptemplate
+
+; Stylesheets. Anything within the "framework" folder will be placed before all others.
+stylesheets[all][] = styles/framework/reset.css
+stylesheets[all][] = styles/framework/text.css
+stylesheets[all][] = styles/framework/960.css
+;stylesheets[all][] = styles/framework/debug.css
+
+; Regions
+regions[left] = Left sidebar
+regions[right] = Right sidebar
+regions[content] = Content
+regions[footer] = Footer
+regions[adminlinks] = Admin Links
+regions[userlogin] = User Login
+regions[community_image] = Community Image
+regions[searchblock] = Search Block
+regions[welcomeblock] = Welcome Block
+regions[slideshowblock] = Slide Show
+regions[bottom1] = Bottom 1
+regions[bottom2] = Bottom 2
+regions[bottom3] = Bottom 3
+
+; Theme specific styles. Any sub-themes should override this.
+;stylesheets[all][] = styles/nice_menus_default.css
+stylesheets[all][] = styles/menu.css
+stylesheets[all][] = styles/ogplcommunities.css
+stylesheets[all][] = styles/thickbox.css
+stylesheets[all][] = styles/jquery.rating.css
+conditional-stylesheets[if lt IE 8][all][] = styles/ogplcommunities-ie.css
+
+;javascript files
+scripts[] = js/jquery.autofill.js
+scripts[] = js/javascript.js
+scripts[] = js/jquery.thickbox.js
+scripts[] = js/externallinks.js
+scripts[] = js/dw_event.js
+scripts[] = js/dw_cookies.js
+scripts[] = js/dw_sizerdx.js
+scripts[] = js/resize.js
+scripts[] = js/jquery.rating.js
+scripts[] = js/searchText.js
+
+;Skinr settings
+
+skinr[ogplcommunities_blocks][title] = OGPL Communities Block Styles
+skinr[ogplcommunities_blocks][description] = Description
+skinr[ogplcommunities_blocks][options][1][label] = Grey Block
+skinr[ogplcommunities_blocks][options][1][class] = greyblock
+skinr[ogplcommunities_blocks][options][2][label] = White Block
+skinr[ogplcommunities_blocks][options][2][class] = whiteblock
+skinr[ogplcommunities_blocks][options][3][label] = Bottom Gradient
+skinr[ogplcommunities_blocks][options][3][class] = bottomgradient
+skinr[ogplcommunities_blocks][options][4][label] = Fixed 300px height
+skinr[ogplcommunities_blocks][options][4][class] = fixed300px
+skinr[ogplcommunities_blocks][options][5][label] = Large Background gradient
+skinr[ogplcommunities_blocks][options][5][class] = bg-gradient
+
+;Custom Panels are in "panels" folder
+
+plugins[panels][layouts] = panels
+
+
+;Custom Widgets for thumbs up and down images.
+
+plugins[vud][widgets] = widgets

@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * @file
+ * Implementation of hook_install().
+ */
+function petreference_install() {
+  drupal_load('module', 'content');
+  content_notify('install', 'petreference');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function petreference_uninstall() {
+  drupal_load('module', 'content');
+  content_notify('uninstall', 'petreference');
+}
+
+/**
+ * Implementation of hook_enable().
+ *
+ * Notify content module when this module is enabled.
+ */
+function petreference_enable() {
+  drupal_load('module', 'content');
+  content_notify('enable', 'petreference');
+}
+
+/**
+ * Implementation of hook_disable().
+ *
+ * Notify content module when this module is disabled.
+ */
+function petreference_disable() {
+  drupal_load('module', 'content');
+  content_notify('disable', 'petreference');
+}

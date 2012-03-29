@@ -1,0 +1,47 @@
+<?php
+function cms_notify_email_install()
+{
+    drupal_install_schema('cms_notify_email');
+}
+
+function cms_notify_email_uninstall()
+{
+    drupal_uninstall_schema('cms_notify_email');
+}
+
+function cms_notify_email_schema()
+{
+    $schema['cms_expiry_notification_log'] = array(
+        'description' => 'CMS Expiry Notification log',
+        'fields' => array(
+            'id' => array(
+                'type' => 'serial',
+				'size' => 'big',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'user_id' => array(
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE
+            ),
+            'node_id' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+				'unsigned' => TRUE
+            ),
+            'notification_date' => array(
+                'type' => 'datetime',
+                'not null' => TRUE,
+                'default' => '0000-00-00 00:00:00'
+            ),
+            'date_created' => array(
+                'type' => 'datetime',
+                'not null' => TRUE,
+                'default' => '0000-00-00 00:00:00'
+            ),
+        ),
+        'primary key' => array('id'),        
+    );
+    return $schema;
+}

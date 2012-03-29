@@ -1,0 +1,55 @@
+<?php // $Id$
+
+/**
+ * Implementation of hook_menu().
+ */
+function send_track_menu() {
+  $path = drupal_get_path('module', 'send_track') .'/includes/';
+  return array(
+    'send/o/%send_hash' => array(
+      'page callback'    => 'send_track_page',
+      'page arguments'   => array('open', 2),
+      'type'             => MENU_CALLBACK,
+      'access arguments' => array('access content'),
+      'file'             => 'send_track.track.inc',
+      'file path'        => $path,
+    ),
+    'send/c/%send_hash' => array(
+      'page callback'    => 'send_track_page',
+      'page arguments'   => array('click', 2),
+      'type'             => MENU_CALLBACK,
+      'access arguments' => array('access content'),
+      'file'             => 'send_track.track.inc',
+      'file path'        => $path,
+    ),
+  );
+}
+
+/**
+ * Implementation of Send module's hook_message_alter().
+ */
+function send_track_send_message_alter(&$message, $profile, $r, $nids, $mode) {
+  module_load_include('track.inc', 'send_track', 'includes/send_track');
+  return _send_track_send_message_alter($message, $profile, $r, $nids, $mode);
+}
+
+/**
+ * Implementation of hook_schema_alter().
+ */
+function send_track_schema_alter(&$schema) {
+  if (isset($schema['send_recipient'])) {
+    module_load_include('track.inc', 'send_track', 'includes/send_track');
+    _send_track_schema_alter($schema);
+  }
+}
+
+/**
+ * Implementation of hook_views_api().
+*/
+function send_track_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'send_track') .'/includes/views',
+  );
+}
+

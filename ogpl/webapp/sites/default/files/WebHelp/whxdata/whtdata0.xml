@@ -1,0 +1,142 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+<tocdata>
+<item name="Preface" url="preface.htm" />
+<book name="Overview" url="ogpl_control_panel_overview.htm" >
+  <item name="Understanding the CMS Workflow" url="cms_workflow.htm" />
+  <item name="Understanding the VRM Workflow" url="vrm_workflow.htm" />
+  <item name="Understanding User Roles" url="user_roles.htm" />
+</book>
+<book name="Super Administrator" url="super_administrator.htm" >
+  <book name="Managing Users" >
+    <item name="Setting User Permissions" url="setting_user_permissions.htm" />
+    <item name="Adding Users" url="adding_users.htm" />
+    <item name="Editing Users" url="editing_users.htm" />
+    <item name="Deleting Users" url="deleting_users.htm" />
+    <item name="Blocking Users" url="blocking_users.htm" />
+    <item name="Activating Blocked Users" url="activating_blocked_users.htm" />
+  </book>
+  <book name="Managing the Cron Job" url="managing_cron.htm" >
+    <item name="Updating Cron Run Time Interval" url="updating_cron_run_time_interval.htm" />
+  </book>
+  <book name="Managing Mini Panels" url="managing_mini_panels.htm" >
+    <item name="Viewing the List of Mini Panels" url="viewing_list_of_mini_panels.htm" />
+    <item name="Adding Mini Panels" url="adding_mini_panels.htm" />
+    <item name="Configuring Mini Panels" url="configuring_mini_panels.htm" />
+    <item name="Updating Mini Panels" url="updating_mini_panels.htm" />
+    <item name="Exporting Mini Panels" url="exporting_mini_panels.htm" />
+    <item name="Importing Mini Panels" url="importing_mini_panels.htm" />
+    <item name="Cloning Mini Panels" url="cloning_mini_panels.htm" />
+    <item name="Enabling Mini Panels" url="enabling_mini_panels.htm" />
+    <item name="Disabling Mini Panels" url="disabling_mini_panels.htm" />
+    <item name="Deleting Mini Panels" url="deleting_mini_panels.htm" />
+    <item name="Republishing Content" url="republishing_content.htm" />
+    <item name="Deleting Content" url="deleting_content.htm" />
+  </book>
+  <book name="Managing Configurations" >
+    <item name="Restricting Super Administrator Access" url="restricting_super_administrator_access.htm" />
+    <item name="Configuring the Number of Items to Display in the Popular Catalogs Homepage tab" url="configuring_the_number_of_items_to_display_in_popular_catalogs_homepage_tab.htm" />
+    <item name="Configuring the Number of Items to Display in the Recent Catalogs Homepage tab" url="configuring_the_number_of_items_to_display_in_homepage_tab.htm" />
+    <item name="Configuring the Default Delay Time for a Feedback" url="configuring_the_default_delay_time.htm" />
+    <item name="Configuring the Voting API" url="configuring_the_voting_api.htm" />
+  </book>
+  <book name="Configuring Date and Time" >
+    <item name="Configuring Date and Time Format Settings" url="configuring_date_and_time_formats.htm" />
+    <item name="Configuring Date and Time Settings" url="configuring_date_and_time_settings.htm" />
+    <item name="Configuring the Date and Time Format" url="configuring_date_and_time_format.htm" />
+    <item name="Updating Date and Time Formats for Web Pages" url="updating_date_and_time_formats_for_web_pages_from_the_date_and_time_page.htm" />
+    <item name="Configuring the Date and Time Format for the Pages that Use Drupal Views" url="configuring_date_and_time_format_for_the_pages_that_use_drupal_views.htm" />
+  </book>
+  <book name="Managing Themes for User Roles" >
+    <item name="Updating the Theme for User Roles" url="updating_the_theme_for_user_roles.htm" />
+    <item name="Resetting the Themes for User Roles" url="resetting_the_themes_for_user_roles.htm" />
+  </book>
+  <book name="Configuring E-mail Templates" url="configuring_e-mail_templates.htm" >
+    <item name="Viewing the List of E-mail Templates" url="viewing_the_list_of_e-mail_templates.htm" />
+    <item name="Updating an E-mail Template" url="updating_an_e-mail_template.htm" />
+  </book>
+  <book name="Managing Content" >
+    <item name="Unpublishing Content" url="unpublish_a_content_from_the_ogpl_web_site.htm" />
+    <item name="Republishing Content" url="republishing_content.htm#bc-1" />
+    <item name="Deleting Content" url="deleting_content.htm#bc-1" />
+  </book>
+  <book name="Reports" url="viewing_reports.htm" >
+    <book name="CMS Reports" url="cms_reports.htm" >
+      <item name="Viewing the Access Denied Pages/Datasets Report" url="viewing_the_access_denied_pages_datasets_report.htm" />
+      <item name="Viewing the Page Not Found Error Report" url="viewing_the_page_not_found_error_report.htm" />
+      <item name="Viewing the Top Pages Report" url="viewing_the_top_pages_report.htm" />
+      <item name="Viewing the Top Referrer Report" url="viewing_the_top_referrer_report.htm" />
+      <item name="Viewing the Top Visitors Report" url="viewing_the_top_visitors_report.htm" />
+      <item name="Viewing the Top Search Phrases Report" url="viewing_the_top_search_phrases_report.htm" />
+    </book>
+    <book name="VRM Reports" url="vrm_reports.htm" >
+      <item name="Viewing the VRM Action Metrics Report" url="viewing_the_vrm_action_metrics_report.htm" />
+      <item name="Viewing the VRM Source Metrics Report" url="viewing_the_vrm_source_metrics_report.htm" />
+      <item name="Viewing the VRM Status Metrics Report" url="viewing_the_vrm_status_metrics_report.htm" />
+      <item name="Viewing the VRM Delay Analysis Report" url="viewing_the_vrm_delay_analysis_report.htm" />
+      <item name="Viewing the Assignee Wise VRM Statistics Report" url="viewing_the_assignee_wise_vrm_statistics_report.htm" />
+      <item name="Viewing the VRM Category Metrics Report" url="viewing_the_vrm_category_metrics_report.htm" />
+    </book>
+  </book>
+  <book name="Reference Documents" >
+    <item name="Uploading Reference Documents" url="uploading_reference_documents.htm" />
+  </book>
+</book>
+<book name="Content Management System Administrator" url="cms_administrator.htm" >
+<chunk name="Content Management System Administrator" url="cms_administrator.htm" ref="whtdata1.xml" />
+</book>
+<book name="Content Management System Content Creator" url="content_creator.htm" >
+  <item name="Viewing the Content List" url="viewing_content_list.htm#bc-1" />
+  <item name="Filtering the Content List" url="filtering_content_list.htm#bc-1" />
+  <item name="Previewing Content" url="previewing_the_content.htm#bc-1" />
+  <item name="Updating Blocks" url="updating_blocks.htm#bc-1" />
+  <item name="Updating Country Data" url="updating_country_data_content_creator.htm#bc-1" />
+  <item name="Updating FAQ" url="updating_faq.htm#bc-1" />
+  <item name="Updating Featured Gallery" url="updating_featured_gallery.htm#bc-1" />
+  <item name="Updating Pages" url="updating_pages.htm#bc-1" />
+  <item name="Updating Rotating Panels" url="updating_rotating_panels.htm#bc-1" />
+  <item name="Sending Content for Approval" url="sending_content_for_approval.htm#bc-1" />
+  <item name="Viewing the Revision History of a Content" url="viewing_the_revision_history_of_a_content.htm#bc-1" />
+  <item name="Tracking Revisions of a Content" url="tracking_the_revisions_to_the_content.htm#bc-1" />
+  <book name="Reports" url="viewing_reports.htm#bc-2" >
+    <book name="CMS Reports" url="cms_reports.htm#bc-2" >
+      <item name="Viewing the Access Denied Pages/Datasets Report" url="viewing_the_access_denied_pages_datasets_report.htm#bc-2" />
+      <item name="Viewing the Page Not Found Error Report" url="viewing_the_page_not_found_error_report.htm#bc-2" />
+      <item name="Viewing the Top Pages Report" url="viewing_the_top_pages_report.htm#bc-2" />
+      <item name="Viewing the Top Referrer Report" url="viewing_the_top_referrer_report.htm#bc-2" />
+      <item name="Viewing the Top Visitors Report" url="viewing_the_top_visitors_report.htm#bc-2" />
+      <item name="Viewing the Top Search Phrases Report" url="viewing_the_top_search_phrases_report.htm#bc-2" />
+    </book>
+    <book name="VRM Reports" url="vrm_reports.htm#bc-2" >
+      <item name="Viewing the VRM Action Metrics Report" url="viewing_the_vrm_action_metrics_report.htm#bc-2" />
+      <item name="Viewing the VRM Source Metrics Report" url="viewing_the_vrm_source_metrics_report.htm#bc-2" />
+      <item name="Viewing the VRM Status Metrics Report" url="viewing_the_vrm_status_metrics_report.htm#bc-2" />
+      <item name="Viewing the VRM Delay Analysis Report" url="viewing_the_vrm_delay_analysis_report.htm#bc-2" />
+      <item name="Viewing the Assignee Wise VRM Statistics Report" url="viewing_the_assignee_wise_vrm_statistics_report.htm#bc-2" />
+      <item name="Viewing the VRM Category Metrics Report" url="viewing_the_vrm_category_metrics_report.htm#bc-2" />
+    </book>
+  </book>
+  <book name="Reference Documents" >
+    <item name="Uploading Reference Documents" url="uploading_reference_documents.htm#bc-3" />
+  </book>
+  <book name="Support Information" url="contact_admin.htm#bc-1" >
+    <item name="Contacting the Super Administrator" url="contacting_super_administrator.htm#bc-1" />
+    <item name="Tracking Contact Admin Page Visits" url="tracking_contact_admin_page_visits.htm#bc-1" />
+  </book>
+</book>
+<book name="Content Management System Moderator" url="content_management_system_moderator.htm" >
+<chunk name="Content Management System Moderator" url="content_management_system_moderator.htm" ref="whtdata2.xml" />
+</book>
+<book name="Content Management System Publisher" url="publisher.htm" >
+<chunk name="Content Management System Publisher" url="publisher.htm" ref="whtdata3.xml" />
+</book>
+<book name="Visitor Relation Management Administrator" url="visitor_relation_management_administrator.htm" >
+<chunk name="Visitor Relation Management Administrator" url="visitor_relation_management_administrator.htm" ref="whtdata4.xml" />
+</book>
+<book name="Program Management Office" url="program_management_office_overview.htm" >
+<chunk name="Program Management Office" url="program_management_office_overview.htm" ref="whtdata5.xml" />
+</book>
+<book name="Point of Contact" url="point_of_contact_overview.htm" >
+<chunk name="Point of Contact" url="point_of_contact_overview.htm" ref="whtdata6.xml" />
+</book>
+
+</tocdata>

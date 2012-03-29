@@ -1,0 +1,16 @@
+Index: branches/qa/sites/all/modules/contrib/content_profile/content_profile.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/contrib/content_profile/content_profile.module	(revision )
++++ branches/qa/sites/all/modules/contrib/content_profile/content_profile.module	(revision 4540)
+@@ -376,7 +376,7 @@
+  */
+ function content_profile_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+ 
+-  if ($op == 'prepare' && is_content_profile($node) && !isset($node->nid) && $node->uid && !user_access('administer nodes') && arg(0) != 'admin') {
++  if ($op == 'prepare' && is_content_profile($node) && !isset($node->nid) && $node->uid && !user_access('administer users') && arg(0) != 'admin') {
+     // Check if this nodetype already exists
+     if ($nid = content_profile_profile_exists($node, $node->uid)) {
+       // This node already exists, redirect to edit page

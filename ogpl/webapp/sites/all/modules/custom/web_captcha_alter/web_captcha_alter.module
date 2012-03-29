@@ -1,0 +1,38 @@
+<?php
+
+function web_captcha_alter_form_alter($form,&$form_state) {
+//var_dump($form);
+if($form["captcha"])
+{  $form["captcha"]['#weight']='4';
+   $form['verification'] = array(
+            '#type'=>'item',
+            '#value' => '<label class="captcha-text">Verification <span class="form-required" title="This field is required.">(Required)</span> :</label>',
+            '#prefix' => '<div class="verification-msg">',
+            '#suffix' => '</div>',
+            '#weight'=> '3',
+        );
+}
+
+if($form["contact-owner"]["captcha"])
+{  $form["contact-owner"]["captcha"]['#weight']='0';
+   $form["contact-owner"]['verification'] = array(
+            '#type'=>'item',
+            '#value' => '<label class="captcha-text">Verification <span class="form-required" title="This field is required.">(Required)</span> :</label>',
+            '#prefix' => '<div class="verification-msg">',
+            '#suffix' => '</div>',
+            '#weight'=>'1',
+        );
+}
+
+if($form["buttons"]["captcha"])
+ {
+   $form['verification'] = array(
+            '#type'=>'item',
+            '#value' => '<label class="captcha-text">Verification <span class="form-required" title="This field is required.">(Required)</span> :</label>',
+            '#prefix' => '<div class="verification-msg">',
+            '#suffix' => '</div>',
+            '#weight'=> '4',
+        );
+
+ }
+}

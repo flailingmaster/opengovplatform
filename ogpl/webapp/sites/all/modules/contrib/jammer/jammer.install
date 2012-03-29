@@ -1,0 +1,25 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Jammer install file
+ */
+/**
+ * Implementation of hook_uninstall().
+ */
+function jammer_uninstall() {
+  variable_del('jammer_menu');
+  variable_del('jammer_author');
+  variable_del('jammer_path');
+  variable_del('jammer_revision_information');
+  variable_del('jammer_comment_settings');
+  variable_del('jammer_revision_log_textarea_unset_node_types');
+  variable_del('jammer_workflow_form_unset_node_types');
+  variable_del('jammer_preview_button_unset_node_types');
+  variable_del('jammer_submit_button_unset_node_types');
+  variable_del('jammer_delete_button_unset_node_types');
+  variable_del('jammer_user_delete_hide_button');
+  variable_del('jammer_bodyfield_form_unset_node_types');
+}
+

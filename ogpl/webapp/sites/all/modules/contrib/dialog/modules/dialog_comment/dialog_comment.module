@@ -1,0 +1,185 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Provides Dialog integration for the core comment module.
+ * NOTE: In order for the edit, delete and reply links on comments to work,
+ * you must patch the Drupal 6 comment module with the patch from
+ * http://drupal.org/node/374463#comment-2393592.
+ */
+
+/**
+ * Implementation of hook_menu().
+ */
+function dialog_comment_menu() {
+  $items['comment/%ctools_js/delete/%'] = array(
+    'title' => 'Delete comment',
+    'page callback' => 'dialog_comment_delete',
+    'page arguments' => array(3, 1),
+    'access arguments' => array('administer comments'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['comment/%ctools_js/edit/%'] = array(
+    'title' => 'Edit comment',
+    'page callback' => 'dialog_comment_edit',
+    'page arguments' => array(3, 1),
+    'access arguments' => array('post comments'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['comment/%ctools_js/reply/%node'] = array(
+    'title' => 'Reply to comment',
+    'page callback' => 'dialog_comment_reply',
+    'page arguments' => array(3, 1),
+    'access callback' => 'node_access',
+    'access arguments' => array('view', 3),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_link_alter().
+ */
+function dialog_comment_link_alter(&$links, $node) {
+  foreach ($links as $id => $link) {
+    switch ($id) {
+      case 'comment_add':
+      case 'comment_reply':
+        dialog_add_js();
+        $links[$id]['href'] = str_replace('comment/reply', 'comment/nojs/reply', $link['href']);
+        $links[$id]['attributes']['class'] = 'ctools-use-dialog';
+        break;
+
+      case 'comment_edit':
+        dialog_add_js();
+        $links[$id]['href'] = str_replace('comment/edit', 'comment/nojs/edit', $link['href']);
+        $links[$id]['attributes']['class'] = 'ctools-use-dialog';
+        break;
+
+      case 'comment_delete':
+        dialog_add_js();
+        $links[$id]['href'] = str_replace('comment/delete', 'comment/nojs/delete', $link['href']);
+        $links[$id]['attributes']['class'] = 'ctools-use-dialog';
+        break;
+    }
+  }
+}
+
+/**
+ * Implementation of hook_form_comment_form_alter().
+ */
+function dialog_comment_form_comment_form_alter(&$form, $form_state) {
+  // Mark submit and preview buttons to be used as Dialog buttons.
+  if (!empty($form_state['ajax'])) {
+    if (isset($form['submit'])) {
+      $form['submit']['#attributes']['class'] = 'ctools-dialog-button';
+    }
+    if (isset($form['preview'])) {
+      $form['preview']['#attributes']['class'] = 'ctools-dialog-button';
+    }
+  }
+
+  // comment_form will hard-code the #action to a comment/reply path.
+  // This will break our form, so replace with comment/%ctools_js/reply path.
+  if (isset($form['#action'])) {
+    $js = !empty($form_state['ajax']) ? 'ajax' : 'nojs';
+    $form['#action'] = str_replace('comment/reply', "comment/$js/reply", $form['#action']);
+  }
+}
+
+/**
+ * Menu page callback for comment/%ctools_js/reply/%node
+ */
+function dialog_comment_reply($node, $ajax = FALSE, $pid = NULL) {
+  if (!$ajax) {
+    module_load_include('inc', 'comment', 'comment.pages');
+    return comment_reply($node);
+  }
+
+  // TODO: comment_reply does a whole bunch of access checking and other
+  // stuff. Not sure how much we should do here, beyond the user_access below
+  if (!user_access('post comments')) {
+    // TODO: maybe we should have a dialog_access_denied().
+    $commands = array();
+    $commands[] = dialog_command_display(t('Access denied'), t('You are not authorized to access this page.'));
+    ctools_ajax_render($commands);
+    // implicit exit();
+  }
+
+  ctools_include('ajax');
+  $form_state = array(
+    'ajax' => TRUE,
+    'title' => t('Reply to %title', array('%title' => $node->title)),
+    'args' => array(array('pid' => $pid, 'nid' => $node->nid)),
+  );
+  $output = dialog_form_wrapper('comment_form', $form_state);
+  if (empty($output)) {
+    $output[] = dialog_command_display(t('Comment submitted'), t('Reloading...'));
+    $output[] = ctools_ajax_command_reload();
+  }
+  ctools_ajax_render($output);
+}
+
+/**
+ * Menu page callback for comment/%ctools_js/edit/%
+ */
+function dialog_comment_edit($cid, $ajax = FALSE) {
+  if (!$ajax) {
+    module_load_include('inc', 'comment', 'comment.pages');
+    return comment_edit($cid);
+  }
+
+  $comment = db_fetch_object(db_query('SELECT c.*, u.uid, u.name AS registered_name, u.data FROM {comments} c INNER JOIN {users} u ON c.uid = u.uid WHERE c.cid = %d', $cid));
+  $comment = drupal_unpack($comment);
+  $comment->name = $comment->uid ? $comment->registered_name : $comment->name;
+
+  ctools_include('ajax');
+
+  if (!comment_access('edit', $comment)) {
+    $commands = array();
+    $commands[] = dialog_command_display(t('Access denied'), t('You are not authorized to access this page.'));
+    ctools_ajax_render($commands);
+    // implicit exit();
+  }
+
+  $form_state = array(
+    'ajax' => TRUE,
+    'title' => t('Edit comment'),
+    'args' => array((array)$comment),
+  );
+  $output = dialog_form_wrapper('comment_form', $form_state);
+  if (empty($output)) {
+    $output[] = dialog_command_display(t('Comment submitted'), t('Reloading...'));
+    $output[] = ctools_ajax_command_reload();
+  }
+  ctools_ajax_render($output);
+}
+
+/**
+ * Menu page callback for comment/%ctools_js/delete/%
+ */
+function dialog_comment_delete($cid, $ajax = FALSE) {
+  module_load_include('inc', 'comment', 'comment.admin');
+
+  if (!$ajax) {
+    return comment_delete($cid);
+  }
+
+  $comment = db_fetch_object(db_query('SELECT c.*, u.name AS registered_name, u.uid FROM {comments} c INNER JOIN {users} u ON u.uid = c.uid WHERE c.cid = %d', $cid));
+  $comment->name = $comment->uid ? $comment->registered_name : $comment->name;
+
+  ctools_include('ajax');
+  $form_state = array(
+    'ajax' => TRUE,
+    'title' => t('Edit comment'),
+    'args' => array($comment),
+  );
+  $output = dialog_form_wrapper('comment_confirm_delete', $form_state);
+  if (empty($output)) {
+    $output[] = dialog_command_display(t('Comment deleted'), t('Reloading...'));
+    $output[] = ctools_ajax_command_reload();
+  }
+  ctools_ajax_render($output);
+}

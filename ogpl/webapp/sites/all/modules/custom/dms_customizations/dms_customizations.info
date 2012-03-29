@@ -1,0 +1,5 @@
+; $Id$
+name = DMS repository for orphaned Drupal hook implementations.
+description = DMS repository for orphaned Drupal hook implementations.
+core = 6.x
+package = DMS customizations

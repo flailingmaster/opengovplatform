@@ -1,0 +1,51 @@
+<?php // $Id$
+
+function send_track_schema() {
+  $schema = array(
+    'send_track' => array(
+      'description' => t('Tracking data for all send activity'),
+      'fields' => array(
+        'stid' => array(
+          'description' => t('The primary identifier for a tracked activity'),
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'srid' => array(
+          'description' => t('The send recpient id'),
+          'type' => 'int',
+          'unsigned' => TRUE,
+        ),
+        'activity' => array(
+          'description' => t('The tracked activity (e.g. open, track, etc.'),
+          'type' => 'varchar',
+          'length' => 100,
+        ),
+        'hostname' => array(
+          'description' => t('The IP address of the user being tracked.'),
+          'type' => 'varchar',
+          'length' => 128,
+        ),
+        'timestamp' => array(
+          'description' => t('The activity timestamp'),
+          'type' => 'int',
+        ),
+        'path' => array(
+          'description' => t('The URL or path of the activity.'),
+          'type' => 'varchar',
+          'length' => 255,
+        ),
+      ),
+      'primary key' => array('stid'),
+    ),
+  );
+  return $schema;
+}
+
+function send_track_install() {
+  drupal_install_schema('send_track');
+}
+
+function send_track_uninstall() {
+  drupal_uninstall_schema('send_track');
+}

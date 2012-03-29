@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Adobe RoboHelp 9" />
+<title>Creating FAQ</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addTocInfo("Content Management System Administrator\nManaging Content\nWorking with FAQs\nCreating FAQs");
+addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("<a href=\"cms_administrator.htm\">Content Management System Administrator<\/a> > <a href=\"viewing_content_list.htm\">Managing Content<\/a> > <a href=\"creating_faq.htm\">Working with FAQs<\/a> > Creating FAQs<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<h1>Creating FAQs</h1>
+<p>You can create a Frequently Asked Question (FAQ), and assign it to a 
+ Content Creator and a Moderator. The Content Creator updates the FAQ by 
+ adding the required content, and the Moderator reviews the content to 
+ verify whether the content is appropriate for the OGPL 
+ Web site. When the FAQ is published, it appears in the FAQ section of 
+ the OGPL Web site.</p>
+<p>The following image illustrates how an FAQ appears on the OGPL Web site.</p>
+<p><img src="faq.png" alt="faq.png" style="border: Solid 1px #4f81bd; border-width: 1px; 
+		 border-style: solid;" width="600" height="378" border="1" /></p>
+<p>To create an FAQ content type:</p>
+<ol type="1">
+	<li><p>In the navigation menu, point to <span style="font-weight: bold;"><b>Configurable 
+	 Items</b></span>, and then click <span style="font-weight: bold;"><b>Create 
+	 Content</b></span>.</p></li>
+	<li><p>The <span style="font-weight: bold;"><b>Create Content</b></span> page 
+	 appears.</p></li>
+	<li><p>Click the <span style="font-weight: bold;"><b>FAQ</b></span> link.<br />
+	The <span style="font-weight: bold;"><b>Create FAQ</b></span> page appears.</p></li>
+	<li><p>Enter the appropriate information in each field. The following 
+	 table lists each field and its description.</p></li>
+</ol>
+<p class="TableCaption" style="margin-left: 36px;"><span>Table: Description 
+ of fields in the Create FAQ page</span></p>
+<table style="margin-left: 40px;" cellspacing="0" width="93.191%">
+	<col style="width: 26.4%;" />
+	<col style="width: 73.6%;" />
+	<tr>
+		<td style="border: Solid 1px #000000;" bgcolor="#E8E8E8"><p class="TableHeading"><span>Title</span></p></td>
+		<td style="border-top: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;" bgcolor="#E8E8E8"><p class="TableHeading"><span 
+		 style="font-weight: bold;"><b>Description</b></span></p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Question</p>
+		<p class="TableText" style="font-weight: bold;">(Required)</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="TableText">Enter the question that this FAQ page must 
+		 address.</p>
+		<p class="TableText"><span style="font-weight: bold;"><b>Note:</b></span> 
+		 This question is added in the FAQ page on the OGPL Web site.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Menu 
+		 settings</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="TableText" style="mso-fareast-font-family: 'Times New Roman'; 
+			 mso-bidi-font-family: 'Times New Roman'; mso-ansi-language: EN-US; 
+			 mso-fareast-language: EN-US; mso-bidi-language: AR-SA;"><span>You 
+		 do not need to provide information for fields within this section.</span></p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Answer</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="TableText" style="mso-ansi-language: EN-US; mso-fareast-language: EN-US; 
+			 mso-bidi-language: AR-SA; mso-fareast-font-family: 'Times New Roman'; 
+			 mso-bidi-font-family: 'Times New Roman';"><span style="mso-ansi-language: EN-US; 
+															 mso-fareast-language: EN-US; 
+															 mso-bidi-language: AR-SA; 
+															 mso-fareast-font-family: 'Times New Roman'; 
+															 mso-bidi-font-family: 'Times New Roman';">The 
+		 assigned Content Creator adds or updates the content that must 
+		 appear on this FAQ page.</span></p>
+		<p class="TableText" style="mso-ansi-language: EN-US; mso-fareast-language: EN-US; 
+			 mso-bidi-language: AR-SA; mso-fareast-font-family: 'Times New Roman'; 
+			 mso-bidi-font-family: 'Times New Roman';"><span style="font-weight: bold;"><b>Note:</b></span> 
+		 You can also provide this content.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Input format</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="TableText" style="mso-fareast-font-family: 'Times New Roman'; 
+			 mso-bidi-font-family: 'Times New Roman'; mso-ansi-language: EN-US; 
+			 mso-fareast-language: EN-US; mso-bidi-language: AR-SA;"><span>Click 
+		 the format in which the Content Creator can update content in 
+		 the Answer field. For example: Filtered HTML, Full HTML, PHP Code, 
+		 or Plain Text</span><span>.</span></p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Question details</span></p>
+		<p class="TableText"><span class="UI">(optional)</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="TableText" style="mso-fareast-font-family: 'Times New Roman'; 
+			 mso-bidi-font-family: 'Times New Roman'; font-weight: normal;"><span>Enter 
+		 details about this FAQ.</span></p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Revision 
+		 information -</p>
+		<p class="TableText" style="font-weight: bold;">Log message</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="TableText">Enter the reason for creating this FAQ.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;"><span 
+		 style="font-weight: bold;"><b>URL path settings</b></span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="TableText">By default, the <span style="font-weight: bold;"><b>Automatic 
+		 alias</b></span> check box is selected. The application automatically 
+		 assigns the URL for this FAQ.</p>
+		<p class="TableText">If you want to assign a specific URL for this 
+		 FAQ, perform the following steps:</p>
+		<ol type="1">
+			<li><p class="TableText">Click to clear the <span style="font-weight: bold;"><b>Automatic 
+			 alias</b></span> check box.</p></li>
+			<li><p class="TableText">In the <span style="font-weight: bold;"><b>URL 
+			 path settings</b></span> box, type the URL that you want to assign 
+			 for this FAQ.</p></li>
+		</ol></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Audio</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="TableText">Upload an audio file or this FAQ file.</p>
+		<p class="TableText"><span style="font-weight: bold;"><b>Note:</b></span> 
+		 You can upload MP3 files.</p>
+		<p class="TableText">To upload an audio file:</p>
+		<ol type="1">
+			<li><p class="TableText">Click <span style="font-weight: bold;"><b>Browse</b></span>.<br />
+			The <span style="font-weight: bold;"><b>File Upload</b></span> dialog 
+			 box appears.</p></li>
+			<li><p class="TableText">Click the file that you want to upload.</p></li>
+			<li><p class="TableText">Click <span style="font-weight: bold;"><b>Open</b></span>.<br />
+			The <span style="font-weight: bold;"><b>Audio</b></span> box displays 
+			 the path of the file that you selected.</p></li>
+			<li><p class="TableText">Click <span style="font-weight: bold;"><b>Upload</b></span>.<br />
+			The file is uploaded to the database and a link to the audio 
+			 appears on the page.</p></li>
+			<li><p class="TableText">Optional: If you want to remove this 
+			 file, click <span style="font-weight: bold;"><b>Remove</b></span>.<br />
+			The uploaded file is removed from the database.</p></li>
+		</ol></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Video</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="TableText">Upload a video file for this FAQ.</p>
+		<p class="TableText"><span style="font-weight: bold;"><b>Note:</b></span> 
+		 You can upload MP4, MPEG, AVI, MPG, WMV, FLV, and MOV files.</p>
+		<p class="TableText">To upload a video file:</p>
+		<ol type="1">
+			<li><p class="TableText">Click <span style="font-weight: bold;"><b>Browse</b></span>.<br />
+			The <span style="font-weight: bold;"><b>File Upload</b></span> page 
+			 appears.</p></li>
+			<li><p class="TableText">Click the file that you want to upload.</p></li>
+			<li><p class="TableText">Click <span style="font-weight: bold;"><b>Open</b></span>.<br />
+			The <span style="font-weight: bold;"><b>Video</b></span> box displays 
+			 the path of the file that you selected</p></li>
+			<li><p class="TableText">Click <span style="font-weight: bold;"><b>Upload</b></span>.<br />
+			The file is uploaded to the database and a link to the video 
+			 appears on the page. </p></li>
+			<li><p class="TableText">Optional: If you want to remove the 
+			 file that you just uploaded, click <span style="font-weight: bold;"><b>Remove</b></span>.<br />
+			The uploaded file is removed from the database.</p></li>
+		</ol></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p style="font-weight: bold;">Select 
+		 A Content Creator</p>
+		<p style="font-weight: bold;">(Required)</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="TableText">Click the username of the Content Creator 
+		 who must update the content for this FAQ.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;"><span 
+		 style="font-weight: bold;"><b>Select A Moderator</b></span></p>
+		<p style="font-weight: bold;">(Required)</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="TableText">Click the username of the Moderator who 
+		 must review the content.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Enter 
+		 the Expiry Date</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="TableText">Enter the date when the information in this 
+		 FAQ is outdated.</p>
+		<p class="TableText">The content remains on the OGPL Web site until it is unpublished 
+		 by the Super Administrator.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText" style="font-weight: bold;">Notify 
+		 Before (Days)</p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="TableText">Enter the number of days before the expiry 
+		 date when you want to receive a notification about the expiry 
+		 of the content.</p></td>
+	</tr>
+</table>
+<ol start="5" type="1">
+	<li>Click <span style="font-weight: bold;"><b>Save</b></span></li>
+</ol>
+<p style="margin-left: 40px;">An entry for this FAQ appears in the content 
+ list of the assigned Content Creator and Moderator.</p>
+<p><span style="font-weight: bold;"><b>Note:</b></span> You do not need to enter 
+ values for all the fields on this page. You can enter values for the mandatory 
+ fields only, and assign the FAQ page to a Content Creator. You or a Super 
+ Administrator can enter appropriate values in the remaining fields after 
+ the content is created, reviewed, and published.</p>
+<script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

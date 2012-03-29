@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * @file
+ * Previewable E-mail Template module install/schema/update hooks.
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+function pet_install() {
+  $success = drupal_install_schema('pet');
+
+  if ($success) {
+    // Install a couple demonstration templates (you can delete these from the UI if you want).
+    include_once(drupal_get_path('module', 'pet') . '/pet.module');
+    $pet_simple = new stdClass;
+    $pet_simple->name = 'simple';
+    $pet_simple->title = 'Simple template';
+    $pet_simple->subject = 'Simple subject';
+    $pet_simple->body = 'Simple body';
+    $pet_simple->object_types = '';
+    $pet_simple->recipient_callback = '';
+    pet_insert($pet_simple);
+
+    $pet_tokens_and_callback = new stdClass;
+    $pet_tokens_and_callback->name = 'tokens_and_callback';
+    $pet_tokens_and_callback->title = 'Template with custom tokens and recipient list callback';
+    $pet_tokens_and_callback->subject = 'Hi [user]';
+    $pet_tokens_and_callback->body = 'I want to tell you something about node [title]';
+    $pet_tokens_and_callback->object_types = '';
+    $pet_tokens_and_callback->recipient_callback = 'pet_test_callback';
+    pet_insert($pet_tokens_and_callback);
+  }
+
+  if ($success) {
+    drupal_set_message(st('Previewable email template module installed successfully.'));
+  }
+  else {
+    drupal_set_message(st('The installation of Previewable email template module failed.'), 'error');
+  }
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function pet_uninstall() {
+  drupal_uninstall_schema('pet');
+  drupal_set_message(t('Previewable email template module has been uninstalled.'));
+}
+
+/**
+ * Implementation of hook_schema().
+ */
+function pet_schema() {
+  $schema = array();
+
+  $schema['pets'] = array(
+    'fields' => array(
+      'pid' => array(
+        'type' => 'serial',
+        'size' => 'small',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => '32',
+        'not null' => FALSE,
+        'default' => '',
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+        'default' => '',
+      ),
+      'subject' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+        'default' => '',
+      ),
+      'body' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+      'object_types' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+      'recipient_callback' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('pid'),
+    'unique keys' => array(
+      'name' => array('name'),
+    ),
+  );
+
+  return $schema;
+}

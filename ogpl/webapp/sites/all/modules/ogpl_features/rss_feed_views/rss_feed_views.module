@@ -1,0 +1,3 @@
+<?php
+
+include_once('rss_feed_views.features.inc');

@@ -1,0 +1,14 @@
+name = Video FTP
+description = Allows you to attach videos uploaded through FTP to nodes.
+core = 6.x
+version = 6.x-4.x-dev
+dependencies[] = content
+dependencies[] = filefield
+dependencies[] = video
+package = "Video"
+; Information added by drupal.org packaging script on 2011-11-12
+version = "6.x-4.5"
+core = "6.x"
+project = "video"
+datestamp = "1321098636"
+

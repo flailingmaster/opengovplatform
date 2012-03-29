@@ -1,0 +1,120 @@
+<?php
+function web_contact_owner_form()
+{
+	if ( arg(0) == 'node' && is_numeric(arg(1)) && ! arg(2)) {
+		$node = node_load(arg(1));
+	}
+	drupal_add_js(drupal_get_path('module', 'feedback').'/feedback.js');
+	$max_len = 3000;
+	$nid = $node->nid;
+	$output=db_query("select content_type_dataset.nid as nid,content_type_dataset.field_ds_email_address_email as email,content_type_dataset.field_ds_title_value as title from content_type_dataset where content_type_dataset.nid='$nid'");
+	if($result=db_fetch_object($output)){
+		$nid=$result->nid;
+		$email=$result->email;
+		$title=$result->title;
+	}
+	
+	$form['purpose']=array(
+	  '#type'=>'select',
+	  '#required' =>true,
+	  '#options'=>array('Copyright Violation'=>'Copyright Violation','Offensive Content'=>'Offensive Content','Spam or Junk'=>'Spam or Junk','Personal Information'=>'Personal Information','Other'=>'Other'),
+	  '#default_value'=>array('Other'),
+	  '#title'=>'Purpose',
+         '#weight'=>'-2',
+	  );
+	 $form['subject']=array(
+	  '#type'=>'textfield',
+	  '#required'=>true,
+	  '#title'=>'Subject',
+	  //'#size' => 58,
+	  '#maxlength' => 1000,
+	  '#default_value'=>'A visitor has sent you a message about your "'.$title.'" dataset',
+         '#weight'=>'-1',
+
+	  );
+	 $form['message']=array(
+	  '#type'=>'textarea',
+	  '#required'=>true,
+	  '#title'=>'Short Message',
+	  '#description' => '<span id="shrt-textarea-limit-count"> '.$max_len.' </span> characters left.',
+	  '#attributes' => array('onkeydown'=>'return textCounter(3000,"edit-message","shrt-textarea-limit-count")','onkeyup'=>'return textCounter(3000,"edit-message","shrt-textarea-limit-count")','maxlength' => '3000'),
+	  '#weight'=>'0',
+
+         );
+	 $form['emailid']=array(
+	  '#type'=>'textfield',
+	  '#required'=>true,
+	  '#title'=>'Your E-mail Address',
+	 '#rules' => array('email',),
+          '#weight'=>'1',
+	  );
+	  $form['cc']=array(
+	  '#type'=>'checkbox',
+	  '#title'=>'Send copy to me',
+          '#weight'=>'2',
+
+	  );
+	 $form['nodeid']=array(
+	  '#type'=>'hidden',
+	  '#default_value'=>$nid,
+          '#weight'=>'3',
+
+	  );
+	 $form['dataset-title']=array(
+	  '#type'=>'hidden',
+	  '#default_value'=>$title,
+          '#weight'=>'4',
+
+	  );
+	  $path = drupal_get_path_alias($_GET['q']);
+	  $form['url']=array(
+	  '#type'=>'hidden',
+	  '#value'=>$path,
+          '#weight'=>'5',
+
+	  );
+	$form['contact-owner']['#weight']='6';
+	$form['contact-owner']['submit'] = array ('#type'=> 'submit','#weight'=>'3', '#value'=>'Submit','#attributes' => array('title'=>'Click here to submit the form'));
+	return $form;
+}
+function web_contact_owner_form_validate($form,&$form_state){
+$emailid = $form_state['values']['emailid'];
+if(!valid_email_address($emailid))
+{
+	form_set_error('emailid', t('You must enter a valid e-mail address.'));
+	return false;
+}
+return true;
+}
+function web_contact_owner_form_submit($form,&$form_state){
+	$nodeid = $form_state['values']['nodeid'];
+	$subject= $form_state['values']['subject'];
+	$message = $form_state['values']['message'];
+	$output=db_query("select content_type_dataset.field_ds_email_address_email as email from content_type_dataset where content_type_dataset.nid='".$nodeid."'");
+	if($result=db_fetch_object($output)){
+		$email=$result->email;
+	}	
+	$headers = 'From: '.$form_state['values']['emailid']."\r\n";
+	if($form_state['values']['cc'])
+		$headers.= 'Cc: '.$form_state['values']['emailid'];
+	mail($email,$subject,$message,$headers);
+	drupal_goto('contact-ownerack',array('dest'=>$form_state['values']['url']));
+}
+/*function web_contact_owner_ack ()
+{
+	global $base_url;
+	$content = '<p>The dataset owner has been notified.</p> <br/><br/><p><a href="'.$base_url.'">Back to web page.</a></p> ';
+	return($content);
+}*/
+function web_contact_owner_block($op = 'list', $delta = 0) {
+  switch ($op) {
+    case 'list':
+      $blocks[0]['info'] = t('Contact Dataset Owner Block');
+      $blocks[0]['cache'] = BLOCK_NO_CACHE;
+      return $blocks;
+    case 'view':
+      $block['subject'] = t('Contact Dataset Owner');
+      $block['content'] = drupal_get_form('web_contact_owner_form');
+      return $block;      
+  }
+}

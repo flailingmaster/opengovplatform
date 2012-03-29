@@ -1,0 +1,935 @@
+<?php
+function get_average_ratings($nid)
+{
+             $a=0;
+			 $q=0;
+			 $u=0;
+			 $acc=votingapi_select_results(array('content_id' => $nid, 'tag' =>'voteaccessibility', 'function' => 'average'));
+			 $qual=votingapi_select_results(array('content_id' => $nid, 'tag' =>'votequality', 'function' => 'average'));
+			 $usab=votingapi_select_results(array('content_id' => $nid, 'tag' =>'voteusability', 'function' => 'average'));
+			 $oldrange=(25-0);
+			 $newrange=(40-20);
+			 
+			 $a=(int)$acc[0]['value'];		
+			 $q=(int)$qual[0]['value'];
+			 $u=(int)$usab[0]['value'];
+							
+			  if($acc!=null)
+			   {
+				 if($a>=0&&$a<25){  $a=((($a-0)*$newrange)/$oldrange)+20;	 }
+				 else if($a>=25&&$a<50){ $a=((($a-25)*$newrange)/$oldrange)+40; }
+				 else if($a>=50&&$a<75){ $a=((($a-50)*$newrange)/$oldrange)+60; }
+				 else if($a>=75&&$a<=100){ $a=((($a-75)*$newrange)/$oldrange)+80; }
+			   }
+			    if($qual!=null)
+			   {
+                 if($q>=0&&$q<25){  $q=((($q-0)*$newrange)/$oldrange)+20; }
+				 else if($q>=25&&$q<50){$q=((($q-25)*$newrange)/$oldrange)+40;}
+				 else if($q>=50&&$q<75){$q=((($q-50)*$newrange)/$oldrange)+60; }
+				 else if($q>=75&&$q<=100){$q=((($q-75)*$newrange)/$oldrange)+80; }
+	    	   }
+			    if($usab!=null)
+			   {
+				 if($u>=0&&$u<25){ $u=((($u-0)*$newrange)/$oldrange)+20; }
+				 else if($u>=25&&$u<50){$u=((($u-25)*$newrange)/$oldrange)+40;}
+				 else if($u>=50&&$u<75){$u=((($u-50)*$newrange)/$oldrange)+60;}
+				 else if($u>=75&&$u<=100){$u=((($u-75)*$newrange)/$oldrange)+80;}
+			   }
+					 
+			 $value=(int)(($a+$q+$u)/3);
+				
+			
+	   return $value;	   
+}
+
+function get_average_rating_votes($nid)
+{
+    $qual_votes=rate_get_results('node', $nid, 1);  
+    $acc_votes=rate_get_results('node',$nid, 2);  
+    $usab_votes=rate_get_results('node',$nid, 3);  
+    $total_votes=$acc_votes['count']+$qual_votes['count']+$usab_votes['count'];
+    return $total_votes;
+
+    
+}
+
+function calculate_ratings($this_node,$AR,$AV)
+{ 
+
+   /*
+   ========== Ratings Formula==================== 
+   ======== BR=(AV*AR)+(V*R)/(AV+V)==============
+   */
+  $has_votes=db_result(db_query("select count(*) from votingapi_vote V where V.content_id=".$this_node.""));
+   if($has_votes ==0) return 0;
+   $sum=0;
+   $count=0;
+/*
+  Calculating average ratings for all items (AR) 
+  $result=db_query("select distinct(content_id) as nid from votingapi_vote V LEFT JOIN node N on V.content_id=N.nid where N.type='dataset' ");
+  while($row=db_fetch_object($result))
+  {
+     $sum=$sum+get_average_ratings($row->nid);
+     $count++;
+  }
+  
+  $AR=$sum/$count;
+  //print "AR=".$AR;
+
+  Calculating average number of votes for all items (AV) 
+$result=db_query("select distinct(content_id) as nid from votingapi_vote V LEFT JOIN node N on V.content_id=N.nid where N.type='dataset' ");
+
+  $sum=0;
+  while($row=db_fetch_object($result))
+  {   
+     $sum=$sum+get_average_rating_votes($row->nid);
+  }
+  $AV=$sum/$count;
+  $AV=round($AV);
+ //print "AV=".$AV;
+*/
+  $R=get_average_ratings($this_node);
+  $V=get_average_rating_votes($this_node);
+
+  //print "R=".$R;
+ //print "V=".$V;
+  
+  $BR= (($AV*$AR)+($V*$R))/($AV+$V);
+$value=$BR;
+$value=$value/10;
+$value=round($value);
+$value=$value*10;
+if($value<10)
+  $value=0;
+else if($value>=10 && $value<30)
+  $value=20;	
+else if($value>=30 &&$value<50)
+  $value=40;	
+else if($value>=50 &&$value<70)
+  $value=60;	
+else if($value>=70 &&$value<90)
+  $value=80;	
+else if($value>=90 &&$value<=100)
+  $value=100;		
+ return $value;
+}
+
+
+function set_filters($type,$value)
+{
+  $url=$_SERVER['REQUEST_URI'];
+  $old_filters=$_GET['filter'];
+
+  if($_GET['filter'])
+  { 
+    $old_filters=$_GET['filter'];
+    $filters=$_GET['filter'];
+    $filter=array();
+    $flag=0;
+    if(!empty($filters))
+	{  $i=0;
+          $filters=explode('+',$filters);
+          foreach($filters as $fil)
+          {  $filter[$i]=explode(':',$fil);
+             $filter_type=$filter[$i][0];
+             $filter_val=$filter[$i][1]; 
+             
+             if($filter_type==$type)
+              {  $filter[$i][1]=$value;
+                 $flag=1; 
+              }
+             $i++;
+          }
+    
+       if($flag==0)
+      {$filter[$i]=array($type,$value);}
+              
+    }
+	$i=0; 
+     $new_filter=array(); 
+     foreach($filter as $val)
+     { $new_filter[$i]=implode('%3A',$val);
+	    $i++;
+     }
+     $old_filters=str_replace(":","%3A",$old_filters);
+     $old_filters=str_replace("+","%2B",$old_filters);
+     $old_filters=str_replace(" ","%20",$old_filters);
+
+     $new_filters=implode('%2B',$new_filter);  
+     
+ 
+     $url=str_replace($old_filters,$new_filters,$url);
+     
+   }
+
+  else 
+  {
+     	if(strlen(strstr($url,"?"))>0)
+      	{	
+           if(strlen(strstr($url,"filter="))>0)
+             $url=str_replace('filter=','filter='.$type.'%3A'.$value, $url);
+           else
+             $url.='&filter='.$type.'%3A'.$value;
+        }
+    	 else 
+    		$url.='?filter='.$type.'%3A'.$value;
+  }
+  $page=$_GET['page'];
+  $url=str_replace('?page='.$page.'&','?',$url);
+  $url=str_replace('&','&amp;',$url);
+
+  return $url;
+}
+
+
+function set_sort($type,$direction)
+{
+  $url=$_SERVER['REQUEST_URI'];
+  $old_sort=$_GET['sort'];
+  $flag=0;
+  if($_GET['sort'])
+  {  
+     $sort=$_GET['sort'];
+     if(!empty($sort))
+     {
+       $sort_value=explode(' ',$sort);
+        if($sort_value[0]==$type)
+        {  
+           if($sort_value[1]=='asc') $sort_value[1]='desc';
+           else if($sort_value[1]=='desc') $sort_value[1]='asc';
+           
+           $flag=1; 
+        }
+
+      } 
+     if($flag==0)
+    { $sort_value[0]=$type;
+      $sort_value[1]=$direction;
+     }
+     $sort=implode('%20',$sort_value);
+     $old_sort=str_replace(" ","%20",$old_sort);
+
+     $url=str_replace($old_sort,$sort,$url);
+
+  }
+  else
+  {
+    if(strlen(strstr($url,"?"))>0)
+      	{	
+           if(strlen(strstr($url,"sort="))>0)
+             $url=str_replace('sort=','sort='.$type.'%20'.$direction, $url);
+           else
+             $url.='&sort='.$type.'%20'.$direction;
+        }
+    	 else 
+    		$url.='?sort='.$type.'%20'.$direction;
+  }
+ $page=$_GET['page'];
+  $url=str_replace('?page='.$page.'&','?',$url);
+  $url=str_replace('&','&amp;',$url);
+return $url;
+}
+
+function get_filter($type)
+{
+
+   $filters=$_GET['filter'];
+   $filter=array();
+
+     if(!empty($filters))
+     {  $i=0;
+          $filters=explode('+',$filters);
+          foreach($filters as $fil)
+          {  $filter[$i]=explode(':',$fil);
+             $filter_type=$filter[$i][0];
+             $filter_val=$filter[$i][1]; 
+	      if($filter_type==$type)
+               {              
+		    return $filter_val;
+                }
+             $i++;
+          }
+       }
+     else return false; 
+
+   
+}
+
+function get_filter_value($value)
+{
+
+       $name='';
+       if ($value == 'catalog_type_raw_data') $name='Raw Data'; 
+  	if ($value == 'catalog_type_data_apps') $name='Apps';
+  	if ($value == 'catalog_type_document') $name='Documents'; 
+ 	if ($value == 'catalog_type_data_tools') $name='Tools'; 
+ 	if ($value == 'catalog_type_data_service') $name='Services';
+  	if ($value == 'text/csv') $name="CSV"; 
+ 	if ($value == 'text/plain')$name="TXT";
+ 	if ($value== 'text/xml')$name="XML";
+ 	if ($value == 'text/html')$name="HTML";
+ 	if($value == 'application/pdf')$name="PDF";
+	if($value == 'application/zip')$name="ZIP";
+  	if($value == 'application/vnd.ms-powerpoint')$name="PPT";
+ 	if($value=='application/vnd.openxmlformats-officedocument.wordprocessingml.document' )$name="DOCX";
+  	if($value=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ) $name="XLSX";
+  	if($value == 'application/vnd.openxmlformats-officedocument.presentationml.presentation') $name="PPTX";
+  	if($value=='application/vnd.ms-document')$name="DOC";
+  	if($value=='application/vnd.ms-excel')$name="XLS";
+       if(is_numeric($value))
+       { $nid=$value;
+   	 $node=node_load($nid);
+   	 $name=$node->title;
+        }
+ 
+       if($name=='') return $value;
+
+return $name;
+
+}
+
+function remove_keys()
+{
+  $keys=$_GET['keys'];
+  $keys='keys='.$keys;
+  $keys=str_replace(' ','+',$keys);
+  $url=$_SERVER['REQUEST_URI'];
+  $url=str_replace($keys,'keys=',$url);
+  $url=str_replace('&','&amp;',$url);
+  return $url;
+}
+
+function remove_filter($type)
+{
+  $url=$_SERVER['REQUEST_URI'];
+  $old_filters=$_GET['filter'];
+
+  if($_GET['filter'])
+  { 
+    $old_filters=$_GET['filter'];
+    $filters=$_GET['filter'];
+    $filter=array();
+    $flag=0;
+    if(!empty($filters))
+	{  $i=0;
+          $filters=explode('+',$filters);
+          foreach($filters as $fil)
+          {  $filter[$i]=explode(':',$fil);
+             $filter_type=$filter[$i][0];
+             $filter_val=$filter[$i][1]; 
+             
+             if($filter_type==$type)
+              {  $filter[$i][1]='';
+                 $filter[$i][0]='';
+                 $flag=1; 
+              }
+             $i++;
+          }
+           
+    }
+	$i=0; 
+     $new_filter=array(); 
+     foreach($filter as $val)
+     {     if($val[0]!='')
+           $new_filter[$i]=implode('%3A',$val);
+	    $i++;
+     }
+     $old_filters=str_replace(":","%3A",$old_filters);
+     $old_filters=str_replace("+","%2B",$old_filters);
+     $old_filters=str_replace(" ","%20",$old_filters);
+
+     $new_filters=implode('%2B',$new_filter);  
+     
+     $url=str_replace($old_filters,$new_filters,$url);
+     
+   }
+  $page=$_GET['page'];
+  $url=str_replace('?page='.$page.'&','?',$url);
+  $url=str_replace('&','&amp;',$url);
+  return $url;
+
+}
+
+
+function web_catalogs_search_block($op = 'list', $delta = 0, $edit = array())
+{
+    switch ($op) {
+        case 'list':
+            $blocks[0] = array(
+                'info' => t('Search: Filter By Catalog Type'),
+            );
+            $blocks[1] = array(
+                'info' => t('Search: Filter By Agency Name'),
+            );
+            $blocks[2] = array(
+                'info' => t('Search: Filter By Sub-Agency Name'),
+            );
+	    $blocks[3] = array(
+                'info' => t('Search: Filter By Resource Format'),
+            );
+           $blocks[4] = array(
+                'info' => t('Search: Sort By'),
+            );
+           $blocks[5] = array(
+                'info' => t('Search: Current Search'),
+            );
+          /* $blocks[6] = array(
+                'info' => t('Search: Form'),
+            ); */
+
+            return $blocks;
+
+        case 'view':
+            switch ($delta) {
+                case 0:
+                    $blocks['subject'] = "Filter By Catalog Type";
+                    $blocks['content'] = catalog_type_filters();
+                     break;
+		   case 1:
+                    $blocks['subject'] = "Filter By Agency Name";
+                    $blocks['content'] = agency_name_filters();
+                     break;
+		   case 2:
+                    $blocks['subject'] = "Filter By Sub-Agency Name";
+                    $blocks['content'] = sub_agency_name_filters();
+                     break;
+ 		   case 3:
+                    $blocks['subject'] = "Filter By Resource Format";
+                    $blocks['content'] = file_format_filters();
+                     break;
+                case 4:
+                    $blocks['subject'] = "Sort By";
+                    $blocks['content'] = sorting_options();
+                     break;
+               case 5:
+                    $blocks['subject'] = "Current Search";
+                    $blocks['content'] = current_search_filters();
+                     break;
+              /* case 6:
+                    $blocks['subject'] = "Search Form";
+                    $blocks['content'] = web_catalogs_search_search_form();
+                     break; */
+
+            }
+            return $blocks;
+    }
+   
+}
+
+
+
+function web_catalogs_search_views_pre_execute(&$view)
+{
+  if($view->name=='Catalogs_Search')
+   {
+      $filters = $_GET['filter'];
+ 
+   	 if($filters)
+       {
+      	  $query=web_catalogs_search_set_query_filters();
+      	  $search = array('WHERE');
+      	  $replace = array(" LEFT JOIN files F ON F.fid=node_data_field_ds_description.field_ds_file_fid WHERE ".$query);
+      	  $view->build_info['query'] = str_replace($search,$replace,$view->build_info['query']);
+     	   $view->build_info['count_query'] = str_replace($search,$replace,$view->build_info['count_query']);
+	}
+      
+      $sort=$_GET['sort'];  
+       
+      	  $query=web_catalogs_search_set_query_sort();
+         if($sort){
+      	  $search = array('ORDER BY');
+      	  $replace = array(" ORDER BY ".$query);
+      	  $view->build_info['query'] = str_replace($search,$replace,$view->build_info['query']);
+     	   $view->build_info['count_query'] = str_replace($search,$replace,$view->build_info['count_query']);
+	}
+
+       $itemCount = $_GET['results'];
+        if (!empty($itemCount)) {
+          if($view->current_display=='page_1')
+             $view->set_items_per_page($itemCount);
+        }
+
+
+   }
+  
+}
+
+function web_catalogs_search_set_query_sort()
+{
+ $sort = $_GET['sort'];
+   
+    $sort_query='';
+      if (!empty($sort))
+	{  $i=0;
+          $sorting=explode(' ',$sort);
+                    
+             $type=$sorting[0];
+             $direction=$sorting[1]; 
+             if($type=='title')
+               $sort_query.="node_title ".$direction.",";
+             if($type=='popularity')
+              $sort_query.=" node_counter_totalcount ".$direction.",";
+             if($type=='updated')
+                $sort_query.=" node_changed ".$direction.",";
+	      if($type=='type')
+                $sort_query.=" node_data_field_ds_description.field_ds_catlog_type_type ".$direction.",";
+             if($type=='recent')
+                $sort_query.=" node_created ".$direction.",";
+           
+
+
+        }
+     return $sort_query;
+}
+
+
+function web_catalogs_search_set_query_filters()
+{
+   $filters = $_GET['filter'];
+      $filter=array();
+    $filter_query='';
+      if (!empty($filters))
+	{  $i=0;
+          $filters=explode('+',$filters);
+          foreach($filters as $fil)
+          {  $filter[$i]=explode(':',$fil);
+             $type=$filter[$i][0];
+             $value=htmlspecialchars($filter[$i][1] ,ENT_QUOTES); 
+             if($type=='catalog_type')
+               $filter_query.="(node_data_field_ds_description.field_ds_catlog_type_type='".$value."') AND";
+             else if($type=='agency')
+               $filter_query.="(node_data_field_ds_description.field_ds_agency_name_nid='".$value."') AND";
+	      else if($type=='sub_agency')
+               $filter_query.="(node_data_field_ds_description.field_ds_sub_agency_name_value='".$value."') AND";
+             else if($type=='file')
+               $filter_query.="(F.filemime='".$value."') AND";
+
+           // drupal_set_message($type.' '.$value.' '.$i,'hi');
+	      $i++;
+          }  
+          
+       }
+     return $filter_query;
+ 
+}
+
+function web_catalogs_search_search_form()
+{
+  $form['keys']=array(
+
+	'#type' => 'textfield',
+	'#id'=>'keys',
+	'#title' => t('Enter Your Keywords'),
+	'#value'=>$_GET['keys'],
+	
+	);
+   
+  $form['submit']=array(
+
+	'#type' => 'image_button',
+	'#id'=>'selectpage',
+	'#title' => t('Results Per Page'),
+	'#attributes'=>array('alt'=>"Search" ,'title'=>"Search"),
+       '#value'=>'Search',
+       '#src'=>path_to_theme() . '/images/button.png',
+     
+       );
+  $form['retain_filters']=array(
+
+	'#type' => 'checkbox',
+	'#id'=>'retain_filters',
+	'#title' => t('Retain current filters'),
+	'#value'=>$_GET['retain_filters'],
+	
+	);
+  $form['#method']='get';
+   
+
+return $form;    
+}
+
+function current_search_filters()
+{
+
+  if($_GET['keys'])
+  {
+   $keys=$_GET['keys'];
+   $output.='<li><a href="'.remove_keys().'">(-) </a>'.$_GET['keys'].'</li>';
+
+  }
+
+  if($_GET['filter'])
+  { 
+    $filters=$_GET['filter'];
+    $filter=array();
+    $flag=0;
+    if(!empty($filters))
+	{  
+          $i=0;
+          $filters=explode('+',$filters);
+          foreach($filters as $fil)
+          {  $filter[$i]=explode(':',$fil);
+             $filter_type=$filter[$i][0];
+             $filter_val=$filter[$i][1]; 
+             $output.='<li><a title="'.get_filter_value($filter_val).'"  href="'.remove_filter($filter_type).'">(-) </a>'.get_filter_value($filter_val).'</li>';
+           }
+       }
+
+   }
+ if($output!='')
+  $output='<ul>'.$output.'</ul>';
+
+  $output='<h3>Search found '.count(views_get_view_result('Catalogs_Search')).' items</h3>'.$output;
+  return $output;
+
+}
+
+
+function sorting_options()
+{  global $base_url;
+   $result=views_get_view_result('Catalogs_Search');
+   if($result)
+   {
+
+   $current_sort=$_GET['sort'];
+   $sorting=explode(' ',$current_sort);
+   $sort_type=$sorting[0];
+   $direction=$sorting[1];  
+   
+   if($sort_type==''){ $sort_type='recent';  $direction='desc';}
+    
+   $options=array('title'=>'Title','type'=>'Type','updated'=>'Last Updated','rating'=>'Rating','popularity'=>'Most Accessed','recent'=>'Most Recent');
+   $default_direction=array('title'=>'asc','type'=>'asc','updated'=>'desc','rating'=>'desc','popularity'=>'desc','recent'=>'asc');
+   $output='<ul>';
+   foreach($options as $type=>$sort)
+   {  $image='';
+     if($sort_type==$type)
+     { 
+       if($direction=='asc')
+         $image='<img width="13" height="13" title="sort descending" alt="sort icon" src="'.$base_url.'/misc/arrow-asc.png"/>';
+       else 
+         $image='<img width="13" height="13" title="sort ascending" alt="sort icon" src="'.$base_url.'/misc/arrow-desc.png"/>';
+      } 
+     if($image)
+     $output.='<li>'.$image.'<a title="'.$sort.'" class="active" href="'.set_sort($type,$default_direction[$type]).'">'.$sort.'</a></li>';
+     else 
+     $output.='<li><a title="'.$sort.'" href="'.set_sort($type,$default_direction[$type]).'">'.$sort.'</a></li>';
+
+   }
+  $output.='</ul>';
+   }
+  return $output;
+}
+
+
+function agency_name_filters()
+{ 
+  if(!get_filter('agency'))
+  { $nid='';
+       $result=views_get_view_result('Catalogs_Search');
+      if($result)
+      {
+  	foreach($result as $res)
+  	{
+   	 $nid.=$res->nid.',';
+ 	}
+  	$nid=substr($nid,0,strlen($nid)-1);
+  if($nid!='') $nid_query='ds.nid IN ('.$nid.') AND';
+
+    $agency=db_query("select distinct(ds.field_ds_agency_name_nid) as name ,count(ds.field_ds_agency_name_nid) as count from content_type_dataset ds LEFT JOIN node n on ds.nid=n.nid LEFT JOIN workflow_node wf on ds.nid=wf.nid  WHERE ".$nid_query." n.status=1 AND wf.sid=10 AND ds.field_ds_agency_name_nid IS NOT NULL GROUP BY ds.field_ds_agency_name_nid order by count desc");
+    $old_filters='';
+ 	
+ 	 while($row=db_fetch_object($agency))
+  	{  
+          if (is_numeric($row->name))
+   	   {
+    	     $nid=(int)$row->name;
+   	     $node=node_load($nid);
+   	     $text=$node->title;
+  	   }
+   	 $output.='<li><a title="'.$text.'" href="'.set_filters('agency',$row->name).'">'.$text.' ('.$row->count.')</a></li>';
+  	}
+        if($output)
+       $output='<ul>'.$output.'</ul>';  
+       }
+     }
+  else
+  { 
+    if (is_numeric(get_filter('agency')))
+    {
+    	  $nid=(int)get_filter('agency');
+   	   $node=node_load($nid);
+   	   $text=$node->title;
+     }
+
+    $output='<ul>';
+    $output.='<li><a href="'.remove_filter('agency').'">(-) </a>'.$text.'</li>';
+    $output.='</ul>';
+
+  }
+  return $output;
+}
+
+
+
+function sub_agency_name_filters()
+{ 
+  if(!get_filter('sub_agency'))
+  {
+  $nid='';
+       $result=views_get_view_result('Catalogs_Search');
+      if($result)
+       {
+  	foreach($result as $res)
+  	{
+   	 $nid.=$res->nid.',';
+ 	}
+  	$nid=substr($nid,0,strlen($nid)-1);
+    if($nid!='') $nid_query='ds.nid IN ('.$nid.') AND';
+  $subagency=db_query("select distinct(ds.field_ds_sub_agency_name_value) as name ,count(ds.field_ds_sub_agency_name_value) as count from content_type_dataset ds LEFT JOIN node n on ds.nid=n.nid LEFT JOIN workflow_node wf on ds.nid=wf.nid  WHERE ".$nid_query."  n.status=1 AND wf.sid=10 AND ds.field_ds_sub_agency_name_value IS NOT NULL GROUP BY ds.field_ds_sub_agency_name_value order by count desc");
+  $old_filters='';
+  if($_GET['filter'])
+  {  
+	$filters=$_GET['filter'];
+       $old_filters=$_GET['filter'];
+  }
+ 
+  while($row=db_fetch_object($subagency))
+  {  
+    
+    $output.='<li><a title="'.$row->name.'"  href="'.set_filters('sub_agency',$row->name).'">'.$row->name.' ('.$row->count.')</a></li>';
+  }
+  if($output)
+    $output='<ul>'.$output.'</ul>';
+    }
+   }
+   else
+  {  
+   
+    $output='<ul>';
+    $output.='<li><a href="'.remove_filter('sub_agency').'">(-) </a>'.get_filter('sub_agency').'</li>';
+    $output.='</ul>';
+
+  }
+
+  return $output;
+}
+
+function file_format_filters()
+{
+    if(!get_filter('file'))
+  {
+       $nid='';
+       $result=views_get_view_result('Catalogs_Search');
+       if($result)
+       { 
+  	foreach($result as $res)
+  	{
+   	 $nid.=$res->nid.',';
+ 	}
+  	$nid=substr($nid,0,strlen($nid)-1);
+         if($nid!='') $nid_query='ds.nid IN ('.$nid.') AND';
+       
+  	$files=db_query("select distinct(F.filemime) as name ,count(F.filemime) as count from content_type_dataset ds LEFT JOIN node n on ds.nid=n.nid LEFT JOIN workflow_node wf on ds.nid=wf.nid LEFT JOIN files F on ds.field_ds_file_fid=F.fid WHERE ".$nid_query."  n.status=1 AND wf.sid=10 AND F.filemime IS NOT NULL GROUP BY F.filemime order by count desc");
+  	$old_filters='';
+ 	 if($_GET['filter'])
+	  {  
+		$filters=$_GET['filter'];
+ 	      $old_filters=$_GET['filter'];
+ 	  }
+	 while($row=db_fetch_object($files))
+ 	 {      $fileformat=$row->name;
+  	        $text=get_filter_value($fileformat);
+           
+   	 $output.='<li><a title="'.$text.'" href="'.set_filters('file',$row->name).'">'.$text.' ('.$row->count.')</a></li>';
+  	 }
+  
+  	  if($output)
+          $output='<ul>'.$output.'</ul>';
+         }
+       }
+    else
+  {  	$fileformat=get_filter('file');
+  	$text=get_filter_value($fileformat);
+    $output='<ul>';
+    $output.='<li><a href="'.remove_filter('file').'">(-) </a>'.$text.'</li>';
+    $output.='</ul>';
+
+  }
+ 
+  
+  return $output;
+}
+
+
+function catalog_type_filters()
+{
+  if(!get_filter('catalog_type'))
+  {
+       $nid='';
+       $result=views_get_view_result('Catalogs_Search');
+       if($result)
+       {
+  	foreach($result as $res)
+  	{
+   	 $nid.=$res->nid.',';
+ 	}
+  	$nid=substr($nid,0,strlen($nid)-1);
+         if($nid!='') $nid_query='ds.nid IN ('.$nid.') AND';
+
+  	$catalogs=db_query("select distinct(ds.field_ds_catlog_type_type) as name ,count(ds.field_ds_catlog_type_type) as count from content_type_dataset ds LEFT JOIN node n on ds.nid=n.nid LEFT JOIN workflow_node wf on ds.nid=wf.nid WHERE ".$nid_query."  n.status=1 AND wf.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL GROUP BY ds.field_ds_catlog_type_type order by count desc");
+  	$old_filters='';
+ 	 if($_GET['filter'])
+	  {  
+		$filters=$_GET['filter'];
+ 	      $old_filters=$_GET['filter'];
+ 	  }
+	 while($row=db_fetch_object($catalogs))
+ 	 {  
+               if ($row->name == 'catalog_type_raw_data') $name='Raw Data'; 
+  		 if ($row->name == 'catalog_type_data_apps') $name='Apps';
+  		 if ($row->name == 'catalog_type_document') $name='Documents'; 
+ 		 if ($row->name == 'catalog_type_data_tools') $name='Tools'; 
+ 		 if ($row->name == 'catalog_type_data_service') $name='Services';
+            
+   	 $output.='<li><a title="'.$name.'" href="'.set_filters('catalog_type',$row->name).'">'.$name.' ('.$row->count.')</a></li>';
+  	 }
+  
+  	  if($output)
+          $output='<ul>'.$output.'</ul>';
+         }
+       }
+    else
+  {  	$value=get_filter('catalog_type');
+       if ($value == 'catalog_type_raw_data') $name='Raw Data'; 
+  	if ($value == 'catalog_type_data_apps') $name='Apps';
+  	if ($value == 'catalog_type_document') $name='Documents'; 
+ 	if ($value == 'catalog_type_data_tools') $name='Tools'; 
+ 	if ($value == 'catalog_type_data_service') $name='Services';
+
+    $output='<ul>';
+    $output.='<li><a href="'.remove_filter('catalog_type').'">(-) </a>'.$name.'</li>';
+    $output.='</ul>';
+
+  }
+ 
+  
+  return $output;
+}
+
+function web_catalogs_search_form_alter(&$form, &$form_state, $form_id) {
+  global $base_url;
+   if ($form['#id'] == 'views-exposed-form-Catalogs-Search-page-1') 
+    {
+             
+	if($_GET['retain_filters']==1 && $_GET['retained_filters']){
+           $url=$_SERVER['REQUEST_URI'];
+
+         // $url=str_replace('filter=','filter='.$_GET['retained_filters'],$url);
+          $url=str_replace('retained_filters','filter',$url);
+          $query=substr($url,strpos($url,'?')+1);
+            
+          // drupal_set_message($query,'');
+            
+           drupal_goto('catalogs',$query);
+         }  
+       
+      $form['retain_filters']=array(
+
+             '#type'=>'checkbox',
+             '#title'=>'Retain current filters',
+             '#value'=>$_GET['filter'],
+             '#prefix'=>'</div><div class="retain-filters">',
+               
+             
+             
+      ); 
+      $value=$_GET['filter'];
+      
+       $form['retained_filters']=array(
+
+             '#type'=>'hidden',
+             '#value'=>$value,
+      );    
+     
+      $form['keys']['#size'] = '60';
+      
+      $form['#validate'][] = 'web_catalogs_search_form_validate';
+      $form['#submit'][]='web_catalogs_search_retain_filters_submit';
+  
+      $form['submit']['#value']='Search';
+      $form['submit']['#type']='image_button';
+      $form['submit']['#src'] = path_to_theme() . '/images/button.png';
+      $form['submit']['#attributes']=array('alt'=>"Search" ,'title'=>"Search" );
+
+    //var_dump($form['#info']);
+     }
+}
+
+function web_catalogs_search_views_pre_render(&$view) {
+  
+
+  if ($view->name == 'Catalogs_Search') 
+  {      
+    $current_sort=$_GET['sort'];
+    $sorting=explode(' ',$current_sort);
+    $sort_type=$sorting[0];
+    $direction=$sorting[1];   
+     
+	 if($sort_type=='rating')
+	{    
+ 	   $default_view=views_get_view_result('Catalogs_Search'); 
+	   foreach ($default_view as $key => $val)
+          {
+ 	       $nid = $val->nid;
+      
+		$avg_rating=variable_get('average_rating',0);
+		$avg_votes=variable_get('average_votes',0);
+		$value=calculate_ratings($val->nid,$avg_rating,$avg_votes);    
+    	       $val->ratings = $value;
+ 	   }
+   
+      if($direction=='desc'){
+  	   for($i=0;$i<count($default_view);$i++)
+		 {for($j=$i+1;$j<count($default_view);$j++)
+		  {  
+   	        if($default_view[$i]->ratings < $default_view[$j]->ratings)
+		   {    
+  		     $tmp=$default_view[$i];
+ 		     $default_view[$i]=$default_view[$j];
+ 		     $default_view[$j]=$tmp;
+ 		  }
+ 		 }
+ 	 	}
+         }
+      else
+       {
+           for($i=0;$i<count($default_view);$i++)
+		 {for($j=$i+1;$j<count($default_view);$j++)
+		  {  
+   	        if($default_view[$i]->ratings > $default_view[$j]->ratings)
+		   {    
+  		     $tmp=$default_view[$i];
+ 		     $default_view[$i]=$default_view[$j];
+ 		     $default_view[$j]=$tmp;
+ 		  }
+ 		 }
+ 	 	}
+
+        } 
+   	   $items_per_page=10;
+   	  if($_GET['results'])$items_per_page=$_GET['results'];
+   	  if($items_per_page>count($default_view))
+        $items_per_page=count($default_view);
+
+         $result=array_slice($default_view,$_GET['page']*$items_per_page,$items_per_page);
+    	  $view->result= $result;
+    }
+     
+    
+  }
+}
+
+
+
+?>

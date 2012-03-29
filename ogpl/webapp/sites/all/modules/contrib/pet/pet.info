@@ -1,0 +1,13 @@
+name = Previewable E-mail Templates
+description = Configure emails with token support and preview them before sending.
+dependencies[] = token
+core = 6.x
+package = Email
+
+
+; Information added by drupal.org packaging script on 2011-11-04
+version = "6.x-1.4"
+core = "6.x"
+project = "pet"
+datestamp = "1320423035"
+

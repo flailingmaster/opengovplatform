@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @file
+ * This is Views Slideshow: ImageFlow's installation file.
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+function views_slideshow_imageflow_install() {
+  return array();
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function views_slideshow_imageflow_uninstall() {
+  foreach (views_slideshow_imageflow_variable_default() as $variable => $value) {
+    views_slideshow_imageflow_variable_del($variable);
+  }
+  return array(array('success' => TRUE, 'query' => "Deleted all variables in the Views Slideshow: ImageFlow namespace."));
+}
+
+/**
+ * Convert variables to new namespace.
+ */
+function views_slideshow_imageflow_update_6001() {
+  // Rebuild our menu and themes.
+  drupal_rebuild_theme_registry();
+  menu_rebuild();
+
+  // Convert variables to the Views Slideshow: ImageFlow variable namespace.
+  $ret = array();
+  $flag = FALSE;
+
+  $variables = array(
+    'views_slideshow_imageflow_plugin' => 'plugin_path',
+  );
+
+  foreach ($variables as $old_variable => $new_variable) {
+    $new_value = views_slideshow_imageflow_variable_get($new_variable);
+    $old_value = variable_get($old_variable, $new_value);
+
+    // Set the variable to the value of the old version, assuming it hasn't
+    // already been overridden, and the old version is not the current default.
+    if (($new_value == views_slideshow_imageflow_variable_default($new_variable)) && ($new_value != $value)) {
+      views_slideshow_imageflow_variable_set($new_variable, $value);
+    }
+    variable_del($old_variable);
+    $flag = TRUE;
+  }
+
+  if ($flag) {
+    $ret[] = array('success' => TRUE, 'query' => "Converted old variables to the Views Slideshow: ImageFlow variable namespace.");
+  }
+
+  return $ret;
+}

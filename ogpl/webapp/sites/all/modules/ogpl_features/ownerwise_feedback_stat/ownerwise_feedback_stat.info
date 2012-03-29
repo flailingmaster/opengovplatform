@@ -1,0 +1,8 @@
+core = "6.x"
+dependencies[] = "tw"
+dependencies[] = "views"
+description = "Ownerwise Feedback Stat"
+features[views][] = "ownerwise_feedback_stat"
+features[views_api][] = "api:2"
+name = "Ownerwise Feedback Stat"
+package = "Features"

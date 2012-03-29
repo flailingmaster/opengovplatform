@@ -1,0 +1,3 @@
+<?php
+
+include_once('catalog_home_tabs.features.inc');

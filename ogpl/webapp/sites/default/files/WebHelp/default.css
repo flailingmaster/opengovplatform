@@ -1,0 +1,171 @@
+﻿/*Created with Adobe RoboHelp 9.*/
+BODY {
+	font-family: Arial;
+	background-color: #ffffff;
+}
+h1 {
+	font-weight: bold;
+	font-size: 24.0pt;
+	color: #003366;
+}
+h2 {
+	font-weight: bold;
+	font-size: 18.0pt;
+	color: #003366;
+}
+h3 {
+	font-weight: bold;
+	font-size: 14.0pt;
+	color: #003366;
+}
+H4 {
+	font-weight: bold;
+	font-size: 12.0pt;
+}
+H5 {
+	font-weight: bold;
+	font-size: 10.0pt;
+}
+H6 {
+	font-weight: bold;
+	font-size: 8.0pt;
+}
+P {
+	font-size: 12.0pt;
+	margin-top: 0pt;
+	margin-bottom: 0pt;
+}
+A.expandspot {
+	color: #008000;
+	cursor: hand;
+	font-style: italic;
+	text-decoration: none;
+}
+SPAN.expandtext {
+	font-style: italic;
+	font-weight: normal;
+	color: #ff0000;
+}
+A.dropspot {
+	cursor: hand;
+	color: #008000;
+	font-style: italic;
+	text-decoration: none;
+}
+A.glossterm {
+	color: #800000;
+	cursor: hand;
+	font-style: italic;
+	text-decoration: none;
+}
+SPAN.glosstext {
+	font-style: italic;
+	font-weight: normal;
+	color: #0000ff;
+}
+OL,
+UL {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+rh-list.Bullets {
+	x-lvl-1-type: disc;
+	x-lvl-1-format: "<x>";
+	x-lvl-2-type: square;
+	x-lvl-2-format: "<x>";
+	x-lvl-2-margin: 20px;
+	x-lvl-3-type: circle;
+	x-lvl-3-format: "<x>";
+	x-lvl-3-margin: 40px;
+	x-lvl-4-type: diamond;
+	x-lvl-4-format: "<x>";
+	x-lvl-4-margin: 60px;
+	x-lvl-5-type: disc;
+	x-lvl-5-format: "<x>";
+	x-lvl-5-margin: 80px;
+	x-lvl-6-type: square;
+	x-lvl-6-format: "<x>";
+	x-lvl-6-margin: 100px;
+	x-lvl-7-type: circle;
+	x-lvl-7-format: "<x>";
+	x-lvl-7-margin: 120px;
+	x-lvl-8-type: diamond;
+	x-lvl-8-format: "<x>";
+	x-lvl-8-margin: 140px;
+	x-level-count: 9;
+	x-lvl-9-type: disc;
+	x-lvl-9-format: "<x>";
+	x-lvl-9-margin: 160px;
+	x-lvl-9-pfx-class: rls-9-Bullets;
+	x-lvl-1-pfx-class: rls-1-Bullets;
+	x-lvl-2-pfx-class: rls-2-Bullets;
+	x-lvl-3-pfx-class: rls-3-Bullets;
+	x-lvl-4-pfx-class: rls-4-Bullets;
+	x-lvl-5-pfx-class: rls-5-Bullets;
+	x-lvl-6-pfx-class: rls-6-Bullets;
+	x-lvl-7-pfx-class: rls-7-Bullets;
+	x-lvl-8-pfx-class: rls-8-Bullets;
+}
+span.rls-9-Bullets {
+	font-size: 8pt;
+}
+span.rls-1-Bullets {
+	font-size: 12pt;
+}
+span.rls-2-Bullets {
+	font-size: 12pt;
+}
+span.rls-3-Bullets {
+	font-size: 12pt;
+}
+span.rls-4-Bullets {
+	font-size: 12pt;
+}
+span.rls-5-Bullets {
+	font-size: 10pt;
+}
+span.rls-6-Bullets {
+	font-size: 10pt;
+}
+span.rls-7-Bullets {
+	font-size: 10pt;
+}
+span.rls-8-Bullets {
+	font-size: 10pt;
+}
+rh-list.multiNumber {
+	x-level-count: 6;
+	x-lvl-1-format: "<x>.";
+	x-lvl-1-margin: 24px;
+	x-lvl-1-text-indent: -24px;
+	x-lvl-2-format: "<1>.<x>.";
+	x-lvl-2-margin: 60px;
+	x-lvl-2-text-indent: -36px;
+	x-lvl-3-format: "<1>.<2>.<3>.";
+	x-lvl-3-margin: 84px;
+	x-lvl-3-text-indent: -48px;
+	x-lvl-4-format: "<x>)";
+	x-lvl-4-margin: 96px;
+	x-lvl-4-text-indent: -36px;
+	x-lvl-5-format: "<x>}";
+	x-lvl-5-margin: 96px;
+	x-lvl-5-text-indent: -20px;
+	x-lvl-6-format: "[<x>]";
+	x-lvl-6-margin: 96px;
+	x-lvl-2-type: decimal;
+	x-lvl-3-type: decimal;
+	x-lvl-1-type: decimal;
+	x-lvl-4-type: upper-alpha;
+	x-lvl-5-type: upper-roman;
+	x-lvl-6-type: lower-alpha;
+}
+p.Body_Text {
+	line-height: 150%;
+	x-next-class: ;
+	x-next-type: P;
+}
+li.Bullet1 {
+	list-style: disc;
+}
+li.Bulltet1_p {
+}

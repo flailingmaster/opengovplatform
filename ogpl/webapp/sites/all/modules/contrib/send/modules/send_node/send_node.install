@@ -1,0 +1,31 @@
+<?php // $Id$
+
+/**
+ * Implementation of hook_schema().
+ */
+function send_node_schema() {
+  return array(
+    'send_profile_node' => array(
+      'fields' => array(
+        'nid' => array('type' => 'int', 'unsigned' => TRUE),
+        'enabled' => array('type' => 'int', 'size' => 'tiny'),
+        'use_default' => array('type' => 'int', 'size' => 'tiny'),
+      ),
+      'primary key' => array('nid'),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function send_node_install() {
+  drupal_install_schema('send_node');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function send_node_uninstall() {
+  drupal_uninstall_schema('send_node');
+}

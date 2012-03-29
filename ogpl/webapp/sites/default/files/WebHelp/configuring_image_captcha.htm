@@ -1,0 +1,448 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Adobe RoboHelp 9" />
+<title>Configuring Image Captcha</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="JavaScript">//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+        origWidth = innerWidth;
+        origHeight = innerHeight;
+        onresize = reDo;
+}
+onerror = null; 
+//]]></script>
+<script type="text/javascript" language="javascript1.2" src="./whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="./whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whtopic.js"></script>
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addTocInfo("Content Management System Administrator\nManaging Captcha\nConfiguring Image Captcha");
+addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("<a href=\"cms_administrator.htm\">Content Management System Administrator<\/a> > <a href=\"managing_captcha.htm\">Managing Captcha<\/a> > Configuring Image Captcha<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<h1>Configuring Image Captcha</h1>
+<p>Image CAPTCHA is a CAPTCHA 
+ type where random text is mixed with an image. You can configure various 
+ Image CAPTCHA settings, such as code settings, 
+ font settings, color and image settings, and distortion and noise settings.</p>
+<p><b style="font-weight: bold;">Note:</b> The image generation per CAPTCHA is a CPU-intensive activity. It is recommended 
+ to use moderate size and computation-related settings for the Image CAPTCHA.</p>
+<p>To configure the Image CAPTCHA:</p>
+<ol start="1" style="margin-top: 0in;" type="1">
+	<li class="MsoNormal" style="mso-list: l0 level1 lfo1; tab-stops: .5in;"><p>In 
+	 the navigation menu, point to <span class="UI">Configurable Items</span>, 
+	 and click <span class="UI">Manage Captcha</span>.<br />
+	The <span class="UI">CAPTCHA</span> page 
+	 appears.</p></li>
+	<li class="MsoNormal" style="mso-list: l0 level1 lfo1; tab-stops: .5in;"><p>Click 
+	 the <span class="UI">Image CAPTCHA</span> 
+	 tab.<br />
+	The <span class="UI">Image CAPTCHA</span> 
+	 tab displays the settings required to configure this CAPTCHA.</p></li>
+	<li class="MsoNormal" style="mso-list: l0 level1 lfo1; tab-stops: .5in;"><p>Configure 
+	 the appropriate Image CAPTCHA settings. The following table lists 
+	 each field and its description.</p></li>
+</ol>
+<p class="MsoNormal" style="margin-left: .5in;"><b style="font-weight: bold; 
+													 mso-bidi-font-weight: normal;">Table: 
+ Description of fields in the Image CAPTCHA tab on CAPTCHA page</b></p>
+<table class="MsoNormalTable" style="margin-left: .5in; border-collapse: collapse; 
+		 mso-yfti-tbllook: 1184;" cellspacing="0" width="93%">
+	<tr style="mso-yfti-irow: 0; mso-yfti-firstrow: yes;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; mso-border-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;" bgcolor="#E8E8E8"><p 
+			 class="tableheading" style="font-weight: bold;">Field</p></td>
+		<td style="width: 77.16%; border: solid #000000 1.0pt; border-left: none; 
+			 mso-border-top-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;" 
+			 bgcolor="#E8E8E8"><p class="tableheading" style="font-weight: bold;">Description</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 1;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Example</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Displays 
+		 an example of an Image CAPTCHA.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 2;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Code settings</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Use 
+		 this section to select the characters that you want to use in 
+		 the Image CAPTCHA and set the length of the CAPTCHA.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 3;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Characters to use in the code</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Enter 
+		 the characters that you want to include in generation of Image 
+		 CAPTCHA. For example, you can include all the alphabets (A-Z, 
+		 a-z) and numbers (0-9).</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 4;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Code Length</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Click 
+		 the number to specify the length of the CAPTCHA. The minimum length 
+		 required is <b style="mso-bidi-font-weight: normal;">2</b> and 
+		 the maximum length allowed is <b style="mso-bidi-font-weight: normal;">10</b>. 
+		 The code length affects the size of the image. Note that larger 
+		 values make the image generation more CPU-intensive.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 5;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Font Settings</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Use 
+		 this section to configure the font, font size, font color and 
+		 other related font settings required for the Image CAPTCHA.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 6;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Fonts</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Select 
+		 the check box for each font that you want to use for the text 
+		 in the Image CAPTCHA.</p>
+		<p class="MsoNormal"><b style="font-weight: bold; mso-bidi-font-weight: normal;">Note</b>: 
+		 If you want to use your own TrueType fonts, add them to the following 
+		 OGPL Web site directory:</p>
+		<p class="MsoNormal"><em><b style="font-weight: bold; mso-bidi-font-weight: normal;"><span 
+		 style="font-family: Verdana, sans-serif; font-style: normal;">sites/all/libraries/fonts</span></b></em> 
+		 <b style="mso-bidi-font-weight: normal;">or <em><span style="font-family: Verdana, sans-serif; 
+		 font-style: normal;">sites/default/libraries/fonts</span></em></b></p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 7;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Font size</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Click 
+		 the number for specify length of the CAPTCHA text. Minimum font 
+		 size required is 9 points, and maximum font size allowed is 64 
+		 points. The font size determines the size of the image, and larger 
+		 values make the CAPTCHA generation more CPU-intensive.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 8;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Character Spacing</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Click 
+		 the option to specify the average spacing between characters in 
+		 the CAPTCHA.</p>
+		<p class="MsoNormal">For example, if you want the characters in 
+		 the CAPTCHA to be very closely spaced, click <b style="mso-bidi-font-weight: normal;">tight</b>.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 9;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Color and image settings</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Use 
+		 this section to configure the background, text colors, and the 
+		 file format of the image CAPTCHA.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 10;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Background color</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Enter 
+		 the hexadecimal code for the background color of this CAPTCHA. 
+		 For example, if you want to use a white background for the CAPTCHA, 
+		 enter <b style="mso-bidi-font-weight: normal;">#FFF</b> or <b 
+		 style="mso-bidi-font-weight: normal;">#FFFFFF</b>.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 11;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Text Color</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Enter 
+		 the hexadecimal code for the color of the text in this CAPTCHA. 
+		 For example, if you want to display the CAPTCHA text in black 
+		 color, enter <b style="mso-bidi-font-weight: normal;">#000</b> 
+		 or <b style="mso-bidi-font-weight: normal;">#000000</b>.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 12;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Additional variation of text color</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Click 
+		 the option to specify the extent to which the characters have 
+		 random colors in the range that you specified for the text color.</p>
+		<p class="MsoNormal">For example, if you want each character in 
+		 the CAPTCHA to have a random color around the color that you specified 
+		 in the <b style="mso-bidi-font-weight: normal;">Text Color</b>, 
+		 click <b style="mso-bidi-font-weight: normal;">High</b>.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 13;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">File format</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Click 
+		 the file format that you want to use for the images in this CAPTCHA.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 14;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Distortion and noise</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Use 
+		 this section to configure distortion and noise settings for Image 
+		 CAPTCHA.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 15;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Distortion level</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">Click 
+		 the option to specify the degree of wave distortion in the image. 
+		 For example, if you want the image to be very highly curved and 
+		 distorted, click <b style="mso-bidi-font-weight: normal;">10-high</b>.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 16;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Add salt and pepper noise</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">If 
+		 you want to add randomly colored point noise, select this check 
+		 box.</p></td>
+	</tr>
+	<tr style="mso-yfti-irow: 17; mso-yfti-lastrow: yes;">
+		<td style="width: 22.84%; border: solid #000000 1.0pt; border-top: none; 
+			 mso-border-left-alt: solid black .75pt; mso-border-bottom-alt: solid black .75pt; 
+			 mso-border-right-alt: solid black .75pt; padding: .75pt .75pt .75pt .75pt; 
+			 padding-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px;"><p 
+			 class="MsoNormal" style="line-height: normal; text-autospace: ideograph-numeric ideograph-other;"><span 
+		 class="UI">Add line noise</span></p></td>
+		<td style="width: 77.16%; border-top: none; border-left: none; 
+			 border-bottom: solid #000000 1.0pt; border-right: solid #000000 1.0pt; 
+			 mso-border-bottom-alt: solid black .75pt; mso-border-right-alt: solid black .75pt; 
+			 padding: .75pt .75pt .75pt .75pt; padding-left: 0px; padding-top: 0px; 
+			 padding-right: 0px; padding-bottom: 0px;"><p class="MsoNormal">If 
+		 you want to add lines randomly drawn on top of the text code, 
+		 select this check box.</p></td>
+	</tr>
+</table>
+<p class="MsoNormal">&#160;</p>
+<ol start="3" style="margin-top: 0in;" type="1">
+	<li class="MsoNormal" style="mso-list: l1 level1 lfo2; tab-stops: .5in;"><p><span>Click</span> 
+	 <span class="UI">Save configuration</span><span>.<br />
+	The settings for Image Captcha are saved in the OGPL Control Panel 
+	 application.</span></p></li>
+</ol>
+<script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

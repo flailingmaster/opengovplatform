@@ -1,0 +1,17 @@
+Index: branches/qa/sites/all/modules/CMS/download_file/download_file.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/CMS/download_file/download_file.module	(revision )
++++ branches/qa/sites/all/modules/CMS/download_file/download_file.module	(revision 4540)
+@@ -146,6 +146,8 @@
+   }
+   
+   if (count($headers)) {
++	$file_data = explode("/", $file['filepath']);
++    download_count_file_download($file_data[count($file_data) - 1]);
+     file_transfer($file['filepath'], $headers);
+   }
+ }
+\ No newline at end of file

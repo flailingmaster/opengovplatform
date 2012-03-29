@@ -1,0 +1,26 @@
+http://drupal.org/node/1282552
+
+Date: Sat, 17 Sep 2011 18:44:37 +0200
+Subject: [PATCH] Fix jQuery CSS path
+
+---
+ autologout.module |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/autologout.module b/autologout.module
+index b060931..0641cad 100644
+--- a/autologout.module
++++ b/autologout.module
+@@ -82,8 +82,8 @@ function autologout_init() {
+     $jquery_ui = module_exists('jquery_ui');
+     if ($jquery_ui) {
+       jquery_ui_add(array('ui.dialog'));
+-      // add default css. @todo: not sure if this is the best approach
+-      drupal_add_css(drupal_get_path('module', 'jquery_ui') . '/jquery.ui/themes/default/ui.all.css');      
++      // add default css
++	  drupal_add_css(jquery_ui_get_path() . '/themes/default/ui.all.css');
+     }
+     
+     // return all the drupal settings we'll need
+-- 
+1.7.4.msysgit.0

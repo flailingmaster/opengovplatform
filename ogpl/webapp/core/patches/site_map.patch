@@ -1,0 +1,16 @@
+Index: branches/qa/sites/all/modules/CMS/site_map/site_map.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/CMS/site_map/site_map.module	(revision )
++++ branches/qa/sites/all/modules/CMS/site_map/site_map.module	(revision 4540)
+@@ -275,7 +275,7 @@
+       $menu_display = _site_map_menu_tree_output($tree);
+       if (!empty($menu_display)) {
+         $title = $menu['title'];
+-        $output .= theme('site_map_box', $title, $menu_display, 'site-map-menu-box');
++        $output .= theme('site_map_box','', $menu_display, 'site-map-menu-box');
+       }
+     }
+   }

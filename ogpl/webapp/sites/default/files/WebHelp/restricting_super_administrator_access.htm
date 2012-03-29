@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <meta name="generator" content="Adobe RoboHelp 9" />
+<title>Restricting Super Administrator Access</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addTocInfo("Super Administrator\nManaging Configurations\nRestricting Super Administrator Access");
+addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("<a href=\"super_administrator.htm\">Super Administrator<\/a> > <a href=\"restricting_super_administrator_access.htm\">Managing Configurations<\/a> > Restricting Super Administrator Access<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<div style="width: 100%; position: relative;" id="header">
+	<p>&#160;</p>
+</div>
+
+<h1>Restricting Super Administrator Access</h1>
+<p>By default, Super Administrators can log on to the OGPL Control Panel 
+ Application from any computer. For security reasons, you can specify specific 
+ IP addresses from which Super Administrators can access the OGPL Control 
+ Panel Application. </p>
+<p>To specify the IP addresses from which Super Administrators can access 
+ the application:</p>
+<ol type="1">
+	<li><p>In the Drupal menu, point to <span class="UI">Site Configuration</span>, 
+	 and then click <span class="UI">Site information</span>. &#160;<br />
+	The <span class="UI">Site Information</span> page appears.</p></li>
+	<li><p>Scroll down until you see the <span class="UI">Super Admin Access 
+	 IPs</span> box.</p></li>
+	<li><p>In the <span class="UI">Super Admin Access IPs</span> box, enter 
+	 the IP address for each computer from which you want to allow Super 
+	 Administrators to access the OGPL Control Panel Application. <br />
+	<span style="font-weight: bold;"><b>Note</b></span>: If you leave the <span 
+	 class="UI">Super Admin Access IPs</span> box blank, Super Administrators 
+	 can access the application from any computer.</p></li>
+	<li><p>Click <span class="UI">Save configuration</span>. <br />
+	Super Administrators can now access the OGPL Control Panel Application 
+	 through the IP addresses that you specified. </p></li>
+</ol>
+<p><span style="font-weight: bold;"><b>Note</b></span>: You must ensure that you 
+ have added the IP address of the computer that you are using while specifying 
+ the IP addresses. If you do not add your IP address in the <span class="UI">Super 
+ Admin Access IPs</span> box and click <span class="UI">Save configuration</span>, 
+ a message appears on top of the page. You must enter your IP address and 
+ in the <span class="UI">Super Admin Access IPs</span> box and click <span 
+	 class="UI">Save configuration</span> again.</p>
+<p>&#160;</p>
+<p>&#160;</p>
+<div style="width: 100%; position: relative;" id="footer">
+	<p>&#160;</p>
+</div>
+<script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

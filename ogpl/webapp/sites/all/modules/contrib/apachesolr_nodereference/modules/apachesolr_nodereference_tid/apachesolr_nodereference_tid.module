@@ -1,0 +1,126 @@
+<?php
+
+/**
+ * Implementation of hook_block().
+ */
+function apachesolr_nodereference_tid_block($op = 'list', $delta = 0, $edit = array()) {
+  switch ($op) {
+    case 'list':
+      $enabled_facets = apachesolr_get_enabled_facets('apachesolr_nodereference_tid');
+      $facets = apachesolr_nodereference_tid_apachesolr_facets();
+
+      // add the blocks
+      $blocks = array();
+
+      foreach ($enabled_facets as $delta => $facet_field) {
+        if (isset($facets[$delta])) {
+          $blocks[$delta] = $facets[$delta] + array('cache' => BLOCK_CACHE_PER_ROLE | BLOCK_CACHE_PER_PAGE);
+        }
+      }
+
+      return $blocks;
+
+    case 'view':
+      if (apachesolr_has_searched()) {
+        $enabled_facets = apachesolr_get_enabled_facets('apachesolr_nodereference_tid');
+        
+        if (!in_array($delta, $enabled_facets)) {
+          return;
+        }
+
+        $response = apachesolr_static_response_cache();
+
+        if (empty($response)) {
+          return;
+        }
+
+        $query = apachesolr_current_query();
+        $facets = apachesolr_nodereference_tid_apachesolr_facets();
+        
+        return apachesolr_facet_block($response, $query, 'apachesolr_nodereference_tid', $delta, $delta, $facets[$delta]['info'], 'apachesolr_nodereference_tid_facet_callback');
+      }
+
+      break;
+  }
+}
+
+/**
+ * Implementation of hook_apachesolr_facets()
+ */
+function apachesolr_nodereference_tid_apachesolr_facets() {
+  $nodereference_fields = apachesolr_nodereference_fields();
+  $facets = array();
+  
+  foreach ($nodereference_fields as $field) {
+    foreach ($field['referenceable_types'] as $type) {
+      if (!empty($type)) {
+        $result = db_query("SELECT vid FROM {vocabulary_node_types} WHERE type = '%s'", $type);
+
+        while ($obj = db_fetch_object($result)) {
+          $vocab = taxonomy_vocabulary_load($obj->vid);
+
+          $key = 'im_noderef_' . $type . '_vid_' . $obj->vid;
+
+          $facets[$key] = array(
+               'info' => t('Filter by @field-name', array('@field-name' => $vocab->name)),
+               'facet_field' => $key,
+               'display_callback' => 'apachesolr_nodereference_tid_facet_callback'
+             );
+        }
+      }
+    }
+  }
+  
+  return $facets;
+}
+
+/**
+ * Callback function for the 'Filter by' nodereference facet block.
+ */
+function apachesolr_nodereference_tid_facet_callback($facet, &$options) {
+  if (is_numeric($facet)) {
+    return db_result(db_query("SELECT name FROM {term_data} WHERE tid = %d", $facet));
+  }
+
+  $options['html'] = TRUE;
+
+  return theme('placeholder', t('No results'));
+}
+
+/**
+ * Implementation of hook_apachesolr_update_index()
+ * 
+ * For the given node, this finds all the node reference CCK fields
+ * associated with it and then finds the taxonomy associated with those
+ * node referenced fields and adds them to the index document.
+ */
+function apachesolr_nodereference_tid_apachesolr_update_index(&$document, $node) {
+  $types = content_types($node->type);
+  
+  $node_refs = array();
+  
+  foreach ($types['fields'] as $name => $field) {
+    if ($field['type'] == 'nodereference') {
+      if (isset($node->{$field['field_name']})) {
+        foreach ($node->{$field['field_name']} as $nid) {
+          $node_refs[] = $nid['nid'];
+        }
+      }
+    }
+  }
+  
+  foreach ($node_refs as $nid) {
+    $node = node_load($nid);
+    $vocabs = array();
+    
+    foreach ($node->taxonomy as $taxonomy) {
+      $vocabs[$taxonomy->vid][] = $taxonomy->tid;
+    }
+    
+    foreach ($vocabs as $vid=>$tids) {
+      foreach ($tids as $tid) {
+        $document->setMultiValue('im_noderef_' . $node->type . '_vid_' . $vid, $tid);
+      }
+    }
+  }
+}

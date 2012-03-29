@@ -1,0 +1,3 @@
+<?php
+
+include_once('home_page_panels.features.inc');

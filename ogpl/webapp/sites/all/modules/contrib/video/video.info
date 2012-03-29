@@ -1,0 +1,14 @@
+
+name = Video
+description = Allows Creation of CCK Video Fields.
+package = "Video"
+dependencies[] = content
+dependencies[] = filefield
+core = 6.x
+version = 6.x-4.x-dev
+; Information added by drupal.org packaging script on 2011-11-12
+version = "6.x-4.5"
+core = "6.x"
+project = "video"
+datestamp = "1321098636"
+

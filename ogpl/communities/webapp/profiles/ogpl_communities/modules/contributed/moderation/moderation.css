@@ -1,0 +1,37 @@
+.moderation-content div.messages {
+  display: block;
+}
+
+.moderation-messages {
+  border-color:#C7F2C8;
+  color:#33AA33;
+  background-color:#FFFFFF;
+  border:1px solid #B8D3E5;
+  margin:0.75em 0pt;
+  padding:0.5em 1em
+}
+
+.moderation-preview {
+  display: none;
+}
+
+.moderation-moderation {
+  float:right;
+  margin-top:-20px;
+}
+
+.moderation-attribute {
+  padding: 0 10px;
+  float:right;
+}
+
+.moderation-username,
+.moderation-name,
+.moderation-parent {
+  padding-left:0;
+  float: left;
+}
+
+.moderation-preview .comment {
+  border-top:none;
+}

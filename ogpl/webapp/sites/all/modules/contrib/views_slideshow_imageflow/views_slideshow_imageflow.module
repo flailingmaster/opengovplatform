@@ -1,0 +1,89 @@
+<?php
+
+/**
+ * @file
+ * The Views Slideshow: ImageFlow creates ImageFlow rotators with Views Slideshows.
+ *
+ * You need to install Views and Views Slideshow from
+ * http://drupal.org/project/views and http://drupal.org/project/views_slideshow
+ * respectively.
+ *
+ * This module also requires the ImageFlow JavaScript plugin from
+ * http://finnrudolph.de/ImageFlow. You will need to download and extract the
+ * plugin and copy it to your site's library directory, at
+ * /sites/all/libraries/imageflow.
+ *
+ * You can find a detailed installation tutorial at
+ * http://www.advomatic.com/blogs/aaron-winborn/imageflow-slide-shows-part-i
+ */
+
+/* ***************************************** */
+/* INCLUDES                                  */
+/* ***************************************** */
+
+// A registry of variable_get defaults.
+include_once('includes/views_slideshow_imageflow.variables.inc');
+
+/**
+ *  Implements hook_menu().
+ */
+function views_slideshow_imageflow_menu() {
+  $items['admin/build/views/views_slideshow_imageflow'] = array(
+    'title' => 'Views Slideshow: ImageFlow',
+    'description' => 'Configure Views Slideshow: ImageFlow options.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('views_slideshow_imageflow_settings'),
+    'file' => 'includes/views_slideshow_imageflow.admin.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer views'),
+  );
+  return $items;
+}
+
+/**
+ *  Implements hook_theme().
+ */
+function views_slideshow_imageflow_theme($existing, $type, $theme, $path) {
+  return array(
+    'views_slideshow_imageflow' => array(
+      'arguments' => array('view' => NULL, 'options' => array(), 'rows' => array(), 'title' => ''),
+      'template' => 'views-slideshow-imageflow',
+      'file' => 'views_slideshow_imageflow.theme.inc',
+      'path' => $path .'/themes',
+    ),
+  );
+}
+
+/**
+ * Return the path to the ImageFlow plugin.
+ *
+ * If variable_get('views_slideshow_imageflow_plugin') has not yet been set,
+ * then this will attempt to autodiscover the path if the imageflow.js file
+ * exists within sites/all/libraries/* or sites/example.com/libraries/*. It will
+ * also set the path to variable_get('views_slideshow_imageflow_plugin').
+ *
+ * The library is available from http://finnrudolph.de/ImageFlow.
+ *
+ * @param boolean $reset
+ *  (Optional) If TRUE, then reset the variable and attempt a new autodiscovery.
+ * @return string
+ *  The path to the imageflow.js file.
+ */
+function views_slideshow_imageflow_path($reset = FALSE) {
+  static $path;
+
+  if (!isset($path) || $reset) {
+    if (!($path = views_slideshow_imageflow_variable_get('plugin_path')) || $reset) {
+      $files = drupal_system_listing('^imageflow\.js$', 'libraries', 'basename', 0);
+      if (!$files) {
+        $files = drupal_system_listing('^imageflow\.js$', 'plugins', 'basename', 0);
+      }
+      if (isset($files['imageflow.js'])) {
+        $path = dirname($files['imageflow.js']->filename);
+        views_slideshow_imageflow_variable_set('plugin_path', $path);
+      }
+    }
+  }
+
+  return $path;
+}

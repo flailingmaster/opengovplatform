@@ -1,0 +1,24 @@
+<?php
+/**
+* @file
+* New icon theme for filefield fields
+*/
+
+/**
+* Implementation of hook_init()
+*/
+function web_filefield_icons_init() {
+  //setting the mytheme theme as default
+  variable_set('filefield_icon_theme', 'ogpl_css3');
+}
+
+/**
+* Implementation of hook_filefield_icon_sets().
+*
+* Define a list of icon sets and directories that contain the icons.
+*/
+function web_filefield_icons_filefield_icon_sets() {
+  return array(
+    'ogpl_css3' => drupal_get_path('module', 'web_filefield_icons') . '/icons',
+  );
+}

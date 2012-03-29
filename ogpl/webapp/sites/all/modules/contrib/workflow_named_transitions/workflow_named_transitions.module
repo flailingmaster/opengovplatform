@@ -1,0 +1,242 @@
+<?php
+// $Id: workflow_named_transitions.module,v 1.2.2.2 2009/04/14 17:57:46 deekayen Exp $
+
+/**
+ * @file
+ * Modify the workflow form items so specific workflow transitions
+ * can have their own labels which the admin can describe relative
+ * to the beginning and ending states.
+ */
+
+/**
+ * Implementation of hook_menu().
+ */
+function workflow_named_transitions_menu() {
+  $items = array();
+
+  $items['admin/build/workflow/labels'] = array(
+    'title' => 'Edit labels',
+    'description' => 'Edit the labels on workflow transitions.',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer workflow'),
+    'page callback' => 'workflow_named_transitions_edit_labels_page',
+    'type' => MENU_LOCAL_TASK
+  );
+  $items['admin/build/workflow/labels/%'] = array(
+    'title' => 'Edit labels',
+    'description' => '',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer workflow'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('workflow_named_transitions_edit_labels_form', 4),
+    'type' => MENU_LOCAL_TASK
+  );
+
+  return $items;
+}
+
+/**
+ * Lists options of workflows to edit labels on.
+ *
+ * @return
+ *   string of links to edit labels
+ */
+function workflow_named_transitions_edit_labels_page() {
+  $output = '';
+  $workflows = workflow_get_all();
+
+  foreach ($workflows as $workflow_id => $workflow_name) {
+    $output .= '<br />'. l(t("Edit workflow '@workflow_name' labels", array('@workflow_name' => $workflow_name)), "admin/build/workflow/labels/$workflow_id");
+  }
+
+  return $output;
+}
+
+/**
+ * Label edit form, where each fieldset represents a starting workflow state.
+ *
+ * Each contains the transitions with that starting workflow state.
+ *
+ * @return
+ *   array of form items for editing labels on transitions
+ */
+function workflow_named_transitions_edit_labels_form($request, $workflow) {
+  if (!is_numeric($workflow)) {
+    drupal_set_message(t('Improper worklow ID provided.'), 'error');
+    watchdog('workflow_named_transitions', 'Improper worklow ID provided.');
+    drupal_goto('admin/build/workflow/labels');
+  }
+
+  $form = array();
+
+  $transitions = workflow_named_transitions_get_transitions($workflow);
+
+  foreach ($transitions as $transition) {
+
+    if (!isset($form[$transition['from_state']])) {
+      $form[$transition['from_state']] = array(
+        '#title' => $transition['from_state'],
+        '#type' => 'fieldset',
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE
+      );
+    }
+
+    $form[$transition['from_state']][$transition['tid']] = array(
+      '#title' => $transition['from_state'] ." &#8594; ". $transition['to_state'],
+      '#type' => 'textfield',
+      '#default_value' => $transition['label']
+    );
+  }
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit'
+  );
+
+  return $form;
+}
+
+/**
+ * Implementation of hook_theme().
+ *
+ * @return
+ *   array to register the form to edit transition labels
+ */
+function workflow_named_transitions_theme() {
+  return array(
+    'workflow_named_transitions_edit_labels_form' => array(
+      'arguments' => array('form' => NULL)
+    )
+  );
+}
+
+/**
+ * Formats the label form into two column table rows.
+ *
+ * The transition is the first table cell, followed by the
+ * label field. Otherwise, the default display would be a
+ * form field with the transition as the FAPI title, and the
+ * form field as the content in a list format.
+ *
+ * @see workflow_named_transitions_edit_labels_form()
+ */
+function theme_workflow_named_transitions_edit_labels_form($form) {
+  $header = array();
+
+  // doing something with element_children() might be a better way
+  // than this foreach looping methods
+  foreach ($form as $starting_state => $transitions) {
+    if (isset($form[$starting_state]['#type']) && $form[$starting_state]['#type'] == 'fieldset') {
+      $rows = array();
+      foreach ($transitions as $tid => $item) {
+        if (is_numeric($tid)) {
+          // loops through starting transitions
+          $title = $item['#title'];
+          $form[$starting_state][$tid]['#title'] = '';
+          $rows[] = array(
+            array('data' => $title),
+            array('data' => drupal_render($form[$starting_state][$tid]))
+          );
+          unset($form[$starting_state][$tid]);
+        }
+      }
+      $form[$starting_state]['content'] = array(
+        '#value' => theme('table', $header, $rows)
+      );
+    }
+  }
+  return drupal_render($form);
+}
+
+/**
+ * Automatic submission handler for the edit labels form.
+ *
+ * @see workflow_named_transitions_edit_labels_form()
+ */
+function workflow_named_transitions_edit_labels_form_submit($form, &$form_state) {
+  foreach ($form_state['values'] as $tid => $label) {
+    if (!empty($tid) && $label != '') {
+      db_query("REPLACE INTO {workflow_named_transitions} (tid, label) VALUES (%d, '%s')", $tid, $label, $tid, $label);
+    }
+    else {
+      db_query("DELETE FROM {workflow_named_transitions} WHERE tid = %d", $tid);
+    }
+  }
+}
+
+/**
+ * Queries the database for an array of transition labels.
+ *
+ * IDs (tid), their starting and ending workflow states, and the label,
+ * if any, set by the admin for each transition.
+ *
+ * @return
+ *   array of transitions tid, to_state, from_state, and label
+ */
+function workflow_named_transitions_get_transitions($workflow) {
+  $query = "SELECT wt.tid, from_states.state AS from_state, to_states.state AS to_state, wnt.label
+    FROM ({workflow_transitions} AS wt
+    INNER JOIN {workflow_states} AS from_states
+      ON wt.sid = from_states.sid
+    INNER JOIN {workflow_states} AS to_states
+      ON wt.target_sid = to_states.sid)
+    LEFT JOIN {workflow_named_transitions} AS wnt
+      ON wt.tid = wnt.tid "
+  . ($workflow != NULL ? "WHERE from_states.wid = $workflow AND to_states.wid = $workflow " : "") ." ORDER BY from_state, to_state";
+  $transition_results = db_query($query);
+
+  $transitions = array();
+  while ($transition = db_fetch_array($transition_results)) {
+    $transitions[$transition['tid']] = $transition;
+  }
+  return $transitions;
+}
+
+/**
+ * Implementation of hook_form_alter().
+ *
+ * Modifies the generic state labels that the workflow module added to the form.
+ */
+function workflow_named_transitions_form_alter(&$form, $form_state, $form_id) {
+
+  if (($form_id == 'workflow_tab_form' || $form['#id'] == 'node-form') && (isset($form['workflow']) && is_array($form['workflow']))) {
+    // if no nid, use sysid == 1 from workflow_states for each wid
+    // as the starting sid to lookup in workflow_transitions
+    if ($form_id == 'workflow_tab_form') {
+      $nid = $form['node']['#value']->nid;
+    }
+    else {
+      $nid = empty($form['nid']['#value']) ? 0 : $form['nid']['#value'];
+    }
+    // workflow ID, name of the workflow, and the creation state ID
+    if ($nid == 0) {
+      $workflows_result = db_query("SELECT w.wid, w.name, ws.sid AS starting_sid FROM {workflows} AS w LEFT JOIN {workflow_states} AS ws ON w.wid = ws.wid WHERE ws.sysid = 1");
+    }
+    else {
+      $workflows_result = db_query("SELECT w.wid, w.name, MAX(wn.sid) AS starting_sid FROM {workflows} AS w LEFT JOIN {workflow_states} AS ws on w.wid = ws.wid LEFT JOIN {workflow_node} AS wn ON ws.sid = wn.sid WHERE wn.nid = %d or wn.nid IS NULL GROUP BY w.wid", $nid);
+    }
+
+    while ($workflow = db_fetch_object($workflows_result)) {
+      if (!empty($form['workflow'][$workflow->name]['#options'])) {
+        // if a workflow was added to a content type after this node was created,
+        // it will have a NULL current state ID for the newly added workflow,
+        // so go back and get the default creation state ID
+        $workflow->starting_sid = empty($workflow->starting_sid) ? _workflow_named_transitions_creation_sid($workflow->wid) : $workflow->starting_sid;
+
+        $tids_result = db_query("SELECT wt.target_sid, wnt.label FROM {workflow_named_transitions} AS wnt INNER JOIN {workflow_transitions} AS wt ON wt.tid = wnt.tid WHERE wnt.tid IN(
+            SELECT sub_wt.tid FROM {workflow_transitions} AS sub_wt WHERE sub_wt.sid = %d AND sub_wt.target_sid IN(%s)
+          )", $workflow->starting_sid, implode(', ', array_keys($form['workflow'][$workflow->name]['#options'])));
+        while ($options_to_update = db_fetch_object($tids_result)) {
+          $form['workflow'][$workflow->name]['#options'][$options_to_update->target_sid] = $options_to_update->label;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Find the creation state id for a workflow.
+ */
+function _workflow_named_transitions_creation_sid($wid) {
+  return db_result(db_query_range("SELECT sid FROM {workflow_states} WHERE wid = %d AND sysid = 1", $wid, 0, 1));
+}

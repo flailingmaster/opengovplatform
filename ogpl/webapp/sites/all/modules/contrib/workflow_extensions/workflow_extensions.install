@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * @file
+ * Install and uninstall hooks for Workflow Extensions module.
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+function workflow_extensions_install() {
+  db_query("UPDATE {system} SET weight = 21 WHERE name = 'workflow_extensions'");
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function workflow_extensions_uninstall() {
+  // Delete all workflow_extensions_* variables at once
+  db_query("DELETE FROM {variable} WHERE name LIKE 'workflow_extensions_%%'");
+}

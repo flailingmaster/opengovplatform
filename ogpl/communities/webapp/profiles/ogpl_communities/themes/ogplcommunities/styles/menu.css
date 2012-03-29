@@ -1,0 +1,97 @@
+/* access menu styles */
+ul#nice-menu-0 { list-style: none;}
+#nice-menu-0 a:link { text-decoration: none; }
+#nice-menu-0 a:visited { text-decoration: none; }
+#nice-menu-0 a:hover, #nice-menu-0 a:focus, #nice-menu-0 a:active { color: #fff;}
+#nice-menu-0 { display: inline; float: left; list-style-type: none; padding: 0;height: 36px; z-index:19;}
+#nice-menu-0 li { float: left; font-weight: normal; position: relative; margin-left:0;  margin-right: 0; padding: 0px; border-right:1px solid #0f2544; border-left:1px solid #255490;}
+#nice-menu-0 .last {border-right: none;}
+#nice-menu-0 li a {  color: #fff; display: block; font-size: 12px; font-size-adjust: none; font-stretch: normal; width: auto; font-style: normal; font-variant: normal; font-weight: normal; padding: 9px 10px 5px 10px; height: 22px; letter-spacing: 0.4px; line-height: normal; text-decoration: none; float:left; font-family: Georgia,"Times New Roman",Times,serif; text-transform:uppercase;}
+#nice-menu-0 li li { border: 0 none; font-weight: normal; z-index: 20;}
+#nice-menu-0 li li a { width: 156px; }
+#nice-menu-0 ul > li { display: block; float: none; }
+#nice-menu-0 ul { left: -9999px; padding: 0; position: absolute; top: 100%; width: 12em;  margin:0;}
+#nice-menu-0 li > ul { top: 36px; width: auto; }
+#nice-menu-0 li.sfhover ul,
+#nice-menu-0 li a:active ul,
+#nice-menu-0 li.sffocusparent ul,
+#nice-menu-0 li a.sffocus ul { left: 0; }
+#nice-menu-0 li:hover > ul,
+#nice-menu-0 li.sfhover > ul,
+#nice-menu-0 li.sffocusparent > ul,
+#nice-menu-0 li a:active > ul,
+#nice-menu-0 li a:focus + ul,
+#nice-menu-0 li a.sffocus + ul { left: auto; }
+#nice-menu-0 li:hover ul ul,
+#nice-menu-0 li:active ul ul,
+#nice-menu-0 a:focus ul ul,
+#nice-menu-0 li.sfhover ul ul,
+#nice-menu-0 a.sffocus ul ul,
+#nice-menu-0 li.sffocusparent ul ul,
+#nice-menu-0 li.sffocus ul ul { left: -9999px; }
+#nice-menu-0 ul li a:hover ul, #nice-menu-0 ul li.sfhover ul,
+#nice-menu-0 ul li a:active ul,
+#nice-menu-0 ul li.sffocusparent ul,
+#nice-menu-0 ul li.sffocus ul { left: 1px;  top: -1px; }
+#nice-menu-0 ul li:hover > ul,
+#nice-menu-0 ul li.sfhover > ul,
+#nice-menu-0 li li a.sffocus + ul,
+#nice-menu-0 li li.sffocus > ul { left: 1px;  top: -1px; }
+#nice-menu-0.jsoff li li a:focus, #nice-menu-0.jsoff li li a:active { left: 9999px; position: relative; top: -1px; z-index: 21; }
+#nice-menu-0.jsoff li li li a:focus, #nice-menu-0.jsoff li li li a:active { left: 19999px; top: -2.9em; }
+#nice-menu-0.jsoff li:hover li a:focus, #nice-menu-0.jsoff li:hover li a:active { left: auto; margin-left: 0; position: relative; top: -1px; }
+#nice-menu-0.jsoff li:hover a:focus + ul { margin-left: 0px; }
+#nice-menu-0.jsoff li li a:focus + ul { left: 12em; margin-left: 10000px; top: -1px; }
+#nice-menu-0.jsoff li:hover li a:focus + ul { left: 12em; margin-left: 1px; }
+#nice-menu-0 li a.mum { background-image: url(../images/arrow-down.png); background-position: 95% 50%; background-repeat: no-repeat; }
+
+/*fixing arrows
+#nice-menu-0 li.menuparent { background-image: url(../images/arrow-down.png); background-position: 95% 50%; background-repeat: no-repeat; }
+#nice-menu-0 a.li.menuparent {padding-right: 10px;}*/
+
+#nice-menu-0 ul li a.mum { background-image: url(../images/arrow-right.png); }
+#nice-menu-0 li a:link, #nice-menu-0 li a:visited { background-color: transparent; }
+#nice-menu-0 li a:hover, #nice-menu-0 li:hover a, #nice-menu-0 li a:focus, #nice-menu-0 li a:active, 
+#nice-menu-0 li.sfhover a, #nice-menu-0 li a.sffocus, #nice-menu-0 li.sffocusparent a { background-color: #4782b1; }
+#nice-menu-0 li li a:link, #nice-menu-0 li li a:visited { background-color: transparent; }
+#nice-menu-0 ul li a:hover, #nice-menu-0 ul li:hover a, #nice-menu-0 ul li a:focus, #nice-menu-0 ul li a:active, 
+#nice-menu-0 ul li.sfhover a, #nice-menu-0 ul li a.sffocus, #nice-menu-0 ul li.sffocusparent a { background-color: #4782b1; }
+#nice-menu-0 li li li a:link, #nice-menu-0 li li li a:visited { background-color: transparent; }
+#nice-menu-0 li li li a:hover, #nice-menu-0 li li li:hover a, #nice-menu-0 li li li a:focus, #nice-menu-0 li li li a:active, 
+#nice-menu-0 li li li.sfhover a, #nice-menu-0 li li li a.sffocus, #nice-menu-0 li li li.sffocusparent a { background-color: #4782b1; }
+#nice-menu-0 li.sffocusparent a, #nice-menu-0 li li li.sffocusparent a { }
+*:first-child+html body #nice-menu-0 ul, *html body ul#nice-menu-0 { margin-left:-75px;  }
+*html body #nice-menu-0 ul, *html body ul#nice-menu-0  { margin:0; padding:0; background: #3e87bb url(../images/nav-container-bg.gif) repeat-x;}
+#nice-menu-0 ul, ul#nice-menu-0  { margin:0; padding:0; list-style-type:none;  background: #3e87bb url(../images/nav-container-bg.gif) repeat-x;}
+#nice-menu-0 li ul {background:#0c4887;border-top:1px solid #366c9f;}
+#nice-menu-0 li ul li a {border:1px solid #366c9f;border-top:0;}
+#nice-menu-0 li a.first {border-left:0;}
+#nice-menu-0 li a.last {border-right: 0;}
+#nice-menu-0 li a.has-items {padding-right:20px;background:transparent url(../images/nav-has-items.gif) no-repeat scroll center right;}
+#nice-menu-0 li a.has-items:hover {background:#4782b1 url(../images/nav-has-items.gif) no-repeat scroll center right;}
+
+<!--[if IE 7]>
+<style type="text/css">
+#nice-menu-0 li > ul { top: 100%; }
+#nice-menu-0 a { background: url(../images/arrow-down.png) no-repeat -95% -50%; }
+#nice-menu-0 ul li:hover > ul, #nice-menu-0 ul li.sfhover > ul, 
+#nice-menu-0 li li a.sffocus + ul, #nice-menu-0 ul li.sffocusparent > ul { left: 0;}
+</style>
+<![endif]-->
+
+/* secondary navigation */
+#nice-menu-1 a:link { text-decoration: none; }
+#nice-menu-1 a:visited { text-decoration: none; }
+#nice-menu-1 a:hover, #nice-menu-0 a:focus, #nice-menu-0 a:active { text-decoration: underline;  }
+#nice-menu-1 { display: inline; float: left; list-style-type: none; padding: 0;height: 36px; z-index:19;}
+#nice-menu-1 li { float: left; font-weight: bold; position: relative; margin-left:0; padding:0;}
+#nice-menu-1 li a { border-right:1px solid #0f2544;border-left:1px solid #255490; color: #931414; display: block; font-size: 13px; font-size-adjust: none; font-stretch: normal; font-style: normal; font-variant: normal; font-weight: normal; height: 22px; letter-spacing: 0.4px; line-height: normal; padding: 9px 10px 5px; text-decoration: none; float:left; font-family:Georgia,"Times New Roman",Times,serif;text-transform:uppercase;}
+#nice-menu-1 ul > li { display: block; float: none; }
+#nice-menu-1 ul { left: -9999px; padding: 0; position: absolute; top: 100%; width: 12em;  margin:0;}
+
+#nice-menu-1 ul, ul#nice-menu-1  { margin:0; padding:0; list-style-type:none;  background: #eee url(../images/nav2-container-bg.gif) repeat-x scroll center top;}
+#nice-menu-1 li ul {background:#0c4887;border-top:1px solid #366c9f;}
+#nice-menu-1 li ul li a {border:1px solid #366c9f;border-top:0;}
+#nice-menu-1 li a.first {border-left:0;}
+#nice-menu-1 li a.last {border-right:0;}
+

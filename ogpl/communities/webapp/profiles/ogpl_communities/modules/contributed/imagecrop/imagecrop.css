@@ -1,0 +1,171 @@
+/* $Id: imagecrop.css,v 1.1.4.7 2010/09/17 12:35:44 zuuperman Exp $ */
+
+/* add important to override folks using admin_menu */
+body { margin: 0 !important; padding: 0; background: none !important; }
+
+/* default colors and divs */
+#imagecrop_presettabs {
+  padding: 3px;
+  color: #fff;
+  font-weight: bold;
+  background-color: orange;
+}
+
+#preset-tabs li {
+  padding: 1px;
+  margin-right: 3px;
+  border: 1px solid black;
+  font-size: 14px;
+  float: left;
+  background: none;
+  list-style: none;
+}
+
+#preset-tabs li.preset-label {
+  border: none;
+}
+
+#imagecrop_presettabs a {
+  color: #fff;
+  font-weight: bold;
+}
+
+#preset-tabs li.active {
+  background-color: silver;
+}
+
+#imagecrop_info  {
+  color: #fff;
+  font-weight: bold;
+  padding: 3px;
+  height: 20px;
+}
+
+.imagecrop_error {
+  background-color: red;
+}
+
+.white {
+  color: #fff;
+}
+
+.imagecrop_warning {
+  background-color: orange;
+}
+
+#imagecrop_help {
+  padding: 3px;
+  width: auto;
+  background-color: silver;
+  clear: both;
+}
+
+#imagecrop_help a {
+  color: #fff;
+  font-weight: bold;
+  display: block;
+}
+
+#imageoffsets .form-button , #imageoffsets .form-submit {
+  margin: 2px;
+}
+
+#imagecrop_table_actions {
+  width: 250px;
+  margin: 0;
+}
+#imagecrop_table_actions tbody {
+  border: none;
+}
+
+#imagecrop_table_actions td {
+  padding: 0;
+}
+
+#imagecrop-throbber div {
+  padding-left:18px;
+  background:url(../../../../misc/throbber.gif) no-repeat -18px -18px;
+  width:18px;
+}
+
+#imagecrop-throbber.show div { background-position: 0px -18px; }
+
+#imagecrop_table_actions .form-item,
+#imagecrop_table_actions .form-submit {
+  margin: 0.5em 0;
+}
+
+/* Classes and divs to create the crop area */
+.imagefield-crop-wrapper { 
+  background-color: #ccc;)
+  position: absolute;
+}
+
+#image-crop-container {
+  position: relative;
+  background-color: #ccc;
+  background-repeat: no-repeat;
+  opacity:.2;
+  filter: alpha(opacity=20);-moz-opacity: 0.2;
+}
+
+
+#resizeMe{
+  position: absolute;
+  cursor: move;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  border: 1px dashed black;
+}
+
+.ui-resizable-handle {
+  width: 8px;
+  height: 8px;
+  border: 1px solid #808080;
+  background-color:#F2F2F2;
+  position: absolute;
+}
+
+.ui-resizable-n, .ui-resizable-s {
+  left: 45%;
+  cursor: n-resize;
+}
+
+.ui-resizable-e, .ui-resizable-w {
+  top: 45%;
+  cursor: e-resize;
+}
+
+.ui-resizable-n,
+.ui-resizable-ne,
+.ui-resizable-nw {
+  top: -5px;
+}
+
+.ui-resizable-ne,
+.ui-resizable-se,
+.ui-resizable-e {
+  right: -5px;
+}
+
+.ui-resizable-se,
+.ui-resizable-sw,
+.ui-resizable-s {
+  bottom: -5px;
+}
+
+.ui-resizable-nw,
+.ui-resizable-w,
+.ui-resizable-sw {
+  left: -5px;
+}
+
+.ui-resizable-se,
+.ui-resizable-nw {
+  cursor: nw-resize;
+}
+
+.ui-resizable-ne,
+.ui-resizable-sw {
+  cursor: ne-resize;
+}

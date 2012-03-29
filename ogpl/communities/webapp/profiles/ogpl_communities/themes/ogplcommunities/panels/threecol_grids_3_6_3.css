@@ -1,0 +1,40 @@
+.threecol-3-6-3 {
+    background: #fff url(../images/grids-3-6-3-bg.jpg) no-repeat 0 0;
+    padding-top: 20px;
+}
+.grid-3-padded-gutter,
+.grid-6-padded-gutter {
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.container-12 .grid-3-padded-gutter {
+    width: 220px;
+}
+.container-12 .grid-3-padded-gutter p {
+    padding: 0 5px;
+}
+.container-12 .grid-6-padded-gutter {
+    width: 440px;
+}
+.grid-6-padded-gutter h2 {
+    border-bottom: 2px solid #fff;
+    margin-bottom: 0.5em;
+    font-size: 1.5em;
+    line-height: 1.5em;
+}
+h1.community-title {
+    background: url(../images/h1-shade-bg.jpg) no-repeat center 0;
+    margin: -9px 0px 1px 0px;
+    padding: 0.5em 10px;
+    line-height: 1.5em;
+}
+.grid-3-padded-gutter .bottomgradient {
+    background: #fff;
+    padding: 0 10px 10px 10px;
+}
+.grid-6-padded-gutter ul.list-arrow {
+    list-style-image: url(../images/list-arrow-blue-filled.png);
+    list-style-position: outside;
+}

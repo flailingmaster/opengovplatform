@@ -1,0 +1,185 @@
+<?php
+
+/**
+ * Implementation of hook_menu_alter().
+ */
+function dms_customizations_menu_alter(&$items) {
+  //This entry corrects an AHAH access callback bug in the contributed module flexifield_filefield.module.
+  //The menu item 'flexifield-filefield…' access callback 'filefield_edit_access' expects at least 2 parameters.
+  //More information is found here; http://drupal.org/node/853742#comment-3210312.
+  $items['flexifield-filefield/ahah/%/%/%/%']['access arguments'] = array(2, 3);
+}
+
+/**
+ * Implementation of hook_views_api().
+ */
+function dms_customizations_views_api() {
+  return array('api' => 2);
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function dms_customizations_form_alter(&$form, &$form_state, $form_id) {
+  switch ($form_id) {
+    case 'dataset_node_form':
+      if ($node = $form['#node']) {
+        global $user;
+        $roles = $user->roles;
+        $author = user_load($node->uid);
+
+        // If the logged in user has the Agency POC role and the node was created by a data steward show the sendback option
+        $role_check = ($user->uid == 1 || !isset($roles['4']) || (isset($roles['4']) && isset($author->roles['3'])));
+
+        if (!$role_check) {
+          unset($form['workflow']['Dataset Management System']['#options']['5']);
+        }
+      }
+      break;
+
+    case 'workflow_tab_form':
+      $form['workflow']['workflow_comment']['#description'] = 'Enter any additional comments.';
+
+      if (isset($_GET['workflow_state'])) {
+        $node = $form['node']['#value'];
+        $wid = workflow_get_workflow_for_type($node->type);
+        $workflow_name = workflow_get_name($wid);
+        $sid = (int)$_GET['workflow_state'];
+        $form['workflow'][$workflow_name]['#default_value'] = $sid;
+
+        if (isset($_REQUEST['destination'])) {
+          $form['cancel'] = array('#type' => 'markup', '#value' => l(t('Cancel'), $_REQUEST['destination'], array('attributes' => array('class' => 'cancel-button'))));
+        }
+
+        global $user;
+        $roles = $user->roles;
+        $author = user_load($node->uid);
+
+        // If the logged in user has the Agency POC role and the node was created by a data steward show the sendback option
+        $role_check = ($user->uid == 1 || !isset($roles['4']) || (isset($roles['4']) && isset($author->roles['3'])));
+
+        if (!$role_check) {
+          unset($form['workflow']['Dataset Management System']['#options']['5']);
+        }
+
+      }
+      break;
+
+    case 'views_exposed_form':
+      switch ($form['#id']) {
+        case 'views-exposed-form-dataset-management-block-2':
+          if (empty($_REQUEST['sid'])) { $form_state['input']['sid'] = array('5' => '5'); }
+          break;
+
+        case 'views-exposed-form-dataset-management-block-3':
+          if (empty($_REQUEST['sid'])) { $form_state['input']['sid'] = array('6' => '6'); }
+          break;
+
+        case 'views-exposed-form-dataset-management-block-4':
+          if (empty($_REQUEST['sid'])) { $form_state['input']['sid'] = array('7' => '7'); }
+          break;
+
+        default:
+          break;
+      }
+      break;
+
+    case 'views_bulk_operations_form__1':
+      //Configure Views Bulk OPeration Settings
+      if (isset($form['select']['operation']['#options'])) {
+        global $user;
+        $roles = $user->roles;
+
+        if ($user->uid == 1) {
+          //User 1 has access to all actions
+        }
+        else if (isset($roles['3'])) { 
+          //Select actions for 'Data Steward' role
+          unset($form['select']['operation']['#options']['workflow_customizations_sendback_action']);
+          if (isset($form['select']['operation']['#options']['workflow_customizations_approve_action'])) {
+            $form['select']['operation']['#options']['workflow_customizations_approve_action'] = 'Submit';
+          }
+        }
+        else if (isset($roles['9'])) { 
+          //Select actions for 'Manager' role
+          unset($form['select']['operation']['#options']['workflow_customizations_sendback_action']);
+          unset($form['select']['operation']['#options']['workflow_customizations_approve_action']);
+          unset($form['select']['operation']['#options']['views_bulk_operations_delete_node_action']);
+        }        
+      }
+
+      $form['select']['#weight'] = '50';
+
+      if (isset($form['actions']['cancel']['#value'])) {
+        $form['actions']['cancel']['#value'] = str_replace('class="active">Cancel</a>', 'class="active cancel-button">Cancel</a>', $form['actions']['cancel']['#value']);
+      }
+
+      if (isset($form['cancel']['#value'])) {
+        $form['cancel']['#value'] = str_replace('class="active">Cancel</a>', 'class="active cancel-button">Cancel</a>', $form['cancel']['#value']);
+      }
+
+      if ($form['target_sid']) {
+        $states = workflow_customizations_non_system_workflow_states(); 
+        foreach($form['target_sid']['#options'] as $wid => $value) {
+          foreach($value as $sid => $name) {
+            if (empty($states[$sid])) {
+              unset($form['target_sid']['#options'][$wid][$sid]);
+            }
+          }
+        }
+      }
+      break;
+
+    case 'webform_client_form_101':
+      $form['actions']['cancel'] = array('#type' => 'markup', '#value' => l(t('Cancel'), $_REQUEST['destination'], array('attributes' => array('class' => 'cancel-button'))), '#weight' => 50);
+      break;
+
+    case 'user_register':
+       if ($form['account']) {
+          $form['account']['mail']['#description'] = 'This will be used for login and email notifications.';
+          $form['account']['notify']['#default_value'] = 1; // enable notification by default
+          $form['account']['notify']['#disabled'] = 1; // forbid modifying this value
+       } else {
+          $form['mail']['#description'] = 'This will be used for login and email notifications.';
+          $form['notify']['#default_value'] = 1; // enable notification by default
+          $form['notify']['#disabled'] = 1; // forbid modifying this value
+       }
+       if ($form['password_policy'] && $form['password_policy']['force_password_change']) {
+          $form['password_policy']['force_password_change']['#default_value'] = 1; // ensure value checked
+          $form['password_policy']['force_password_change']['#disabled'] = 1; // forbid modifying this value
+       }
+       break;
+
+    default:
+      break;
+  }
+
+  // Limit role filter for POC(4) and Data Steward(3) users
+  if ($form_id == 'views_exposed_form' && isset($form['rid'])) {
+     global $user;
+     if (array_intersect(array(3,4), array_keys($user->roles))) {
+        $form['rid']['#options'] = array(
+           '4' => 'Organization POC',
+           '3' => 'Data Steward',
+        );
+     }
+  }
+
+  // If form is editable we add a cancel button that redirects to $base_url.
+  if (isset($form['buttons'])) {
+     $base = $GLOBALS['base_url'];
+     $form['buttons']['cancel'] = array(
+        '#type' => 'button',
+        '#value' => t('Cancel'),
+        '#weight' => '15',
+        '#attributes' => array('onClick' => 'location.replace(\''.$base.'\'); return false;'),
+     );
+  }
+}
+
+// implementation of hook_email_registration_name
+function dms_customizations_email_registration_name($edit, $account) {
+   // use email address as username
+   return $edit['mail'];
+}
+

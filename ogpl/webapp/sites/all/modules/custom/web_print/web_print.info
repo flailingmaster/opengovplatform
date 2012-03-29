@@ -1,0 +1,5 @@
+name = "Printer-friendly pages"
+description = "Adds a printer-friendly version link to content and administrative pages."
+core=6.x
+package = "Printer, e-mail and PDF versions"
+

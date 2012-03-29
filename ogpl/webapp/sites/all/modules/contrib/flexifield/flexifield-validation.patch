@@ -1,0 +1,13 @@
+Index: flexifield-widget.inc
+===================================================================
+--- flexifield-widget.inc	(revision 4510)
++++ flexifield-widget.inc	(working copy)
+@@ -62,6 +62,8 @@
+     $aElement['#flexifield_value_original'] = isset($aElement['#value']) ? $aElement['#value'] : null;
+     if (!isset($aElement['#type'])) {
+       $aElement['#type'] = 'markup';
++      // Prevent erroneous validation errors
++      $aElement['#validated'] = TRUE;
+     }
+   }
+ }

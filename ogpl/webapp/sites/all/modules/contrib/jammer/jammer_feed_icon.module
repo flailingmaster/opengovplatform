@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Remove the feed icon from templates that use the PHPTemplate engine.
+ */
+
+/**
+ * Remove the feed icon.
+ *
+ * @param string $url
+ * @return string
+ */
+function phptemplate_feed_icon($url) {
+  return '';
+}

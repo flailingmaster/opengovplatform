@@ -1,0 +1,19 @@
+Index: branches/dev/sites/all/modules/contrib/revisioning/revisioning_theme.inc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/dev/sites/all/modules/contrib/revisioning/revisioning_theme.inc	(revision )
++++ branches/dev/sites/all/modules/contrib/revisioning/revisioning_theme.inc	(revision 5211)
+@@ -166,8 +166,9 @@
+   $revision_ids = element_children($form['info']);
+ 
+   $show_diff = count($revision_ids) >= 2 && module_exists('diff');
+-    $show_taxonomy_terms = module_exists('taxonomy') &&
++  //$show_taxonomy_terms = module_exists('taxonomy') &&
+-        (count(taxonomy_get_vocabularies()) > 0) && variable_get("show_taxonomy_terms", TRUE);
++    (count(taxonomy_get_vocabularies()) > 0) && variable_get("show_taxonomy_terms", TRUE);	
++  $show_taxonomy_terms = 0;
+   
+   // Set up the table header
+   $header = array(t('Revision'));

@@ -1,0 +1,29 @@
+
+REQUIREMENTS
+  This module requires the mimemail module.  Please install that one first.
+
+INSTALLATION
+  Hopefully, you know the drill by now :)
+  1. Place the entire send directory into your Drupal modules/ directory.
+  2. Enable the send module by navigating to:
+     administer > modules
+  3. Grant the proper access to user roles under:
+    administer > access control
+    
+CONFIGURATION
+  1. To enable send links on your content, go to
+     administer > content > configure > content types ( /admin/settings/content-types )
+     Click on each content type you would like to have this link (story, image, etc)
+     and select the 'Enable "send this item" functionality' box.
+     
+  2. If you would like to format your email message with a header and footer, or
+     change the default subject line or supply default message text for visitors,
+     navigate to:
+     administer > settings > send
+
+ABOUT THE AUTHOR
+  Please contact Allie Micka < allie at pajunas dot com > with questions, comments
+  or feature ideas.  I can be contracted expand or support this module.
+  
+  Also, please consider www.pajunas.com for your hosting needs :)
+

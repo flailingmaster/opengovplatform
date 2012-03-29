@@ -1,0 +1,837 @@
+<?php // $Id$
+
+function send_schema() {
+  $schema = array(
+    'send_profile' => array(
+      'fields' => array(
+        'spid' => array(
+          'type' => 'serial',
+          'not null' => TRUE,
+          'unsigned' => TRUE,
+        ),
+        'name' => array(
+          'type' => 'varchar',
+          'length' => 255,
+        ),
+        'parent' => array(
+          'type' => 'varchar',
+          'length' => 255,
+        ),
+        'uid' => array(
+          'description' => t('The user id that owns this profile'),
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+        'title' => array(
+          'type' => 'varchar',
+          'length' => 255,
+        ),
+        'handler' => array(
+          'type' => 'varchar',
+          'length' => 255,
+        ),
+        'status' => array(
+          'type' => 'int',
+          'not null' => TRUE,
+          'size' => 'tiny',
+          'default' => 1,
+        ),
+        'settings' => array(
+          'type' => 'text',
+          'serialize' => TRUE,
+        ),
+      ),
+      'indexes' => array('send_profile_name_idx' => array('name')),
+      'unique keys' => array('send_profile_name_key' => array('name')),
+      'primary key' => array('spid'),
+    ),
+
+    'send' => array(
+      'description' => t('History table for all send activity'),
+      'fields' => array(
+        'sid' => array(
+          'description' => t('The primary identifier for a send request'),
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'scid' => array(
+          'description' => t('The send contact id'),
+          'type' => 'int',
+          'unsigned' => TRUE,
+        ),
+        'profile' => array(
+          'description' => t('The profile used to send a message'),
+          'type' => 'varchar',
+          'length' => 50,
+          'not null' => TRUE,
+        ),
+        'stid' => array(
+          'description' => t('The send template id'),
+          'type' => 'int',
+          'unsigned' => TRUE,
+        ),
+        'timestamp' => array(
+          'description' => t('The message timestamp'),
+          'type' => 'int',
+        ),
+        'subject' => array(
+          'description' => t('The message subject'),
+          'type' => 'varchar',
+          'length' => 200,
+        ),
+        'message' => array(
+          'description' => t('The message text'),
+          'type' => 'text',
+        ),
+        'contact_count' => array(
+          'type' => 'int',
+        ),
+      ),
+      'primary key' => array('sid'),
+    ),
+    'send_template' => array(
+      'description' => t('Message templates for the send module'),
+      'fields' => array(
+        'stid' => array(
+          'description' => t('The send template id'),
+          'type' => 'serial',
+          'unsigned' => TRUE,
+        ),
+        'name' => array(
+          'description' => t('The template name'),
+          'type' => 'varchar',
+          'length' => 100,
+        ),
+        'status' => array(
+          'description' => t('Template status'),
+          'type' => 'int',
+          'size' => 'tiny',
+        ),
+        'subject' => array(
+          'description' => t('Message subject'),
+          'type' => 'varchar',
+          'length' => 200,
+        ),
+        'body' => array(
+          'description' => t('Body'),
+          'type' => 'text',
+        ),
+        'format' => array(
+          'description' => t('Filter format'),
+          'type' => 'int',
+          'size' => 'tiny',
+        ),
+        'settings' => array(
+          'description' => t('Settings'),
+          'type' => 'text',
+          'serialize' => TRUE,
+        ),
+      ),
+      'primary key' => array('stid'),
+    ),
+    'send_node' => array(
+      'fields' => array(
+        'sid' => array(
+          'description' => t('The send id'),
+          'type' => 'int',
+          'not null' => TRUE,
+        ),
+        'nid' => array(
+          'description' => t('The sent node'),
+          'type' => 'int',
+          'not null' => TRUE,
+        ),
+      ),
+      'primary key' => array('sid', 'nid'),
+    ),
+    'send_contact' => array(
+      'fields' => array(
+        'scid' => array(
+          'description' => t('The send contact id'),
+          'type' => 'serial',
+          'unsigned' => TRUE,
+        ),
+        'uid' => array(
+          'description' => t('The user id'),
+          'type' => 'int',
+          'not null' => TRUE,
+        ),
+        'mode' => array(
+          'description' => t('Delivery mode for this contact.'),
+          'type' => 'varchar',
+          'not null' => TRUE,
+          'length' => 32,
+        ),
+        'timestamp' => array(
+          'description' => t('The last activity timestamp for this contact.'),
+          'type' => 'int',
+          'not null' => TRUE,
+          'unsigned' => TRUE,
+        ),
+      ),
+      'primary key' => array('scid'),
+    ),
+    'send_recipient' => array(
+      'fields' => array(
+        'srid' => array(
+          'description' => t('The send recipient id'),
+          'type' => 'serial',
+          'unsigned' => TRUE,
+        ),
+        'scid' => array(
+          'description' => t('The send contact id'),
+          'type' => 'int',
+          'unsigned' => TRUE,
+        ),
+        'sid' => array(
+          'description' => t('The send id'),
+          'type' => 'int',
+          'unsigned' => TRUE,
+        ),
+        'hash' => array(
+          'description' => t('A textual hash for this send:recipient relationship'),
+          'type' => 'varchar',
+          'length' => 10,
+        ),
+        'contact_count' => array(
+          'description' => t('Recipient count'),
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 1,
+        ),
+      ),
+      'primary key' => array('srid'),
+      'indexes' => array('send_recipient_hash_idx' => array('hash')),
+    ),
+  );
+
+  // TODO this doesn't work:  If send is disbled and then uninstalled, its
+  // own tables (and probably those other modules) are not returned.
+  foreach (module_invoke_all('send_mode_info') as $name => $info) {
+    if (isset($info['database columns'])) {
+      $name = 'send_contact_'. $name;
+      $schema[$name] = array(
+        'fields' => array(
+          'scid' => array(
+            'description' => t('The send contact id'),
+            'type' => 'int',
+            'unsigned' => TRUE,
+            'not null' => TRUE,
+          ),
+        ),
+        'primary key' => array('scid'),
+      );
+
+      foreach ($info['database columns'] as $key => $column) {
+        $schema[$name]['fields'][$key] = $column;
+      }
+
+      if (isset($info['unique keys'])) {
+        $schema[$name]['unique keys'] = $info['unique keys'];
+      }
+    }
+  }
+  return $schema;
+}
+
+function send_install() {
+  drupal_install_schema('send');
+
+  // See http://drupal.org/node/200931 : after schema has been loaded, 
+  // call _send_install_set_default_template, which uses drupal_write_record.
+  register_shutdown_function('drupal_get_schema', NULL, TRUE);
+  register_shutdown_function('_send_install_set_default_template');
+}
+
+function send_uninstall() {
+  drupal_uninstall_schema('send');
+}
+
+/**
+ * Make sure that the send_template table has a default value.
+ */
+function _send_install_set_default_template() {
+  $ret = array();
+  if (!$res = db_result(db_query("SELECT stid FROM {send_template} LIMIT 1"))) {
+    $template = (object) array(
+      'name' => t('Default template'),
+      'status' => 1,
+      'subject' => t('Message from @site', array('@site' => variable_get('site_name', 'Drupal'))),
+      'body' => "%message\n%body",
+      'format' => FILTER_FORMAT_DEFAULT,
+      'settings' => array(),
+    );
+    drupal_write_record('send_template', $template);
+  }
+  return $ret;
+}
+
+/**
+ * Helper function that will return a template id based on body text.
+ * 
+ */
+function _send_install_template($body, $title, $subject) {
+  if (!$stid = db_result(db_query("SELECT stid FROM {send_template} WHERE body = '%s'", $body))) {
+    $template = (object) array(
+      'name' => $title,
+      'status' => 1,
+      'subject' => $subject,
+      'body' => $body,
+      'format' => FILTER_FORMAT_DEFAULT,
+      'settings' => array('subject_editable' => TRUE),
+    );
+    drupal_write_record('send_template', $template);
+    $stid = $template->stid;
+  }
+  return $stid;
+}
+
+function send_update_1() {
+  db_add_column($ret = array(), 'send', 'module', 'VARCHAR(50)', array('default' => "''"));
+  $ret[] = update_sql("UPDATE {send} SET module='send' WHERE module=''");
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      $ret[] = update_sql("CREATE TABLE {send_setting} (
+        name             VARCHAR(100) NOT NULL,
+        module           VARCHAR(50) NOT NULL DEFAULT '',
+        nodetype         VARCHAR(50) NOT NULL DEFAULT '',
+        nid              INT NOT NULL DEFAULT 0,
+        value            TEXT,
+        PRIMARY KEY(name, module, nodetype, nid)
+      ) /*!40100 DEFAULT CHARACTER SET utf8 */;");
+      break;
+
+    case 'pgsql':
+      $ret[] = update_sql("CREATE TABLE {send_setting} (
+        name             VARCHAR(100) NOT NULL,
+        module           VARCHAR(50) NOT NULL DEFAULT '',
+        nodetype         VARCHAR(50) NOT NULL DEFAULT '',
+        nid              INT NOT NULL DEFAULT 0,
+        value            TEXT,
+        PRIMARY KEY(name, module, nodetype, nid)
+      )");
+      break;
+  }
+  return $ret;
+}
+
+function send_update_2() {
+  $ret = array();
+  // merge first and last name columns
+  db_add_column($ret, 'send', 'name', 'VARCHAR(200)', array('default' => "''"));
+
+  db_add_column($ret, 'send_recipient', 'name', 'VARCHAR(200)', array('default' => "''"));
+
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      $ret[] = update_sql("UPDATE {send} SET name = CONCAT(first_name, ' ', last_name)");
+      $ret[] = update_sql("UPDATE {send_recipient} SET name = CONCAT(first_name, ' ', last_name)");
+      break;
+    case 'pgsql':
+      $ret[] = update_sql("UPDATE {send} SET name = first_name||' '||last_name");
+      $ret[] = update_sql("UPDATE {send_recipient} SET name = first_name||' '||last_name");
+      break;
+  }
+  $ret[] = update_sql("ALTER TABLE {send} DROP COLUMN first_name");
+  $ret[] = update_sql("ALTER TABLE {send} DROP COLUMN last_name");
+  $ret[] = update_sql("ALTER TABLE {send_recipient} DROP COLUMN first_name");
+  $ret[] = update_sql("ALTER TABLE {send_recipient} DROP COLUMN last_name");
+
+  // allow nodes as recipients
+  db_add_column($ret, 'send_recipient', 'rid', 'INT', array('default' => 0));
+  db_add_column($ret, 'send_recipient', 'rtype', 'VARCHAR(50)', array('default' => "''"));
+  $ret[] = update_sql("UPDATE {send_recipient} SET rid = uid, rtype = 'user' WHERE uid <> 0");
+  $ret[] = update_sql("ALTER TABLE {send_recipient} DROP COLUMN uid");
+
+  // track counts for recipients
+  db_add_column($ret, 'send_recipient', 'rcount', 'INT');
+
+  return $ret;
+}
+
+function send_update_3() {
+  $ret = array();
+
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      $ret[] = update_sql("ALTER TABLE {send_recipient} ADD srid INT AUTO_INCREMENT PRIMARY KEY");
+      break;
+
+    case 'pgsql':
+      $ret[] = update_sql("ALTER TABLE {send_recipient} ADD srid SERIAL PRIMARY KEY");
+      break;
+  }
+
+  return $ret;
+}
+
+function send_update_4() {
+  $ret = array();
+
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      $ret[] = update_sql("ALTER TABLE {send} MODIFY COLUMN sid INT AUTO_INCREMENT");
+      break;
+  }
+
+  return $ret;
+}
+
+/**
+ * Set configuration variables for send
+ */
+function _send_value($name, $module = '', $nodetype = '', $nid = 0) {
+  // get value from database
+  if ($val = db_result(db_query("SELECT value FROM {send_setting}
+      WHERE name='%s' AND
+      nid IN (0, %d) AND nodetype IN ('', '%s') AND module IN ('', '%s')
+      ORDER BY (nid = 0), (nodetype = ''), (module = '')
+      LIMIT 1", $name, $nid, $nodetype, $module))) {
+ 
+    return $val;
+  }
+  return;
+}
+
+/**
+ * Rework the send tracking tables.
+ */
+function send_update_6001() {
+  $ret = array();
+  // don't attempt to upgrade if send is not enabled.
+  if (!module_exists('send')) {
+    drupal_set_message(t('Send module must be enabled for updates to complete. After enabling Send, please return to <a href="@update-php">update.php</a> and run the remaining updates.', array('@update-php' => base_path() .'update.php?op=selection')), 'warning', FALSE);
+    $ret['#abort'] = array(
+      'success' => FALSE,
+      'query' => t('Send is not enabled.  To run updates first enable Send and then re-run update.php.'),
+    );
+    return $ret;
+  }
+  $schema = drupal_get_schema(NULL, TRUE);
+
+  // Add new tables.
+  db_rename_table($ret, 'send_recipient', 'send_recipient_old');
+  foreach (array('send_node', 'send_contact', 'send_contact_mail', 'send_recipient') as $table) {
+    if (!db_table_exists($table)) {
+      db_create_table($ret, $table, $schema[$table]);
+    }
+  }
+
+  // The "module" field has been renamed to "profile". Copy accordingly.
+  db_add_field($ret, 'send', 'profile', $schema['send']['fields']['profile']);
+  $ret[] = update_sql("UPDATE {send} SET profile = module");
+  db_drop_field($ret, 'send', 'module');
+
+  // Migrate contacts from send into send_contact tables.
+  db_add_field($ret, 'send', 'scid', $schema['send']['fields']['scid']);
+  db_add_field($ret, 'send', 'contact_count', $schema['send']['fields']['contact_count']);
+
+  // TEMPORARILY add send_contact_mail fields to make the next steps easier.
+  db_add_field($ret, 'send_contact', 'mail', $schema['send_contact_mail']['fields']['mail']);
+  db_add_field($ret, 'send_contact', 'name', $schema['send_contact_mail']['fields']['name']);
+
+  // Authenticated users.
+  $ret[] = update_sql("INSERT INTO {send_contact} (uid, mode, timestamp)
+    SELECT DISTINCT uid, 'mail', MAX(timestamp) 
+    FROM {send} WHERE uid != 0 GROUP BY uid");
+
+  // Anonymous users.
+  $ret[] = update_sql("INSERT INTO {send_contact} (uid, mode, timestamp, mail, name)
+    SELECT DISTINCT 0, 'mail', MAX(timestamp), mail, name 
+    FROM {send} WHERE uid = 0 GROUP BY mail, name");
+
+  // Replace the send column group with the scid value
+  $ret[] = update_sql("UPDATE {send} s, {send_contact} sc
+    SET s.scid = sc.scid
+    WHERE ( (s.uid = 0 ) AND s.mail = sc.mail)
+      OR ( (s.uid != 0 ) AND s.uid = sc.uid )");
+
+  // These columns now have duplicate data.
+  db_drop_field($ret, 'send', 'uid');
+  db_drop_field($ret, 'send', 'mail');
+  db_drop_field($ret, 'send', 'name');
+
+  // Migrate nodes from send_recipient into send_node table.
+  $ret[] = update_sql("INSERT INTO {send_node} 
+    SELECT DISTINCT sid, nid FROM {send_recipient_old} WHERE nid != 0");
+
+  // Migrate contacts from send_recipient into send_contact tables.
+  // Authenticated users.
+  $ret[] = update_sql("INSERT INTO {send_contact} (uid, mode, timestamp)
+    SELECT DISTINCT sr.rid, 'mail', MAX(s.timestamp) 
+    FROM {send_recipient_old} sr
+    LEFT JOIN {send} s USING (sid) 
+    LEFT JOIN {send_contact} sc ON (sr.rid = sc.uid )
+    WHERE sc.scid IS NULL AND sr.rid != 0 AND sr.rtype = 'user'
+    GROUP BY sr.rid");
+  
+  // Anonymous users.
+  $ret[] = update_sql("INSERT INTO {send_contact} (uid, mode, timestamp, name, mail)
+    SELECT DISTINCT 0, 'mail', MAX(s.timestamp), sr.name, sr.mail
+    FROM {send_recipient_old} sr
+    LEFT JOIN {send} s USING (sid) 
+    LEFT JOIN {send_contact} sc ON (sr.rid = sc.uid )
+    WHERE sc.scid IS NULL AND sr.rid = 0 AND sr.rtype = 'user'
+    GROUP BY sr.mail, sr.name, s.sid");
+
+  // Copy the resulting contact records into a separate table.
+  $ret[] = update_sql("INSERT INTO {send_contact_mail} (scid, mail, name)
+    SELECT DISTINCT sc.scid, u.mail, u.name 
+    FROM {send} s 
+    LEFT JOIN {send_contact} sc USING (scid) LEFT JOIN {users} u using (uid)
+    GROUP BY u.uid");
+
+  // Update names and mail addresses for authenticated users.
+  $ret[] = update_sql("UPDATE {send_contact_mail} scm, {send_contact} sc, {users} u 
+    SET scm.mail = u.mail, scm.name = u.name
+    WHERE sc.uid != 0 AND sc.uid = u.uid AND scm.scid = sc.scid");
+
+  // Nodes. (I'm pretty sure that news is the only send sub-module that ever
+  // implemented a node backend, so I'm using that assumption.
+  $ret[] = update_sql("INSERT INTO {send_contact} (uid, mode, timestamp)
+    SELECT DISTINCT 0, 'mlm', MAX(s.timestamp)
+    FROM {send_recipient_old} sr
+    LEFT JOIN {send} s USING (sid) 
+    LEFT JOIN {send_contact} sc ON (sr.rid = sc.uid )
+    WHERE sc.scid IS NULL AND sr.rid != 0 AND sr.rtype = 'node'
+    GROUP BY sr.rid");
+
+  // Populate the new send_recipient table.
+  // Authenticated users.
+  $ret[] = update_sql("INSERT INTO {send_recipient} (sid, scid, contact_count)
+    SELECT sr.sid, sc.scid, SUM(sr.rcount)
+    FROM {send_recipient_old} sr, {send_contact} sc
+    WHERE sr.rtype = 'user' AND sr.rid != 0 and sr.rid = sc.uid
+    GROUP BY sr.sid, sr.rid, sr.mail");
+
+  // Anonymous users.
+  $ret[] = update_sql("INSERT INTO {send_recipient} (sid, scid, contact_count)
+    SELECT sr.sid, sc.scid, SUM(sr.rcount)
+    FROM {send_recipient_old} sr, {send_contact} sc
+    WHERE sr.rtype = 'user' AND sr.rid = 0 and sr.mail = sc.mail
+    GROUP BY sr.sid, sr.mail");
+
+  // Nodes.
+  $ret[] = update_sql("INSERT INTO {send_recipient} (sid, scid, contact_count)
+    SELECT sr.sid, sc.scid, SUM(sr.rcount)
+    FROM {send_recipient_old} sr, {send_contact} sc
+    WHERE sr.rtype = 'node' AND sr.rid = 0 and sr.rid = sc.uid
+    GROUP BY sr.sid, sr.rid, sr.mail");
+
+  // Update the send table with aggregate totals.
+  $ret[] = update_sql("UPDATE {send} s SET contact_count = 
+      (SELECT SUM(contact_count) 
+      FROM {send_recipient} sr WHERE sr.sid = s.sid)");
+
+  $ret[] = update_sql("INSERT INTO {send_contact_mail} (scid, name, mail)
+    SELECT DISTINCT scid, name, mail FROM {send_contact} 
+    WHERE mode = 'mail' AND mail IS NOT NULL");
+
+  // These fields are no longer needed by the updater.
+  db_drop_field($ret, 'send_contact', 'mail');
+  db_drop_field($ret, 'send_contact', 'name');
+
+  // Clean up the old send_recipient table.
+  db_drop_table($ret, 'send_recipient_old');
+
+  return $ret;
+}
+
+/**
+ * Add the send_template table.
+ */
+function send_update_6002() {
+  $ret = array();
+
+  $schema = drupal_get_schema(NULL, TRUE);
+
+  if (!db_table_exists('send_template')) {
+    db_create_table($ret, 'send_template', $schema['send_template']);
+  }
+
+  if (!db_column_exists('send', 'stid')) {
+    db_add_field($ret, 'send', 'stid', $schema['send']['fields']['stid']);
+  }
+
+  // Copy existing configurations into the template table.
+  $res = db_query("SELECT * FROM {send_setting} 
+    WHERE name = 'template'
+    ORDER BY module, nodetype, nid");
+
+  $templates = array();
+  while ($row = db_fetch_object($res)) {
+    
+    // Attempt to locate the format of the template text at the same level of
+    // the send_settings table.
+    $where = $args = array();
+    foreach (array('module', 'nodetype', 'nid') as $key) {
+      if (!is_null($row->$key)) {
+        $where[] = "$key = ". ($key == 'nid') ? "'%d'" : "'%s'";
+        $args[] = $row->$key;
+      }
+    }
+    $where  = $where ? "WHERE ". join(' AND ', $where) : '';
+    $format = db_result(db_query("SELECT value FROM {send_setting} $where"));
+
+    // Don't create a bunch of duplicate entries.
+    $hash = md5($row->body . $format);
+    if (!isset($templates[$hash])) {
+      $template = array(
+        'name' => '',
+        'status' => 1,
+        'body' => $row->value,
+        'format' => $format,
+        'rows' => array(),
+      );
+      $templates[$hash] = (object) $template;
+    }
+
+    $templates[$hash]->rows[] = $row;
+  }
+
+  foreach ($templates as $template) {
+    drupal_write_record('send_template', $template);
+    foreach ($template->rows as $row) {
+      $where = array("name = 'template'");
+      $where[] = ($row->module) ? "module = '". $row->module ."'" : "module IS NULL";
+      $where[] = ($row->nodetype) ? "nodetype = '". $row->nodetype ."'" : "nodetype IS NULL";
+      $where[] = ($row->nid) ? "nid = ". $row->nid : "nid IS NULL";
+      $where = "WHERE ". join(" AND ", $where);
+
+      db_query("UPDATE {send_setting} SET value = '%d' $where", $template->stid);
+    }
+  }
+  db_query("DELETE FROM {send_setting} WHERE name = 'template_format'");
+
+  return $ret;
+}
+
+/**
+ * Make sure that the send_template table has a default value.
+ */
+function send_update_6003() {
+  return _send_install_set_default_template();
+}
+
+/**
+ * Add the send_template fields for subject, settings.
+ */
+function send_update_6004() {
+  $ret = array();
+  $schema = drupal_get_schema(NULL, TRUE);
+
+  if (!db_column_exists('send_template', 'subject')) {
+    db_add_field($ret, 'send_template', 'subject', $schema['send_template']['fields']['subject']);
+  }
+
+  if (!db_column_exists('send_template', 'settings')) {
+    db_add_field($ret, 'send_template', 'settings', $schema['send_template']['fields']['settings']);
+  }
+  return $ret;
+}
+
+/**
+ * Add the send_template fields for subject, settings.
+ */
+function send_update_6005() {
+  $ret = array();
+  $schema = drupal_get_schema(NULL, TRUE);
+  $table = 'send_recipient';
+  if (!db_column_exists($table, 'srid')) {
+    db_drop_primary_key($ret, $table);
+    db_add_field($ret, $table, 'srid', array('type' => 'serial', 'unsigned' => TRUE), array('primary key' => array('srid')));
+  }
+
+  if (!db_column_exists($table, 'hash')) {
+    db_add_field($ret, $table, 'hash', $schema[$table]['fields']['hash']);
+    db_add_index($ret, $table, 'send_recipient_hash_idx', array('hash'));
+  }
+  return $ret;
+}
+
+/**
+ * Add the send_profile table to store overall settings for each profile.
+ */
+function send_update_6006() {
+  $ret = array();
+  $schema = drupal_get_schema(NULL, TRUE);
+
+  // Install a table to store each of the send profiles that's out there.
+  if (!db_table_exists('send_profile')) {
+    db_create_table($ret, 'send_profile', $schema['send_profile']);
+  }
+  return $ret;
+}
+
+function send_update_6007() {
+  $ret = array();
+
+  // You were probably expecting 'Send to friend' functionality.
+  drupal_install_modules(array('send_node'));
+
+  // Configuration options that were settable in previous versions of Send.
+  $settings = array(
+    'fulltext',
+    'linktext',
+    'subject',
+    'message',
+    'template',
+    'template_format',
+  );
+
+  // Call the API function that populates send_profiles with defaults provided 
+  // by hook_send_profile_info()
+  foreach (send_profiles() as $name => $info) {
+    $profile = send_profile_load($name, $info);
+    $profile->subject_editable = TRUE;
+    $module = ($name == 'send_node') ? 'send' : $module;
+
+    // Attempt to locate all module-wide settings from the send_settings table.
+    // and set them in the new profiles.
+    foreach ($settings as $op) {
+      if ($value = _send_value($op, $module)) {
+        if ($op == 'template') {
+          $value = _send_install_template($value, $profile->name(), $profile->subject);
+        }
+        $func = 'set'. $op;
+        if (method_exists($profile, $func)) $profile->$func($value);
+      }
+    }
+
+    // Save the new/migrated profile to the database.
+    unset($profile->subject_editable);
+    $profile->save();
+  }
+
+  // Now, locate all per-nodetype settings and do the same.
+  $res = db_query("SELECT DISTINCT(nodetype) FROM {send_setting} 
+    WHERE nodetype IS NOT NULL AND nodetype != '' AND nid = 0");
+
+  while ($nodetype = db_result($res)) {
+    // Ensure there's no more than 1 module affecting this.
+    $res2 = db_query("SELECT DISTINCT(module) FROM {send_setting} WHERE
+      nodetype = '%s' AND nid = 0", $nodetype);
+
+    while ($module = db_result($res2)) {
+      $profile_parent = $module;
+      if ($module == 'send') $profile_parent .= '_node';
+
+      $profile_name = $profile_parent .'_type_'. $nodetype;
+
+      // Load and/or copy the send profile for this nodetype/module.
+      if (!$profile = send_profile_load($profile_name)) {
+        $profile = send_profile_copy($profile_parent, $profile_name);
+      }
+      $profile->subject_editable = TRUE;
+
+      // Copy the 'enabled' setting to its new variable name.
+      if (!is_null($value = variable_get($module .'_'. $nodetype, NULL))) {
+        variable_set($module .'_enabled_'. $nodetype, $value);
+        variable_del($module .'_'. $nodetype, $value);
+      }
+      // Copy the 'pernode' setting to its new variable name.
+      if (!is_null($value = variable_get($module .'_'. $nodetype .'_pernode', NULL))) {
+        variable_set($module .'_pernode_'. $nodetype, $value);
+        variable_del($module .'_'. $nodetype .'_pernode', $value);
+      }
+
+      foreach ($settings as $op) {
+        $func = 'set'. $op;
+
+        $var = $module .'_'. $nodetype .'_'. $op;
+        if ($value = variable_get($var, NULL)) {
+          if ($op == 'template') {
+            $value = _send_install_template($value, $profile->name(), $profile->subject);
+          }
+          if (method_exists($profile, $func)) $profile->$func($value);
+
+          variable_del($var);
+        }
+        if ($value = _send_value($op, $module, $nodetype)) {
+          if ($op == 'template') {
+            $value = _send_install_template($value, $profile->name(), $profile->subject);
+          }
+          if (method_exists($profile, $func)) $profile->$func($value);
+        }
+      }
+
+      unset($profile->subject_editable);
+      $profile->save();
+    }
+  }
+
+  // Finally, and most importantly, the per-node settings.
+  $res = db_query("SELECT nid, nodetype FROM {send_setting} WHERE nid != 0
+    GROUP BY nid, nodetype");
+
+  while ($row = db_fetch_object($res)) {
+    $nid = $row->nid;
+    $nodetype = $row->nodetype;
+
+    // Ensure there's no more than 1 module affecting this.
+    $res2 = db_query("SELECT DISTINCT(module) FROM {send_setting}
+      WHERE nid = %d", $nid);
+
+    while ($module = db_result($res2)) {
+      $profile_parent = $module;
+      if ($module == 'send') $profile_parent .= '_node';
+
+      // Parent is either the nodetype or the module, whichever exists.
+      if (!$parent = send_profile_load($profile_parent .'_type_'. $nodetype)) {
+        $parent = send_profile_load($profile_parent);
+      }
+
+      // Copy whatever it is to a per-node entry for this item.
+      $profile = send_profile_copy($parent->name(), $profile_parent .'_'. $nid);
+      $profile->subject_editable = TRUE;
+
+      foreach ($settings as $op) {
+        if ($value = _send_value($op, $module, $nodetype, $nid)) {
+          if ($op == 'template') {
+            $value = _send_install_template($value, $profile->name(), $profile->subject);
+          }
+          $func = 'set'. $op;
+          if (method_exists($profile, $func)) $profile->$func($value);
+        }
+      }
+
+      // Save the per-node profile.
+      unset($profile->subject_editable);
+      $profile->save();
+    }
+  }
+
+  register_shutdown_function('_send_install_drop_settings');
+  return $ret;
+}
+
+/**
+ * A helper function that runs *after* the send_node module's schema was 
+ * installed in #6007.  Tracks all of the nodes with node-specific send profiles
+ * and deletes the now-unused send_setting table.
+ */
+function _send_install_drop_settings() {
+  // Reset the schema so our table is located.
+  drupal_get_schema(NULL, TRUE);
+
+  $res = db_query("SELECT DISTINCT nid FROM {send_setting} where nid != 0");
+  while ($nid = db_result($res)) {
+    // Save a record into the send_node table.
+    $send_node = (object) array(
+      'nid' => $nid,
+      'enabled' => 1,
+      'use_default' => 0,
+    );
+    drupal_write_record('send_profile_node', $send_node);
+  }
+
+  // Drop the send_setting table.  Bye send_settings, we really liked you!
+  db_drop_table($ret, 'send_setting');
+}

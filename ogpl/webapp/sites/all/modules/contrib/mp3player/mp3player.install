@@ -1,0 +1,239 @@
+<?php
+
+/**
+ * @file
+ * The install file for MP3 Player.
+ */
+
+/**
+ * Implementation of hook_requirements().
+ */
+function mp3player_requirements($phase) {
+  $t = get_t();
+  $path = variable_get('mp3player_library_path', drupal_get_path('module', 'mp3player') . '/mp3player');
+  $has_mp3player = file_exists($path .'/audio-player.js') && file_exists($path .'/player.swf');
+  $requirements['mp3player'] = array(
+    'title' => $t('MP3 Player'),
+    'value' => $has_mp3player ? $t('Installed') : $t('Not found'),
+  );
+  if (!$has_mp3player) {
+    $requirements['mp3player']['severity'] = REQUIREMENT_ERROR;
+    $requirements['mp3player']['description'] = $t("MP3 Player requires the <a href='!mp3_url'>standalone WordPress Audio Player</a>.", array('!mp3_url' => 'http://wpaudioplayer.com/download'));
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function mp3player_install() {
+  drupal_install_schema('mp3player');
+  //Insert Default Player
+  db_query("INSERT INTO {mp3player_players} (name, autostart, loopaudio, animation, remaining, noinfo, initialvolume, buffer, encode, rtl, width, transparentpagebg, pagebg, bg, leftbg, lefticon, voltrack, volslider, rightbg, rightbghover, righticon, righticonhover, loader, track, tracker, border, skip, text) VALUES ('Default', 'no', 'no', 'yes', 'no', 'no', '60', '5', 'no', 'no', 290, 'no', '', 'E5E5E5', 'CCCCCC', '333333', 'F2F2F2', '666666', 'B4B4B4', '999999', '333333', 'FFFFFF', '009900', 'FFFFFF', 'DDDDDD', 'CCCCCC', '666666', '333333')");
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function mp3player_uninstall() {
+  drupal_uninstall_schema('mp3player');
+  // Delete the variables we created.
+  variable_del('mp3player_page_list');
+  variable_del('mp3player_page_init_action');
+}
+
+function mp3player_schema() {
+    $schema['mp3player_players'] = array(
+    'fields' => array(
+      'pid' => array(
+        'description' => t('The primary identifier for an mp3 player.'),
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+      'name' => array(
+        'description' => t('The name of an mp3 player.'),
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+        'default' => ''),
+      'autostart' => array(
+        'description' => t('If the player should autostart or not.'),
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+        'default' => 'no'),
+      'loopaudio' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+        'default' => 'no'),
+      'animation' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+        'default' => 'yes'),
+      'remaining' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+        'default' => 'no'),
+      'noinfo' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+        'default' => 'no'),
+      'initialvolume' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+        'default' => '60'),
+      'buffer' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+        'default' => '5'),
+      'encode' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+        'default' => 'no'),
+      'checkpolicy' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+        'default' => 'no'),
+      'rtl' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+        'default' => 'no'),
+      'width' => array(
+        'description' => t(''),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 290),
+      'transparentpagebg' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+        'default' => 'no'),
+      'pagebg' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => FALSE,
+        'default' => NULL),
+      'bg' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => 'E5E5E5'),
+      'leftbg' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => 'CCCCCC'),
+      'lefticon' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => '333333'),
+      'voltrack' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => 'F2F2F2'),
+      'volslider' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => '666666'),
+      'rightbg' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => 'B4B4B4'),
+      'rightbghover' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => '999999'),
+      'righticon' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => '333333'),
+      'righticonhover' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => 'FFFFFF'),
+      'loader' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => '009900'),
+      'track' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => 'FFFFFF'),
+      'tracker' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => 'DDDDDD'),
+      'border' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => 'CCCCCC'),
+      'skip' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => '666666'),
+      'text' => array(
+        'description' => t(''),
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+        'default' => '333333'),
+    ),
+    'primary key' => array('pid'),
+  );
+
+  return $schema;
+}
+
+function mp3player_update_1() {
+  $ret = array();
+  db_add_field($ret, 'mp3player_players', 'checkpolicy', array('type' => 'varchar', 'length' => 3, 'not null' => TRUE, 'default' => 'no'));
+  return $ret;
+}

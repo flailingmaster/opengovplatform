@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Adobe RoboHelp 9" />
+<title>Configuring the Content Bias Settings</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="JavaScript">//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+        origWidth = innerWidth;
+        origHeight = innerHeight;
+        onresize = reDo;
+}
+onerror = null; 
+//]]></script>
+<script type="text/javascript" language="javascript1.2" src="./whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="./whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whtopic.js"></script>
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addTocInfo("Content Management System Administrator\nManaging Global and Advanced Search\nConfiguring the Content Bias Settings");
+addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("<a href=\"cms_administrator.htm\">Content Management System Administrator<\/a> > <a href=\"managing_global_advanced_search.htm\">Managing Global and Advanced Search<\/a> > Configuring the Content Bias Settings<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<?rh-region_start id="header" style="width: 100%; position: relative;" ?>
+<?rh-region_end ?>
+<h1>Configuring the Content Bias Settings</h1>
+<p>When a visitor searches for a keyword on the OGPL Web site, the Apache 
+ Solr search server scans the search index and 
+ assigns a score to the matches found based on factors, such as keyword 
+ relevance and keyword density. You can provide additional weightage, also called as bias, to certain properties 
+ when ordering the search results so that the Apache Solr 
+ search server assigns a higher score to the search results that refer 
+ to those content types. Search results with higher scores are listed at 
+ the top of the list.</p>
+<p>To configure content bias settings:</p>
+<ol type="1">
+	<li><p>In the navigation menu, point to <span class="UI">Configurable 
+	 Items</span>, <span class="UI">Manage Header Content</span>, and then 
+	 click <span class="UI">Manage Global and Advance Search</span>.<br />
+	The <span class="UI">Settings</span> page appears.</p></li>
+	<li><p>Click the <span class="UI">Content bias settings</span> tab.<br />
+	The <span class="UI">Apache Solr</span> page appears and displays various 
+	 biasing parameters.</p></li>
+	<li><p>In the <span class="UI">Result Biasing</span> section, click 
+	 the appropriate weightage for various content properties. The following 
+	 table lists various content properties and their description.</p></li>
+</ol>
+<p class="TableCaption" style="margin-left: 36px;"><span>Table: Description 
+ of fields in the Apache Solr page</span></p>
+<table style="margin-left: 40px;" cellspacing="0" width="93.191%">
+	<col style="width: 26.753%;" />
+	<col style="width: 73.247%;" />
+	<tr>
+		<td style="border: Solid 1px #000000;" bgcolor="#E8E8E8"><p class="TableHeading">Content 
+		 Property</p></td>
+		<td style="border-top: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;" bgcolor="#E8E8E8"><p class="TableHeading"><span><b 
+		 style="font-weight: bold;">Description</b></span></p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Sticky at top of the list</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Click 
+		 the numeric value that you want to assign as bias to the nodes 
+		 that you have set to appear at the top of the search results while 
+		 creating them.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">Promoted to home page</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Click 
+		 the numeric value that you want to assign as bias to the nodes 
+		 that you have promoted to home page.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">More recently created</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p 
+			 class="MsoListParagraph" style="margin: 0pt; margin-bottom: .0001pt; 
+			 line-height: normal;"><span>Click the numeric value that you 
+		 want to assign as bias to the nodes that are created more recently. 
+		 This setting changes the result scoring so that these nodes appear 
+		 before those with higher keyword matching.</span></p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">More comments</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Click 
+		 the numeric value that you want to assign as bias to the nodes 
+		 with maximum content. This setting changes the result scoring 
+		 so that nodes with more comments appear before those with higher 
+		 keyword matching.</p></td>
+	</tr>
+	<tr>
+		<td style="border-left: Solid 1px #000000; border-right: Solid 1px #000000; 
+			 border-bottom: Solid 1px #000000;"><p class="TableText"><span 
+		 class="UI">More recent comments</span></p></td>
+		<td style="border-right: Solid 1px #000000; border-bottom: Solid 1px #000000;"><p>Click 
+		 the numeric value that you want to assign as bias to the nodes 
+		 that have received comments recently from the visitors of the 
+		 OGPL Web site. This setting changes the result scoring so that 
+		 nodes with the most recent comments appear before those with higher 
+		 keyword matching.</p>
+		<p>For example, the datasets for which the visitors provided comments 
+		 more recently appear at the top of the search results.</p></td>
+	</tr>
+</table>
+<ol start="4" type="1">
+	<li><p>Click <span class="UI">Save Configuration</span>.<br />
+	The search results settings are updated according to the bias that 
+	 you specified for each property.</p></li>
+	<li><p>In the <span class="UI">Type biasing and exclusion</span> section, 
+	 click the appropriate numeric value that you want to assign as bias 
+	 for the various content types available on the OGPL Web site. For 
+	 example, if you want to give additional bias to the content type FAQ 
+	 than the content type Featured Gallery during a search, you can select 
+	 <span class="UI">5</span> for the <span class="UI">FAQ type content 
+	 bias</span> and <span class="UI">4</span> for the <span class="UI">Featured 
+	 Gallery type content bias</span>.</p></li>
+	<li><p>In the <span class="UI">Type biasing and exclusion</span> section, 
+	 select the check box for each content type that you want to exclude 
+	 from the search index. These content types do not appear in any search 
+	 results. For example, if you do not want content for charts and country 
+	 data to appear in any search results, select the check box for <span 
+	 class="UI">Charts</span> and <span class="UI">Country Data</span>.</p></li>
+	<li><p>Click <span class="UI">Save Configuration</span>.<br />
+	The search results settings are updated according to the bias that 
+	 you specified for each content type and the content type that you 
+	 specified to be excluded does not appear in any search results.</p></li>
+</ol>
+<?rh-region_start id="footer" style="width: 100%; position: relative;" ?>
+<p>&#160;</p>
+<?rh-region_end ?><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

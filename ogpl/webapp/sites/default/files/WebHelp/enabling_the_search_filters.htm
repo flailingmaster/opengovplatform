@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Adobe RoboHelp 9" />
+<title>Enabling the Search Filters</title>
+<link rel="StyleSheet" href="admin_guide_sample.css" type="text/css" />
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="JavaScript">//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+        origWidth = innerWidth;
+        origHeight = innerHeight;
+        onresize = reDo;
+}
+onerror = null; 
+//]]></script>
+<script type="text/javascript" language="javascript1.2" src="./whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="./whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="./whtopic.js"></script>
+<script type="text/javascript" language="JavaScript">
+//<![CDATA[
+function reDo() {
+  if (innerWidth != origWidth || innerHeight != origHeight)
+     location.reload();
+}
+if ((parseInt(navigator.appVersion) == 4) && (navigator.appName == "Netscape")) {
+	origWidth = innerWidth;
+	origHeight = innerHeight;
+	onresize = reDo;
+}
+onerror = null; 
+//]]>
+</script>
+<style type="text/css">
+<!--
+div.WebHelpPopupMenu { position:absolute;
+left:0px;
+top:0px;
+z-index:4;
+visibility:hidden; }
+-->
+</style>
+<script type="text/javascript" language="javascript1.2" src="whmsg.js"></script>
+<script type="text/javascript" language="javascript" src="whver.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whproxy.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whutils.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whlang.js"></script>
+<script type="text/javascript" language="javascript1.2" src="whtopic.js"></script>
+
+</head>
+
+<body><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.gbWhTopic)
+{
+	var strUrl = document.location.href;
+	var bc = 0;
+	var n = strUrl.toLowerCase().indexOf("bc-");
+	if(n != -1)
+	{
+		document.location.href = strUrl.substring(0, n);
+		bc = strUrl.substring(n+3);
+	}
+
+	if (window.addTocInfo)
+	{
+	addTocInfo("Content Management System Administrator\nManaging Global and Advanced Search\nEnabling the Search Filters");
+addButton("show",BTN_TEXT,"Show","","","","",0,0,"","","");
+
+	}
+	if (window.writeBtnStyle)
+		writeBtnStyle();
+
+	if (window.writeIntopicBar)
+		writeIntopicBar(1);
+
+	
+	document.write("<p style=\"text-align:right\"> ");
+AddMasterBreadcrumbs("ogpl_admin_guide.htm", "", ">", "Home", "preface.htm");
+document.write("<a href=\"cms_administrator.htm\">Content Management System Administrator<\/a> > <a href=\"managing_global_advanced_search.htm\">Managing Global and Advanced Search<\/a> > Enabling the Search Filters<\/p>");
+
+
+	if (window.setRelStartPage)
+	{
+	setRelStartPage("ogpl_admin_guide.htm");
+
+		autoSync(1);
+		sendSyncInfo();
+		sendAveInfoOut();
+	}
+}
+else
+	if (window.gbIE4)
+		document.location.reload();
+
+//-->
+//]]></script>
+<?rh-region_start id="header" style="width: 100%; position: relative;" ?>
+<p>&#160;</p>
+<?rh-region_end ?>
+<h1>Enabling the Search Filters</h1>
+<p>You can enable various search filters, such as<span class="UI"> Filter 
+ By Catalog Type, Filter By Agency Name, Filter By Sub-Agency Name</span>, 
+ to group the search results. When you enable a search filter, Drupal creates 
+ a block that appears on the <span class="UI">Blocks</span> page and you 
+ can place this block in the <span class="UI">Search Filter</span> region 
+ that appears on the left pane of the <span class="UI">Search page</span> 
+ and the <span class="UI">Data Catalogs</span> page. The Apache Solr server 
+ scans the content for the searched keyword and groups the results according 
+ to these filters. For example, if a visitor searches for the Raw Data 
+ available on the OGPL Web site. Out of 15 matches, 5 are found under the 
+ Agency named <span class="UI">Defense Department</span>, the left pane 
+ of the search page displays the agency named <span class="UI">Defense 
+ Department</span> and the number of result found <span class="UI">(5)</span> 
+ for that agency under the <span class="UI">Filter By Agency Name</span> 
+ section.</p>
+<p>The following image illustrates how the Search Filters appear on the 
+ OGPL Web site.</p>
+<p><img src="search_filters_raw_data.png" alt="search_filters_raw_data.png" style="border: Solid 1px #4f81bd; 
+		 border-width: 1px; border-style: solid;" width="256" height="451" border="1" /></p>
+<p>To set the search filter blocks that must be available on the search 
+ page and the Data Catalogs page, perform the following steps.</p>
+<ol type="1">
+	<li><p>In the navigation menu, point to <span class="UI">Configurable 
+	 Items</span>, <span class="UI">Manage Header Content</span>, and then 
+	 click <span class="UI">Manage Global and Advance Search</span>.<br />
+	The <span class="UI">Settings</span> page appears.</p></li>
+	<li><p>Click the <span class="UI">Enabled Filters</span> tab.<br />
+	The <span class="UI">Apache Solr</span> page appears and displays various 
+	 search filters.</p></li>
+	<li><p>Select the check box for each filter that you want to display 
+	 on the search page.</p></li>
+	<li><p>Click <span class="UI">Save</span>.<br />
+	The filters that you selected appear on the left pane of search page.</p></li>
+</ol>
+<?rh-region_start id="footer" style="width: 100%; position: relative;" ?>
+<p>&#160;</p>
+<?rh-region_end ?><script type="text/javascript" language="javascript1.2">//<![CDATA[
+<!--
+if (window.writeIntopicBar)
+	writeIntopicBar(0);
+
+
+highlightSearch();
+//-->
+//]]></script>
+</body>
+</html>

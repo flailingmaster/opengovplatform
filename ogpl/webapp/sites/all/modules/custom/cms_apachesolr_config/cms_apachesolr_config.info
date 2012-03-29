@@ -1,0 +1,4 @@
+name = Cms Apache Solr Configurations
+description = Custom module with additional features.
+core = 6.x
+package = Apache Solr

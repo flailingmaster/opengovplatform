@@ -1,0 +1,153 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+<indexdata>
+<key name="Updating" >
+  <topic name="Updating Blocks" url="updating_blocks.htm" />
+  <topic name="Updating Image for a Rotating Panel" url="updating_image_for_a_rotating_panel.htm" />
+  <topic name="Updating a Page" url="updating_a_page.htm" />
+  <topic name="Updating Rotating Panels" url="updating_rotating_panels.htm" />
+  <topic name="Updating Pages" url="updating_pages.htm" />
+  <topic name="Updating Images for a Featured Gallery" url="updating_images_for_a_featured_gallery.htm" />
+  <topic name="Updating an FAQ" url="updating_an_faq.htm" />
+  <topic name="Updating a Feedback Category" url="updating_a_feedback_category.htm" />
+  <topic name="Updating Menu Item" url="updating_menu_item.htm" />
+  <topic name="Updating FAQ" url="updating_faq.htm" />
+  <topic name="Updating Mini Panels" url="updating_mini_panels.htm" />
+  <topic name="Updating the Feedback Delay Time" url="updating_the_feedback_delay_time.htm" />
+  <topic name="Updating the Search Index" url="updating_the_search_index.htm" />
+  <topic name="Updating Blocks Content" url="updating_blocks_content.htm" />
+  <topic name="Updating Menus" url="updating_menus.htm" />
+  <topic name="Updating Homepage Tabs" url="updating_homepage_tabs.htm" />
+  <topic name="Tracking Updates for an Action Status" url="tracking_updates_for_an_action_status.htm" />
+  <topic name="Updating Cron Run Time Interval" url="updating_cron_run_time_interval.htm" />
+  <topic name="Updating Country Data" url="updating_country_data.htm" />
+  <topic name="Updating User Details" url="updating_user_details.htm" />
+  <topic name="Updating Country Data" url="updating_country_data_content_creator.htm" />
+  <topic name="Updating Information for a Feedback Status" url="updating_information_for_a_feedback_status.htm" />
+  <topic name="Updating Agency Details" url="updating_agency_details.htm" />
+  <topic name="Updating an Action Status for a Feedback" url="updating_an_action_status_for_a_feedback.htm" />
+  <topic name="Updating a Block" url="updating_a_block.htm" />
+  <topic name="Updating Featured Gallery" url="updating_featured_gallery.htm" />
+  <key name="Action Status" >
+    <topic name="Updating an Action Status for a Feedback" url="updating_an_action_status_for_a_feedback.htm" />
+  </key>
+  <key name="Agency Details" >
+    <topic name="Updating Agency Details" url="updating_agency_details.htm" />
+  </key>
+  <key name="Block" >
+    <topic name="Updating a Block" url="updating_a_block.htm" />
+  </key>
+  <key name="Blocks" >
+    <topic name="Updating Blocks" url="updating_blocks.htm" />
+  </key>
+  <key name="Blocks Content" >
+    <topic name="Updating Blocks Content" url="updating_blocks_content.htm" />
+  </key>
+  <key name="Country Data" >
+    <topic name="Updating Country Data" url="updating_country_data.htm" />
+    <topic name="Updating Country Data" url="updating_country_data_content_creator.htm" />
+  </key>
+  <key name="Cron Run Time Interval" >
+    <topic name="Updating Cron Run Time Interval" url="updating_cron_run_time_interval.htm" />
+  </key>
+  <key name="FAQ" >
+    <topic name="Updating an FAQ" url="updating_an_faq.htm" />
+    <topic name="Updating FAQ" url="updating_faq.htm" />
+  </key>
+  <key name="Featured Gallery" >
+    <topic name="Updating Featured Gallery" url="updating_featured_gallery.htm" />
+  </key>
+  <key name="Feedback Category" >
+    <topic name="Updating a Feedback Category" url="updating_a_feedback_category.htm" />
+  </key>
+  <key name="Feedback Delay Time" >
+    <topic name="Updating the Feedback Delay Time" url="updating_the_feedback_delay_time.htm" />
+  </key>
+  <key name="Homepage Tabs" >
+    <topic name="Updating Homepage Tabs" url="updating_homepage_tabs.htm" />
+  </key>
+  <key name="Image" >
+    <topic name="Updating Image for a Rotating Panel" url="updating_image_for_a_rotating_panel.htm" />
+  </key>
+  <key name="Images" >
+    <topic name="Updating Images for a Featured Gallery" url="updating_images_for_a_featured_gallery.htm" />
+  </key>
+  <key name="Information" >
+    <topic name="Updating Information for a Feedback Status" url="updating_information_for_a_feedback_status.htm" />
+  </key>
+  <key name="Menu Item" >
+    <topic name="Updating Menu Item" url="updating_menu_item.htm" />
+  </key>
+  <key name="Menus" >
+    <topic name="Updating Menus" url="updating_menus.htm" />
+  </key>
+  <key name="Mini Panels" >
+    <topic name="Updating Mini Panels" url="updating_mini_panels.htm" />
+  </key>
+  <key name="Page" >
+    <topic name="Updating a Page" url="updating_a_page.htm" />
+  </key>
+  <key name="Pages" >
+    <topic name="Updating Pages" url="updating_pages.htm" />
+  </key>
+  <key name="Rotating Panels" >
+    <topic name="Updating Rotating Panels" url="updating_rotating_panels.htm" />
+  </key>
+  <key name="Search Index" >
+    <topic name="Updating the Search Index" url="updating_the_search_index.htm" />
+  </key>
+  <key name="Tracking" >
+    <topic name="Tracking Updates for an Action Status" url="tracking_updates_for_an_action_status.htm" />
+  </key>
+  <key name="User Details" >
+    <topic name="Updating User Details" url="updating_user_details.htm" />
+  </key>
+</key>
+<key name="Uploading" >
+  <topic name="Uploading Reference Documents" url="uploading_reference_documents.htm" />
+  <key name="Reference Documents" >
+    <topic name="Uploading Reference Documents" url="uploading_reference_documents.htm" />
+  </key>
+</key>
+<key name="User Details" >
+  <topic name="Updating User Details" url="updating_user_details.htm" />
+  <key name="Updating" >
+    <topic name="Updating User Details" url="updating_user_details.htm" />
+  </key>
+</key>
+<key name="User List" >
+  <topic name="Filtering User List" url="filtering_user_list.htm" />
+  <key name="Filtering" >
+    <topic name="Filtering User List" url="filtering_user_list.htm" />
+  </key>
+</key>
+<key name="User Permissions" >
+  <topic name="Setting User Permissions" url="setting_user_permissions.htm" />
+  <topic name="User Permissions" url="user_permissions.htm" />
+  <key name="Setting" >
+    <topic name="Setting User Permissions" url="setting_user_permissions.htm" />
+  </key>
+</key>
+<key name="Users" >
+  <topic name="Managing Users" url="managing_users.htm" />
+  <topic name="Editing Users" url="editing_users.htm" />
+  <topic name="Deleting Users" url="deleting_users.htm" />
+  <topic name="Adding Users" url="adding_users.htm" />
+  <topic name="Blocking Users" url="blocking_users.htm" />
+  <key name="Adding" >
+    <topic name="Adding Users" url="adding_users.htm" />
+  </key>
+  <key name="Blocking" >
+    <topic name="Blocking Users" url="blocking_users.htm" />
+  </key>
+  <key name="Deleting" >
+    <topic name="Deleting Users" url="deleting_users.htm" />
+  </key>
+  <key name="Editing" >
+    <topic name="Editing Users" url="editing_users.htm" />
+  </key>
+  <key name="Managing" >
+    <topic name="Managing Users" url="managing_users.htm" />
+  </key>
+</key>
+
+</indexdata>

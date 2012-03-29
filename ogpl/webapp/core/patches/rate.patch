@@ -1,0 +1,83 @@
+Index: branches/qa/sites/all/modules/CMS/rate/rate.admin.inc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/CMS/rate/rate.admin.inc	(revision )
++++ branches/qa/sites/all/modules/CMS/rate/rate.admin.inc	(revision 4540)
+@@ -425,7 +425,7 @@
+     '#default_value' => $widget->comment_display_mode,
+   );
+   $form['display']['description'] = array(
+-    '#type' => 'textfield',
++    '#type' => 'textarea',
+     '#title' => t('Description'),
+     '#default_value' => $widget->description,
+     '#description' => t('Optional description which will be visible on the rate widget.'),
+Index: branches/qa/sites/all/modules/CMS/rate/rate-widget.tpl.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/CMS/rate/rate-widget.tpl.php	(revision )
++++ branches/qa/sites/all/modules/CMS/rate/rate-widget.tpl.php	(revision 4540)
+@@ -46,5 +46,5 @@
+ <?php endif; ?>
+ 
+ <?php if ($display_options['description']): ?>
+-  <?php print '<div class="rate-description">' . $display_options['description'] . '</div>'; ?>
++  <?php print '<div class="rate-description">' . $display_options['description'] . 'hello</div>'; ?>
+ <?php endif; ?>
+Index: branches/qa/sites/all/modules/CMS/rate/templates/fivestar/fivestar.tpl.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/CMS/rate/templates/fivestar/fivestar.tpl.php	(revision )
++++ branches/qa/sites/all/modules/CMS/rate/templates/fivestar/fivestar.tpl.php	(revision 4540)
+@@ -11,5 +11,28 @@
+ }
+ 
+ if ($display_options['description']) {
+-  print '<div class="rate-description">' . $display_options['description'] . '</div>';
+-}
++  print '<div class="rate-description">' . $display_options['description'];
++  if($display_options['description']=='Usability')
++  {
++  ?>
++  
++  <?php 
++	$delay_time_seconds = variable_get('votingapi_anonymous_window', 86400);
++	if($delay_time_seconds > 0 ){ 
++?>
++		<br/>  
++			<?php $map = drupal_map_assoc(array(300, 900, 1800, 3600, 10800, 21600, 32400, 43200, 86400, 172800, 345600, 604800), 'format_interval');
++				print "<span>Note: There must be a minimum interval of " . $map[$delay_time_seconds] . " between two consecutive rating events.</span>";
++			?>
++		
++<?php
++	} else if ($delay_time_seconds == -1) { ?>
++		<br/> 
++			<?php 
++				print "<span>Note: You are allowed to rate this content only once.</span>";
++			?>
++		
++	
++<?php }?>
++ <?php
++}}
+Index: branches/qa/sites/all/modules/CMS/rate/rate.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/qa/sites/all/modules/CMS/rate/rate.module	(revision )
++++ branches/qa/sites/all/modules/CMS/rate/rate.module	(revision 4540)
+@@ -596,6 +596,7 @@
+         '#value' => rate_generate_widget($widget_id, 'node', $node->nid, $display_mode),
+         '#weight' => $widget->node_display == RATE_DISPLAY_ABOVE_CONTENT ? 0 : 50,
+         '#title' => $widget->title,
++		'#description' => 'Hi, Wazz up ?',
+       );
+       if ($widget->node_display != RATE_DISPLAY_ABOVE_CONTENT && $widget->node_display != RATE_DISPLAY_BELOW_CONTENT) {
+         $node->$widget_name = $widget_code;

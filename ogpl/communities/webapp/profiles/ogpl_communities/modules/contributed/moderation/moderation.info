@@ -1,0 +1,11 @@
+; $Id: moderation.info,v 1.1.4.2 2009/07/22 21:08:30 sanduhrs Exp $
+name  = Moderation
+description  = A node and comment moderation queue.
+core = 6.x
+
+; Information added by drupal.org packaging script on 2009-08-04
+version = "6.x-1.4"
+core = "6.x"
+project = "moderation"
+datestamp = "1249398410"
+

@@ -1,0 +1,12 @@
+; $Id: skip_validation_node_form.info,v 1.1 2009/07/23 09:03:58 cdale Exp $
+name = Node Form Skip Validation
+description = Adds a feature which skips validations on node preview and deletion.
+dependencies[] = skip_validation
+core = 6.x
+
+; Information added by drupal.org packaging script on 2009-10-13
+version = "6.x-1.4"
+core = "6.x"
+project = "skip_validation"
+datestamp = "1255408261"
+

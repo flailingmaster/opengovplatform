@@ -1,0 +1,33 @@
+Conditional Fields 2.0, 2011-08-08
+----------------------
+Lots of bugfixes and new features. Most notably:
+- Compatibility with all core CCK widgets.
+- Multiple controlling fields per controlled field.
+- Nested conditions: a field can now control other fields and be controlled at the same time.
+- Fields in different fieldgroups can now control and be controlled (if the fieldgroups themselves are not controlled).
+- All conditional fields and groups are now themeable.
+- Expanded compatibility with non core CCK fields. Content Taxonomy, Hierachical Select, Content Profile now work.
+- Basic Rules integration.
+- #368143 by mani.atico: Features compatibility.
+
+Conditional Fields 1.1, 2010-01-15
+----------------------
+Bugfix release mainly fixing critical validation issue. Changes since version 1.0:
+- BUG: #453204: Fix required fields validation. Again.
+- BUG: #649744 by ianchan: .info file retained dev info
+- BUG: Coding standards compliance.
+- BUG: #646320 by seals: Cleanup of strings.
+- TRANSLATION: #646316 by seals: Added Swedish translation.
+
+Conditional Fields 1.0, 2009-28-11
+----------------------
+- First official release. Enjoy!
+
+Conditional Fields 0.1.alpha1, 2008-06-27
+----------------------
+- First point release. Still very experimental.
+  To see the list of changes: http://drupal.org/project/cvs/206178
+
+Conditional Fields 0.1-dev, 2008-01-04
+----------------------
+- Initial commit of module

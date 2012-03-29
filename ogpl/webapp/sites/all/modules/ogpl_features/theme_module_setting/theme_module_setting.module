@@ -1,0 +1,3 @@
+<?php
+
+include_once('theme_module_setting.features.inc');

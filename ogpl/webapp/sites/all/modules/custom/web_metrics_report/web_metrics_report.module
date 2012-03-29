@@ -1,0 +1,210 @@
+<?php
+function web_metrics_report_views_pre_execute(&$view)
+{
+    if ($view->name == 'download_by_category') {
+        $search = array('GROUP BY node_node_data_field_ds_sector_nid, files_node_data_field_ds_file_downloads, nid, node_node_data_field_ds_sector_node_data_field_sector_title_field_sector_title_value, node_node_data_field_ds_sector_type, node_node_data_field_ds_sector_vid');
+        $replace = array('GROUP BY node_node_data_field_ds_sector_nid,node_node_data_field_ds_sector.type');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+
+        $search = array('GROUP BY node_node_data_field_ds_sector_nid, nid, node_node_data_field_ds_sector_node_data_field_sector_title_field_sector_title_value, node_node_data_field_ds_sector_type, node_node_data_field_ds_sector_vid, files_node_data_field_ds_file_downloads');
+        $replace = array('GROUP BY node_node_data_field_ds_sector_nid,node_node_data_field_ds_sector.type');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+
+        $search = array('GROUP BY node_node_data_field_ds_sector_nid, node_node_data_field_ds_sector_node_data_field_sector_title_field_sector_title_value, nid, node_node_data_field_ds_sector_type, node_node_data_field_ds_sector_vid, files_node_data_field_ds_file_downloads');
+        $replace = array('GROUP BY node_node_data_field_ds_sector_nid,node_node_data_field_ds_sector.type');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+
+        $search = array('ORDER BY download_count_dcid DESC, node_node_data_field_ds_sector_node_data_field_sector_title_field_sector_title_value');
+        $replace = array('ORDER BY node_node_data_field_ds_sector_node_data_field_sector_title_field_sector_title_value');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+
+        $search = array('GROUP BY node_node_data_field_ds_sector_nid, download_count_dcid, nid, node_node_data_field_ds_sector_node_data_field_sector_title_field_sector_title_value, node_node_data_field_ds_sector_type, node_node_data_field_ds_sector_vid, files_node_data_field_ds_file_downloads');
+        $replace = array('GROUP BY node_node_data_field_ds_sector_nid,node_node_data_field_ds_sector.type');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+
+        $search = array('ORDER BY download_count_dcid DESC, download_count_dcid');
+        $replace = array('ORDER BY download_count_dcid');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+
+
+        $itemCount = $_GET['itemcount'];
+        if (empty($itemCount)) {
+            $view->set_items_per_page(10);
+        } else {
+            $view->set_items_per_page($itemCount);
+        }
+    }
+    if ($view->name == 'most_downloaded_10_datasets30day') {
+        $search = array('(SELECT COUNT(dc.fid) FROM {download_count} dc WHERE dc.fid = files_node_data_field_ds_file.fid)');
+        $replace = array('(SELECT COUNT(dc.fid) FROM {download_count} dc WHERE dc.fid = files_node_data_field_ds_file.fid and FROM_UNIXTIME(dc.timestamp)>date_sub(curdate(), interval 30 day))');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $search = array('ORDER BY files_node_data_field_ds_file_downloads DESC');
+        $replace = array('ORDER BY files_node_data_field_ds_file_downloads DESC LIMIT 0,10');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = str_replace($search, $replace, $view->build_info['count_query']);
+        //print_r($view->build_info['query']);
+    }
+    if ($view->name == 'most_downloaded_10_dataset1year') {
+        $search = array('(SELECT COUNT(dc.fid) FROM {download_count} dc WHERE dc.fid = files_node_data_field_ds_file.fid)');
+        $replace = array('(SELECT COUNT(dc.fid) FROM {download_count} dc WHERE dc.fid = files_node_data_field_ds_file.fid and FROM_UNIXTIME(dc.timestamp)>date_sub(curdate(), interval 1 year))');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $search = array('ORDER BY files_node_data_field_ds_file_downloads DESC');
+        $replace = array('ORDER BY files_node_data_field_ds_file_downloads DESC LIMIT 0,10');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = str_replace($search, $replace, $view->build_info['count_query']);
+        //print_r($view->build_info['query']);
+    }
+    if ($view->name == 'most_viewed_10_datasets') {
+        $search = array('ORDER BY node_counter_totalcount DESC');
+        $replace = array('ORDER BY node_counter_totalcount DESC LIMIT 0,10');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = str_replace($search, $replace, $view->build_info['count_query']);
+    }
+    if ($view->name == 'most_downloaded_datasets') {
+        $search = array('ORDER BY download_count_dcid DESC');
+        $replace = array('HAVING COUNT(download_count.dcid)>0 ORDER BY download_count_dcid DESC');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = str_replace($search, $replace, $view->build_info['count_query']);
+        $search = array('ORDER BY files_node_data_field_ds_file_downloads DESC');
+        $replace = array('ORDER BY files_node_data_field_ds_file_downloads DESC LIMIT 0,10');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = str_replace($search, $replace, $view->build_info['count_query']);
+    }
+    if ($view->name == 'recently_added_10_datasets') {
+        $search = array('ORDER BY workflow_node_stamp DESC');
+        $replace = array('ORDER BY workflow_node_stamp DESC LIMIT 0,10');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = str_replace($search, $replace, $view->build_info['count_query']);
+    }
+    if ($view->name == 'most_rated_datasets') {
+        $search = array('AND (votingapi_cache_node_percent_voteusability_average.value IS NOT NULL)');
+        $replace = array('AND (votingapi_cache_node_percent_voteusability_average.value IS NOT NULL)');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = str_replace($search, $replace, $view->build_info['count_query']);
+    }
+    if ($view->name == 'download_by_agency') {
+        $search = array('GROUP BY node_node_data_field_ds_agency_name_nid, nid, node_node_data_field_ds_agency_name_node_data_field_agency_name_field_agency_name_value, node_node_data_field_ds_agency_name_type, node_node_data_field_ds_agency_name_vid, files_node_data_field_ds_file_downloads');
+        $replace = array('GROUP BY node_node_data_field_ds_agency_name_nid,node_node_data_field_ds_agency_name_type');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+
+        $search = array('GROUP BY node_node_data_field_ds_agency_name_nid, node_node_data_field_ds_agency_name_node_data_field_agency_name_field_agency_name_value, nid, node_node_data_field_ds_agency_name_type, node_node_data_field_ds_agency_name_vid');
+        $replace = array('GROUP BY node_node_data_field_ds_agency_name_nid,node_node_data_field_ds_agency_name_type');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+
+        $search = array('ORDER BY download_count_dcid DESC, node_node_data_field_ds_agency_name_node_data_field_agency_name_field_agency_name_value');
+        $replace = array('ORDER BY node_node_data_field_ds_agency_name_node_data_field_agency_name_field_agency_name_value');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+
+        $search = array('GROUP BY node_node_data_field_ds_agency_name_nid, download_count_dcid, nid, node_node_data_field_ds_agency_name_node_data_field_agency_name_field_agency_name_value, node_node_data_field_ds_agency_name_type, node_node_data_field_ds_agency_name_vid');
+        $replace = array('GROUP BY node_node_data_field_ds_agency_name_nid,node_node_data_field_ds_agency_name_type');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+
+        $search = array('ORDER BY download_count_dcid DESC, download_count_dcid');
+        $replace = array('ORDER BY download_count_dcid');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+
+
+        //str_replace($search,$replace,$view->build_info['count_query']);
+        //print_r($view->build_info['query']);
+        //$search = array('(SELECT COUNT(dc.fid) FROM {download_count} dc WHERE dc.fid = files_node_data_field_ds_file.fid)');
+        //$replace = array('sum((SELECT COUNT(dc.fid) FROM {download_count} dc WHERE dc.fid = files_node_data_field_ds_file.fid))');
+        //$view->build_info['query'] = str_replace($search,$replace,$view->build_info['query']);
+        //  $view->build_info['count_query'] = str_replace($search,$replace,$view->build_info['count_query']);
+        $itemCount = $_GET['itemcount'];
+        if (empty($itemCount)) {
+            $view->set_items_per_page(10);
+        } else {
+            $view->set_items_per_page($itemCount);
+        }
+
+    }
+    if ($view->name == 'views_by_category') {
+        $search = array(' ORDER BY');
+        $replace = array('GROUP BY node_node_data_field_ds_sector_node_data_field_sector_title_field_sector_title_value ORDER BY ');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+
+        $search = array('node_counter.totalcount AS node_counter_totalcount');
+        $replace = array('sum(node_counter.totalcount) AS node_counter_totalcount');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        //$view->build_info['count_query'] = str_replace($search,$replace,$view->build_info['count_query']);
+        $itemCount = $_GET['itemcount'];
+        if (empty($itemCount)) {
+            $view->set_items_per_page(10);
+        } else {
+            $view->set_items_per_page($itemCount);
+        }
+    }
+    if ($view->name == 'views_by_agency') {
+        $search = array(' ORDER BY');
+        $replace = array('GROUP BY node_node_data_field_ds_agency_name_node_data_field_agency_name_field_agency_name_value ORDER BY');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+        //str_replace($search,$replace,$view->build_info['count_query']);
+
+        $search = array('node_counter.totalcount AS node_counter_totalcount');
+        $replace = array('sum(node_counter.totalcount) AS node_counter_totalcount');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        //$view->build_info['count_query'] = str_replace($search,$replace,$view->build_info['count_query']);
+        $itemCount = $_GET['itemcount'];
+        if (empty($itemCount)) {
+            $view->set_items_per_page(10);
+        } else {
+            $view->set_items_per_page($itemCount);
+        }
+    }
+    if ($view->name == 'participating_agencies') {
+
+        $search = array(' ORDER BY node_nid ASC');
+        $replace = array('GROUP BY node_data_field_ds_agency_name.field_ds_agency_name_nid');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = $view->build_info['query'];
+    }
+    if ($view->name == 'agency_datasets') {
+
+        $itemCount = $_GET['itemcount'];
+        if (empty($itemCount)) {
+            $view->set_items_per_page(10);
+        } else {
+            $view->set_items_per_page($itemCount);
+        }
+
+    }
+    if ($view->name == 'datasets_by_agency_per_month') {
+
+        $itemCount = $_GET['itemcount'];
+        if (empty($itemCount)) {
+            $view->set_items_per_page(10);
+        } else {
+            $view->set_items_per_page($itemCount);
+        }
+
+    }
+    if ($view->name == 'datasets_per_month_and_year') {
+
+        $itemCount = $_GET['itemcount'];
+        if (empty($itemCount)) {
+            $view->set_items_per_page(10);
+        } else {
+            $view->set_items_per_page($itemCount);
+        }
+
+    }
+    if ($view->name == 'most_downloaded_datasets_files') {
+        $search = array('ORDER BY download_count_dcid DESC');
+        $replace = array('HAVING COUNT(download_count.dcid)>0 ORDER BY download_count_dcid DESC');
+        $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
+        $view->build_info['count_query'] = str_replace($search, $replace, $view->build_info['count_query']);
+    }
+}

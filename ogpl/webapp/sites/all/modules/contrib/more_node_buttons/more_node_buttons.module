@@ -1,0 +1,609 @@
+<?php
+// $Id: more_node_buttons.module,v 1.1.4.12 2010/11/04 15:08:23 quiptime Exp $
+
+/**
+ * @file
+ * Add an Cancel, Save and continue and an Save and create new button to node edit forms.
+ * Furthermore, a tab "Create new" can be used.
+ */
+
+/**
+ * Implementation of hook_menu().
+ */
+function more_node_buttons_menu() {
+  $items = array();
+  
+  $items['admin/settings/more-node-buttons'] = array(
+    'title' => 'More node buttons',
+    'description' => 'An overview of what content type uses buttons/functions of the Mnb module.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('more_node_buttons_admin'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'more_node_buttons.admin.inc',
+  );
+  $items['admin/settings/more-node-buttons/reset'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('more_node_buttons_reset'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_CALLBACK,
+    'file' => 'more_node_buttons.admin.inc',
+  );
+  // Provide the "Create new" tab.
+  $items['node/%node/createnew'] = array(
+    'title' => 'Create new',
+    'title callback' => 'more_node_buttons_tabcn_title',
+    'page callback' => 'more_node_buttons_createnew',
+    'page arguments' => array(1),
+    'access callback' => 'more_node_buttons_createnew_access',
+    'access arguments' => array(1),
+    'weight' => 2,
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Menu callback.
+ *
+ * @see more_node_buttons_menu()
+ */
+function more_node_buttons_createnew($node) {
+  $redirect = 'node/add/'. str_replace('_', '-', $node->type);
+  $query = 'referrer=node/'. $node->nid;
+
+  // OG compatibility.
+  $og_context = module_invoke('og', 'get_group_context');
+  if (isset($og_context->nid)) {
+    $query = urldecode('gids[]='. $og_context->nid);
+    $query .= '&destination=node/'. $node->nid;
+  }
+
+  drupal_goto($redirect, $query);
+}
+
+/**
+ * Check if we should display the "Create new" tab on a node.
+ *
+ * @see more_node_buttons_menu()
+ */
+function more_node_buttons_createnew_access($node) {
+  $return = FALSE;
+  $tab_createnew = variable_get('more_node_buttons_tabcn_' .$node->type, 0);
+
+  if (node_access('create', $node->type) && $tab_createnew == TRUE) {
+    $return = TRUE;
+  }
+
+  return $return;
+}
+
+/**
+ * Provide the "Create new" tab value.
+ *
+ * @see more_node_buttons_menu()
+ */
+function more_node_buttons_tabcn_title() {
+  $mnb_values = more_node_buttons_get_values();
+
+  return t('@tabcn', array('@tabcn' => t($mnb_values['tabcn'])));
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function more_node_buttons_theme() {
+  return array(
+    'more_node_buttons_all_form' => array(
+      'arguments' => array('form' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function more_node_buttons_form_alter(&$form, $form_state, $form_id) {
+  // Make sure the form alter changes take place only in certain forms.
+  // Get the right node types.
+  $node_type = '';
+
+  // Node add/edit forms.
+  if (isset($form['#node']->type) && $form['#id'] == 'node-form') {
+    $node_type = $form['#node']->type;
+  }
+  // Preparing the administration of more node buttons; Content type edit form.
+  elseif (isset($form['#node_type']->type) && !empty($form['#node_type']->type) && $form['#id'] == 'node-type-form') {
+    $node_type = $form['#node_type']->type;
+  }
+  // Prepare the administration of more node buttons; Content type add form.
+  elseif (isset($form['#node_type']->type) && empty($form['#node_type']->type) && $form['#id'] == 'node-type-form') {
+    // Use temporary an content type as dummy to handle button management on the "Add content type" page.
+    $node_type = 'more_node_buttons_type_dummy';
+  }
+  else {
+    return;
+  }
+
+  switch ($form_id) {
+    case 'node_type_form':
+      // Provide the prepared additional more node buttons settings.
+
+      // Check the specific case add content type form.
+      if (empty($form['#node_type']->type)) {
+        // Add content type.
+        $type = 'more_node_buttons_type_dummy';
+      }
+      else {
+        // Edit an content type.
+        $type = $form['#node_type']->type;
+      }
+
+      // It makes no sense to use the Mnb module with the content type panel.
+      if ($type == 'panel') {
+        return;
+      }
+
+      // The additonal buttons settings.
+      $form['node_buttons'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Button settings'),
+        '#group' => 'additional_settings',
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+      );
+      // Provide "Cancel" button settings.
+      $form['node_buttons']['more_node_buttons_cancel'] = array(
+        '#type' => 'select',
+        '#title' => t('Cancel button'),
+        '#options' => array(
+          0 => t('None'),
+          1 => t('Left'),
+          2 => t('Right'),
+        ),
+        '#default_value' => variable_get('more_node_buttons_cancel_'. $type, 0),
+      );
+      // Provide the "Cancel referer redirect" option.
+      $form['node_buttons']['more_node_buttons_cancel_referer_redirect'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('- referer redirection'),
+        '#description' => t('The <em>Cancel button referer redirection</em> allows the redirection to the page was started the action to create or edit a node if this action is canceled.'),
+        '#default_value' => variable_get('more_node_buttons_cancel_referer_redirect_'. $type, 0),
+      );
+      // Provide "Save and continue" button settings.
+      $form['node_buttons']['more_node_buttons_sac'] = array(
+        '#type' => 'select',
+        '#title' => t('Save and continue button'),
+        '#description' => t('What does +? Further to the right or further to the left.'),
+        '#options' => _more_node_buttons_save_and_options(),
+        '#default_value' => variable_get('more_node_buttons_sac_'. $type, 0),
+      );
+
+      // Provide the create new content settings.
+      $form['node_buttons']['create_new'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Create new content'),
+        '#description' => t('Provide alternative options to create new content from this typ.'),
+      );
+      // Provide "Save and create new" button settings.
+      $description_sacn = t('What is this? Save the node and forwarding to the "Create new content" form of this content type.') .'<br />';
+      $description_sacn .= t('What does +? Further to the right or further to the left.');
+      $form['node_buttons']['create_new']['more_node_buttons_sacn'] = array(
+        '#type' => 'select',
+        '#title' => t('Save and create new button'),
+        '#description' => $description_sacn,
+        '#options' => _more_node_buttons_save_and_options(),
+        '#default_value' => variable_get('more_node_buttons_sacn_'. $type, 0),
+      );
+      // Provide the "Create new" tab option.
+      $form['node_buttons']['create_new']['more_node_buttons_tabcn'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Create new tab'),
+        '#description' => t('Provide an "Create new" tab in addition to the "!edit" tab.', array('!edit' => t('Edit'))),
+        '#default_value' => variable_get('more_node_buttons_tabcn_'. $type, 0),
+      );
+
+      // Use an own submit callback to save the settings
+      // on the add/edit content type forms.
+      $form['#submit'][] = 'more_node_buttons_admin_form_submit';
+      break;
+
+    case 'node_type_delete_confirm':
+      // Use an own submit callback to delete more node buttons
+      // content type system variables if content types will be deleted.
+      $form['#submit'][] = 'more_node_buttons_delete_confirm_submit';
+      break;
+
+    case $node_type. '_node_form':
+      // It makes no sense to use the Mnb module with the content type panel.
+      if ($node_type == 'panel') {
+        return;
+      }
+
+      $mnb_values = more_node_buttons_get_values();
+      $destination = _more_node_buttons_get_destination();
+
+      $settings = array();
+      $settings['cancel'] = variable_get('more_node_buttons_cancel_'. $node_type, 0);
+      $settings['sac'] = variable_get('more_node_buttons_sac_'. $node_type, 0);
+      $settings['sacn'] = variable_get('more_node_buttons_sacn_'. $node_type, 0);
+      //$settings['tabcn'] = variable_get('more_node_buttons_tabcn_'. $node_type, 0);
+
+      // The "Save and continue" form element.
+      if ($settings['sac'] > 0) {
+        if ($settings['sac'] == 1) {
+          $weight_sac = $form['buttons']['submit']['#weight'] - 0.025;
+        }
+        if ($settings['sac'] == 2) {
+          $weight_sac = $form['buttons']['submit']['#weight'] - 0.050;
+        }
+        if ($settings['sac'] == 3) {
+          $weight_sac = $form['buttons']['submit']['#weight'] + 1.025;
+        }
+        if ($settings['sac'] == 4) {
+          $weight_sac = $form['buttons']['submit']['#weight'] + 1.050;
+        }
+        // Define the "Save and continue" form element.
+        $form['buttons']['sac'] = array(
+          '#type' => 'submit',
+          '#value' => t('@sac-value', array('@sac-value' => t($mnb_values['sac']))),
+          '#weight' => $weight_sac,
+          '#validate' => array('more_node_buttons_changed_validate'),
+          '#submit' => array('node_form_submit', 'more_node_buttons_sac_submit'),
+        );
+      }
+
+      // The "Save and create new" form element.
+     
+      // Call edit form from admin/content/node is no needed this button.
+      if ($settings['sacn'] > 0 && $destination['destination'] != 'admin/content/node') {
+        if ($settings['sacn'] == 1) {
+          $weight_sacn = $form['buttons']['submit']['#weight'] - 0.025;
+        }
+        if ($settings['sacn'] == 2) {
+          $weight_sacn = $form['buttons']['submit']['#weight'] - 0.050;
+        }
+        if ($settings['sacn'] == 3) {
+          $weight_sacn = $form['buttons']['submit']['#weight'] + 1.025;
+        }
+        if ($settings['sacn'] == 4) {
+          $weight_sacn = $form['buttons']['submit']['#weight'] + 1.050;
+        }
+        // Define the "Save and create new" form element.
+        $form['buttons']['sacn'] = array(
+          '#type' => 'submit',
+          '#value' => t('@sacn-value', array('@sacn-value' => t($mnb_values['sacn']))),
+          '#weight' => $weight_sacn,
+          '#validate' => array('more_node_buttons_changed_validate'),
+          '#submit' => array('node_form_submit', 'more_node_buttons_sacn_submit'),
+        );
+      }
+
+      // Extra validation for the standard buttons.
+      // Without this break the normal form handling.
+      // @see more_node_buttons_cancel_validate() and more_node_buttons_changed_submit()
+      // Call edit form from admin/content/node is no needed this callbacks.
+      if ($settings['sac'] > 0 || ($settings['sacn'] > 0 && $destination['destination'] != 'admin/content/node')) {
+        $form['buttons']['preview']['#validate'][] = 'more_node_buttons_changed_validate';
+        $form['buttons']['submit']['#validate'][] = 'more_node_buttons_changed_validate';
+        $form['buttons']['delete']['#validate'][] = 'more_node_buttons_changed_validate';
+        // Corresponding submit callbacks.
+        $form['buttons']['preview']['#submit'][] = 'more_node_buttons_changed_submit';
+        $form['buttons']['submit']['#submit'][] = 'more_node_buttons_changed_submit';
+      }
+
+      // The "Cancel" form element.
+      if ($settings['cancel'] > 0) {
+        if ($settings['cancel'] == 1) {
+          $weight_cancel = $form['buttons']['submit']['#weight'] - 1;
+        }
+        elseif ($settings['cancel'] == 2) {
+          $weight_cancel = 16;
+        }
+
+        $form['referer'] = array(
+          '#type' => 'value',
+          '#value' => url($_SERVER["HTTP_REFERER"]),
+        );
+
+        // Define the "Cancel" form element.
+        $form['buttons']['cancel'] = array(
+          '#type' => 'submit',
+          '#value' => t('@cancel-value', array('@cancel-value' => t($mnb_values['cancel']))),
+          '#weight' => $weight_cancel,
+          '#validate' => array('more_node_buttons_cancel_validate'),
+        );
+      }
+
+      // OG compatibility.
+      // Provide the group ID.
+      // Add an new group article.
+      $gids = $_GET['gids'];
+      if (isset($gids)) {
+        $form['#mnb']['og']['group_id'] = (int)$gids[0];
+      }
+      // Edit an group article.
+      $og_context = module_invoke('og', 'get_group_context');
+      if (isset($og_context->nid)) {
+        $form['#mnb']['og']['group_id'] = $og_context->nid;
+      }
+      break;
+  }
+}
+
+/**
+ * Implementation of hook_form_validate().
+ *
+ * Handle the "Cancel" button validation.
+ */
+function more_node_buttons_cancel_validate($form, &$form_state) {
+  // This is the cancel action. No validation required.
+  more_node_buttons_cancel_action($form, $form_state);
+}
+ 
+/**
+ * Implementation of hook_form_validate().
+ *
+ * Skip the function node_last_changed().
+ */
+function more_node_buttons_changed_validate($form, &$form_state) {
+  $form['changed']['#default_value'] = 0;
+}
+
+/**
+ * Implementation of hook_form_submit().
+ *
+ * Handle different submit actions and make different redirects.
+ *   - "Preview"
+ *   - "Save"
+ *   - "Delete"
+ *     Check has deleted node group context; redirect to the group page.
+ */
+function more_node_buttons_changed_submit($form, &$form_state) {
+  $redirect = '<front>';
+
+  if ($form_state['clicked_button']['#id'] == 'edit-preview') {
+    $form_state['redirect'] = FALSE;
+  }
+  if ($form_state['clicked_button']['#id'] == 'edit-submit') {
+    $redirect = 'node/'. $form_state['nid'];
+    drupal_goto($redirect);
+  }
+  if ($form_state['clicked_button']['#id'] == 'edit-delete') {
+    // OG compatibility.
+    // Has node group context define the redirect to the group page.
+    if ($form['#mnb']['og']['group_id']) {
+      $redirect = 'node/'. $form['#mnb']['og']['group_id'];
+    }
+    $form_state['redirect'] = $redirect;
+  }
+}
+
+/**
+ * The "Cancel" button action.
+ *
+ * Handle different submit actions and make different redirects.
+ *
+ * @see more_node_buttons_cancel_validate()
+ */
+function more_node_buttons_cancel_action($form, &$form_state) {
+  // Hide the error messages.
+  drupal_get_messages('error');
+
+  $redirect = '<front>';
+  $query = NULL;
+  $referer_redirect = variable_get('more_node_buttons_cancel_referer_redirect_'. $form['#node']->type, 0);
+
+  if (arg(0) === 'node' && arg(1) === 'add') {
+    // Limitation:
+    // Exist only one content type this redirect does not work.
+    $redirect = 'node/add';
+  }
+  if (arg(0) === 'node' && is_numeric(arg(1)) && arg(2) === 'edit') {
+    $redirect = 'node/'. arg(1);
+  }
+
+  if ($form['referer']['#value'] && $referer_redirect == TRUE) {
+    $redirect = $form['referer']['#value'];
+  }
+
+  // OG compatibility.
+  // Has node group context redirect to the group page.
+  // Handle the situation when creating a new node with group context.
+  if ($form['#mnb']['og']['group_id'] && !isset($form['#node']->nid)) {
+    $redirect = 'node/'. $form['#mnb']['og']['group_id'];
+  }
+
+  drupal_goto($redirect, $query);
+}
+
+/**
+ * Implementation of hook_form_submit().
+ *
+ * Handle the "Save and continue" button action.
+ */
+function more_node_buttons_sac_submit($form, &$form_state) {
+  $destination = _more_node_buttons_get_destination();
+
+  $form_state['rebuild'] = TRUE;
+  $form_state['redirect'] = FALSE;
+
+  // Is meant edit nodes from content management page.
+  if ($destination['destination'] != 'admin/content/node') {
+    drupal_get_messages('error');
+    drupal_goto('node/'. $form_state['nid'] .'/edit');
+  }
+}
+
+/**
+ * Implementation of hook_form_submit().
+ *
+ * Handle the "Save and create new" button action.
+ */
+function more_node_buttons_sacn_submit($form, &$form_state) {
+  $type = str_replace('_', '-', $form['type']['#value']);
+  $redirect = 'node/add/'. $type;
+  $query = NULL;
+
+  if ($form['#node']->nid) {
+    $query = 'referrer=node/'. $form['#node']->nid;
+  }
+
+  // OG compatibility.
+  // Has node group context define an query to redirect to the group page.
+  if ($form['#mnb']['og']['group_id']) {
+    $query = urldecode('gids[]='. $form['#mnb']['og']['group_id']);
+    $query .= '&destination=node/'. $form['#node']->nid;
+  }
+
+  drupal_goto($redirect, $query);
+}
+
+/**
+ * Implementation of hook_form_submit().
+ *
+ * Save options from "Add content type" form and administer nodetype form.
+ */
+function more_node_buttons_admin_form_submit($form, &$form_state) {
+  // Handle button management on "Add content type" page.
+  // Delete dummy content type system variable
+  // and set the right content type system variable.
+  foreach ($form_state['values'] as $key => $value) {
+    if ($key == 'type') {
+      $type = $value;
+    }
+    if (preg_match("/^more_node_buttons_type_dummy/", $key)) {
+      // Insert right content type.
+      $new_type = preg_replace("/more_node_buttons_type_dummy/", $type, $key);
+      $form_state['values'][$new_type] = $value;
+      // Delete dummy content type.
+      unset($form_state['values'][$key]);
+    }
+  }
+}
+
+/**
+ * Implementation of hook_form_submit().
+ *
+ * Delete more node buttons content type system variables if
+ * content types will be deleted.
+ */
+function more_node_buttons_delete_confirm_submit($form, &$form_state) {
+  foreach ($form_state['args'] as $type) {
+    variable_del('more_node_buttons_cancel_'. $type->type);
+    variable_del('more_node_buttons_sac_'. $type->type);
+    variable_del('more_node_buttons_sacn_'. $type->type);
+  }
+}
+
+/**
+ * Get all More node buttons mappings.
+ *
+ * @see more_node_buttons_admin()
+ *
+ * @return array
+ *   The array is keyed with the node types and contains the node type name
+ *   and the Mnb mappings.
+ *   Return is secure.
+ */
+function more_node_buttons_get_mappings() {
+  $mappings = array();
+
+  $types = node_get_types('names');
+  foreach ($types as $type => $name) {
+    $mappings[check_plain($type)] = array(
+      'name' => check_plain($name),
+      'cancel' => variable_get('more_node_buttons_cancel_'. $type, 0),
+      'sac' => variable_get('more_node_buttons_sac_'. $type, 0),
+      'sacn' => variable_get('more_node_buttons_sacn_'. $type, 0),
+      'tabcn' => variable_get('more_node_buttons_tabcn_'. $type, 0),
+    );
+  }
+
+  return $mappings;
+}
+
+/**
+ * Get all button and tab values or an single value.
+ *
+ * Note
+ * The returned values are not sanitized!
+ *
+ * @param string $param
+ *   Optional string to get a single value.
+ *   Possible values:
+ *    - cancel
+ *    - sac
+ *    - sacn
+ *    - tabcn
+ * @return array
+ *   Array: key | value
+ *   - cancel | "Cancel" button
+ *   - sac    | "Save and continue" button
+ *   - sacn   | "Save and create new" button
+ *   - tabcn  | "Create new" tab
+ */
+function more_node_buttons_get_values($param = NULL) {
+  $mnb_values = variable_get('more_node_buttons_values', array());
+
+  if (!isset($param)) {
+    return $mnb_values;
+  }
+  else {
+    return array($param => $mnb_values[$param]);
+  }
+}
+
+/**
+ * Provide the "Save and ..." options.
+ *
+ * @return array
+ */
+function _more_node_buttons_save_and_options() {
+  return array(
+    0 => t('None'),
+    1 => t('Left of Save'),
+    2 => t('Left + of Save'),
+    3 => t('Right of Save'),
+    4 => t('Right + of Save'),
+  );
+}
+
+/**
+ * Get a destination.
+ *
+ * @return array
+ */
+function _more_node_buttons_get_destination() {
+  $data = array();
+
+  $chunk = urldecode(drupal_get_destination());
+  $parts = explode("=", $chunk, 2);
+
+  list($k, $v) = $parts;
+  $data[$k] = check_plain($v);
+
+  return $data;
+}
+
+/**
+ * Get URI parameter.
+ *
+ * @param string $str
+ * @return array
+ */
+function _more_node_buttons_get_params($str) {
+  $chunks = explode("?", $str);
+  $params = explode("&", $chunks[1]);
+
+  $data = array();
+  foreach ($params as $chunk) {
+    $parts = explode("=", $chunk, 2);
+    if (count($parts) == 2) {
+      list($k, $v) = $parts;
+      $data[$k] = check_plain(urldecode($v));
+    }
+  }
+
+  return $data;
+}

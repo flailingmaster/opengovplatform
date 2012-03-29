@@ -1,0 +1,131 @@
+<?php
+function cms_themes_file_uploader_form_theme_file_uploader_node_form_alter(&$form, &$form_state)
+{
+	$form['#after_build'][] = 'cms_themes_file_uploader_change_form';
+	$form['#submit']['themes']='cms_themes_file_uploader_handle_submit';
+	//var_dump($form);
+	
+}
+
+function cms_themes_file_uploader_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL)
+{
+	$theme_file_path=file_directory_path().'/themes/';
+     switch($op)
+     {
+       case 'delete':
+             if($node->type=='theme_file_uploader')
+             {
+                 $title=$node->title;
+				 $theme_type = $node->field_theme_type['0']['value']==1?'color':'contrast';
+                 $theme_name=$node->field_theme_list_select['0']['value'];
+                 if($theme_type=='color')
+                 $dirPath=$theme_file_path.$theme_name.'/css/color/'.$title;  
+                 else
+                 $dirPath=$theme_file_path.$theme_name.'/css/contrast/'.$title;  
+                 deleteDir($dirPath);    
+                
+                 /*if($theme_type=='color')
+                 $dirPath='sites/all/themes/'.$theme_name.'/images/color/'.$title;  
+                 else
+                 $dirPath='sites/all/themes/'.$theme_name.'/images/contrast/'.$title;  
+ 		   deleteDir($dirPath); */
+
+             }
+             break;
+     }
+}
+
+function cms_themes_file_uploader_change_form($form,$form_state)
+{
+	unset($form[body_field]);
+	unset($form['menu']);
+	unset($form['path']);
+	$form['#validate'][]='cms_themes_file_uploader_form_validate';
+	return($form);	
+}
+function cms_themes_file_uploader_form_validate($form,$form_state)
+{
+	$title=$form_state['values']['title'];
+	$theme=$form_state['values']['field_theme_list_select'][0]['value'];
+	$theme_type=$form_state['values']['field_theme_type']['0']['value'];
+	$title= trim($title);
+	$nid=$form_state['values']['nid'];
+	$query=db_query('select title  from node,content_type_theme_file_uploader where node.title=\''.$title.'\' and content_type_theme_file_uploader.field_theme_list_select_value=\''.$theme.'\' and node.nid=content_type_theme_file_uploader.nid and node.nid<>\''.$nid.'\'');
+	if($result=db_fetch_object($query))
+	{
+		form_set_error('','The css file with this title already exists. Please give a different title.');
+		return false;
+	}
+	return true;
+}
+function cms_themes_file_uploader_handle_submit($form,&$form_state)
+{
+	$css_file_name = $form_state['values']['field_theme_file']['0']['filename'];
+	$css_file_path = $form_state['values']['field_theme_file']['0']['filepath'];
+	$css_file_fid = $form_state['values']['field_theme_file']['0']['fid'];
+	$title = $form_state['values']['title'];
+	$theme_type = $form_state['values']['field_theme_type']['0']['value']==1?'color':'contrast';
+	$theme_name = $form_state['values']['field_theme_list_select'][0]['value'];
+	$theme_file_path=file_directory_path().'/themes/';
+    if($theme_type == 'color')
+		$css_new_path = $theme_file_path.$theme_name.'/css/color/'.$title.'/'.$title.'.css';
+	else
+		$css_new_path =$theme_file_path.$theme_name.'/css/contrast/'.$title.'/'.$title.'.css';
+	cms_themes_file_uploader_create_folder($css_new_path);
+	copy($css_file_path,$css_new_path);
+	$i=0;
+	while($image=$form_state['values']['field_theme_images'][$i])
+	{
+		
+		$image_file_name = $image['filename'];
+		$image_path = $image['filepath'];
+		$theme_file_path=file_directory_path().'/themes/';
+		if($image_path)
+		{
+			if($theme_type == 'color')
+				$image_new_path=$theme_file_path.$theme_name.'/css/color/'.$title.'/images/'.$image_file_name;
+			else
+				$image_new_path=$theme_file_path.$theme_name.'/css/contrast/'.$title.'/images/'.$image_file_name;
+			cms_themes_file_uploader_create_folder($image_new_path);
+			copy($image_path,$image_new_path);
+		}
+		$i++;
+	}
+		$logo_file_name = $form_state['values']['field_theme_logo_image']['0']['filename'];
+		$logo_ext = explode('.',$logo_file_name);
+		$logo_ext=$logo_ext[count($logo_ext)-1];
+		$logo_file_path = $form_state['values']['field_theme_logo_image']['0']['filepath'];
+          if($theme_type == 'color')
+	{  $image_new_path=$theme_file_path.$theme_name.'/css/color/'.$title.'/'.$title.'.'.$logo_ext;}
+         else
+ 	{  $image_new_path=$theme_file_path.$theme_name.'/css/contrast/'.$title.'/'.$title.'.'.$logo_ext;}
+
+		copy($logo_file_path,$image_new_path);
+
+	
+	
+}
+function cms_themes_file_uploader_create_folder($path)
+{
+	$new_dir_path = substr($path, 0, strrpos($path, '/'));
+	if(!(strrpos($new_dir_path, '/')===false))
+		cms_themes_file_uploader_create_folder($new_dir_path);
+	file_check_directory($new_dir_path, $mode = FILE_CREATE_DIRECTORY);
+}
+function deleteDir($dirPath) {
+    if (! is_dir($dirPath)) {
+        throw new InvalidArgumentException('$dirPath must be a directory');
+    }
+    if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+        $dirPath .= '/';
+    }
+    $files = glob($dirPath . '*', GLOB_MARK);
+    foreach ($files as $file) {
+        if (is_dir($file)) {
+            deleteDir($file);
+        } else {
+            unlink($file);
+        }
+    }
+    rmdir($dirPath);
+}

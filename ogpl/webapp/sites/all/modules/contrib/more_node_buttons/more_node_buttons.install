@@ -1,0 +1,14 @@
+<?php
+// $Id: more_node_buttons.install,v 1.1.4.9 2010/11/04 15:08:23 quiptime Exp $
+
+/**
+ * @file
+ * Install, update and uninstall functions for the more_node_buttons module.
+ */
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function more_node_buttons_uninstall() {
+  db_query("DELETE FROM {variable} WHERE name LIKE 'more_node_buttons\_%'");
+}

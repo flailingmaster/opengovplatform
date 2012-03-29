@@ -1,0 +1,7 @@
+core = "6.x"
+dependencies[] = "tw"
+description = "assigneewise feedback listing for urm"
+features[views][] = "ownerwise_feedback_listing"
+features[views_api][] = "api:2"
+name = "assigneewise_feedback_listing_urm"
+package = "Features"
