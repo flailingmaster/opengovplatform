@@ -1144,6 +1144,7 @@ function ogpl_metadata_template_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'content_extra_weights_dataset';
   $strongarm->value = array(
+    'detailed_question' => '10',
     'title' => '0',
     'revision_information' => '-2',
     'author' => '-1',
@@ -1153,8 +1154,6 @@ function ogpl_metadata_template_strongarm() {
     'path' => '11',
     'attachments' => '12',
     'workflow' => '-3',
-    'print' => '30',
-    'nodewords' => '10',
   );
   $export['content_extra_weights_dataset'] = $strongarm;
 
