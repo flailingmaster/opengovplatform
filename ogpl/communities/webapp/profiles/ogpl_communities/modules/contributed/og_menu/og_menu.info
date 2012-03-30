@@ -1,0 +1,13 @@
+; $Id: og_menu.info,v 1.3 2010/07/26 10:45:03 jide Exp $
+name = OG Menu
+description = "Allow group creators and site admins to edit their own group menu."
+dependencies[] = menu
+dependencies[] = og
+package = "Organic groups"
+core = 6.x
+; Information added by drupal.org packaging script on 2010-10-21
+version = "6.x-2.4"
+core = "6.x"
+project = "og_menu"
+datestamp = "1287680787"
+

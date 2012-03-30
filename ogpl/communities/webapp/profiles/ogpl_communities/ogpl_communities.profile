@@ -17,7 +17,7 @@ function ogpl_communities_profile_modules() {
         'search', 'tracker', 'php', 'path','contact','forum',
 
         //Other contrib modules
-        'conditional_styles','features','pathauto','revisioning', 'skinr','token',
+        'conditional_styles','features','pathauto','libraries','blockify','jquery_update','superfish','revisioning', 'skinr','token',
         //Views
         'views','views_bulk_operations', 'views_customfield','views_ui',
         // Ctools

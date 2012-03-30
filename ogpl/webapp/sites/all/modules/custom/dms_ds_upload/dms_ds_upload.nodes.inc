@@ -72,6 +72,13 @@ function dms_ds_upload_create_node($data = array(), $fields = array()) {
   $type = node_get_types('type', $node->type);
   node_object_prepare($node);
   $node->uid = $user->uid;
+
+  //ensure node->language is filled, same as manual node creation.
+  //if left empty, Pathauto will create duplicated alias entries.
+  if (!isset($node->language) && $language = language_default()) {
+    $node->language = $language->language;
+  }
+
   //commented out. let us use default publishing status
   //$node->status = 0;
 

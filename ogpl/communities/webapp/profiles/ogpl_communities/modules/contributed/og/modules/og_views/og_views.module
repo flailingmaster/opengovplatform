@@ -31,7 +31,7 @@ function og_views_menu() {
 // An menu access callback.
 function og_menu_access_picture($gid) {
   $view = views_get_view('og_members_faces');
-  // Not working properly. See  http://drupal.org/node/345144.
+  // Not working properly. See http://drupal.org/node/345144.
   return og_is_picture() && og_is_group_member($gid) && !$view->disabled;
 }
 
@@ -72,9 +72,10 @@ function og_views_feed($node) {
  */
 function og_views_block($op = 'list', $delta = 0, $edit = array()) {
   if ($op == 'list') {
-    $blocks[0]['info'] = t('Group search');
-    $blocks[0]['cache'] = BLOCK_NO_CACHE;
-
+    if (module_exists('search')) {
+      $blocks[0]['info'] = t('Group search');
+      $blocks[0]['cache'] = BLOCK_NO_CACHE;
+    }
     $blocks[1]['info'] = t('Group notifications (Views enhanced)');
     $blocks[1]['cache'] = BLOCK_NO_CACHE;
     return $blocks;
@@ -136,7 +137,7 @@ function og_views_block_search() {
 function og_views_block_search_form($groupnode) {
   // Render our display programmatically after adding an argument. Take that!
   $view = views_get_view('og_search');
-  $view->set_display('default');
+  $view->set_display('page_1');
   $view->set_arguments(array($groupnode->nid));
   $block = $view->display_handler->view_special_blocks('-exp');
   return $block['content'];
@@ -199,6 +200,9 @@ function og_views_form_views_exposed_form_alter(&$form, $form_state) {
     // Redirect to the Views page.
     $form['#action'] = url('og/search/' . $node->nid);
   }
+  if ($form_state['view']->name == variable_get('og_home_page_view', 'og_ghp_ron')) {
+    $form['#action'] = $_SERVER['REQUEST_URI'];
+  }
 }
 
 /**
@@ -206,15 +210,16 @@ function og_views_form_views_exposed_form_alter(&$form, $form_state) {
  */
 function og_views_view_group($node, $teaser, $page) {
   if ($name = variable_get('og_home_page_view', 'og_ghp_ron')) {
-    // There is a view defiened to act as the group's home page.
+    // There is a view defined to act as the group's home page.
     $view = views_get_view($name);
     if (!$view) {
       drupal_set_message(t('The View %name was not found. Check your variables table or settings.php.', array('%name' => $name)), 'error');
     }
     else {
-      $built = $view->preview('default', array($node->nid));
+      if ($view->access('default')) {
+        $built = $view->preview('default', array($node->nid));
+      }
     }
-
     // Views will set either total_rows or num_rows depending on whether
     // View has a pager, or might show an empty text.
     if (!empty($view->total_rows) || !empty($view->num_rows) || !empty($view->page_empty) || $view->display_handler->get_option('empty')) {

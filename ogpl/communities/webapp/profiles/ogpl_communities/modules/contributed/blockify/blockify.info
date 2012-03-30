@@ -1,0 +1,10 @@
+name = Blockify
+description = Exposes a number of core Drupal elements as blocks.
+core = 6.x
+
+; Information added by drupal.org packaging script on 2011-03-09
+version = "6.x-1.0"
+core = "6.x"
+project = "blockify"
+datestamp = "1299703566"
+
