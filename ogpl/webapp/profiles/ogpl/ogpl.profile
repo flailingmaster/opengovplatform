@@ -1,360 +1,203 @@
 <?php
-
-// Define the default WYSIWYG editor
-define('OGPL_EDITOR', 'tinymce');
-
-// Define the default theme
-define('DMS_DEFAULT_THEME', 'dms');
+// $Id$
 
 /**
- * Return an array of the modules to be enabled when this profile is installed.
- *
- * To save time during installation, only enable module here that are either
- * required by Features or not included in any Commons features
- *
- * @return
- *   An array of modules to enable.
+ * @file
+ * An example installation profile that uses a database dump to recreate a
+ * Drupal site rather than API function calls of a traditional installation
+ * profile.
  */
 
+/**
+ * Name of profile; visible in profile selection form.
+ */
+define('OGPL_PROFILE_NAME', 'ogpl');
+
+/**
+ * Description of profile; visible in profile selection form.
+ */
+define('OGPL_PROFILE_DESCRIPTION', 'This is your ogpl that you built from a base distribution at one time.');
+
+/**
+ * Implementation of hook_profile_modules().
+ */
 function ogpl_profile_modules() {
-    $modules = array(
-        'block',
-        'filter',
-        'node',
-        'system',
-        'user',
-
-        'color',
-        'comment',
-        'dblog',
-        'help',
-        'locale',
-        'menu',
-        'path',
-        'search',
-        'statistics',
-        'syslog',
-        'taxonomy',
-        'trigger',
-        'update',
-        'upload',
-
-        'administerusersbyrole',
-        'admin_menu',
-        'admin_theme',
-        'advanced_help',
-        'agency_wise_metrics',
-        'aggregator',
-        'ahah_response',
-        'apachesolr',
-        'apachesolr_autocomplete',
-        'apachesolr_exclude',
-        'apachesolr_nodeaccess',
-        'apachesolr_nodereference',
-        'apachesolr_search',
-        'assigneewise_feedback_listing_urm',
-        'autologout',
-        'auto_nodetitle',
-        'better_formats',
-        'blockify',
-        'bulk_export',
-	'calendar',
-        'calendar_ical',
-        'calendar_multiday',
-        'captcha',
-        'catalog_home_tabs',
-        'cckformsettings',
-        'clientside_validation',
-        'clientside_validation_fapi',
-        'clientside_validation_form',
-        'cms_apachesolr_config',
-        'cms_customizations',
-        'cms_notify_email',
-        'cms_themes_file_uploader',
-        'cms_views',
-        'cms_workflow_alter',
-        'cms_workflow_summary',
-        'commentformsettings',
-        'content',
-        'content_copy',
-        'content_permissions',
-        'content_profile',
-        'content_profile_registration',
-        'content_profile_tokens',
-        'content_taxonomy',
-        'content_taxonomy_options',
-        'ctools',
-	'context',
-        'context_layouts',
-        'context_ui',
-	'conditional_fields',
-        'conditional_styles',
-        'date',
-        'date_api',
-        'date_locale',
-        'date_php4',
-        'date_popup',
-        'date_repeat',
-        'date_timezone',
-        'date_tools',
-        'devel',
-        'devel_node_access',
-	/*'devel_themer',
-        'dms_customizations',
-        'dms_ds_upload',
-        'dms_save_settings',*/
-        'download_by_category_organisation',
-        'download_count',
-        'download_count_statistics',
-        'download_file',
-        'dynamic_views_for_the_what_s_new_page',
-        'email',
-        'email_registration',
-        'extlink',
-        'fapi_validation',
-        'faq',
-        'featured_gallery',
-        'features',
-        'feedback_category',
-        'feedback_category_listing_urm',
-        'fe_block',
-        'fe_taxonomy',
-        'fieldgroup',
-        'filefield',
-	'fivestar',
-	'libraries',
-        'flexifield',
-        'flexifield_displaycontexts',
-        'flexifield_fieldgroup',
-        'flexifield_filefield',
-        'flowplayer',
-        'flowplayer3',
-        /*'mp3player',
-        'filefieldmp3player',*/
-	'footermenus',
-        'front_end_major_events_tab',
-        'front_footer_menu',
-        'front_page',
-        'fusioncharts',
-        'hacked',
-        'home_page_panels',
-        'ie6update',
-        'imageapi',
-        'imageapi_gd',
-        'imagecache',
-        'imagecache_ui',
-        'imagefield',
-        'image_captcha',
-        'imce',
-        'imce_wysiwyg',
-        'jammer',
-        'jammer_generic',
-        'jcalendar',
-        'jquery_plugin',
-        'jquery_ui',
-        'jquery_update',
-        'libraries',
-        'link',
-        'list_of_datasets',
-        'location',
-        'logintoboggan',
-        'logintoboggan_rules',
-        'login_destination',
-        'main_menus',
-        'markup',
-        'mass_change',
-        'menu_perms',
-        'menu_per_role',
-        'metrics_visitor_stats_reports',
-        'module_grants',
-        'month_wise_metrics',
-        'month_wise_metrics_per_year',
-        'more_node_buttons',
-        'multistep',
-        'nice_menus',
-        'nodeaccess_userreference',
-        'nodeblock',
-        'nodeformsettings',
-        'nodereference',
-        'nodewords',
-        'nodewords_basic',
-        'nodewords_extra',
-        'node_expiry_alert',
-        'node_tools',
-        'number',
-        'number_of_views_report',
-        'open_data_site_view_and_content_types',
-        'optionwidgets',
-        'ownerwise_feedback_stat',
-        'panels',
-        'panels_ipe',
-        'panels_mini',
-        'password_policy',
-        'pathauto',
-        'pet',
-        'php',
-        'pngfix',
-        'poormanscron',
-        'print_mail',
-        'print_pdf',
-        'quicktabs',
-        'rate',
-        'rate_expiration',
-        'rate_slider',
-        'realname',
-        'recaptcha',
-        'recent_ideas_view',
-        'revisioning',
-        'revisioning_scheduler',
-        'role_delegation',
-        'role_theme_switcher',
-        'rotating_panel',
-        'rotating_panel_half',
-        'rss_feed_views',
-        'rules',
-        'rules_admin',
-        'rules_forms',
-        'rules_scheduler',
-        'schema',
-        'search404',
-        'site_map',
-	/*'sitemap_menus',*/
-        'skinr',
-        'strongarm',
-        'stylizer',
-        'suggested_datasets_and_apps',
-        'superfish',
-        'swfobject',
-        'swftools',
-        'text',
-        'textsize',
-        /*'themer',*/
-        'token',
-        'tokenSTARTER',
-        'token_actions',
-        'token_filter',
-        'tw',
-        'tw_import_delimited',
-        'unique_field',
-        'unlimited_css',
-        'uploadfield',
-        'userprotect',
-        'userreference',
-        'user_management',
-        'video',
-        'video_field_for_faq',
-        'views',
-	'reverse_node_reference',
-        'views_block',
-        'views_bulk_operations',
-        'views_customfield',
-        'views_data_export',
-        'views_display_block_path',
-        'views_embed_form',
-        'views_export',
-        'views_filters_autosubmit',
-        'views_for_the_what_s_new_page',
-        'views_fusioncharts',
-        'views_groupby',
-        'views_or',
-        'views_php',
-        'views_slideshow',
-        'views_slideshow_imageflow',
-        'views_slideshow_singleframe',
-        'views_slideshow_thumbnailhover',
-        'views_ui',
-	'better_exposed_filters',
-        'votingapi',
-        'vrm_customization',
-        'vrm_custom_comment',
-        'vrm_feedback_history',
-        'vrm_feedback_reply',
-        'vrm_feedback_type',
-        'vrm_tabs',
-        'vrm_views',
-        'vrm_workflow_states_description',
-        'webform',
-        'web_captcha_alter',
-        'web_catalogs_search',
-        'web_charts_export',
-        'web_contact_owner',
-        'web_embed_code',
-        'web_feed_aggregator',
-        'web_filefield_icons',
-        'web_metrics_report',
-        'web_print',
-        'web_site_config',
-        'web_tellafriend',
-        'web_views_query_alter',
-        'what_s_new',
-        'what_s_new_placeholder_for_pages',
-        'workflow',
-        'workflow_access',
-        'workflow_customizations',
-        'workflow_email_notification',
-        'workflow_extensions',
-        'workflow_node_revisions',
-        'wysiwyg', 
-    );
-    return $modules;
+  // The database dump will take care of enabling the required modules for us.
+  // Return an empty array to just enable the required modules.
+  return array();
 }
 
 /**
- * Return a description of the profile for the initial installation screen.
- *
- * @return
- *   An array with keys 'name' and 'description' describing this profile,
- *   and optional 'language' to override the language selection for
- *   language-specific profiles.
+ * Implementation of hook_profile_details().
  */
 function ogpl_profile_details() {
-  $logo = '<a href="http://someurl.com" target="_blank"><img alt="Open Oovernment Platform" title="Open Oovernment Platform" src="./profiles/ogpl/themes/dms/logo.png"/></a>';
-  $description = st('Select this profile to install the Open Government Platform powering your community website.');
-  $description .= '<br/>' . $logo;
-
   return array(
-    'name' => 'OGPL',
-    'description' => $description,
+    'name' => OGPL_PROFILE_NAME,
+    'description' => OGPL_PROFILE_DESCRIPTION,
   );
 }
+
 /**
- * Return a list of tasks that this profile supports.
- *
- * @return
- *   A keyed array of tasks the profile will perform during
- *   the final stage. The keys of the array will be used internally,
- *   while the values will be displayed to the user in the installer
- *   task list.
+ * Implementation of hook_profile_form_alter().
  */
-function ogpl_profile_task_list() {
-    return array(
-   	'profile-import-table-data' => st('Import profile data') 
-    );
+function ogpl_form_alter(&$form, $form_state, $form_id) {
+  // Add an additional submit handler. 
+  if ($form_id == 'install_configure') {
+    $form['#submit'][] = 'ogpl_form_submit';
+  }
 }
 
-function ogpl_profile_tasks(&$task, $url) {
-    //if ($task == 'profile-import-table-data') {
-	
-	//module_enable($module_list);
-	ogpl_run_sql();
-    //}
+/**
+ * Custom form submit handler for configuration form.
+ *
+ * Drops all data from existing database, imports database dump, and restores
+ * values entered into configuration form.
+ */
+function ogpl_form_submit($form, &$form_state) {
+  // Import database dump file.
+  $ogpl_file = 'profiles/ogpl/ogpl.mysql';
+  $success = import_ogpl($ogpl_file);
+
+  if (!$success) {
+    return;
+  }
+
+  // Now re-set the values they filled in during the previous step.
+  variable_set('site_name', $form_state['values']['site_name']);
+  variable_set('site_mail', $form_state['values']['site_mail']);
+  variable_set('date_default_timezone', $form_state['values']['date_default_timezone']);
+  variable_set('clean_url', $form_state['values']['clean_url']);
+  variable_set('update_status_module', $form_state['values']['update_status_module']);
+
+  // Perform additional clean-up tasks.
+  variable_del('file_directory_temp');
+
+  // Replace their username and password and log them in.
+  $name = $form_state['values']['account']['name'];
+  $pass = $form_state['values']['account']['pass'];
+  $mail = $form_state['values']['account']['mail'];
+  db_query("UPDATE {users} SET name = '%s', pass = MD5('%s'), mail = '%s' WHERE uid = 1", $name, $pass, $mail);
+  user_authenticate(array('name' => $name, 'pass' => $pass));
+
+  // Finally, redirect them to the front page to show off what they've done.
+  drupal_goto('<front>');
 }
 
-function ogpl_run_sql() {
+/// The rest is copy/paste/modify code from demo module. ///
 
-    $current_dir = dirname(__FILE__); 
-    $sql_path = $current_dir.'/sql/';
-    $files = scandir($current_dir.'/sql/');
-    foreach($files as $file)
-    {
-        if ( substr($file, -4) == '.sql') {
-        	$sql = file_get_contents($sql_path.$file);
-		if (0 == strlen(trim($sql))) continue;
-		$queries = explode("\n", $sql);
-		foreach($queries as $query) { 
-			if(trim($query) != '')
-        			db_query($query);
-		}
-	}
+/**
+ * Imports a database dump file.
+ *
+ * @see demo_reset().
+ */
+function import_ogpl($filename) {
+  // Open dump file.
+  if (!file_exists($filename) || !($fp = fopen($filename, 'r'))) {
+    drupal_set_message(t('Unable to open dump file %filename.', array('%filename' => $filename)), 'error');
+    return FALSE;
+  }
+
+  // Drop all existing tables.
+  foreach (ogpl_list_tables() as $table) {
+    db_query("DROP TABLE %s", $table);
+  }
+
+  // Load data from dump file.
+  $success = TRUE;
+  $query = '';
+  $new_line = TRUE;
+
+  while (!feof($fp)) {
+    // Better performance on PHP 5.2.x when leaving out buffer size to
+    // fgets().
+    $data = fgets($fp);
+    if ($data === FALSE) {
+      break;
     }
+    // Skip empty lines (including lines that start with a comment).
+    if ($new_line && ($data == "\n" || !strncmp($data, '--', 2) || !strncmp($data, '#', 1))) {
+      continue;
+    }
+
+    $query .= $data;
+    $len = strlen($data);
+    if ($data[$len - 1] == "\n") {
+      if ($data[$len - 2] == ';') {
+        // Reached the end of a query, now execute it.
+        if (!_db_query($query, FALSE)) {
+          $success = FALSE;
+        }
+        $query = '';
+      }
+      $new_line = TRUE;
+    }
+    else {
+      // Continue adding data from the same line.
+      $new_line = FALSE;
+    }
+  }
+  fclose($fp);
+
+  if (!$success) {
+    drupal_set_message(t('Failed importing database from %filename.', array('%filename' => $filename)), 'error');
+  }
+
+  return $success;
+}
+
+/**
+ * Returns a list of tables in the active database.
+ *
+ * Only returns tables whose prefix matches the configured one (or ones, if
+ * there are multiple).
+ *
+ * @see demo_enum_tables()
+ */
+function ogpl_list_tables() {
+  global $db_prefix;
+
+  $tables = array();
+
+  if (is_array($db_prefix)) {
+    // Create a regular expression for table prefix matching.
+    $rx = '/^' . implode('|', array_filter($db_prefix)) . '/';
+  }
+  else if ($db_prefix != '') {
+    $rx = '/^' . $db_prefix . '/';
+  }
+
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      $result = db_query("SHOW TABLES");
+      break;
+
+    case 'pgsql':
+      $result = db_query("SELECT table_name FROM information_schema.tables WHERE table_schema = '%s'", 'public');
+      break;
+  }
+
+  while ($table = db_fetch_array($result)) {
+    $table = reset($table);
+    if (is_array($db_prefix)) {
+      // Check if table name matches a configured prefix.
+      if (preg_match($rx, $table, $matches)) {
+        $table_prefix = $matches[0];
+        $plain_table = substr($table, strlen($table_prefix));
+        if ($db_prefix[$plain_table] == $table_prefix || $db_prefix['default'] == $table_prefix) {
+          $tables[] = $table;
+        }
+      }
+    }
+    else if ($db_prefix != '') {
+      if (preg_match($rx, $table)) {
+        $tables[] = $table;
+      }
+    }
+    else {
+      $tables[] = $table;
+    }
+  }
+
+  return $tables;
 }
