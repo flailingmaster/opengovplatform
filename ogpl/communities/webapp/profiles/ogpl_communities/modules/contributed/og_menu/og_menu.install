@@ -1,0 +1,49 @@
+<?php
+// $Id: og_menu.install,v 1.2 2010/02/09 12:57:00 jide Exp $
+
+/**
+ * Implementation of hook_schema()
+ */
+function og_menu_schema() {
+  $schema['og_menu'] = array(
+    'fields' => array(
+      'gid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'menu_name' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('gid', 'menu_name'),
+  );
+  return $schema;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function og_menu_install() {
+  drupal_install_schema('og_menu');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function og_menu_uninstall() {
+  drupal_uninstall_schema('og_menu');
+}
+
+/**
+ * Implementation of hook_update_N().
+ */
+function og_menu_update_6200() {
+  drupal_install_schema('og_menu');
+  $result = db_query("SELECT * FROM {og_menu_groups}");
+  while ($menu = db_fetch_array($result)) {
+    db_query("INSERT INTO {og_menu} (gid, menu_name) VALUES (%d, '%s')", $menu['gid'], $menu['mid']);
+  }
+  db_query('DROP TABLE {og_menu_groups}');
+}
