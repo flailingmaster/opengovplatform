@@ -185,6 +185,10 @@ body {
     min-width:150px;
 }
 
+#block-blockify-blockify-logo {
+    margin-top:10px;
+}
+
 #block-blockify-blockify-logo .gutter {
     margin: 0;
     padding: 0;
@@ -199,6 +203,7 @@ ul#superfish-1 {
     text-align:center;
     margin: auto;
     position:relative;
+    height:50px !important;
 }
 
 #block-menu-primary-links, .primary-navigation {
@@ -212,6 +217,19 @@ ul#superfish-1 {
     overflow: visible;
     padding: 0;
     margin: auto;
+}
+
+.primary-navigation div.content {
+    position:relative;
+}
+
+.primary-navigation .inner {
+    margin-right: 0 !important;
+}
+
+ul.primary-navbar {
+    position:absolute !important;
+    right:0 !important;
     background: #214472;
     background: -moz-linear-gradient(left, #214472 0%, #59718e 60%, #214472 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,#214472), color-stop(60%,#59718e), color-stop(100%,#214472)); /* Chrome,Safari4+ */
@@ -223,10 +241,6 @@ ul#superfish-1 {
     -moz-border-radius: 10px 10px 0px 0px;
     -webkit-border-radius: 10px 10px 0px 0px;
     border: 1px transparent solid;
-}
-
-.primary-navigation div.content {
-    position:relative;
 }
 
 #block-menu-primary-links a, .primary-navigation a {
@@ -245,7 +259,7 @@ ul#superfish-1 {
 #block-menu-primary-links ul.menu li, .primary-navigation .sf-menu li {
     font-size:14px !important;
     display:inline;
-    /* height:46px !important; */
+     height:46px !important; 
    /* float:left; */
     padding: 0 !important;
     margin: 0 15px !important;
@@ -319,7 +333,7 @@ ul.primary-navbar li ul li.sf-depth-2, ul.primary-navbar li ul li.sf-depth-2:hov
     padding-right:15px;
     background: none !important;
     height:30px !important;
-   /* float:left; */
+    float:left; 
     border: 0 !important;
     overflow: visible;
     text-align:left;
@@ -667,8 +681,7 @@ h1.gutter {
 }
 
 .content-inner {
-    margin-top:15px;
-	
+    margin-top:15px;	
 }
 
 .content-bottom {
@@ -918,7 +931,6 @@ h2.block-title {
   list-style: none;
   margin: 0 10px;
   padding: 0;
-  
 }
 
 #content-tabs ul.primary li a, .content-tabs ul.menu li a ,#block-menu-menu-user-management-menu ul li a{
@@ -1371,8 +1383,6 @@ div.views-field-nid {
     display:table-cell !important;
     text-align: center;
 }
-
-
 
 /* Dataset Administration Buttons
 /-------------------------------------------------------------- */
