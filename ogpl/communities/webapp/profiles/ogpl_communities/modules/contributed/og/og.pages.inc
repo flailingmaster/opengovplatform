@@ -297,7 +297,7 @@ function og_subscribe($node, $uid = NULL) {
   }
   // User is already a member of this group, redirect to group homepage.
   else if (isset($account->og_groups[$node->nid])) {
-    drupal_set_message(t('@user is already a member the group @group.', array('@user' => $account->name, '@group' => $node->title)));
+    drupal_set_message(t('@user is already a member of the group @group.', array('@user' => $account->name, '@group' => $node->title)));
     drupal_goto('node/'. $node->nid);
   }
   else {
@@ -317,17 +317,20 @@ function og_confirm_subscribe($form_state, $gid, $node, $account) {
       '#title' => t('Additional details'),
       '#description' => t('Add any detail which will help an administrator decide whether to approve or deny your membership request.')
     );
+    $submit_label = t('Request membership');
   }
   else {
     $form['request'] = array(
       '#type' => 'value',
       '#value' => '',
    );
+   $submit_label = t('Join');
  }
+
  return confirm_form($form,
                 t('Are you sure you want to join the group %title?', array('%title' => $node->title)),
                 'node/'. $node->nid, ' ',
-                t('Join'), t('Cancel'));
+                $submit_label, t('Cancel'));
 }
 
 /**
