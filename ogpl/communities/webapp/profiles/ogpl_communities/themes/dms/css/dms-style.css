@@ -364,6 +364,40 @@ ul.primary-navbar li ul li a:hover {
     z-index:1000;
     position:relative;
 }
+/* Community Menus
+-------------------------------------------------------------- */
+div.community-menu {
+    position:absolute;
+    top:109px;
+    right:0;
+}
+
+div.community-menu div.inner {
+    margin:0;
+}
+
+div.community-menu ul.menu {
+    float:right;
+    height:50px;
+    line-height:50px;
+    font-weight:bolder;
+    font-size:115%;
+    color:#fff;
+    background:#3C61AD;
+    border-radius:0 0 10px 10px;
+    -moz-border-radius: 0 0 10px 10px;
+    
+}
+
+div.community-menu ul.menu li {
+    display:block;
+}
+
+div.community-menu ul.menu li a {
+    color:#ccc;
+    display:block;
+    padding:0.75em 1em;
+}
 
 /* Secondary menu
 -------------------------------------------------------------- */
