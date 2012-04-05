@@ -404,7 +404,7 @@ div.community-menu ul.menu li {
 div.community-menu ul.menu li a {
     color:#21759B;
     display:block;
-    padding:0 1.15em;
+    padding:0 1.15em !important;
     height:50px;
     line-height:50px;
 }
