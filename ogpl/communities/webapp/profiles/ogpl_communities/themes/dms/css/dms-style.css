@@ -368,7 +368,7 @@ ul.primary-navbar li ul li a:hover {
 -------------------------------------------------------------- */
 div.community-menu {
     position:absolute;
-    top:109px;
+    top:110px;
     right:0;
 }
 
@@ -393,7 +393,6 @@ div.community-menu ul.menu {
     border-radius:0 0 10px 10px;
     -moz-border-radius: 0 0 10px 10px;
     list-style:none outside none;
-    
 }
 
 div.community-menu ul.menu li {
