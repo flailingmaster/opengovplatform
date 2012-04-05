@@ -392,11 +392,13 @@ div.community-menu ul.menu {
     background: linear-gradient(top,  #f9d777 0%,#edb831 100%); /* W3C */
     border-radius:0 0 10px 10px;
     -moz-border-radius: 0 0 10px 10px;
+    list-style:none outside none;
     
 }
 
 div.community-menu ul.menu li {
-    display:block;
+    display:inline;
+    float:left;
 }
 
 div.community-menu ul.menu li a {
