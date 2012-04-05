@@ -382,8 +382,14 @@ div.community-menu ul.menu {
     line-height:50px;
     font-weight:bolder;
     font-size:115%;
-    color:#fff;
-    background:#3C61AD;
+    color:#21759B;
+    background: #f9d777; /* Old browsers */
+    background: -moz-linear-gradient(top,  #f9d777 0%, #edb831 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f9d777), color-stop(100%,#edb831)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #f9d777 0%,#edb831 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #f9d777 0%,#edb831 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #f9d777 0%,#edb831 100%); /* IE10+ */
+    background: linear-gradient(top,  #f9d777 0%,#edb831 100%); /* W3C */
     border-radius:0 0 10px 10px;
     -moz-border-radius: 0 0 10px 10px;
     
@@ -394,9 +400,11 @@ div.community-menu ul.menu li {
 }
 
 div.community-menu ul.menu li a {
-    color:#ccc;
+    color:#21759B;
     display:block;
-    padding:0.75em 1em;
+    padding:0 1.15em;
+    height:50px;
+    line-height:50px;
 }
 
 /* Secondary menu
