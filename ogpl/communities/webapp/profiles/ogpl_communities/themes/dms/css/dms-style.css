@@ -874,6 +874,7 @@ h2.title a:active {
 
 /* Links for nodes (taxonomy, commenting, read more, etc) */
 .node ul.links li {
+	padding-left:18px;
 }
 .node ul.links a {
 }
