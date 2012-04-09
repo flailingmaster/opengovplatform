@@ -1836,10 +1836,10 @@ background: url("/dms2/sites/all/themes/seven/images/buttons.png") repeat-x scro
 	font-weight:bold;
 }
 #comment-form #edit-homepage-wrapper {
-    display: none;
+   /* display: none; */
 }
 #comment-form #edit-preview {
-    display: none;
+  /*  display: none; */
 }
 /*css for comment block ends here */
 /*css for URM Admin charts starts here*/
@@ -1966,7 +1966,7 @@ background-color:#FFFFE0 !important;
     padding-left: 200px;
 }
 .print-content .print-feedback{
-    display:none;
+ /*   display:none; */
 }
 /***css for feedbck print link ***/
 .print-feedback{
