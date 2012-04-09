@@ -1264,6 +1264,9 @@ div.comment ul.links a {
   border-bottom: 1px solid #888;
 }
 
+.forum-links li {
+    list-style-type:none;
+}
 
 /* Poll
 /-------------------------------------------------------------- */
@@ -2288,3 +2291,8 @@ div#edit-textsize-display-normal-wrapper label {
 }
 /* end changes for TextSize module admin area css */
 .filefield-file .field-icon-text-css{display:none;}
+
+/* Community Homepage Styles */
+div.view-community-homepage div.item-list li.views-row {
+    list-style-type:none;
+}
