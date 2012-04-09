@@ -1268,6 +1268,11 @@ div.comment ul.links a {
     list-style-type:none;
 }
 
+div.forum-post {
+    margin-bottom:10px;
+    border-bottom:1px solid #ccc;
+}
+
 /* Poll
 /-------------------------------------------------------------- */
 div.poll div.bar {
