@@ -107,6 +107,13 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_anonymous_profile';
+  $strongarm->value = '0';
+  $export['comment_anonymous_profile'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_anonymous_sector';
   $strongarm->value = '0';
   $export['comment_anonymous_sector'] = $strongarm;
@@ -128,9 +135,23 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_anonymous_sub_sector';
+  $strongarm->value = '0';
+  $export['comment_anonymous_sub_sector'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_anonymous_subject_keyword';
   $strongarm->value = 0;
   $export['comment_anonymous_subject_keyword'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_anonymous_target_audience';
+  $strongarm->value = '0';
+  $export['comment_anonymous_target_audience'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -254,6 +275,13 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_controls_profile';
+  $strongarm->value = '3';
+  $export['comment_controls_profile'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_controls_sector';
   $strongarm->value = '3';
   $export['comment_controls_sector'] = $strongarm;
@@ -275,9 +303,23 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_controls_sub_sector';
+  $strongarm->value = '3';
+  $export['comment_controls_sub_sector'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_controls_subject_keyword';
   $strongarm->value = '3';
   $export['comment_controls_subject_keyword'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_controls_target_audience';
+  $strongarm->value = '3';
+  $export['comment_controls_target_audience'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -373,6 +415,13 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_default_mode_profile';
+  $strongarm->value = '4';
+  $export['comment_default_mode_profile'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_sector';
   $strongarm->value = '4';
   $export['comment_default_mode_sector'] = $strongarm;
@@ -394,9 +443,23 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_default_mode_sub_sector';
+  $strongarm->value = '4';
+  $export['comment_default_mode_sub_sector'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_mode_subject_keyword';
   $strongarm->value = '4';
   $export['comment_default_mode_subject_keyword'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_default_mode_target_audience';
+  $strongarm->value = '4';
+  $export['comment_default_mode_target_audience'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -485,6 +548,13 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_default_order_profile';
+  $strongarm->value = '1';
+  $export['comment_default_order_profile'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_order_sector';
   $strongarm->value = '1';
   $export['comment_default_order_sector'] = $strongarm;
@@ -506,9 +576,23 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_default_order_sub_sector';
+  $strongarm->value = '1';
+  $export['comment_default_order_sub_sector'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_order_subject_keyword';
   $strongarm->value = '1';
   $export['comment_default_order_subject_keyword'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_default_order_target_audience';
+  $strongarm->value = '1';
+  $export['comment_default_order_target_audience'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -597,6 +681,13 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_default_per_page_profile';
+  $strongarm->value = '50';
+  $export['comment_default_per_page_profile'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_per_page_sector';
   $strongarm->value = '50';
   $export['comment_default_per_page_sector'] = $strongarm;
@@ -618,9 +709,23 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_default_per_page_sub_sector';
+  $strongarm->value = '50';
+  $export['comment_default_per_page_sub_sector'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_default_per_page_subject_keyword';
   $strongarm->value = '50';
   $export['comment_default_per_page_subject_keyword'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_default_per_page_target_audience';
+  $strongarm->value = '50';
+  $export['comment_default_per_page_target_audience'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -709,6 +814,13 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_form_location_profile';
+  $strongarm->value = '0';
+  $export['comment_form_location_profile'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_form_location_sector';
   $strongarm->value = '0';
   $export['comment_form_location_sector'] = $strongarm;
@@ -730,9 +842,23 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_form_location_sub_sector';
+  $strongarm->value = '0';
+  $export['comment_form_location_sub_sector'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_form_location_subject_keyword';
   $strongarm->value = '0';
   $export['comment_form_location_subject_keyword'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_form_location_target_audience';
+  $strongarm->value = '0';
+  $export['comment_form_location_target_audience'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -849,6 +975,13 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_preview_profile';
+  $strongarm->value = '1';
+  $export['comment_preview_profile'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_preview_sector';
   $strongarm->value = '1';
   $export['comment_preview_sector'] = $strongarm;
@@ -870,9 +1003,30 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_preview_sub_sector';
+  $strongarm->value = '1';
+  $export['comment_preview_sub_sector'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_preview_subject_keyword';
   $strongarm->value = '1';
   $export['comment_preview_subject_keyword'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_preview_target_audience';
+  $strongarm->value = '1';
+  $export['comment_preview_target_audience'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_profile';
+  $strongarm->value = '0';
+  $export['comment_profile'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -894,6 +1048,13 @@ function ogpl_metadata_template_strongarm() {
   $strongarm->name = 'comment_sub_agency';
   $strongarm->value = '2';
   $export['comment_sub_agency'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_sub_sector';
+  $strongarm->value = '0';
+  $export['comment_sub_sector'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -982,6 +1143,13 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_subject_field_profile';
+  $strongarm->value = '1';
+  $export['comment_subject_field_profile'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_subject_field_sector';
   $strongarm->value = '1';
   $export['comment_subject_field_sector'] = $strongarm;
@@ -1003,6 +1171,13 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_subject_field_sub_sector';
+  $strongarm->value = '1';
+  $export['comment_subject_field_sub_sector'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_subject_field_subject_keyword';
   $strongarm->value = '1';
   $export['comment_subject_field_subject_keyword'] = $strongarm;
@@ -1010,9 +1185,23 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'comment_subject_field_target_audience';
+  $strongarm->value = '1';
+  $export['comment_subject_field_target_audience'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_subject_keyword';
   $strongarm->value = '0';
   $export['comment_subject_keyword'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_target_audience';
+  $strongarm->value = '0';
+  $export['comment_target_audience'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -1074,14 +1263,16 @@ function ogpl_metadata_template_strongarm() {
   $strongarm->name = 'content_extra_weights_catalog_type_data_service';
   $strongarm->value = array(
     'title' => '-5',
-    'revision_information' => '20',
-    'author' => '20',
-    'options' => '25',
-    'comment_settings' => '30',
-    'menu' => '-2',
-    'path' => '30',
-    'attachments' => '30',
-    'workflow' => '10',
+    'revision_information' => '-1',
+    'author' => '0',
+    'options' => '1',
+    'comment_settings' => '5',
+    'menu' => '-4',
+    'path' => '3',
+    'attachments' => '2',
+    'workflow' => '-3',
+    'print' => '4',
+    'nodewords' => '-2',
   );
   $export['content_extra_weights_catalog_type_data_service'] = $strongarm;
 
@@ -1109,16 +1300,16 @@ function ogpl_metadata_template_strongarm() {
   $strongarm->name = 'content_extra_weights_catalog_type_document';
   $strongarm->value = array(
     'title' => '-5',
-    'revision_information' => '20',
-    'author' => '20',
-    'options' => '25',
-    'comment_settings' => '30',
-    'menu' => '-2',
-    'path' => '30',
-    'attachments' => '30',
-    'workflow' => '10',
-    'print' => '30',
-    'nodewords' => '10',
+    'revision_information' => '7',
+    'author' => '8',
+    'options' => '9',
+    'comment_settings' => '13',
+    'menu' => '-4',
+    'path' => '12',
+    'attachments' => '11',
+    'workflow' => '1',
+    'print' => '10',
+    'nodewords' => '0',
   );
   $export['content_extra_weights_catalog_type_document'] = $strongarm;
 
@@ -1228,6 +1419,25 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'content_extra_weights_profile';
+  $strongarm->value = array(
+    'title' => '-5',
+    'revision_information' => '2',
+    'author' => '3',
+    'options' => '4',
+    'comment_settings' => '6',
+    'menu' => '0',
+    'path' => '7',
+    'attachments' => '5',
+    'workflow' => '1',
+    'print' => '9',
+    'nodewords' => '8',
+  );
+  $export['content_extra_weights_profile'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'content_extra_weights_sector';
   $strongarm->value = array(
     'title' => '32',
@@ -1275,6 +1485,25 @@ function ogpl_metadata_template_strongarm() {
     'workflow' => '10',
   );
   $export['content_extra_weights_sub_agency'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'content_extra_weights_sub_sector';
+  $strongarm->value = array(
+    'title' => '-5',
+    'revision_information' => '1',
+    'author' => '2',
+    'options' => '3',
+    'comment_settings' => '6',
+    'menu' => '-2',
+    'path' => '7',
+    'attachments' => '4',
+    'workflow' => '-1',
+    'print' => '5',
+    'nodewords' => '0',
+  );
+  $export['content_extra_weights_sub_sector'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -1356,6 +1585,13 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'language_content_type_profile';
+  $strongarm->value = '0';
+  $export['language_content_type_profile'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'language_content_type_sector';
   $strongarm->value = '0';
   $export['language_content_type_sector'] = $strongarm;
@@ -1373,6 +1609,20 @@ function ogpl_metadata_template_strongarm() {
   $strongarm->name = 'language_content_type_sub_agency';
   $strongarm->value = '0';
   $export['language_content_type_sub_agency'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'language_content_type_sub_sector';
+  $strongarm->value = '0';
+  $export['language_content_type_sub_sector'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'language_content_type_target_audience';
+  $strongarm->value = '0';
+  $export['language_content_type_target_audience'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -1494,6 +1744,15 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'node_options_profile';
+  $strongarm->value = array(
+    0 => 'status',
+  );
+  $export['node_options_profile'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'node_options_sector';
   $strongarm->value = array(
     0 => 'status',
@@ -1522,11 +1781,29 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'node_options_sub_sector';
+  $strongarm->value = array(
+    0 => 'status',
+  );
+  $export['node_options_sub_sector'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'node_options_subject_keyword';
   $strongarm->value = array(
     0 => 'status',
   );
   $export['node_options_subject_keyword'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'node_options_target_audience';
+  $strongarm->value = array(
+    0 => 'status',
+  );
+  $export['node_options_target_audience'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -1615,6 +1892,13 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'upload_profile';
+  $strongarm->value = '1';
+  $export['upload_profile'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'upload_sector';
   $strongarm->value = '1';
   $export['upload_sector'] = $strongarm;
@@ -1636,9 +1920,23 @@ function ogpl_metadata_template_strongarm() {
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'upload_sub_sector';
+  $strongarm->value = '1';
+  $export['upload_sub_sector'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'upload_subject_keyword';
   $strongarm->value = '1';
   $export['upload_subject_keyword'] = $strongarm;
+
+  $strongarm = new stdClass;
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'upload_target_audience';
+  $strongarm->value = '1';
+  $export['upload_target_audience'] = $strongarm;
 
   return $export;
 }

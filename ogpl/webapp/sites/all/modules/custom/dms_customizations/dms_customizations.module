@@ -1,6 +1,27 @@
 <?php
 
 /**
+ * Implementation of hook_menu().
+ */
+function dms_customizations_menu() {
+  $items = array();
+
+  $items['dms/subagency/populate/callback/ahah'] = array(
+    'page callback' => 'dms_customizations_subagency_populate_callback_ahah',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['dms/subsector/populate/callback/ahah'] = array(
+    'page callback' => 'dms_customizations_subsector_populate_callback_ahah',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
  * Implementation of hook_menu_alter().
  */
 function dms_customizations_menu_alter(&$items) {
@@ -18,11 +39,184 @@ function dms_customizations_views_api() {
 }
 
 /**
+* Custom ahah callback handler to populate dataset subsector field.
+*/
+function dms_customizations_subsector_populate_callback_ahah() {
+  // Ensure we have a array of all integer elements.
+  $catogery = $_POST['field_ds_sector']['nid']['nid'];
+  if (is_array($catogery)) {
+    foreach ($catogery as &$value) {
+      $value = intval($value);
+    }
+  }
+  else {
+    $catogery = intval($catogery);
+    $catogery = array($catogery);
+  }
+
+  // Turn it into a list of integers
+  $catogery = implode(",", $catogery);
+
+  // Manually add the None option if needed.
+  // TODO: drupal_render the element instead of manually assembling the options.
+  $cat_sub = '<option value="">- ' . t('None') . ' -</option>';
+
+  $query = "SELECT n.title, c.nid FROM {content_type_sub_sector} c, {node} n WHERE n.nid = c.nid AND c.field_sector_nr_nid IN (%s)";
+  $result = db_query($query, $catogery);
+  $options = array('' => t('- None -'));
+
+  while ($obj = db_fetch_object($result)) {
+    $cat_sub .= "<option value={$obj->nid}>{$obj->title}</option>";
+    $options[$obj->nid] = $obj->title;
+  }
+
+  // The form is generated in an include file which we need to include manually.
+  include_once 'modules/node/node.pages.inc';
+  // We're starting in step #3, preparing for #4.
+  $form_state = array('storage' => NULL, 'submitted' => FALSE);
+  $form_build_id = $_POST['form_build_id'];
+  // Step #4.
+  $form = form_get_cache($form_build_id, $form_state);
+
+  // Preparing for #5.
+  $args = $form['#parameters'];
+  $form_id = array_shift($args);
+  $form_state['post'] = $form['#post'] = $_POST;
+  $form['#programmed'] = $form['#redirect'] = FALSE;
+
+  // Step #5.
+  drupal_process_form($form_id, $form, $form_state);
+  // Step #6 and #7 and #8.
+  $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
+
+
+  $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'] = $options;
+  
+  form_set_cache($form_build_id, $form, $form_state);
+
+  //skip validation for ahah
+  drupal_get_messages('error');
+  form_set_error(null, '', true); 
+
+  drupal_json(array(
+    'status'   => TRUE,
+    'data'     => $cat_sub,
+  ));
+}
+
+/**
+* Custom ahah callback handler to populate profile subagency field.
+*/
+function dms_customizations_subagency_populate_callback_ahah() {
+
+  // Ensure we have a array of all integer elements.
+  $catogery = $_POST['field_prof_agency']['nid']['nid'];
+  if (is_array($catogery)) {
+    foreach ($catogery as &$value) {
+      $value = intval($value);
+    }
+  }
+  else {
+    $catogery = intval($catogery);
+    $catogery = array($catogery);
+  }
+
+  // Turn it into a list of integers
+  $catogery = implode(",", $catogery);
+
+  // Manually add the None option if needed.
+  // TODO: drupal_render the element instead of manually assembling the options.
+  $cat_sub = '<option value="">- ' . t('None') . ' -</option>';
+  $options = array('' => '- None -');
+
+
+  $query = "SELECT n.title, c.nid FROM {content_type_sub_agency} c, {node} n WHERE n.nid = c.nid AND c.field_sa_subagency_agency_nid IN (%s)";
+  $result = db_query($query, $catogery);
+  
+  while ($obj = db_fetch_object($result)) {
+    $cat_sub .= "<option value={$obj->nid}>{$obj->title}</option>";
+    $options[$obj->nid] = $obj->title;
+  }
+
+
+  // The form is generated in an include file which we need to include manually.
+  include_once 'modules/node/node.pages.inc';
+  // We're starting in step #3, preparing for #4.
+  $form_state = array('storage' => NULL, 'submitted' => FALSE);
+  $form_build_id = $_POST['form_build_id'];
+  // Step #4.
+  $form = form_get_cache($form_build_id, $form_state);
+
+  // Preparing for #5.
+  $args = $form['#parameters'];
+  $form_id = array_shift($args);
+  $form_state['post'] = $form['#post'] = $_POST;
+  $form['#programmed'] = $form['#redirect'] = FALSE;
+
+  // Step #5.
+  drupal_process_form($form_id, $form, $form_state);
+  // Step #6 and #7 and #8.
+  $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
+
+
+  $form['field_prof_sub_agency']['nid']['nid']['#options'] = $options;
+
+  form_set_cache($form_build_id, $form, $form_state);
+
+  //skip validation for ahah
+  drupal_get_messages('error');
+  form_set_error(null, '', true);
+
+  drupal_json(array(
+    'status'   => TRUE,
+    'data'     => $cat_sub,
+  ));
+}
+
+/**
  * Implementation of hook_form_alter().
  */
 function dms_customizations_form_alter(&$form, &$form_state, $form_id) {
   switch ($form_id) {
+    case 'profile_node_form':
+      $form['#cache'] = TRUE;
+
+      // Add a new hidden element to attach ahah.
+      // Because of a bug in "jQuery Update" module as discussed here http://drupal.org/node/1051696
+      // Potential patches here http://drupal.org/node/806500
+      $form['ahah_trigger'] = array(
+        '#type' => 'hidden',
+      );
+
+      $ahah_binding = array(
+        'url'   => url('dms/subagency/populate/callback/ahah'),
+        'event' => 'change',
+        'wrapper' => 'edit-field-prof-sub-agency-nid-nid',
+        'selector' => '#edit-ahah-trigger',
+        'effect'   => 'slide',
+        'method'   => 'replace',
+        'effect'   => 'none',
+        'progress' => array('type' => 'none'),
+      );
+
+      drupal_add_js('misc/jquery.form.js');
+      drupal_add_js('misc/ahah.js');
+      drupal_add_js(array('ahah' => array('edit-field-prof-sub-agency-nid-nid' => $ahah_binding)), 'setting');
+  
+      // Trigger ahah whenever 'category_filed' selection changed.
+      // Remove the redudent <div> under <select> added by ahah.
+      drupal_add_js('jQuery(document).ready(function () { $("#edit-field-prof-agency-nid-nid").change(function(){$("' . $ahah_binding['selector'] . '").triggerHandler("change");}); $("#edit-field-prof-sub-agency-nid-nid").ajaxComplete(function(){
+   $(this).html($(this).find("option").parent().html());
+ });});', 'inline');
+ 
+      // Minimize the options for sub catagory based on category selection.
+      $form['#after_build'][] = 'dms_customizations_profile_populate_subagency_after_build';
+
+      break;
+
     case 'dataset_node_form':
+      $form['#cache'] = TRUE;
+
       if ($node = $form['#node']) {
         global $user;
         $roles = $user->roles;
@@ -35,6 +229,54 @@ function dms_customizations_form_alter(&$form, &$form_state, $form_id) {
           unset($form['workflow']['Dataset Management System']['#options']['5']);
         }
       }
+
+      $profile = content_profile_load('profile', $user->uid);
+      $admin_user = ($user->uid == 1);
+
+      if(isset($profile->field_prof_agency[0]['nid']) && !$admin_user) {
+        $form['field_ds_agency_name']['#default_value'][0]['nid'] = $profile->field_prof_agency[0]['nid'];
+      }
+
+      if(isset($profile->field_prof_sub_agency[0]['nid']) && !$admin_user) {
+        $form['field_ds_sub_agency']['#default_value'][0]['nid'] = $profile->field_prof_sub_agency[0]['nid'];
+      }
+
+      $form['#after_build'][] = 'dms_customizations_dataset_after_build';
+
+      //Dataset sector field ahah alters
+
+      // Add a new hidden element to attach ahah.
+      // Because of a bug in "jQuery Update" module as discussed here http://drupal.org/node/1051696
+      // Potential patches here http://drupal.org/node/806500
+      $form['ahah_trigger'] = array(
+        '#type' => 'hidden',
+      );
+
+      $ahah_binding = array(
+        'url'   => url('dms/subsector/populate/callback/ahah'),
+        'event' => 'change',
+        'wrapper' => 'edit-field-ds-sub-sector-nr-nid-nid',
+        'selector' => '#edit-ahah-trigger',
+        'effect'   => 'slide',
+        'method'   => 'replace',
+        'effect'   => 'none',
+        'progress' => array('type' => 'none'),
+      );
+
+      drupal_add_js('misc/jquery.form.js');
+      drupal_add_js('misc/ahah.js');
+      drupal_add_js(array('ahah' => array('edit-field-ds-sub-sector-nr-nid-nid' => $ahah_binding)), 'setting');
+
+      // Trigger ahah whenever 'category_filed' selection changed.
+      // Remove the redudent <div> under <select> added by ahah.
+      drupal_add_js('jQuery(document).ready(function () { $("#edit-field-ds-sector-nid-nid").change(function(){$("' . $ahah_binding['selector'] . '").triggerHandler("change");}); $("#edit-field-ds-sub-sector-nr-nid-nid").ajaxComplete(function(){
+   $(this).html($(this).find("option").parent().html());
+ });});', 'inline');
+
+      // Minimize the options for sub categories based on category selection.
+      $form['#after_build'][] = 'dms_customizations_dataset_populate_subsector_after_build';
+
+
       break;
 
     case 'workflow_tab_form':
@@ -183,3 +425,134 @@ function dms_customizations_email_registration_name($edit, $account) {
    return $edit['mail'];
 }
 
+/**
+* Custom after_build callback handler.
+*/
+function dms_customizations_fetch_subagencies($agency) {
+  $sql = 'select nid, field_sa_subagency_name_value from {content_type_sub_agency} where field_sa_subagency_agency_nid = %d';
+  $options = array('' => '- None -');
+  $result = db_query($sql, $agency);
+
+  while ($row = db_fetch_object($result)) {
+    $options[$row->nid] = $row->field_sa_subagency_name_value;
+  }
+
+  return $options;
+}
+
+/**
+* Custom after_build callback handler.
+*/
+function dms_customizations_dataset_after_build($form, &$form_state) {
+  global $user;
+  $profile = content_profile_load('profile', $user->uid);
+  $admin_user = ($user->uid == 1);
+
+  $agency_otpions = $form['group_ds_all_datasets']['field_ds_agency_name']['nid']['nid']['#options'];
+  $agency_value = $form['group_ds_all_datasets']['field_ds_agency_name']['nid']['nid']['#value'];
+
+  //For new datasets use the user profile agency field 
+  if(!isset($form['#node']->nid) && isset($agency_value)) {
+    $form['group_ds_all_datasets']['field_ds_agency_name']['nid']['nid']['#options'] = array($agency_value => $agency_otpions[$agency_value]);
+    dms_customizations_dataset_fix_disabled($form['group_ds_all_datasets']['field_ds_agency_name']);
+
+    $subagency_options = dms_customizations_fetch_subagencies($agency_value);
+    $subagency_value = $profile->field_prof_sub_agency[0]['nid'];
+
+    if(isset($subagency_value)) {
+      $form['group_ds_all_datasets']['field_ds_sub_agency']['nid']['nid']['#options'] = array($subagency_value => $subagency_options[$subagency_value]);
+      dms_customizations_dataset_fix_disabled($form['group_ds_all_datasets']['field_ds_sub_agency']);
+    }
+    else {
+      $form['group_ds_all_datasets']['field_ds_sub_agency']['nid']['nid']['#options'] = $subagency_options;
+    }
+  }
+  //For existing datasets disable the agency field
+  else {
+    dms_customizations_dataset_fix_disabled($form['group_ds_all_datasets']['field_ds_agency_name']);
+    $agency_selected_value = $form['group_ds_all_datasets']['field_ds_agency_name']['nid']['nid']['#value'];
+    $form['group_ds_all_datasets']['field_ds_agency_name']['nid']['nid']['#options'] = array($agency_selected_value  => $agency_otpions[$agency_selected_value]);
+
+    $subagency_options = dms_customizations_fetch_subagencies($agency_selected_value);
+    $form['group_ds_all_datasets']['field_ds_sub_agency']['nid']['nid']['#options'] = $subagency_options;
+  }
+
+  return $form;
+}
+
+/**
+* Custom after_build callback handler.
+*/
+function dms_customizations_profile_populate_subagency_after_build($form, &$form_state) {
+
+  $form['field_prof_sub_agency']['nid']['nid']['#options'] = array();
+
+  // Find the default category, if any.
+  $categorys = $form['field_prof_agency']['#default_value'];
+  if ($categorys) {
+    $cats = array();
+    foreach ($categorys as $cat) {
+      $cats[] = $cat['nid'];
+    }
+    $cats = implode(",", $cats);
+
+    $query = "SELECT n.title, c.nid FROM {content_type_sub_agency} c, {node} n WHERE n.nid = c.nid AND c.field_sa_subagency_agency_nid IN (%s)";
+    $result = db_query($query, $cats);
+
+    $form['field_prof_sub_agency']['nid']['nid']['#options'][''] = '- None -';
+
+    while ($obj = db_fetch_object($result)) {
+      $form['field_prof_sub_agency']['nid']['nid']['#options'][$obj->nid] = $obj->title;
+    }
+  }
+
+  return $form;
+}
+
+/**
+* Custom after_build callback handler.
+*/
+function dms_customizations_dataset_populate_subsector_after_build($form, &$form_state) {
+  $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'] = array();
+  
+  // Find the default category, if any.
+  $categorys = $form['group_ds_all_datasets']['field_ds_sector']['#default_value'];
+  if ($categorys) {
+    $cats = array();
+    foreach ($categorys as $cat) {
+      $cats[] = $cat['nid'];
+    }
+
+    $cats = implode(",", $cats);
+
+    $query = "SELECT n.title, c.nid FROM {content_type_sub_sector} c, {node} n WHERE n.nid = c.nid AND c.field_sector_nr_nid IN (%s)";
+    $result = db_query($query, $cats);
+
+    $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'][''] = '- None -';
+
+    while ($obj = db_fetch_object($result)) {
+      $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'][$obj->nid] = $obj->title;
+    }
+  }
+
+  return $form;
+}
+
+/**
+* Recursively set the disabled attribute of a CCK field
+* and all its dependent FAPI elements.
+*/
+function dms_customizations_dataset_fix_disabled(&$elements) {
+  foreach (element_children($elements) as $key) {
+    if (isset($elements[$key]) && $elements[$key]) {
+
+      // Recurse through all children elements.
+      dms_customizations_dataset_fix_disabled($elements[$key]);
+    }
+  }
+
+  if (!isset($elements['#attributes'])) {
+    $elements['#attributes'] = array();
+  }
+  $elements['#attributes']['disabled'] = 'disabled';
+}

@@ -32,16 +32,18 @@ function workflow_customizations_validate_node($node) {
           // TODO: recursive flexifield handling.
           // TODO: multiple flexifield handling.
           $required_child_fields = $fieldinfo['childfields'][$type_chosen];
-          foreach ($required_child_fields as $child_fieldname => $child_fieldinfo) {
-            if (!$child_fieldinfo['required']) {
-              continue; // Assuming no recrsive flexifield.
-            }
-            // Assuming no multiple flexifield
-            $child_value_element = $node->{'field_' . $fieldname}[0]['value']['field_' . $child_fieldname][0]; 
-            if ( $child_value_element['value'] === NULL && $child_value_element['nid'] === NULL && $child_value_element['url'] === NULL && $child_value_element['email'] === NULL) {
-              $validated = 0;
-              break;
-            }
+          if(is_array($required_child_fields)) {
+           foreach ($required_child_fields as $child_fieldname => $child_fieldinfo) {
+             if (!$child_fieldinfo['required']) {
+               continue; // Assuming no recrsive flexifield.
+             }
+             // Assuming no multiple flexifield
+             $child_value_element = $node->{'field_' . $fieldname}[0]['value']['field_' . $child_fieldname][0]; 
+             if ( $child_value_element['value'] === NULL && $child_value_element['nid'] === NULL && $child_value_element['url'] === NULL && $child_value_element['email'] === NULL) {
+               $validated = 0;
+               break;
+             }
+           }
           }
         }
         break;
