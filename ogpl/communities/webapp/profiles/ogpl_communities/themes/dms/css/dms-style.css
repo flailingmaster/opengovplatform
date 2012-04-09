@@ -1269,8 +1269,16 @@ div.comment ul.links a {
 }
 
 div.forum-post {
-    margin-bottom:10px;
+    margin-bottom:20px;
     border-bottom:1px solid #ccc;
+}
+
+div.forum-post-links  ul.forum-links li {
+    margin-right:15px;
+}
+
+div.forum-post-links  ul.forum-links li.comment_add {
+    float:left;
 }
 
 /* Poll
