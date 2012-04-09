@@ -185,6 +185,10 @@ body {
     min-width:150px;
 }
 
+#block-blockify-blockify-logo {
+    margin-top:10px;
+}
+
 #block-blockify-blockify-logo .gutter {
     margin: 0;
     padding: 0;
