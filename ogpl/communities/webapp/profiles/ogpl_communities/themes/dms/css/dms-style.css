@@ -1277,7 +1277,7 @@ div.forum-post-links  ul.forum-links li {
     margin-right:15px;
 }
 
-div.forum-post-links  ul.forum-links li.comment_add {
+div.forum-post-links  ul.forum-links li.comment_add, div.forum-post-links  ul.forum-links li.comment_reply {
     float:left;
 }
 
