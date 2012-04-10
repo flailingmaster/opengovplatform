@@ -481,6 +481,17 @@ function ogpl_metadata_template_user_default_permissions() {
     ),
   );
 
+  // Exported permission: edit field_ds_datafile
+  $permissions['edit field_ds_datafile'] = array(
+    'name' => 'edit field_ds_datafile',
+    'roles' => array(
+      '0' => 'Administrator',
+      '1' => 'Moderator',
+      '2' => 'Publisher',
+      '3' => 'authenticated user',
+    ),
+  );
+
   // Exported permission: edit field_ds_dataset_license
   $permissions['edit field_ds_dataset_license'] = array(
     'name' => 'edit field_ds_dataset_license',
@@ -1588,6 +1599,18 @@ function ogpl_metadata_template_user_default_permissions() {
   // Exported permission: view field_ds_contact_title
   $permissions['view field_ds_contact_title'] = array(
     'name' => 'view field_ds_contact_title',
+    'roles' => array(
+      '0' => 'Administrator',
+      '1' => 'Moderator',
+      '2' => 'Publisher',
+      '3' => 'anonymous user',
+      '4' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: view field_ds_datafile
+  $permissions['view field_ds_datafile'] = array(
+    'name' => 'view field_ds_datafile',
     'roles' => array(
       '0' => 'Administrator',
       '1' => 'Moderator',
