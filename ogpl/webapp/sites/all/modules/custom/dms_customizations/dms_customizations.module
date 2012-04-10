@@ -556,3 +556,58 @@ function dms_customizations_dataset_fix_disabled(&$elements) {
   }
   $elements['#attributes']['disabled'] = 'disabled';
 }
+
+
+/**
+ * Implementation of hook_file_download
+ *
+ */
+function dms_customizations_file_download($filepath) {
+  $filepath = file_create_path($filepath);
+  $result = db_query("SELECT * FROM {files} WHERE filepath = '%s'", $filepath);
+
+  // Ensure case-sensitivity of uploaded file names.
+  while ($file = db_fetch_object($result)) {
+    if (strcmp($file->filepath, $filepath) == 0) {
+      break;
+    }
+  }
+
+  // If the file is not found in the database, we're not responsible for it.
+  if (empty($file)) {
+    return;
+  }
+
+  // See if this is a file on a newly created node, on which the user who
+  // uploaded it will immediately have access.
+  $new_node_file = $file->status == 0 && isset($_SESSION['filefield_access']) && in_array($file->fid, $_SESSION['filefield_access']);
+  if ($new_node_file) {
+    $denied = FALSE;
+  } else {
+    //get parent node
+    $result = db_query("select nid from content_type_dataset where field_ds_datafile_fid = '%s'", $file->fid);
+    $row = db_fetch_object($result);
+    $nid = $row->nid;
+
+    if (($node = node_load($nid)) && (node_access('view', $node))) {
+      $denied = FALSE;
+    } else {
+      $denied = TRUE;
+    }
+  }
+
+  if ($denied) {
+    return -1;
+  } else {
+    //access granted
+    $name = mime_header_encode($file->filename);
+    $type = mime_header_encode($file->filemime);
+    return array(
+      'Content-Type: ' . $type . '; name="' . $name . '"',
+      'Content-Length: ' . $file->filesize,
+      'Content-Disposition: attachment; filename="' . $name . '"',
+      'Cache-Control: private',
+    );
+  }
+}
+

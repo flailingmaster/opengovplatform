@@ -54,6 +54,7 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
     'weight' => '6',
     'fields' => array(
       '0' => 'field_ds_access_method',
+      '1' => 'field_ds_datafile',
     ),
   );
 
