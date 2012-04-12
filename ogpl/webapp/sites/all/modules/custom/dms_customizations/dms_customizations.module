@@ -127,45 +127,13 @@ function dms_customizations_subagency_populate_callback_ahah() {
   // Manually add the None option if needed.
   // TODO: drupal_render the element instead of manually assembling the options.
   $cat_sub = '<option value="">- ' . t('None') . ' -</option>';
-  $options = array('' => '- None -');
-
 
   $query = "SELECT n.title, c.nid FROM {content_type_sub_agency} c, {node} n WHERE n.nid = c.nid AND c.field_sa_subagency_agency_nid IN (%s)";
   $result = db_query($query, $catogery);
   
   while ($obj = db_fetch_object($result)) {
     $cat_sub .= "<option value={$obj->nid}>{$obj->title}</option>";
-    $options[$obj->nid] = $obj->title;
   }
-
-
-  // The form is generated in an include file which we need to include manually.
-  include_once 'modules/node/node.pages.inc';
-  // We're starting in step #3, preparing for #4.
-  $form_state = array('storage' => NULL, 'submitted' => FALSE);
-  $form_build_id = $_POST['form_build_id'];
-  // Step #4.
-  $form = form_get_cache($form_build_id, $form_state);
-
-  // Preparing for #5.
-  $args = $form['#parameters'];
-  $form_id = array_shift($args);
-  $form_state['post'] = $form['#post'] = $_POST;
-  $form['#programmed'] = $form['#redirect'] = FALSE;
-
-  // Step #5.
-  drupal_process_form($form_id, $form, $form_state);
-  // Step #6 and #7 and #8.
-  $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
-
-
-  $form['field_prof_sub_agency']['nid']['nid']['#options'] = $options;
-
-  form_set_cache($form_build_id, $form, $form_state);
-
-  //skip validation for ahah
-  drupal_get_messages('error');
-  form_set_error(null, '', true);
 
   drupal_json(array(
     'status'   => TRUE,
@@ -178,8 +146,17 @@ function dms_customizations_subagency_populate_callback_ahah() {
  */
 function dms_customizations_form_alter(&$form, &$form_state, $form_id) {
   switch ($form_id) {
+    case 'user_register':
+      // Add a new hidden element to attach ahah.
+      // Because of a bug in "jQuery Update" module as discussed here http://drupal.org/node/1051696
+      // Potential patches here http://drupal.org/node/806500
+      $form['ahah_trigger'] = array(
+        '#type' => 'hidden',
+      );
+
+      break;
+
     case 'profile_node_form':
-      $form['#cache'] = TRUE;
 
       // Add a new hidden element to attach ahah.
       // Because of a bug in "jQuery Update" module as discussed here http://drupal.org/node/1051696
@@ -199,19 +176,31 @@ function dms_customizations_form_alter(&$form, &$form_state, $form_id) {
         'progress' => array('type' => 'none'),
       );
 
+      // List of valid the options for 'sub_category_field' based on category selection.
+      $valid_subs = dms_customizations_profile_populate_subagency($form['field_prof_agency']['#default_value']);
+
       drupal_add_js('misc/jquery.form.js');
       drupal_add_js('misc/ahah.js');
-      drupal_add_js(array('ahah' => array('edit-field-prof-sub-agency-nid-nid' => $ahah_binding)), 'setting');
+      drupal_add_js(array(
+        'ahah' => array('edit-field-prof-sub-agency-nid-nid' => $ahah_binding),
+        'valid_subs' => $valid_subs,
+      ), 'setting');
+
   
       // Trigger ahah whenever 'category_filed' selection changed.
       // Remove the redudent <div> under <select> added by ahah.
-      drupal_add_js('jQuery(document).ready(function () { $("#edit-field-prof-agency-nid-nid").change(function(){$("' . $ahah_binding['selector'] . '").triggerHandler("change");}); $("#edit-field-prof-sub-agency-nid-nid").ajaxComplete(function(){
-   $(this).html($(this).find("option").parent().html());
- });});', 'inline');
+      drupal_add_js('jQuery(document).ready(function () { 
+        $("#edit-field-prof-agency-nid-nid").change(function(){$("' . $ahah_binding['selector'] . '").triggerHandler("change");}); 
+        $("#edit-field-prof-sub-agency-nid-nid").ajaxComplete(function(){
+          $(this).html($(this).find("option").parent().html());
+        });
+        $("#edit-field-prof-sub-agency-nid-nid option").each(function() {
+          if ($(this).val() && jQuery.inArray($(this).val(), Drupal.settings.valid_subs) == -1) {
+            $(this).remove();
+          }
+        });
+      });', 'inline');
  
-      // Minimize the options for sub catagory based on category selection.
-      $form['#after_build'][] = 'dms_customizations_profile_populate_subagency_after_build';
-
       break;
 
     case 'dataset_node_form':
@@ -269,13 +258,15 @@ function dms_customizations_form_alter(&$form, &$form_state, $form_id) {
 
       // Trigger ahah whenever 'category_filed' selection changed.
       // Remove the redudent <div> under <select> added by ahah.
-      drupal_add_js('jQuery(document).ready(function () { $("#edit-field-ds-sector-nid-nid").change(function(){$("' . $ahah_binding['selector'] . '").triggerHandler("change");}); $("#edit-field-ds-sub-sector-nr-nid-nid").ajaxComplete(function(){
-   $(this).html($(this).find("option").parent().html());
- });});', 'inline');
+      drupal_add_js('jQuery(document).ready(function () { 
+        $("#edit-field-ds-sector-nid-nid").change(function(){$("' . $ahah_binding['selector'] . '").triggerHandler("change");}); 
+        $("#edit-field-ds-sub-sector-nr-nid-nid").ajaxComplete(function(){
+          $(this).html($(this).find("option").parent().html());
+        });
+      });', 'inline');
 
       // Minimize the options for sub categories based on category selection.
       $form['#after_build'][] = 'dms_customizations_dataset_populate_subsector_after_build';
-
 
       break;
 
@@ -480,33 +471,29 @@ function dms_customizations_dataset_after_build($form, &$form_state) {
   return $form;
 }
 
-/**
-* Custom after_build callback handler.
-*/
-function dms_customizations_profile_populate_subagency_after_build($form, &$form_state) {
 
-  $form['field_prof_sub_agency']['nid']['nid']['#options'] = array();
+function dms_customizations_profile_populate_subagency($agencys) {
 
-  // Find the default category, if any.
-  $categorys = $form['field_prof_agency']['#default_value'];
-  if ($categorys) {
-    $cats = array();
-    foreach ($categorys as $cat) {
-      $cats[] = $cat['nid'];
-    }
-    $cats = implode(",", $cats);
+  $subs = array();
 
-    $query = "SELECT n.title, c.nid FROM {content_type_sub_agency} c, {node} n WHERE n.nid = c.nid AND c.field_sa_subagency_agency_nid IN (%s)";
-    $result = db_query($query, $cats);
-
-    $form['field_prof_sub_agency']['nid']['nid']['#options'][''] = '- None -';
-
-    while ($obj = db_fetch_object($result)) {
-      $form['field_prof_sub_agency']['nid']['nid']['#options'][$obj->nid] = $obj->title;
-    }
+  if (!$agencys || !$agencys[0]['nid']) {
+    return $subs;
   }
 
-  return $form;
+  $ags = array();
+  foreach ($agencys as $ag) {
+    $ags[] = $ag['nid'];
+  }
+  $ags = implode(",", $ags);
+
+  $query = "SELECT n.title, c.nid FROM {content_type_sub_agency} c, {node} n WHERE n.nid = c.nid AND c.field_sa_subagency_agency_nid IN (%s)";
+  $result = db_query($query, $ags);
+  
+  while ($obj = db_fetch_object($result)) {
+    $subs[] = $obj->nid;
+  }
+
+  return $subs;
 }
 
 /**
@@ -525,13 +512,15 @@ function dms_customizations_dataset_populate_subsector_after_build($form, &$form
 
     $cats = implode(",", $cats);
 
-    $query = "SELECT n.title, c.nid FROM {content_type_sub_sector} c, {node} n WHERE n.nid = c.nid AND c.field_sector_nr_nid IN (%s)";
-    $result = db_query($query, $cats);
+    if($cats) {
+      $query = "SELECT n.title, c.nid FROM {content_type_sub_sector} c, {node} n WHERE n.nid = c.nid AND c.field_sector_nr_nid IN (%s)";
+      $result = db_query($query, $cats);
 
-    $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'][''] = '- None -';
+      $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'][''] = '- None -';
 
-    while ($obj = db_fetch_object($result)) {
-      $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'][$obj->nid] = $obj->title;
+      while ($obj = db_fetch_object($result)) {
+        $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'][$obj->nid] = $obj->title;
+      }
     }
   }
 
