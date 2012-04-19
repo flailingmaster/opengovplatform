@@ -49,15 +49,15 @@ var selObj = document.getElementById('itemcount');
 //alert(document.getElementById(itemcount));
 $('#'+itemcount).attr('selected',true);
 //selObj.options[itemcount].selected=true;
-if(window.location.href.indexOf('?')==-1)
+//if(window.location.href.indexOf('?')==-1)
 	<?php
 	if($classes_array[2] == 'view-id-views_by_agency')
 		echo "window.location=getAbsolutePath()+'viewsbyagency' +'?&itemcount='+itemcount;";
 	else
 		echo "window.location=getAbsolutePath()+'viewsbycategory' +'?&itemcount='+itemcount;";
 	?>
-else
-	window.location=getCompletePath()+'&itemcount='+itemcount ;
+//else
+	//window.location=getCompletePath()+'&itemcount='+itemcount ;
 }
 </script>
 

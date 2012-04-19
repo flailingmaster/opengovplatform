@@ -52,10 +52,10 @@ var selObj = document.getElementById('itemcount');
 //alert(document.getElementById(itemcount));
 $('#'+itemcount).attr('selected',true);
 //selObj.options[itemcount].selected=true;
-if(window.location.href.indexOf('&')==-1)
+//if(window.location.href.indexOf('&')==-1)
 window.location=getAbsolutePath()+'downloadbyagency' +'?&itemcount='+itemcount;
-else
-window.location=getCompletePath()+'&itemcount='+itemcount ;
+//else
+//window.location=getCompletePath()+'&itemcount='+itemcount ;
 }
 //--><!]]>
 

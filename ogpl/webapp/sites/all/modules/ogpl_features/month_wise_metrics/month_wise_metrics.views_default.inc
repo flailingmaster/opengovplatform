@@ -913,15 +913,13 @@ $avg_rating=variable_get(\'average_rating\',0);
 $avg_votes=variable_get(\'average_votes\',0);
 $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
 
-
  $vote1= rate_get_results(\'node\', $data->nid, 1);
   $vote2 = rate_get_results(\'node\', $data->nid, 2);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
-  		           
-  $votes=\'<span>(\'.$vote.\' votes)</span>\'; 
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
+ $votes=\'<span>(\'.$vote.\' votes)</span>\';
 return theme(\'fivestar_static\',$value).$votes;
 ?>',
       'exclude' => 0,
@@ -1803,9 +1801,7 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
-  		           
-  $votes=\'<span style="margin-left: 20px;"> (\'.$vote.\' votes)</span>\'; 
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\']; $votes=\'<span style="margin-left: 20px;"> (\'.$vote.\' votes)</span>\';
 return theme(\'fivestar_static\',$value).$votes;
 ?>',
       'exclude' => 0,
@@ -2215,9 +2211,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
-  		           
-  $votes=\'<span style="margin-left: 20px;"> (\'.$vote.\' votes)</span>\'; 
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
+
+  $votes=\'<span style="margin-left: 20px;"> (\'.$vote.\' votes)</span>\';
 return theme(\'fivestar_static\',$value).$votes;
 ?>',
       'exclude' => 0,
@@ -2579,9 +2575,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
-  		           
-  $votes=\'<span> (\'.$vote.\' votes)</span>\'; 
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
+
+  $votes=\'<span> (\'.$vote.\' votes)</span>\';
 return $value.$votes;
 ?>',
       'exclude' => 0,

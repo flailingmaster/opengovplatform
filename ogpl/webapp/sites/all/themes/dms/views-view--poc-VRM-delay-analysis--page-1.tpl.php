@@ -40,7 +40,7 @@ drupal_add_js('sites/all/modules/contrib/date/date_popup/date_popup.js');
 
 <link type="text/css" href="sites/all/modules/contrib/date/date.css" rel="Stylesheet" />	
 <link type="text/css" href="sites/all/modules/contrib/date/date_popup/themes/datepicker.css" rel="Stylesheet" />	
-<link type="text/css" href="sites/all/modules/contrib/date/date_popup/themes/jquery.timeentry.css" rel="Stylesheet" />	
+<link type="text/css" href="sites/all/modules/contrib/date/date_popup/themes/jquery.timeentry.css" rel="Stylesheet" />
 
 
 
@@ -200,11 +200,11 @@ alert("Invalid date range");
  return false;	 
 }	 
 }
- if($( "#edit-date-filter-min-date" ).val() =="yyyy-mm-dd" && $( "#edit-date-filter-max-date" ).val() =="yyyy-mm-dd"){
+if($( "#edit-date-filter-min-date" ).val() =="yyyy-mm-dd" && $( "#edit-date-filter-max-date" ).val() =="yyyy-mm-dd"){
       $( "#edit-date-filter-max-date" ).val("");
 	  $( "#edit-date-filter-min-date" ).val("");
 	  
-	  }	 		 
+	  }
 });
 });
 </script>

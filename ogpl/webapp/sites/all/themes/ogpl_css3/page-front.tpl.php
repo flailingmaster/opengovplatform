@@ -6,8 +6,10 @@
     $site_var = variable_get('site_country','');
     $site_node = node_load($site_var);
 	$theme_name=$theme_object->name;
-    if(variable_get('file_downloads','') == 2) {		
-		$site_img = $base_url."/system/files/".$site_node->field_website_header_image[0]['filename'];
+    $flag_img=substr($site_node->field_website_header_image[0]['filepath'],strpos($site_node->field_website_header_image[0]['filepath'],"files/"));
+ 
+    if(variable_get('file_downloads','') == 2) {
+		$site_img = $base_url."/system/".$flag_img;
 	} else {
 		$site_img = $base_url.'/'.$site_node->field_website_header_image[0]['filepath'];
 	}

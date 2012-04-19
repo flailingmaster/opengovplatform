@@ -55,8 +55,8 @@
     $country_union_name = trim($row->node_data_field_website_header_image_field_union_govt_name_value);
     $flag_image = field_file_load($row->node_data_field_website_header_image_field_website_header_image_fid);
 	if(variable_get('file_downloads','') == 2) {
-		$flag_img = explode('/', $flag_image['filepath']);
-		$country_header_image = $base_url."/system/files/".$flag_img[count($flag_img) - 1];
+		$flag_img=substr($flag_image['filepath'],strpos($flag_image['filepath'],"files/"));
+		$country_header_image = $base_url."/system/".$flag_img;
 		//$country_header_image = $base_url."/system/files/".$flag_image['filename'];
 	} else {
 		$country_header_image = trim($drupal_base_path.$flag_image['filepath']);

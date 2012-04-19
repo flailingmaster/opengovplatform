@@ -15,7 +15,7 @@ function cms_customizations_views_data() {
     'title' => t('CMS Allowed operations'),
     'field' => array(
       'help' => t('Provide a list of allowed operations on the node.'),
-      'handler' => 'views_handler_field_allowed_node_operation',
+      'handler' => 'cms_views_handler_field_allowed_node_operation',
     ),
   );
 
@@ -32,7 +32,7 @@ function cms_customizations_views_handlers() {
     ),
     'handlers' => array(
       // field handlers
-      'views_handler_field_allowed_node_operation' => array(
+      'cms_views_handler_field_allowed_node_operation' => array(
         'parent' => 'views_handler_field',
       ),
     ),

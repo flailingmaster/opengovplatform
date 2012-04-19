@@ -3,11 +3,21 @@ var _GLOBAL_CNT = 0;
 var slideTimeIn;
 function startscroller(){
 	var sObj = $("#scroll-content");
+	var inContHeight = $("#scroll-content").find("ul:first").height();
+	if(inContHeight > $(sObj).parent().height()){
 	if(Math.abs(_GLOBAL_CNT)  >= parseInt($(sObj).height())){
 		_GLOBAL_CNT = 0;
 	}
 	_GLOBAL_CNT-= 1;
 	$(sObj).css("marginTop",_GLOBAL_CNT +"px");
+		$("#play").show();
+		$("#stop").show();
+	}else{
+		$(sObj).css("marginTop","0px");
+		$("#play").hide();
+		$("#stop").hide();
+		_GLOBAL_CNT = 0;
+	}
 	slideTimeIn = setTimeout("startscroller()",40);
 }
 function togglesDiv(class_name){
@@ -509,6 +519,9 @@ if ($("#web-contact-owner-form").length > 0){
         });
     });
 }
+
+$('input[type=text]').attr('autocomplete', 'off');
+
 });
 function textCounter(max,textarename,desc)
 {

@@ -1,5 +1,4 @@
 /**
- * $Id: ie6update.js,v 1.1.2.2 2009/07/29 18:37:35 jrglasgow Exp $
    IE6Update.js
    
  * IE6Update is free software; you can redistribute it and/or modify
@@ -44,7 +43,7 @@
  * http://www.westhoffswelt.de/
  *
  * @package Core
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision$
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPL
  */
  

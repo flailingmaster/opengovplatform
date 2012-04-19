@@ -1,5 +1,9 @@
 $(document).ready(
 function() {
+$("#edit-field-feedback-subject-0-value").hover(
+  function () {
+    $(this).attr('title', $(this).val());
+});
 setTimeout( function(){
     $('.resizable-textarea #edit-body').css('height','200px');
     $('.defaultSkin #edit-body_tbl').css('height','200px');
@@ -290,11 +294,11 @@ $('#node-form').ajaxComplete(state_data_site_eventbind);
 		$(".field-field-instructions .field-item").empty();
 		$(".field-field-instructions .field-item").append(cont);
 	}	
-	
+
 	$("#edit-site-country").change(function(){
 		$("#edit-site-slogan").val($(this).find("option:selected").html());
 	});
-	
+
 	if($('#content-inner-inner .title').text()=="Edit mini panel home_panel") {
 		$('#edit-display-title-title-wrapper .description').after(
 		"<div style=\"margin-bottom:-10px;margin-top:5px;font-weight:bold;\">Below classes are to be used for resizing the blocks</div><table style=\"margin-top:10px\";><tr><th>css classname</th><th> purpose</th></tr><tr><td>blocks-100</td><td>For making a specific block 100%</td></tr><tr><td>blocks-50</td><td>For making a specific block 50%</td></tr><tr><td>blocks-33</td><td>For making a specific block 33%</td></tr><tr><td>blocks-66</td><td>For making a specific block 66%</td></tr><tr><td>blocks-top-margin</td><td>For keeping distance between blocks when they come on two rows.</td></tr><tr><td>alpha</td><td>To be added only for the first block on each row.</td></tr></table>");

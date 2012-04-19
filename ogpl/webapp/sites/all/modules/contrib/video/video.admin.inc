@@ -1,10 +1,9 @@
 <?php
-
-
 /**
  * @file
  * Provides the administration settings for the Video Drupal module.
  */
+video_add_adminjs();
 
 /**
  * Video transcoder admin settings
@@ -21,12 +20,7 @@ function video_transcoder_admin_settings() {
  * Form API callback to validate the upload settings form.
  */
 function video_transcoder_admin_settings_validate($form, &$form_state) {
-  // check ffmpeg_wrapper module installed or not
-  if ($form_state['values']['vid_convertor'] == 'video_ffmpeg_wrapper' && !module_exists('ffmpeg_wrapper')) {
-    form_set_error('vid_convertor', t('You need to download and install the !ffmpeg_wrapper module to enable this option.', array('!ffmpeg_wrapper' => l(t('FFMPEG Wrapper'), 'http://drupal.org/project/ffmpeg_wrapper'))));
-  }
-
-  // add vallidations by trnacoder interface
+  // add validations by transcoder interface
   $transcoder = $form_state['values']['vid_convertor'];
   module_load_include('inc', 'video', '/includes/transcoder');
   $transcoder = new video_transcoder($transcoder);
@@ -64,9 +58,9 @@ function video_general_admin_settings() {
   );
   $form['video_bypass_conversion'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Bypass Video Conversion'),
+    '#title' => t('Bypass auto conversion by default'),
     '#default_value' => variable_get('video_bypass_conversion', FALSE),
-    '#description' => t('Bypass video conversion when creating videos.')
+    '#description' => t('Bypass video conversion when creating videos. This setting can be overriden by users with the %perm permission.', array('%checkbox' => t('Bypass auto conversion'), '%perm' => t('bypass conversion video')))
   );
   $form['video_convert_on_save'] = array(
     '#type' => 'checkbox',
@@ -87,7 +81,12 @@ function video_general_admin_settings() {
  * Video player admin settings
  * @return <type>
  */
-function video_players_admin_settings() {
+function video_players_admin_settings($form_state) {
+  // Check for SWF Tools and Amazon S3 Private URLs
+  if (module_exists('video_s3') && module_exists('swftools') && variable_get('vid_filesystem', NULL) == 'video_s3' && variable_get('amazon_s3_private', FALSE)) {
+    drupal_set_message(t('Using the Flowplayer FLV player via SWF Tools does not work when the S3 %setting-name setting is turned on. Install and enable the <a href="@flowplayer-api-url">Flowplayer API</a> module to use Flowplayer.', array('%setting-name' => t('Enable private file storage'), '@flowplayer-api-url' => 'http://drupal.org/project/flowplayer')), 'warning');
+  }
+
   $form = array();
   $form['extensions'] = array(
     '#type' => 'fieldset',
@@ -122,7 +121,7 @@ function video_players_admin_settings() {
     $form['extensions']['video_extension_' . $ext . '_html5_player'] = array(
       '#type' => !empty($html5_players) ? 'radios' : 'markup',
       '#title' => t('HTML5 Player for') . ' ' . $ext,
-      '#value' => !empty($html5_players) ? '' : t('No HTML5 players detected.<br />You need to install !videojs.', array('!videojs' => l(t('VideoJS'), 'http://www.drupal.org/project/videojs'), '!flowplayer' => l(t('Flowplayer'), 'http://www.drupal.org/project/flowplayer'))),
+      '#value' => !empty($html5_players) ? '' : t('No HTML5 players detected.<br />You need to install !videojs.', array('!videojs' => l(t('Video.js'), 'http://www.drupal.org/project/videojs'), '!flowplayer' => l(t('Flowplayer'), 'http://www.drupal.org/project/flowplayer'))),
       '#options' => $html5_players,
       '#default_value' => variable_get('video_extension_' . $ext . '_html5_player', ''),
       '#prefix' => '<div class="admin_html5_player_wrapper" id="html5_player_' . $ext . '">',
@@ -221,4 +220,32 @@ function video_filesystem_admin_settings_validate($form, &$form_state) {
   module_load_include('inc', 'video', '/includes/filesystem');
   $filesystem = new video_filesystem($filesystem);
   $filesystem->admin_settings_validate($form, $form_state);
+}
+
+/**
+ * Return our possible flash players.
+ */
+function video_video_flv_players() {
+  $options = array();
+  if (module_exists('swftools')) {
+    $options['swftools'] = t('SWF Tools');
+  }
+  if (module_exists('flowplayer')) {
+    $options['flowplayer'] = t('Flowplayer');
+  }
+  return $options;
+}
+
+/**
+ * Return our possible html5 players.
+ */
+function video_video_html5_players() {
+  $options = array();
+  if (module_exists('videojs')) {
+    $options['videojs'] = t('Video.js');
+  }
+  if (module_exists('video')) {
+    $options['video'] = t('Video (Default)');
+  }
+  return $options;
 }

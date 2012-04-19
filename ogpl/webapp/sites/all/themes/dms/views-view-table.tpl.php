@@ -16,7 +16,7 @@
 $viewName=$view->result;
 $viewName=$viewName[2];
 $viewName=split(':',$viewName->view_name);
-if($viewName[0]=='feedback_category_listing' || $viewName[0]=='ownerwise_feedback_listing'  || $viewName[0]=='feedback_category_listing_poc' || $viewName[0]=='ownerwise_feedback_listing_poc'  ){
+if($viewName[0]=='feedback_category_listing' || $viewName[0]=='ownerwise_feedback_listing' || $viewName[0]=='feedback_category_listing_poc' || $viewName[0]=='ownerwise_feedback_listing_poc' ){
 echo'<div class="urm_report">';
 }
 ?>
@@ -45,7 +45,7 @@ echo'<div class="urm_report">';
     <?php endforeach; ?>
   </tbody>
 </table>
-<?php if($viewName[0]=='feedback_category_listing' || $viewName[0]=='ownerwise_feedback_listing'  || $viewName[0]=='feedback_category_listing_poc' || $viewName[0]=='ownerwise_feedback_listing_poc'  ){
+<?php if($viewName[0]=='feedback_category_listing' || $viewName[0]=='ownerwise_feedback_listing' || $viewName[0]=='feedback_category_listing_poc' || $viewName[0]=='ownerwise_feedback_listing_poc' ){
 echo'</div>';
 }
 ?>

@@ -3893,7 +3893,7 @@ fstraighten(
 
 				if(ISDBG(STRAIGHTEN))
 					fprintf(stderr,"** straighten collapsing %s\n", (i? "horizontal":"vertical"));
-				freethisge(nge);
+				freethisge(nge);
 				fixendpath(ge);
 				pge = ge->bkwd;
 				nge = ge->frwd;

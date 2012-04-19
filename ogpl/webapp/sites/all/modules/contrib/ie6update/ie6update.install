@@ -1,0 +1,21 @@
+<?php
+/**
+ * @file
+ * Handles ie6update installation and upgrade tasks.
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+function ie6update_install() {
+  variable_set('ie6update_destination_url', 'http://www.microsoft.com/windows/internet-explorer/default.aspx');
+  variable_set('ie6update_update_bar_message', 'Internet Explorer is missing updates required to view this site. Click here to update... ');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function ie6update_uninstall() {
+  variable_del('ie6update_destination_url');
+  variable_del('ie6update_update_bar_message');
+}

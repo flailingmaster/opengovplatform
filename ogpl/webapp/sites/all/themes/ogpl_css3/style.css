@@ -1124,7 +1124,7 @@ color: #454545;
 }
 .footerContent div.right {
     float: right;
-    padding: 4px 0 16px;
+    padding: 8px 0 10px;
     text-align: left;
     width: 47%;
 	}
@@ -1133,8 +1133,8 @@ color: #454545;
 }
 .footerContent div.right .content .content div{
 	float: left; 
-	padding-top: 4px; 
-	padding-left: 5px;
+	padding-top: 0px; 
+	padding-left: 10px;
 	font-size: 0.75em;
 }
 /*copyright info*/
@@ -1979,9 +1979,14 @@ background: none repeat scroll 0 0 #E3D6DB;
 .faq-description {
 	padding: 0;
 }
+.faq-detailed-question p {font-size:1em;}
+
 .faq hr {
     border: medium none;
     height: 0;
+}
+.faq-answer .field-field-video,.faq-answer .field-field-audio{
+	margin-bottom:10px;
 }
 
 .country_flags {
@@ -3528,7 +3533,7 @@ input.form-submit.disabled {
 .charts-download a {
     padding-left: 3px;
 }
-
+.charts-download a:hover {text-decoration:none !important; }
 /*end of css for charts*/
 .size-large{
     width:65px;
@@ -4467,3 +4472,45 @@ margin-bottom:10px;
 color:#FF0000;
 font:bold 1.3em Arial,Helvetica,sans-serif;
 }
+.accessPan ul li.flags a{
+margin-right:2px;
+}
+
+#linktous{
+	border:2px solid #E0E0E0;float:left;width:928px;margin-top:-22px;
+	}	
+#linktous .head{
+	background:#E0E0E0;
+	}
+	#linktous .head .head-one{
+		float:left;width:485px;padding:4px 10px;font-size:1.5em;font-weight:bold;
+		}
+		
+	#linktous .head .head-two{
+		float:left;width:400px;padding:4px 10px;font-size:1.5em;font-weight:bold;
+		}	
+#linktous .block-logo{
+	width:928px;
+    float:left;
+	border-bottom:1px solid #E0E0E0;
+	}
+
+#linktous .last{
+	border-bottom:none;
+	}
+	
+#linktous .image{
+   /* margin:10px 0 10px 10px; */
+	float:left;
+	width:485px;
+	padding:4px 10px;
+	}
+	
+#linktous .image-specs{
+	margin:23px 0 0 23px;
+	float:left;
+	}	
+
+#linktous .image-specs ul li{
+	margin:0px;
+	}	

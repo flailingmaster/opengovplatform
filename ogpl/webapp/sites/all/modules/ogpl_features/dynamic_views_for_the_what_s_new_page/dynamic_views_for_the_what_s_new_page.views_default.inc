@@ -548,7 +548,7 @@ return "FROM_UNIXTIME(workflow_node.stamp) > date_sub(curdate(), interval 7 day)
      $sum=$sum+get_average_ratings($row->nid);
      $count++;
   }
-  
+
   $AR=$sum/$count;
   //print "AR=".$AR;
 
@@ -557,14 +557,14 @@ $result=db_query("select distinct(content_id) as nid from votingapi_vote V LEFT 
 
   $sum=0;
   while($row=db_fetch_object($result))
-  {   
+  {
      $sum=$sum+get_average_rating_votes($row->nid);
   }
   $AV=$sum/$count;
   $AV=round($AV);
 
  variable_set(\'average_rating\',$AR);
- variable_set(\'average_votes\',$AV); 
+ variable_set(\'average_votes\',$AV);
 ?>');
   $handler->override_option('header_format', '3');
   $handler->override_option('header_empty', 0);
@@ -858,9 +858,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
-  		           
-  $votes=\'<span> (\'.$vote.\' votes)</span>\'; 
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
+
+  $votes=\'<span> (\'.$vote.\' votes)</span>\';
 return theme(\'fivestar_static\',$value).$votes;
 ?>',
       'exclude' => 0,

@@ -9,7 +9,11 @@
  * Implementation of hook_install().
  */
 function workflow_extensions_install() {
-  db_query("UPDATE {system} SET weight = 21 WHERE name = 'workflow_extensions'");
+  // Patch by galaxor: [#1346078]
+  // Weight should be a higher weight than Noderelationships module. That way,
+  // it can grab the submit handlers when dealing with a form in a modalframe.
+  // If we don't get that handler, the modalframe won't close.
+  db_query("UPDATE {system} SET weight=2 WHERE name='workflow_extensions'");
 }
 
 /**
@@ -18,4 +22,14 @@ function workflow_extensions_install() {
 function workflow_extensions_uninstall() {
   // Delete all workflow_extensions_* variables at once
   db_query("DELETE FROM {variable} WHERE name LIKE 'workflow_extensions_%%'");
+}
+
+/**
+ * Implementation of hook_update_N().
+ * See comment at workflow_extensions_install().
+ */
+function workflow_extensions_update_6108() {
+  $ret = array();
+  $ret[] = update_sql("UPDATE {system} SET weight=2 WHERE name='workflow_extensions'");
+  return $ret;
 }

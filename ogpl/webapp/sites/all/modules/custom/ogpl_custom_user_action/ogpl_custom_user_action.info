@@ -1,0 +1,4 @@
+name = Custom User Actions
+description = Custom User actions
+package = Other
+core = 6.x

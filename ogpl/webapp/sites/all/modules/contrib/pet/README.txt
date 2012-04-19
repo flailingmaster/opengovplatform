@@ -1,10 +1,9 @@
-The Previewable Email Template (PET) module lets you create email templates,
-with token substitution, which can be previewed by the user before sending.
-The emails can be sent to one or many email addresses in a flexible way,
-and the recipients may or may not be Drupal account holders (users).
+The Previewable Email Template (PET) module lets you create email templates, with token substitution, 
+which can be previewed by the user before sending.  The emails can be sent to one or many email addresses 
+in a flexible way, and the recipients may or may not be Drupal account holders (users).
 
-PET stores templates in a db table, not the variables table, so there is
-none of the memory usage which goes with the latter.
+PET stores templates in a db table, not the variables table, so there is none of the memory usage which 
+goes with the latter.
 
 
 Required Modules
@@ -19,46 +18,52 @@ Installation
 2) Enable the module using Administer -> Modules (/admin/build/modules)
 
 
-Configuration
+Template Configuration
 -------------
 Configure (create, edit, delete) the templates for your site at Administer -> Site Building -> Previewable email templates (/admin/build/pets)
   
-  Name - Machine name for the template. This is used when adding the template to your code.
+  Name (required) - Machine name for the template. This is useful if you want to refer to your template from code.
   
-  Title - A descriptive title for the template.
+  Title (required) - A descriptive title for the template.  Neither this nor Name appear anywhere in the email itself.
   
-  Subject - The email subject.  May contain tokens (see below).
+  Subject (required) - The email subject.  May contain tokens for value substitution (see below).
   
-  Body - The email body.  May contain tokens (see below).
+  Body (optional but obviously common) - The email body.  Like Subject, may contain tokens (see below).
   
-  Recipient callback - The name of a function which is called to retrieve a list of email recipients, if
+  From override (optional) - An alternative From address for emails originating from this template.  If not provided
+  the site default is used.
+  
+  CC default (optional) - One or more emails to be cc'd on every email sent using this template.
+
+  BCC default (optional) - One or more emails to be blind cc'd on every email sent using this template.
+  
+  Recipient callback (optional) - The name of a function which is called to retrieve a list of email recipients, if
   the uid argument is 0 (not missing, but the number 0).  This is a function that you provide.  If there
   is a nid argument, the node is loaded and passed to this function.
   
-  Custom tokens - The standard 'node', 'user', and 'global' tokens are provided.  Replacements are made for
-  'node' and 'user' if the nid and uid arguments, respectively, are non-empty.  If you have custom token
-  handlers which expect an object of type 'node' or 'user', list them here.  TODO: add general support for 
-  other token types, including comments.
+  Custom tokens (optional) - The standard 'node', 'user', and 'global' tokens are provided.  Replacements are made for
+  'node' and 'user' if the nid and uid arguments, respectively, are positive integers.  If you have custom token
+  handlers which expect an object of type 'node' or 'user', list them here.  
 
 
-Usage Via Links
+Template Usage Via Links / UI
 ---------------
 To invoke a PET, use the path /pet/[pet_name].  In this simple form, with no arguments provided, the user
-will be required to enter a single email address.  No user or node substitution will be available, although
-global substitutions will be made.
+will be required to enter one or more email addresses.  User token substitutions will be made for every email
+that has a corresponding user in the site.  Global token substitutions will also be made.
 
-To invoke a PET for a single user include the uid in the arguments, e.g. /pet/[pet_name]?uid=17.  This will
-provide token substitution for user 17.
+You can provide a default user in the To field by including uid=[uid] in the query, e.g. /pet/[pet_name]?uid=17.  
+This will provide token substitution for user 17.  Additional email recipients can be added.
 
-To invoke a PET for a custom list of users, set uid to 0 in the arguments, e.g. /pet/[pet_name]?uid=0.  The
-recipient callback function will be invoked to return an array of users in the form [uid]|[email].  If the 
-uid is present, token substitution will be done.  If there is no uid, leave it out (but leave the pipe in).
+To invoke a PET for a custom list of users, specify "recipient_callback=true" in the query, for example
+/pet/[pet_name]?recipient_callback=true. If the PET is set up to support user token substitution then for each
+email with a corresponding user the substitution will take place.
 
-To invoke a PET with node substitution, add the node id to the arguments, e.g. /pet/[pet_name]?uid=17&nid=244.
-Token substitution will be done on both user 17 and node 244.
+To invoke a PET with node substitution, add the node id to the arguments, e.g. /pet/[pet_name]?uid=17&nid=244.  
+Token substitution will be done on both user 17 and node 244.  Recipient callback could be used as well, as in /pet/[pet_name]?recipient_callback=true&nid=244.
 
 
-Usage From Code
+Template Usage From Code
 ---------------
 pet_send_mail() sends email to multiple recipients.  pet_send_one_mail() sends email to one recipient.  See
 these function headers for documentation.

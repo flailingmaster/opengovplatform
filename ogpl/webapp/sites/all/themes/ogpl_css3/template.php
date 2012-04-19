@@ -77,7 +77,7 @@ function phptemplate_breadcrumb($breadcrumb) {
  global $user;
   if (!empty($breadcrumb)) {
 	if(strip_tags($breadcrumb['1']) == 'Administer' && $user->uid != 1 && !in_array('Administrator', $user->roles)) unset($breadcrumb['1']);
-	if(in_array(drupal_get_path_alias($_GET['q']),array("admin/build/block/list","admin/build/block"))) {
+	if(in_array(drupal_get_path_alias($_GET['q']),array("admin/build/block/list","admin/build/block","admin/build/block/list/ogpl_css3"))) {
 	unset($breadcrumb['1']);
 	$breadcrumb['2']=l('OGPL With CSS3 Theme Blocks','admin/build/block');}
 	return '<div class="breadcrumb">'. implode(' › ', $breadcrumb) .'</div>';

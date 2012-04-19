@@ -1,4 +1,7 @@
 <?php global $base_url, $site_name; $user;
+$user_name=$user->name;
+$user_name=str_replace('@','[at]',$user_name);
+$user_name=str_replace('.','[dot]',$user_name);
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php print $language->language; ?>" xml:lang="<?php print $language->language; ?>">
 
@@ -13,23 +16,20 @@
   @import "<?php echo $base_url;?>/modules/system/system.css?i";
   @import "<?php echo $base_url;?>/modules/system/system-menus.css?i";
   @import "<?php echo $base_url;?>/modules/user/user.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/apachesolr_autocomplete/apachesolr_autocomplete.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/apachesolr_autocomplete/jquery-autocomplete/jquery.autocomplete.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/fivestar/css/fivestar.css?i";
-  @import "<?php echo $base_url;?>/sites/default/files/fivestar/basic/basic.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/nice_menus/nice_menus.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/nice_menus/nice_menus_default.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/panels/css/panels.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/rate/rate.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/textsize/textsize.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/video/css/video.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/views_table_highlighter/views_table_highlighter.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/calendar/calendar_multiday/calendar_multiday.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/cck/theme/content-module.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/ctools/css/ctools.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/date/date.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/date/date_popup/themes/datepicker.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/date/date_popup/themes/jquery.timeentry.css?i";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/apachesolr_autocomplete/apachesolr_autocomplete.css?F";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/apachesolr_autocomplete/jquery-autocomplete/jquery.autocomplete.css?F";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/calendar/calendar_multiday/calendar_multiday.css?F";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/cck/theme/content-module.css?F";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/ctools/css/ctools.css?F";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/date/date.css?F";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/date/date_popup/themes/datepicker.css?F";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/date/date_popup/themes/jquery.timeentry.css?F";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/filefield/filefield.css?F";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/fivestar/css/fivestar.css?F";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/nice_menus/nice_menus.css?F";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/nice_menus/nice_menus_default.css?F";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/panels/css/panels.css?F";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/pet/pet.css?F";
 </style>
 
 <style type="text/css" media="all">
@@ -38,24 +38,23 @@
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/views_slideshow/contrib/views_slideshow_singleframe/views_slideshow.css?i";
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/views_slideshow/contrib/views_slideshow_thumbnailhover/views_slideshow.css?i";
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/extlink/extlink.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/cck/modules/fieldgroup/fieldgroup.css?i";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/cck/modules/fieldgroup/fieldgroup.css?i"; 
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/views/css/views.css?i";
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/context/plugins/context_reaction_block.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/custom_search/custom_search.css?i";
   @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/style.css?i";
   @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/typography.css?i";
   @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/superfish.css?i";
   @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/superfish-navbar.css?i";
   @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/superfish-vertical.css?i";
   @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/grid16-fluid.css?i";
-  @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/dms-style.css?i";
-  @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/multistep.css?i";
+  @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'dms');?>/css/dms-style.css?i";
+  @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'dms');?>/css/multistep.css?i";
   @import "<?php echo $base_url; ?>/sites/all/libraries/jquery.ui/themes/default/ui.all.css?f";
 </style>
   <title><?php print $head_title; ?></title>
   <?php print $head; ?>
-  <link href="<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/dms-style.css" rel="alternate stylesheet" type="text/css" />
-  <link href="<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/multistep.css" rel="alternate stylesheet" type="text/css" />
+  <link href="<?php echo $base_url.'/'.drupal_get_path('theme', 'dms');?>/css/dms-style.css" rel="alternate stylesheet" type="text/css" />
+  <link href="<?php echo $base_url.'/'.drupal_get_path('theme', 'dms');?>/css/multistep.css" rel="alternate stylesheet" type="text/css" />
  
 	
   <?php //print $styles; ?>
@@ -87,7 +86,7 @@
 				<div id="block-blockify-blockify-logo" class="block block-blockify odd first last grid16-3 logo-block">
 					<div class="inner clearfix">
 						<div class="content clearfix">
-						<a href="<?php echo $base_url; ?>" id="logo" rel="home" title="Return to the OpenGov Platform DMS home page" class="active"><img src="<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/logo.png" alt="OpenGov Platform DMS logo" title="" width="150" height="124" /></a>    
+						<a href="<?php echo $base_url; ?>" id="logo" rel="home" title="Return to the OpenGov Platform DMS home page" class="active"><img src="<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/images/dms/logo.png" alt="OpenGov Platform DMS logo" title="" width="150" height="124" /></a>    
 						</div>
 					</div><!-- /block-inner -->
 				</div><!-- /block -->
@@ -118,8 +117,8 @@
 						<div class="fusion-edit"><a class="fusion-block-edit" title="edit the content of this Custom block (in header top)" href="/dms/admin/build/block/configure/block/4?destination=node%2F441">edit block</a></div>            
 						<div class="content clearfix">
 					  <ul>
-						<li>Welcome <a href="<?php echo $base_url;?>/users/<?php print_r($user->name) ?>"><?php print_r($user->name) ?></a></li>
-						<li><a title="Help" onclick="window.open('<?php echo $base_url;?>/sites/default/files/WebHelp/application_name_admin_guide.htm', 'help_window', 'menubar=1,resizable=1,width=900,height=900')" href="javascript:void(0);">Help</a></li>
+						<li>Welcome <?php print l($user_name,'user/'.$user->uid); ?></li>
+						<li><a title="Help" onclick="window.open('<?php echo $base_url;?>/sites/default/files/WebHelp/ogpl_admin_guide.htm', 'help_window', 'menubar=1,resizable=1,width=900,height=900')" href="javascript:void(0);">Help</a></li>
 				<li><a title="Log Out" href="<?php echo $base_url;?>/logout">Log Out</a></li>
 				</ul>    </div>
 				  </div><!-- /block-inner -->

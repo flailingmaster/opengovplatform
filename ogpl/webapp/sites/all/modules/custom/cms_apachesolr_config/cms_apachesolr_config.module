@@ -84,7 +84,7 @@ function cms_apachesolr_config_apachesolr_update_index(&$document, $node, $names
 	$avg_rating=variable_get('average_rating',0);
 	$avg_votes=variable_get('average_votes',0);
 	$value=calculate_ratings($node->nid,$avg_rating,$avg_votes);
-		
+
     $document->sis_ratings = empty($value) ? 0 : $value;
 	
 	

@@ -42,7 +42,7 @@ drupal_add_js('sites/all/modules/contrib/date/date_popup/date_popup.js');
 
 <link type="text/css" href="sites/all/modules/contrib/date/date.css" rel="Stylesheet" />	
 <link type="text/css" href="sites/all/modules/contrib/date/date_popup/themes/datepicker.css" rel="Stylesheet" />	
-<link type="text/css" href="sites/all/modules/contrib/date/date_popup/themes/jquery.timeentry.css" rel="Stylesheet" />	
+<link type="text/css" href="sites/all/modules/contrib/date/date_popup/themes/jquery.timeentry.css" rel="Stylesheet" />
 
 <script>
 $(document).ready(function()

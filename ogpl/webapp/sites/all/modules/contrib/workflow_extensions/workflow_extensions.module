@@ -150,8 +150,8 @@ function workflow_extensions_workflow_comment_edit_form_submit($form, &$form_sta
  */
 function workflow_extensions_form_alter(&$form, &$form_state, $form_id) {
 
-  if (!isset($form['workflow'])) {
-    // If there's no Workflow fieldset, then we have nothing further to do.
+  // If there's no Workflow fieldset, then we have nothing further to do.
+  if (!isset($form['#wf'])) { // was $form['workflow'] but need to exclude content type edit form
     return;
   }
 
@@ -257,9 +257,19 @@ function workflow_extensions_forms($form_id, $args) {
 }
 
 /**
- * Validate the workflow form, in particular the state transition comment.
+ * Validate the workflow form, in particular the state transition comment and
+ * the scheduled state transition time (the date is a drop-down so requires no
+ * validation).
  */
 function workflow_extensions_workflow_form_validate($form, &$form_state) {
+  $nid = substr($form['#id'], strrpos($form['#id'], '-') + 1);
+  $title = isset($form_state['values']['title']) ? $form_state['values']['title'] : $form_state['values']['node']->title;
+
+  if (!empty($form_state['values']['workflow_scheduled_hour'])) {
+    if (!strtotime($form_state['values']['workflow_scheduled_hour'])) {
+      form_set_error(is_numeric($nid) ? "workflow_scheduled_hour_$nid" : 'workflow_scheduled_hour', t('%title: scheduled time is not in the correct format.', array('%title' => $title)));
+    }
+  }
   if (!variable_get('workflow_extensions_allow_blank_comments', TRUE)) {
     if (!isset($form_state['values']['nid']) && !isset($form_state['values']['node'])) {
       // Bypass node creation
@@ -267,7 +277,7 @@ function workflow_extensions_workflow_form_validate($form, &$form_state) {
     }
     $comment = $form_state['values']['workflow_comment'];
     if (!trim($comment)) {
-      form_set_error('wf_name', t('Please enter a non-blank comment for the workflow log.'));
+      form_set_error(is_numeric($nid) ? "workflow_comment_$nid" : 'workflow_comment', t('%title: please enter a non-blank comment for the workflow log.', array('%title' => $title)));
     }
   }
 }
@@ -454,9 +464,13 @@ function workflow_extensions_extract_workflow_name($form) {
 
 function _workflow_extensions_assign_handlers($form) {
   $original_handlers = $form['#submit']; // e.g. 'workflow_tab_form_submit' or 'menu_node_form_submit'
-  return ($form['#id'] == 'node-form')
+  return ($form['#id'] == 'node-form') // 'menu_node_form_submit', 'upload_node_form_submit'
     ? array('workflow_extensions_form_submit', 'node_form_submit') // node_form_submit() will add original handlers
     : array_merge(array('workflow_extensions_form_submit'), $original_handlers);
+
+  // [#1346078] ?
+  //$original_handlers = array_merge($original_handlers, $form['buttons']['submit']['#submit']);
+  //  return array_merge(array('workflow_extensions_form_submit'), $original_handlers);
 }
 
 /**

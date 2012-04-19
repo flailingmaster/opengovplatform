@@ -59,7 +59,7 @@ function workflow_node_revisions_access_check($node) {
       break;
     }
   }
-  
+
   $wid = workflow_get_workflow_for_type($node->type);
   $sid = workflow_node_current_state($node);
   $published_state = variable_get("workflow_node_revision_published_state_$wid", '');
@@ -183,13 +183,13 @@ function workflow_node_revisions_internal_api($op, $node) {
     $dataset_unique_id = FALSE;
   }
 
-  switch ($op) { 
+  switch ($op) {
     case 'Create':
       if ($dataset_unique_id) {
         $result['op_status'] = 'Error';
         $result['status_message'] = "Error: A unique ID is already specified for operation:$op. This dataset already exists and cannot be created. DATASET UNIQUE ID: $dataset_unique_id";
       }
-      else {      
+      else {
         $dataset_unique_id = sha1(uniqid($node->title));
         $result['op_status'] = $op;
         $result['status_message'] = 'Created the dataset with unique ID ' . $dataset_unique_id;

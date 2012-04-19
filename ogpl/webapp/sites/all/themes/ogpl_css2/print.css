@@ -1,0 +1,9 @@
+.hidden-on-pdf, #DrupalFusionChart_1 {
+	display: none;
+}
+.print-title {
+	margin: 0px;
+}
+.pie-chart-metrics-visitorstats-table-heading p  {
+	margin-top: 90px;
+}

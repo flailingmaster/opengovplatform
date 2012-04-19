@@ -1,9 +1,9 @@
 <?php
-
 /**
  * @file
  * Video formatter hooks and callbacks.
  */
+
 /*
  * Default video cck formatter.  Makes sure the video being displayed exists, has been converted (if in que).
  * If not or the video is processed, then it will get the default player for the specific video type for output.
@@ -16,7 +16,8 @@ function theme_video_formatter_video_plain($element) {
   if (!empty($field['list_field']) && !$element['#item']['list'])
     return '';
   // Only needs to be ran if they are converting videos
-  if (isset($field['widget']['autoconversion']) && $field['widget']['autoconversion'] && !$element['#item']['data']['bypass_autoconversion']) {
+
+  if (!empty($field['widget']['autoconversion']) && empty($element['#item']['data']['bypass_autoconversion'])) {
     module_load_include('inc', 'video', '/includes/conversion');
     $conversion = new video_conversion;
     $video = $conversion->load_job($element['#item']['fid']);
@@ -229,7 +230,7 @@ function theme_video_html5($video, $node) {
   switch ($video->html5_player) {
     case 'video':
       return theme('video_play_html5', $video, $node, $themed_output);
-      break;
+
     case 'videojs':
       $items = _video_object_to_array($video->files);
       $items['thumbnail'] = (array) $video->thumbnail;
@@ -240,10 +241,9 @@ function theme_video_html5($video, $node) {
       );
       
       return theme('videojs', $items, 'video-'. $video->fid, $attributes);
-      break;
+
     default:
       return t('No HTML5 player has been setup. ' . l(t('Please select a player to play HTML5 videos.'), 'admin/settings/video/players'));
-      break;
   }
 }
 
@@ -274,4 +274,34 @@ function theme_video_formatter_imagecache($element) {
   }
   //return $theme_function;
   return theme('video_formatter_' . $theme_function, $element, TRUE);
+}
+
+/**
+ * Get the object for the suitable player for the parameter resource
+ */
+function video_get_player($element) {
+  // Setup our node object to be passed along with the player.
+  $node = $element['#node'];
+  // Setup our video object
+  module_load_include('inc', 'video', '/includes/video_helper');
+  $video_helper = new video_helper;
+  $video = $video_helper->video_object($element);
+
+  if ($video == NULL) {
+    return '';
+  }
+
+  // Lets spit out our theme based on the extension
+  $defaults = video_video_extensions();
+  $theme_function = variable_get('video_extension_'. $video->player, $defaults[$video->player]);
+  // Lets do some special handling for our flv files to accomdate multiple players.
+  if ($theme_function == 'video_play_flv') {
+    return theme('video_flv', $video, $node);
+  }
+  elseif ($theme_function == 'video_play_html5') {
+    return theme('video_html5', $video, $node);
+  }
+  else {
+    return theme($theme_function, $video, $node);
+  }
 }

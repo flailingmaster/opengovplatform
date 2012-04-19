@@ -1,0 +1,33 @@
+<?php
+/**
+* Alter the user delete confirmation form so we can perform actions prior to the users being deleted.
+*/
+function ogpl_custom_user_action_form_alter(&$form, &$form_state, $form_id) {
+	if ($form_id == 'user_multiple_delete_confirm' || $form_id = 'user_confirm_delete') {
+		//- validate the user has a workflow or not before the regular form submit. -//
+		$form['#validate'][]='_ogpl_custom_user_action_preprocess_user_delete';
+	}
+}
+
+/**
+* Perform actions before users are deleted.
+*/
+function _ogpl_custom_user_action_preprocess_user_delete($form, $form_state) {
+	//Custom action need to be done before deleting the user
+	
+	//- Get the UIDs to act on. -//
+	if ($form['form_id']['#value'] == 'user_multiple_delete_confirm')
+		$uids = $form_state['values']['accounts'];
+	else if ($form['form_id']['#value'] == 'user_confirm_delete')
+		$uids = array($form_state['values']['_account']->uid);
+	
+	if(!empty($uids)){
+		foreach ($uids as $uid) {
+		// Make the user disable instade of deleting it. You can put additional condition here to check if the user has some dataset or part of the VRM workflow
+		db_query("UPDATE {users} SET status = 0 WHERE uid = %d",$uid);
+		}
+		form_set_error('uid', 'This user is part of the workfolw, You can not delete the user. So this user is blocked.');		
+		drupal_goto('user-management');
+	}
+	
+}

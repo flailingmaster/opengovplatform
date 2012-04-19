@@ -1,5 +1,4 @@
 <?php
-// $Id: ie6update.module,v 1.1.2.1.2.4 2010/04/28 20:28:14 jrglasgow Exp $
 
 /**
  * @file
@@ -21,6 +20,16 @@ function ie6update_menu() {
     'access arguments' => array('administer site configuration'),
   );
   return $items;
+}
+
+/**
+ * Implementation of hook_help().
+ */
+function ie6update_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#ie6update':
+      return filter_filter('process', 1, NULL, file_get_contents(dirname(__FILE__) . "/README.txt"));
+  }
 }
 
 /**
@@ -50,7 +59,7 @@ function ie6update_footer($main = 0) {
   global $base_url, $base_path;
   $message = variable_get('ie6update_update_bar_message', 'Internet Explorer is missing updates required to view this site. Click here to update... ');
   $url = variable_get('ie6update_destination_url', 'http://www.microsoft.com/windows/internet-explorer/default.aspx');
-  $icon_path = $base_url . '/' . drupal_get_path('module', 'ie6update') .'/images/';
+  $icon_path = $base_url . $base_path . drupal_get_path('module', 'ie6update') .'/images/';
   return '
     <!--[if IE 6]>
       <script type="text/javascript">
@@ -60,7 +69,7 @@ function ie6update_footer($main = 0) {
           url: "'. $url .'"
         }
       </script>
-      <script type="text/javascript" src="'. url(drupal_get_path('module', 'ie6update') .'/ie6update.js', array('absolute' => TRUE)) .'"></script>
+      <script type="text/javascript" src="'. $base_url . $base_path . drupal_get_path('module', 'ie6update') .'/ie6update.js' .'"></script>
     <![endif]-->
   ';
 }

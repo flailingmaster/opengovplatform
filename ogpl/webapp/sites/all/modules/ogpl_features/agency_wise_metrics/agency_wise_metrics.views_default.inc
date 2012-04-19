@@ -1164,9 +1164,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
-  		           
-  $votes=\'<span>(\'.$vote.\' votes)</span>\'; 
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
+
+  $votes=\'<span>(\'.$vote.\' votes)</span>\';
 return theme(\'fivestar_static\',$value).$votes;
 ?>',
       'exclude' => 0,
@@ -1558,7 +1558,7 @@ return "node_data_field_ds_agency_name.field_ds_sub_agency_name_value=\'".$view-
      $sum=$sum+get_average_ratings($row->nid);
      $count++;
   }
-  
+
   $AR=$sum/$count;
   //print "AR=".$AR;
 
@@ -1567,15 +1567,15 @@ $result=db_query("select distinct(content_id) as nid from votingapi_vote V LEFT 
 
   $sum=0;
   while($row=db_fetch_object($result))
-  {   
+  {
      $sum=$sum+get_average_rating_votes($row->nid);
   }
   $AV=$sum/$count;
   $AV=round($AV);
 
  variable_set(\'average_rating\',$AR);
- variable_set(\'average_votes\',$AV); 
-       
+ variable_set(\'average_votes\',$AV);
+
         $this_page = $_SERVER[\'REQUEST_URI\'];
 	$last =substr($this_page,0,strripos($this_page,\'/\'));
         $slast =substr($last,0,strripos($last,\'/\'));
@@ -1909,9 +1909,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
-  		           
-  $votes=\'<span style="margin-left: 20px;"> (\'.$vote.\' votes)</span>\'; 
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
+
+  $votes=\'<span style="margin-left: 20px;"> (\'.$vote.\' votes)</span>\';
 return theme(\'fivestar_static\',$value).$votes;
 ?>',
       'exclude' => 0,
@@ -2288,9 +2288,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
-  		           
-  $votes=\'<span style="margin-left: 20px;"> (\'.$vote.\' votes)</span>\'; 
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
+
+  $votes=\'<span style="margin-left: 20px;"> (\'.$vote.\' votes)</span>\';
 return theme(\'fivestar_static\',$value).$votes;
 ?>',
       'exclude' => 0,
@@ -2619,9 +2619,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
-  		           
-  $votes=\'<span> (\'.$vote.\' votes)</span>\'; 
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
+
+  $votes=\'<span> (\'.$vote.\' votes)</span>\';
 return ($value/20).$votes;
 ?>',
       'exclude' => 0,

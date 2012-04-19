@@ -147,15 +147,23 @@ function pet_page_title($pet) {
  * @param $name
  *   The unique name of the PET template.
  * @param $recipients
- *   An array of at least one recipient in the form <uid>|<email> where uid may be empty.
+ *   An array of at least one recipient in one of two formats:
+ *      1. a simple email address, in which case the uid is looked up
+ *      2. an array('mail' => <email address>, 'uid' => <uid>) in which case the uid is already available
  * @param $nid
  *   An optional node id for token substitutions.
  * @param $subject
  *   An optional subject which if provided will override the subject in the PET.
  * @param $body
  *   An optional body which if provided which will override the body in the PET.
+ * @param $from
+ *   An optional from email which if provided which will override the from in the PET (which overrides the site default).
+ * @param $cc
+ *   Optional cc emails which if provided which will override the cc's in the PET.
+ * @param $bcc
+ *   Optional bcc emails which if provided which will override the bcc's in the PET.
  */
-function pet_send_mail($name, $recipients, $nid = NULL, $subject = NULL, $body = NULL) {
+function pet_send_mail($name, $recipients, $nid = NULL, $subject = NULL, $body = NULL, $from = NULL, $cc = NULL, $bcc = NULL) {
   $pet = pet_load($name);
   if (!$pet) {
     watchdog('pet', 'Unable to load PET %name.', array('%name' => $name), WATCHDOG_ERROR);
@@ -173,12 +181,22 @@ function pet_send_mail($name, $recipients, $nid = NULL, $subject = NULL, $body =
   // Store data in params in case a module wants to act on them somehow
   $params['pet_recipients'] = $recipients;
   $params['pet_nid'] = $nid;
-  $params['pet_from'] = variable_get('site_mail', $GLOBALS['site_mail']);
+  
+  $params['pet_from'] = $from ? $from : ($pet->from_override ? $pet->from_override : variable_get('site_mail', $GLOBALS['site_mail']));
+  $params['pet_cc'] = pet_parse_mails($cc);
+  $params['pet_bcc'] = pet_parse_mails($bcc);
   
   foreach ($recipients as $recipient) {
-    list($uid, $mail) = explode('|', $recipient);
-    $params['pet_uid'] = $uid;
-    $params['pet_to'] = $mail;
+    if (is_array($recipient)) {
+      $params['pet_to'] = $recipient['mail'];
+      $params['pet_uid'] = $recipient['uid'];
+    }
+    else {
+      // Strip leading uid for backward compatability
+      $mail = preg_replace('/^[0-9]*\|/', '', $recipient);
+      $params['pet_to'] = $mail;
+      $params['pet_uid'] = pet_lookup_uid($mail);
+    }
     pet_send_one_mail($pet, $params);
   }
 }
@@ -223,6 +241,7 @@ function pet_send_one_mail($pet, $params) {
   $substitutions = pet_substitutions($pet, $params);
   $params['subject'] = token_replace_multiple($pet->subject, $substitutions);
   $params['body'] = token_replace_multiple($pet->body, $substitutions);
+    
   drupal_mail('pet', $pet->name, $params['pet_to'], language_default(), $params, $params['pet_from']);
 }
 
@@ -276,6 +295,13 @@ function pet_substitutions($pet, $params) {
 function pet_mail($key, &$message, $params) {
   $message['subject'] = $params['subject'];
   $message['body'][] = $params['body'];
+    
+  if (is_array($params['pet_cc']) && count($params['pet_cc']) > 0) {
+    $message['headers']['Cc'] = implode(',', $params['pet_cc']);
+  }
+  if (is_array($params['pet_bcc']) && count($params['pet_bcc']) > 0) {
+    $message['headers']['Bcc'] = implode(',', $params['pet_bcc']);
+  }
 }
 
 /**
@@ -316,15 +342,9 @@ function pet_ca_action() {
 /**
  * Sends an email related to an Ubercart order, triggered by a conditional action.
  *
- * It would be nice if this function called pet_send_mail() instead of calling drupal_mail()
- * directly, but without some refactoring this isn't possible because PET assumes that every
- * email sent has user tokens based on the recipient user, which doesn't match the model
- * here, where the recipient might also include, for example, the store administrator.
- *
  * @see pet_action_email_form()
  */
 function pet_action_email($order, $settings) {
-  
   // Token replacements for the from and recipient addresses
   $account = uc_order_user_load($order);
   $settings['replacements'] = array(
@@ -430,3 +450,20 @@ function pet_views_api() {
     'path' => PET_VIEWS_DIR,
   );
 }
+
+/**
+ * Helper function to look up a uid from mail.
+ */
+function pet_lookup_uid($mail) {
+  return db_result(db_query_range("SELECT uid FROM {users} WHERE mail='%s'", $mail, 0, 1));
+}
+
+/**
+ * Helper function to parse emails into an array.
+ */
+function pet_parse_mails($mail_text) {
+  return preg_split('/[\n\r, ]/', $mail_text, -1, PREG_SPLIT_NO_EMPTY);
+}
+
+
+

@@ -55,8 +55,8 @@
   <div class="cBoth"></div>
     <div class="content">
 	<div class="dataset">
-    <?php 
-	
+    <?php
+
 		$pattern = "/\b\w+\@\w+[\.\w+]+\b/";
 		preg_match_all($pattern,$content,$matches);
 		$matchedArr = array_unique($matches[0]);
@@ -121,8 +121,8 @@
          <input type="submit" class="form-submit" name="preview" value="Preview" id="preview" title="Click here to preview" />
          <input type="hidden" name="embed-url" title="embed-url-hidden" value="<?php print htmlspecialchars($node->path); ?>" />
          <input type="hidden" name="embed-title" title="embed-title-hidden" value="<?php echo $node->title; ?>" />
-         
-         
+
+
     </div>
 	
 	</div>

@@ -5,9 +5,9 @@ package = Workflow
 
 version = 6.x-1.x-dev
 
-; Information added by drupal.org packaging script on 2011-11-25
-version = "6.x-1.7"
+; Information added by drupal.org packaging script on 2012-03-03
+version = "6.x-1.8"
 core = "6.x"
 project = "workflow_extensions"
-datestamp = "1322258745"
+datestamp = "1330775447"
 

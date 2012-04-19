@@ -91,12 +91,12 @@ function dms_customizations_subsector_populate_callback_ahah() {
 
 
   $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'] = $options;
-  
+
   form_set_cache($form_build_id, $form, $form_state);
 
   //skip validation for ahah
   drupal_get_messages('error');
-  form_set_error(null, '', true); 
+  form_set_error(null, '', true);
 
   drupal_json(array(
     'status'   => TRUE,
@@ -130,7 +130,7 @@ function dms_customizations_subagency_populate_callback_ahah() {
 
   $query = "SELECT n.title, c.nid FROM {content_type_sub_agency} c, {node} n WHERE n.nid = c.nid AND c.field_sa_subagency_agency_nid IN (%s)";
   $result = db_query($query, $catogery);
-  
+
   while ($obj = db_fetch_object($result)) {
     $cat_sub .= "<option value={$obj->nid}>{$obj->title}</option>";
   }
@@ -186,13 +186,13 @@ function dms_customizations_form_alter(&$form, &$form_state, $form_id) {
         'valid_subs' => $valid_subs,
       ), 'setting');
 
-  
+
       // Trigger ahah whenever 'category_filed' selection changed.
       // Remove the redudent <div> under <select> added by ahah.
-      drupal_add_js('jQuery(document).ready(function () { 
-        $("#edit-field-prof-agency-nid-nid").change(function(){$("' . $ahah_binding['selector'] . '").triggerHandler("change");}); 
+      drupal_add_js('jQuery(document).ready(function () {
+        $("#edit-field-prof-agency-nid-nid").change(function(){$("' . $ahah_binding['selector'] . '").triggerHandler("change");});
         $("#edit-field-prof-sub-agency-nid-nid").ajaxComplete(function(){
-          $(this).html($(this).find("option").parent().html());
+   $(this).html($(this).find("option").parent().html());
         });
         $("#edit-field-prof-sub-agency-nid-nid option").each(function() {
           if ($(this).val() && jQuery.inArray($(this).val(), Drupal.settings.valid_subs) == -1) {
@@ -200,7 +200,7 @@ function dms_customizations_form_alter(&$form, &$form_state, $form_id) {
           }
         });
       });', 'inline');
- 
+
       break;
 
     case 'dataset_node_form':
@@ -258,15 +258,16 @@ function dms_customizations_form_alter(&$form, &$form_state, $form_id) {
 
       // Trigger ahah whenever 'category_filed' selection changed.
       // Remove the redudent <div> under <select> added by ahah.
-      drupal_add_js('jQuery(document).ready(function () { 
-        $("#edit-field-ds-sector-nid-nid").change(function(){$("' . $ahah_binding['selector'] . '").triggerHandler("change");}); 
+      drupal_add_js('jQuery(document).ready(function () {
+        $("#edit-field-ds-sector-nid-nid").change(function(){$("' . $ahah_binding['selector'] . '").triggerHandler("change");});
         $("#edit-field-ds-sub-sector-nr-nid-nid").ajaxComplete(function(){
-          $(this).html($(this).find("option").parent().html());
+   $(this).html($(this).find("option").parent().html());
         });
       });', 'inline');
 
       // Minimize the options for sub categories based on category selection.
       $form['#after_build'][] = 'dms_customizations_dataset_populate_subsector_after_build';
+
 
       break;
 
@@ -326,7 +327,7 @@ function dms_customizations_form_alter(&$form, &$form_state, $form_id) {
         if ($user->uid == 1) {
           //User 1 has access to all actions
         }
-        else if (isset($roles['3'])) { 
+        else if (isset($roles['3'])) {
           //Select actions for 'Data Steward' role
           unset($form['select']['operation']['#options']['workflow_customizations_sendback_action']);
           if (isset($form['select']['operation']['#options']['workflow_customizations_approve_action'])) {
@@ -442,7 +443,7 @@ function dms_customizations_dataset_after_build($form, &$form_state) {
   $agency_otpions = $form['group_ds_all_datasets']['field_ds_agency_name']['nid']['nid']['#options'];
   $agency_value = $form['group_ds_all_datasets']['field_ds_agency_name']['nid']['nid']['#value'];
 
-  //For new datasets use the user profile agency field 
+  //For new datasets use the user profile agency field
   if(!isset($form['#node']->nid) && isset($agency_value)) {
     $form['group_ds_all_datasets']['field_ds_agency_name']['nid']['nid']['#options'] = array($agency_value => $agency_otpions[$agency_value]);
     dms_customizations_dataset_fix_disabled($form['group_ds_all_datasets']['field_ds_agency_name']);
@@ -478,7 +479,7 @@ function dms_customizations_profile_populate_subagency($agencys) {
 
   if (!$agencys || !$agencys[0]['nid']) {
     return $subs;
-  }
+    }
 
   $ags = array();
   foreach ($agencys as $ag) {
@@ -488,8 +489,8 @@ function dms_customizations_profile_populate_subagency($agencys) {
 
   $query = "SELECT n.title, c.nid FROM {content_type_sub_agency} c, {node} n WHERE n.nid = c.nid AND c.field_sa_subagency_agency_nid IN (%s)";
   $result = db_query($query, $ags);
-  
-  while ($obj = db_fetch_object($result)) {
+
+    while ($obj = db_fetch_object($result)) {
     $subs[] = $obj->nid;
   }
 
@@ -501,7 +502,7 @@ function dms_customizations_profile_populate_subagency($agencys) {
 */
 function dms_customizations_dataset_populate_subsector_after_build($form, &$form_state) {
   $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'] = array();
-  
+
   // Find the default category, if any.
   $categorys = $form['group_ds_all_datasets']['field_ds_sector']['#default_value'];
   if ($categorys) {
@@ -513,15 +514,15 @@ function dms_customizations_dataset_populate_subsector_after_build($form, &$form
     $cats = implode(",", $cats);
 
     if($cats) {
-      $query = "SELECT n.title, c.nid FROM {content_type_sub_sector} c, {node} n WHERE n.nid = c.nid AND c.field_sector_nr_nid IN (%s)";
-      $result = db_query($query, $cats);
+    $query = "SELECT n.title, c.nid FROM {content_type_sub_sector} c, {node} n WHERE n.nid = c.nid AND c.field_sector_nr_nid IN (%s)";
+    $result = db_query($query, $cats);
 
-      $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'][''] = '- None -';
+    $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'][''] = '- None -';
 
-      while ($obj = db_fetch_object($result)) {
-        $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'][$obj->nid] = $obj->title;
-      }
+    while ($obj = db_fetch_object($result)) {
+      $form['group_ds_all_datasets']['field_ds_sub_sector_nr']['nid']['nid']['#options'][$obj->nid] = $obj->title;
     }
+  }
   }
 
   return $form;
@@ -586,7 +587,7 @@ function dms_customizations_file_download($filepath) {
   }
 
   if ($denied) {
-    return -1;
+    return NULL;
   } else {
     //access granted
     $name = mime_header_encode($file->filename);

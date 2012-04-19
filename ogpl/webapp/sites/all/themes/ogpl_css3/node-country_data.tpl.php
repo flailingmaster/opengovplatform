@@ -396,8 +396,9 @@ if(strlen(trim($country_dataset_links)) > 0){
 }
 global $base_url;
 if(variable_get('file_downloads','') == 2) {
-    $flag_img = explode('/', $node->field_open_data_site_image[0]['filepath']);
-    $image_path = $base_url."/system/files/".$flag_img[count($flag_img) - 1];
+   // $flag_img = explode('/', $node->field_open_data_site_image[0]['filepath']);
+    $flag_img=substr($node->field_open_data_site_image[0]['filepath'],strpos($node->field_open_data_site_image[0]['filepath'],"files/"));
+    $image_path = $base_url."/system/".$flag_img;
 } else {
     $image_path = $node->field_open_data_site_image[0]['filepath'];
 }
@@ -441,7 +442,7 @@ if(variable_get('file_downloads','') == 2) {
         </div>
         <script type="text/javascript">
 		<!--//--><![CDATA[//><!--
-        $('#static-map').remove(); 
+        $('#static-map').remove();
 		//--><!]]>
         </script>
     </div>

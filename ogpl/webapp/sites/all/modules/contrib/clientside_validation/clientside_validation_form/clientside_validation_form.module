@@ -79,9 +79,9 @@ function clientside_validation_regular($form_id, $element, &$js_rules) {
       case 'checkbox':
       case 'checkboxes':
         $is_multiple = (isset($element['#options']) && count($element['#options']>1));
-        if ($is_multiple && $element['#required']) {
+        if ($is_multiple) {
           $id = '#' . $element['#id'] . '-wrapper';
-          _clientside_validation_set_checkboxgroup_minmax($element[$key]['#name'], $el_title, $id, $js_rules);
+          _clientside_validation_set_checkboxgroup_minmax($element[$key]['#name'], $el_title, $id, $js_rules, intval($element['#required']));
         }
         elseif ($element['#required']) {
           _clientside_validation_set_required($el_name, $el_title, $element['#required'], $js_rules);
@@ -142,7 +142,7 @@ function clientside_validation_cck($form_id, $element, &$js_rules) {
               $id = '#edit-' . str_replace('_', '-', $element['#field_name']) . '-value-wrapper';
               module_load_include('inc', 'content', 'includes/content.crud');
               $inf = content_field_instance_read(array('field_name' => $element['#field_name']));
-              _clientside_validation_set_checkboxgroup_minmax($element['#name'], $inf[0]['widget']['label'], $id, $js_rules);
+              _clientside_validation_set_checkboxgroup_minmax($element['#name'], $inf[0]['widget']['label'], $id, $js_rules, intval($cckfield['required']));
             }
             else {
               _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
@@ -191,7 +191,7 @@ function clientside_validation_cck($form_id, $element, &$js_rules) {
               $id = '#edit-' . str_replace('_', '-', $element['#field_name']) . '-value-wrapper';
               module_load_include('inc', 'content', 'includes/content.crud');
               $inf = content_field_instance_read(array('field_name' => $element['#field_name']));
-              _clientside_validation_set_checkboxgroup_minmax($element['#name'], $inf[0]['widget']['label'], $id, $js_rules);
+              _clientside_validation_set_checkboxgroup_minmax($element['#name'], $inf[0]['widget']['label'], $id, $js_rules, intval($cckfield['required']));
             }
             else {
               _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);
@@ -291,7 +291,7 @@ function clientside_validation_cck($form_id, $element, &$js_rules) {
               }
               module_load_include('inc', 'content', 'includes/content.crud');
               $inf = content_field_instance_read(array('field_name' => $element['#field_name']));
-              _clientside_validation_set_checkboxgroup_minmax($element['#name'], $inf[0]['widget']['label'], $id, $js_rules);
+              _clientside_validation_set_checkboxgroup_minmax($element['#name'], $inf[0]['widget']['label'], $id, $js_rules, intval($cckfield['required']));
             }
             else {
               _clientside_validation_set_required($el_name, $title, $cckfield['required'], $js_rules);

@@ -4,16 +4,12 @@
 
 <head>
   <style type="text/css" media="all">
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/views_slideshow/contrib/views_slideshow_singleframe/views_slideshow.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/views_slideshow/contrib/views_slideshow_thumbnailhover/views_slideshow.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/extlink/extlink.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/cck/modules/fieldgroup/fieldgroup.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/views/css/views.css?i";
-  @import "<?php echo $base_url;?>/sites/all/libraries/jquery.ui/themes/default/ui.all.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/forward/forward.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/context/plugins/context_reaction_block.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/custom_search/custom_search.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/views_bulk_operations/js/views_bulk_operations.css?i";
+  @import "<?php echo $base_url.'/'.drupal_get_path('module', 'views_slideshow');?>/contrib/views_slideshow_singleframe/views_slideshow.css?i";
+  @import "<?php echo $base_url.'/'.drupal_get_path('module', 'views_slideshow');?>/contrib/views_slideshow_thumbnailhover/views_slideshow.css?i";
+  @import "<?php echo $base_url.'/'.drupal_get_path('module', 'extlink');?>/extlink.css?i";
+  @import "<?php echo $base_url.'/'.drupal_get_path('module', 'views');?>/css/views.css?i";
+  @import "<?php echo $base_url.'/'.drupal_get_path('module', 'context');?>/plugins/context_reaction_block.css?i";
+  @import "<?php echo $base_url.'/'.drupal_get_path('module', 'views_bulk_operations');?>/js/views_bulk_operations.css?i";
   @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/style.css?i";
   @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/typography.css?i";
   @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/superfish.css?i";

@@ -1,5 +1,5 @@
 <?php
-
+module_load_include('inc', 'video', 'video_widget');
 
 /**
  * @file
@@ -66,7 +66,7 @@ function uploadfield_widget_value($element, $edit = FALSE) {
     // Uploads take priority over value of fid text field.
     if ($fid = filefield_save_upload($element)) {
       $item['fid'] = $fid;
-      $item['data'] = array(); //reset our data array for thumbnails and values.
+      $item['data'] = $element['#default_value']['data'];
     }
     // Check for #filefield_value_callback values.
     // Because FAPI does not allow multiple #value_callback values like it does
@@ -114,11 +114,6 @@ function uploadfield_widget_process($element, $edit, &$form_state, $form) {
 
   if (isset($element['preview']) && $element['#value']['fid'] != 0) {
     $element['preview']['#value'] = theme('video_widget_preview', $element['#value']);
-  }
-
-  // Title is not necessary for each individual field.
-  if ($field['multiple'] > 0) {
-    unset($element['#title']);
   }
 
   // Create our thumbnails

@@ -1,1 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"                      "http://www.w3.org/TR/html4/loose.dtd"><html><head><title>Embed Preview</title></head><body><div class="embed_preview" style="height:50px;"></div><div style="padding-left:100px;"><?php if(!empty($_POST['preview']) && is_numeric($_POST['ewidth']) && is_numeric($_POST['eheight'])){	echo "<iframe width=\"".$_POST['ewidth']."\" height=\"".$_POST['eheight']."\" "; 	echo "title=\"".strip_tags($_POST['embed-title'])."\" src=\"".strip_tags($_POST['embed-url'])."/?embed=1\" frameborder=\"1\" scrolling=\"auto\"></iframe>";}?></div></body></html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                      "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Embed Preview</title>
+</head>
+<body>
+<div class="embed_preview" style="height:50px;"></div>
+<div style="padding-left:100px;">
+<?php
+if(!empty($_POST['preview']) && is_numeric($_POST['ewidth']) && is_numeric($_POST['eheight'])){
+
+	echo "<iframe width=\"".$_POST['ewidth']."\" height=\"".$_POST['eheight']."\" ";
+ 	echo "title=\"".strip_tags($_POST['embed-title'])."\" src=\"".strip_tags($_POST['embed-url'])."/?embed=1\" frameborder=\"1\" scrolling=\"auto\"></iframe>";
+}
+?>
+</div>
+</body>
+</html>

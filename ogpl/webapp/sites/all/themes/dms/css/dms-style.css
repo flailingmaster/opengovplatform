@@ -185,10 +185,6 @@ body {
     min-width:150px;
 }
 
-#block-blockify-blockify-logo {
-    margin-top:10px;
-}
-
 #block-blockify-blockify-logo .gutter {
     margin: 0;
     padding: 0;
@@ -203,7 +199,6 @@ ul#superfish-1 {
     text-align:center;
     margin: auto;
     position:relative;
-    height:50px !important;
 }
 
 #block-menu-primary-links, .primary-navigation {
@@ -217,19 +212,6 @@ ul#superfish-1 {
     overflow: visible;
     padding: 0;
     margin: auto;
-}
-
-.primary-navigation div.content {
-    position:relative;
-}
-
-.primary-navigation .inner {
-    margin-right: 0 !important;
-}
-
-ul.primary-navbar {
-    position:absolute !important;
-    right:0 !important;
     background: #214472;
     background: -moz-linear-gradient(left, #214472 0%, #59718e 60%, #214472 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,#214472), color-stop(60%,#59718e), color-stop(100%,#214472)); /* Chrome,Safari4+ */
@@ -241,6 +223,10 @@ ul.primary-navbar {
     -moz-border-radius: 10px 10px 0px 0px;
     -webkit-border-radius: 10px 10px 0px 0px;
     border: 1px transparent solid;
+}
+
+.primary-navigation div.content {
+    position:relative;
 }
 
 #block-menu-primary-links a, .primary-navigation a {
@@ -259,7 +245,7 @@ ul.primary-navbar {
 #block-menu-primary-links ul.menu li, .primary-navigation .sf-menu li {
     font-size:14px !important;
     display:inline;
-     height:46px !important;
+    /* height:46px !important; */
    /* float:left; */
     padding: 0 !important;
     margin: 0 15px !important;
@@ -1728,7 +1714,6 @@ label.error {
 	font-family: Arial,Verdana,sans-serif;
 	border: 1px solid #E4E4E4;
 	border-bottom: 1px solid #B4B4B4;
-	background: url(/dms2/sites/all/themes/seven/images/buttons.png) 0 0 repeat-x;
 	border-radius: 15px;
 	-moz-border-radius: 20px;
 	-webkit-border-radius: 15px;
@@ -1737,6 +1722,7 @@ label.error {
 	margin-top: -1px;
 	color: #000000 !important;
 	text-decoration: none !important;
+	background-color:#f0f0f0;
 }
 input.form-checkbox,input.form-radio{
 	height: auto !important;
@@ -1780,7 +1766,7 @@ height: auto;
     color: #000000 !important;
 }
 #comment-admin-overview .form-submit , #comment-form .form-submit, .chart-submit, .metric-filters .form-submit ,.report-form .report-submit{
-background: url("/dms2/sites/all/themes/seven/images/buttons.png") repeat-x scroll 0 0 transparent;
+	/*background: url("/dms2/sites/all/themes/seven/images/buttons.png") repeat-x scroll 0 0 transparent;*/
     border-color: #E4E4E4 #E4E4E4 #B4B4B4;
     border-radius: 20px 20px 20px 20px;
     border-style: solid;
@@ -2181,6 +2167,7 @@ noindex:-o-prefocus, .manage-workflow-status th.views-field-nothing{
     margin-right: 5px;
     padding-top: 7px;
     padding-bottom: 7px;
+	background-color:#f0f0f0;
 }
 #edit-date-filter-min-date-wrapper ,#edit-date-filter-max-date-wrapper{
 width:235px;
@@ -2230,6 +2217,9 @@ margin:0!important;
 #views-exposed-form-VRM-delay-analysis-page-1 #edit-field-assigned-to-uid ,#views-exposed-form-poc-VRM-delay-analysis-page-1 #edit-field-assigned-to-uid {
     width: 250px;
 }
+#views-exposed-form-VRM-delay-analysis-page-1 .views-widget-filter-field_assigned_to_uid,#views-exposed-form-poc-VRM-delay-analysis-page-1 .views-widget-filter-field_assigned_to_uid {
+    width: 265px;
+}
 /* start changes for TextSize module admin area css */
 div#edit-textsize-display-increase-wrapper label {
   background: transparent url("../images/textsizePlus.gif") no-repeat 2.2em 0;
@@ -2247,4 +2237,44 @@ div#edit-textsize-display-normal-wrapper label {
   height: 18px; /* NOTE icon specific */
 }
 /* end changes for TextSize module admin area css */
-.filefield-file .field-icon-text-css{display:none;}
+/*css for vrm charts legend */
+.color-code-table {
+    float: right;
+    border:1px solid;
+    border-top:none;
+   border-right:none;
+}
+.color-code-table table {
+    border: none;
+    border-collapse: separate;
+}
+
+.color-code-table td div{ width:10px; height:10px;}
+.color-code-table  .lblue {background:#ADDFFF;}
+.color-code-table  .yellow {background:#FFF000;}
+.color-code-table  .orange{background:#F87431;}
+.color-code-table  .green {background:#A0C544;}
+.color-code-table  .gold {background:#EAC117;}
+.color-code-table  .turquoise {background:#228BA8;}
+.color-code-table  .purple {background:#6D5499;}
+.color-code-table  .lorange{background:#E67541;}
+.color-code-table  .dgreen {background:#347C2C;}
+.color-code-table  .blue {background:#157DEC;}
+.color-code-table  .red {background:#800517;}
+
+.chart-total {
+font-size: 1.2em;
+font-weight: bold;
+margin-left: -350px;
+text-align: center;
+margin-bottom: 10px;
+}
+.chart-table {
+border:1px solid;
+margin-top:25px;
+width:850px;
+}
+
+.field-icon-text-css {
+	display:none !important;
+}

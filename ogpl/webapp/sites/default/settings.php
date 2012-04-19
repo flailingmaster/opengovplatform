@@ -88,10 +88,10 @@
  *   $db_url = 'mysqli://username:password@localhost/databasename';
  *   $db_url = 'pgsql://username:password@localhost/databasename';
  */
-$db_url = 'mysql://ogpl_stage:ogpl_stage@localhost/ogpl_stage';
+$db_url = 'mysql://ogpl_live:ogpl_live@localhost/ogpl_live';
 $db_prefix = '';
 
-/** 
+/**
  * Database default collation.
  *
  * All data stored in Drupal is in UTF-8. Certain databases, such as MySQL,

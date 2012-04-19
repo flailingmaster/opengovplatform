@@ -102,25 +102,7 @@ class views_handler_field_allowed_node_operation extends views_handler_field {
   function possible_workflow_transitions($node) {
     $wid = workflow_get_workflow_for_type($node->type);
 	
-	# The different workflow states for System
-	# 10 Published state for DMS - 3
-	# 19 Published state for CMS - 6
-	
-	
-	switch($wid){
-		case "3":
-			$published = 10;
-		break;
-		case "7":
-			$published = 10;
-		break;
-
-		case "6":
-			$published = 19;
-		break;
-	}
-	
-    $published_state = variable_get("workflow_node_revision_published_state_$wid",$published);
+    $published_state = variable_get("workflow_node_revision_published_state_$wid",10);
     $actions = array();
     global $user;
     $roles = $user->roles;
@@ -148,8 +130,8 @@ class views_handler_field_allowed_node_operation extends views_handler_field {
       $author = user_load($node->uid);
       // If the logged in user has the Agency POC role and the node was created by a data steward show the sendback option
       if ($user->uid == 1 || !isset($roles['4']) || (isset($roles['4']) && isset($author->roles['3']))) {
-        $actions['sendback'] = $choice_keys[$current_state_key - 1];
-      }
+      $actions['sendback'] = $choice_keys[$current_state_key - 1];
+    }
     }
 
     if (($current_state_key + 1) < count($choice_keys) && $current_state_key != 0) {
@@ -167,44 +149,16 @@ class views_handler_field_allowed_node_operation extends views_handler_field {
     if ($current_state == $published_state) {
       $actions['update_and_delete_request'] = $published_state;
     }
- 
+
     return $actions;
   }
-  
-  function custom_node_access($action,$wid,$node){
-	global $user;
-	switch($wid){
 
-		case "3":
-			return node_access($action, $node);		//DMS
-		case "7":			
-			module_load_include('module', 'module_grants');
-            return module_grants_node_access($action, $node);		//VRM
+    function custom_node_access($action, $wid, $node)
+    {
+        return node_access($action, $node); //DMS
+    }
 
-		break;
-		case "6":							//CMS
-			$sql = "select * from node_access where nid ='".$node->nid."' and realm='workflow_access' ";
-			$sql.= "and gid in ('".implode("', '",array_keys($user->roles))."') ";
-			$grant = array();
-			if($dataRes = db_query($sql)){
-				while($resObj = db_fetch_object($dataRes)){	
-					if($resObj->grant_view){
-						$grant[] = "view";
-					}
-					if($resObj->grant_update){
-						$grant[] = "update";
-					}
-				}
-				
-			}
-			return in_array($action,$grant);
-		break;	
-		
-	
-	}
-  }
- 
-  function render($values) {
+    function render($values) {
     global $user;
     $links = '';
 
@@ -227,28 +181,28 @@ class views_handler_field_allowed_node_operation extends views_handler_field {
     if (isset($actions['approve']) && !empty($this->options['approve_link_text'])) {
       // No go without validation
       if ($validated) {
-        $attributes = array('attributes' => array('class' => 'approve-link', 'title' => 'Approve this record for next approval step'));
-        $text = $this->options['approve_link_text'];
-        $links .= l($text, url("node/$nid/workflow", array('query' => 'workflow_state=' . $actions['approve'] . '&destination=', 'absolute' => TRUE)), $attributes);
-      }
+      $attributes = array('attributes' => array('class' => 'approve-link', 'title' => 'Approve this record for next approval step'));
+      $text = $this->options['approve_link_text'];
+      $links .= l($text, url("node/$nid/workflow", array('query' => 'workflow_state=' . $actions['approve'] . '&destination=', 'absolute' => TRUE)), $attributes);
+    }
     }
 
     if (isset($actions['submit']) && !empty($this->options['submit_link_text'])) {
       // No go without validation
       if ($validated) {
         $attributes = array('attributes' => array('class' => 'submit-link', 'title' => 'Submit this record for approval'));
-        $text = $this->options['submit_link_text'];
-        $links .= l($text, url("node/$nid/workflow", array('query' => 'workflow_state=' . $actions['submit'] . '&destination=', 'absolute' => TRUE)), $attributes);
-      }
+      $text = $this->options['submit_link_text'];
+      $links .= l($text, url("node/$nid/workflow", array('query' => 'workflow_state=' . $actions['submit'] . '&destination=', 'absolute' => TRUE)), $attributes);
+    }
     }
 
     if (isset($actions['publish']) && !empty($this->options['publish_link_text'])) {
       // No go without validation
       if ($validated) {
-        $attributes = array('attributes' => array('class' => 'publish-link', 'title' => 'Publish this record to the main website'));
-        $text = $this->options['publish_link_text'];
-        $links .= l($text, url("node/$nid/workflow", array('query' => 'workflow_state=' . $actions['publish'] . '&destination=', 'absolute' => TRUE)), $attributes);
-      }
+      $attributes = array('attributes' => array('class' => 'publish-link', 'title' => 'Publish this record to the main website'));
+      $text = $this->options['publish_link_text'];
+      $links .= l($text, url("node/$nid/workflow", array('query' => 'workflow_state=' . $actions['publish'] . '&destination=', 'absolute' => TRUE)), $attributes);
+    }
     }
 
     if (isset($actions['sendback']) && !empty($this->options['sendback_link_text'])) {

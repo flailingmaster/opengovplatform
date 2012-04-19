@@ -595,6 +595,95 @@ function _clientside_validation_set_minmaxlength($name, $title, $min, $max, &$js
 }
 
 /**
+ * Set validation rule for fields with a minimum and/or maximum amount of words.
+ */
+function _clientside_validation_set_minmax_words($name, $title, $min, $max, &$js_rules, $message = '') {
+  $title = variable_get('clientside_validation_prefix', '') . $title . variable_get('clientside_validation_suffix', '');
+  if (isset($min) && $min !== '' && isset($max) && $max !== '') {
+    $js_rules[$name]['rangewords'] = array($min, $max);
+    if (empty($message)) {
+      $variables = array(
+        'message' => '!title field has to have between !min and !max words.',
+        'placeholders' => array('!title' => $title, '!min' => $min, '!max' => $max),
+        'error_type' => 'rangewords',
+        'element_name' => $name,
+      );
+    }
+    else {
+      $variables = array(
+        'message' => $message,
+        'error_type' => 'rangewords',
+        'element_name' => $name,
+      );
+    }
+    $js_rules[$name]['messages']['rangewords'] = theme('clientside_error', $variables);
+  }
+  elseif (isset($min) && $min !== '') {
+    $js_rules[$name]['minwords'] = $min;
+    if (empty($message)) {
+      $variables = array(
+        'message' => '!title field has to have minimal !min words.',
+        'placeholders' => array('!title' => $title, '!min' => $min),
+        'error_type' => 'minwords',
+        'element_name' => $name,
+      );
+    }
+    else {
+      $variables = array(
+        'message' => $message,
+        'error_type' => 'minwords',
+        'element_name' => $name,
+      );
+    }
+    $js_rules[$name]['messages']['minwords'] = theme('clientside_error', $variables);
+  }
+  elseif (isset($max) && $max !== '') {
+    $js_rules[$name]['maxwords'] = $max;
+    if (empty($message)) {
+      $variables = array(
+        'message' => '!title field has to have maximum !max words.',
+        'placeholders' => array('!title' => $title, '!max' => $max),
+        'error_type' => 'maxwords',
+        'element_name' => $name,
+      );
+    }
+    else {
+      $variables = array(
+        'message' => $message,
+        'error_type' => 'maxwords',
+        'element_name' => $name,
+      );
+    }
+    $js_rules[$name]['messages']['maxwords'] = theme('clientside_error', $variables);
+  }
+}
+
+/**
+ * Set validation rule for plain text fields
+ */
+function _clientside_validation_set_plain_text($name, $title, $allowed_tags, &$js_rules, $message = '') {
+  $title = variable_get('clientside_validation_prefix', '') . $title . variable_get('clientside_validation_suffix', '');
+  $js_rules[$name]['plaintext'] = empty($allowed_tags) ? '' : $allowed_tags;
+  if (empty($message)) {
+      $variables = array(
+        'message' => (empty($allowed_tags)) ? '!title field can not contain any HTML tags' :  '!title field can not contain any HTML tags exept !allowed',
+        'placeholders' => array('!title' => $title, '!allowed' => $allowed_tags),
+        'error_type' => 'plaintext',
+        'element_name' => $name,
+      );
+    }
+    else {
+      $variables = array(
+        'message' => $message,
+        'error_type' => 'plaintext',
+        'element_name' => $name,
+      );
+    }
+    $js_rules[$name]['messages']['plaintext'] = theme('clientside_error', $variables);
+}
+
+
+/**
  * Set validation rule for required fields that must equal a value from an other field.
  */
 function _clientside_validation_set_equal($name, $title, $value, &$js_rules) {
@@ -642,8 +731,8 @@ function _clientside_validation_set_specific_value($name, $title, $value, &$js_r
   $title = variable_get('clientside_validation_prefix', '') . $title . variable_get('clientside_validation_suffix', '');
   if (empty($message)) {
     $variables = array(
-      'message' => '!title field has to different from !firstone.',
-      'placeholders' => array('!title' => $title, '!firstone' => $value['name']),
+      'message' => '!title field has to be one of the following values: !values.',
+      'placeholders' => array('!title' => $title, '!values' => implode(', ', $value)),
       'error_type' => 'specific value',
       'element_name' => $name
     );
@@ -682,6 +771,31 @@ function _clientside_validation_set_specific_values($name, $title, $values, &$js
   }
   $message = theme('clientside_error', $variables);
   $js_rules[$name]['messages']['specificVals'] = $message;
+}
+
+/**
+ * Set validation rule for fields that can not consist of one or more specific values
+ */
+function _clientside_validation_set_blacklist($name, $title, $values, &$js_rules, $message='') {
+  $js_rules[$name]['blacklist'] = $values;
+  $title = variable_get('clientside_validation_prefix', '') . $title . variable_get('clientside_validation_suffix', '');
+  if (empty($message)) {
+    $variables = array(
+      'message' => '!title field can not consist of following elements: !elements.',
+      'placeholders' => array('!title' => $title, '!elements' => implode(', ', $values)),
+      'error_type' => 'blacklist',
+      'element_name' => $name
+    );
+  }
+  else {
+    $variables = array(
+      'message' => $message,
+      'error_type' => 'blacklist',
+      'element_name' => $name
+    );
+  }
+  $message = theme('clientside_error', $variables);
+  $js_rules[$name]['messages']['blacklist'] = $message;
 }
 
 /**
@@ -835,6 +949,28 @@ function _clientside_validation_set_url($name, $title, &$js_rules) {
     'element_name' => $name
   );
   $js_rules[$name]['messages']['url'] = theme('clientside_error', $variables);
+}
+
+/**
+ * Set validation rule for "require at least one of several".
+ */
+function _clientside_validation_set_require_oneof($names, $titles, $message = "", &$js_rules) {
+  $original_message = $message;
+  foreach ($names as $key => $name) {
+    $temp_titles = $titles;
+    unset($temp_titles[$key]);
+    if (empty ($original_message)) {
+      $string_titles = '<ul><li>' . implode('</li><li>', $temp_titles) . '</li></ul>';
+      $message = t('!name field is required unless you specify at least one of these items: !items', array('!name' => $titles[$key], '!items' => $string_titles));
+    }
+    $js_rules[$name]['requireOneOf'] = array_diff($names, array($name));
+    $variables = array(
+      'message' => $message,
+      'error_type' => 'requireOneOf',
+      'element_name' => $name,
+    );
+    $js_rules[$name]['messages']['requireOneOf'] = theme('clientside_error', $variables);
+  }
 }
 
 function clientside_validation_drupal_json_encode($var) {

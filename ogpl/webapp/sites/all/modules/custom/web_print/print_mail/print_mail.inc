@@ -364,7 +364,6 @@ function print_mail_form_submit($form, &$form_state) {
 			$headers  = 'MIME-Version: 1.0' . "\r\n";
 			$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
 			$headers .= 'From: ' . $from . "\r\n";
-			$headers .= 'Bcc: ' . 'dpmisra@nic.in' . "\r\n";
 
 			$params['pet_from'] = $from;
 			$params['pet_to'] = $to;

@@ -216,7 +216,7 @@ function dms_ds_upload_insert_field(&$node = NULL, $fields, $data = array(), $fi
 
           $node_element[$i]['type'] = $type_chosen;
 
-          //now deal with flexifield child fields  
+          //now deal with flexifield child fields
           $child_fields = dms_ds_upload_get_fields($type_chosen);
           if (!isset($node_element[$i]['value'])) {
             $node_element[$i]['value'] = array();

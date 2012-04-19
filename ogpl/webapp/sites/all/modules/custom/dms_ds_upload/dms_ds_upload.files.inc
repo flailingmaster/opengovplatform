@@ -287,7 +287,7 @@ function dms_ds_upload_download_nodes($node_ids = array(), $format = 'csv') {
     $node_ids = array($node_ids);
   }
 
-  //filename to show user when downloading. 
+  //filename to show user when downloading.
   $filename = "datasets." . date('Y-m-d') . "." . $format;
 
   require_once 'dms_ds_upload.fields.inc';

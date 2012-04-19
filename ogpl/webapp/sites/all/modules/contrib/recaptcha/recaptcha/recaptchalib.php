@@ -78,7 +78,7 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 
         $response = '';
         if( false == ( $fs = @fsockopen($host, $port, $errno, $errstr, 10) ) ) {
-                die ('Could not open socket');
+           form_set_error('captcha_response', t('Captcha failed due to no response from server. Please try after some time.'));
         }
 
         fwrite($fs, $http_request);

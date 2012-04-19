@@ -241,9 +241,11 @@ $alias=drupal_get_path_alias($_GET['q']);
 	return '<p>' .t('You can update the information about a user, such as the username, password, roles,etc.For more info click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#updating_user_details.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
 	
 	case 'vrm-category-metrics':
+	case 'vrm-category-metrics-poc':
 	return '<p>' .t('The VRM Category Metrics report lists the total number of feedback that is in a specific state, for each feedback category. This report enables you to analyze and track the statistics for each feedback category.') .'</p>';
 	
 	case 'assigneewise-vrm-listing':
+	case 'assigneewise-vrm-listing-poc':
 	return '<p>' .t('The Assignee Wise VRM Statistics report lists the total number of feedback for each assignee. This report enables you to track the number of feedback that each assignee has replied to, reviewed, closed, and archived.') .'</p>';
 	
 	case 'admin/settings/date-time/formats':
@@ -279,15 +281,19 @@ $alias=drupal_get_path_alias($_GET['q']);
 	}
  switch($alias){
 	case 'action-metrics':
+	case 'poc-action-metrics':
 	return '<p>' .t('The VRM Action Metrics report displays the percentage of feedback that is currently in a specific action status. This report enables you to analyze the feasibility of the feedback that the visitors provided. By default, the VRM Action Metrics report displays the metrics for all the feedback received till date.') .'</p>';
 
 	case 'source-metrics':
+	case 'poc-source-metrics':
 	return '<p>' .t('The VRM Source Metrics report displays the percentage of feedback that is received from a specific feedback source page, such as the Contact Us page, Feedback page, Ratings page, or Suggest Dataset page on the OGPL Web site. This report enables you to analyze the pattern of feedback received from every source.') .'</p>';
 
 	case 'status-metrics':
+	case 'poc-status-metrics':
 	return '<p>' .t('The VRM Status Metrics report displays the percentage of feedback that is currently in a specific status. This report enables you to analyze and track work progress.') .'</p>';
 	
 	case 'vrm-delay-analysis':
+	case 'poc-vrm-delay-analysis':
 	return '<p>' .t('The VRM Delay Analysis report lists the username of the feedback owners who did not review the feedback or send the feedback reply within the default delay time. This report enables you to analyze and track the number of late reviews or late feedback replies for each feedback owner.') .'</p>';
 
 	case 'content/contact-us':

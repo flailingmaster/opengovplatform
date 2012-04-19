@@ -4,7 +4,7 @@ function web_contact_owner_form()
 	if ( arg(0) == 'node' && is_numeric(arg(1)) && ! arg(2)) {
 		$node = node_load(arg(1));
 	}
-	drupal_add_js(drupal_get_path('module', 'feedback').'/feedback.js');
+	
 	$max_len = 3000;
 	$nid = $node->nid;
 	$output=db_query("select content_type_dataset.nid as nid,content_type_dataset.field_ds_email_address_email as email,content_type_dataset.field_ds_title_value as title from content_type_dataset where content_type_dataset.nid='$nid'");
@@ -93,7 +93,7 @@ function web_contact_owner_form_submit($form,&$form_state){
 	$output=db_query("select content_type_dataset.field_ds_email_address_email as email from content_type_dataset where content_type_dataset.nid='".$nodeid."'");
 	if($result=db_fetch_object($output)){
 		$email=$result->email;
-	}	
+	}
 	$headers = 'From: '.$form_state['values']['emailid']."\r\n";
 	if($form_state['values']['cc'])
 		$headers.= 'Cc: '.$form_state['values']['emailid'];

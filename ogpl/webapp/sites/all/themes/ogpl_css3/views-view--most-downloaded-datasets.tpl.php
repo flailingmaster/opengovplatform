@@ -54,7 +54,7 @@ if(strpos($classes_array[3], 'page_1')) {
 	}
 	?>
 	<div class="metrics-datasetreport-select" style="margin-top:32px">
-	<div style="float:left;"><label for="Top10DatasetReportType">Select the type of Report to view: </label> </div>
+	<div style="float:left;"><label for="Top10DatasetReportType">Select the type of Report to view : </label> </div>
 		<div style="float:left;">
 			<div style="margin:0 0 0 20px;" class="switch-js-disabled">
 				<?php

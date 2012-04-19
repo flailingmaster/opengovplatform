@@ -6017,9 +6017,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
-  		           
-  $votes=\'<span> (\'.$vote.\' votes)</span>\'; 
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
+
+  $votes=\'<span> (\'.$vote.\' votes)</span>\';
 return theme(\'fivestar_static\',$value).$votes;
 ?>',
       'exclude' => 0,
@@ -6620,9 +6620,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
-  		           
-  $votes=\'<span>(\'.$vote.\' votes)</span>\'; 
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
+
+  $votes=\'<span>(\'.$vote.\' votes)</span>\';
 return theme(\'fivestar_static\',$value).$votes;
 ?>',
       'exclude' => 0,
@@ -7135,9 +7135,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
-  		           
-  $votes=\'<span> (\'.$vote.\' votes)</span>\'; 
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
+
+  $votes=\'<span> (\'.$vote.\' votes)</span>\';
 return ($value/20).$votes;
 ?>',
       'exclude' => 0,

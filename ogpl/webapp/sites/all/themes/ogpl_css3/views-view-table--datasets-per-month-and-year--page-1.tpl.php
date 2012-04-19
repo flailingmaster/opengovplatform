@@ -55,11 +55,11 @@ print '<div style="display:none;" class="metrics-result-per-page-dropdown cBoth 
 print '<label for="itemcount">Results per page: </label>';
 print '<select id="itemcount" name="itemcount" onchange="itemsperpage(this.options[this.options.selectedIndex].value);">';
 foreach($select_options as $key=>$value)
-	{ 
+	{
 		if($selected_count == $select_options[$value]) {
 		print '<option value="'.$select_options[$value].'" selected = "selected" onclick="itemsperpage('.$select_options[$value].')">'.$select_options[$value].'&nbsp;</option>';
 		}
-		else{ 
+		else{
 		print '<option value="'.$select_options[$value].'" onclick="itemsperpage('.$select_options[$value].')">'.$select_options[$value].'&nbsp;</option>';
 
 		}

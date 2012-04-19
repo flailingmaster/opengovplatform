@@ -1,29 +1,19 @@
 <?php
-
 /*
  * @file
- * Class file used to store filesystem on the video.
+ * Class file used to store videos on the local disk.
  *
  */
-class drupal extends video_filesystem {
-
+class drupal implements filesystem_interface {
   protected $params = array();
-  protected $name = 'Drupal File System';
+  protected $name = 'Drupal file system';
   protected $value = 'drupal';
 
   public function __construct() {
     
   }
 
-  public function save_file($video) {
-
-  }
-
-  public function prepare_file($video) {
-
-  }
-
-  public function load_file(&$video) {
+  public function load_file($video) {
     
   }
 
@@ -40,7 +30,7 @@ class drupal extends video_filesystem {
    * @see sites/all/modules/video/includes/filesystem_interface#get_help()
    */
   public function get_help() {
-    return t('Drupal filesystem', array());
+    return l(t('Drupal file system'), 'admin/settings/file-system');
   }
 
   /**
@@ -51,19 +41,12 @@ class drupal extends video_filesystem {
     return $this->value;
   }
 
-  public function run_command($options) {
-    return;
-  }
-
   public function admin_settings() {
     $form = array();
     return $form;
   }
 
-  public function admin_settings_validate($form, $form_state) {
+  public function admin_settings_validate($form, &$form_state) {
     return;
   }
-
 }
-
-?>

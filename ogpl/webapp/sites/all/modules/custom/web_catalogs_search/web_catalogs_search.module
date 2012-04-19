@@ -65,7 +65,7 @@ function calculate_ratings($this_node,$AR,$AV)
    $sum=0;
    $count=0;
 /*
-  Calculating average ratings for all items (AR) 
+  Calculating average ratings for all items (AR)
   $result=db_query("select distinct(content_id) as nid from votingapi_vote V LEFT JOIN node N on V.content_id=N.nid where N.type='dataset' ");
   while($row=db_fetch_object($result))
   {
@@ -579,7 +579,7 @@ function current_search_filters()
  if($output!='')
   $output='<ul>'.$output.'</ul>';
 
-  $output='<h3>Search found '.count(views_get_view_result('Catalogs_Search')).' items</h3>'.$output;
+  $output='<div class="item-list"><h3>Search found '.count(views_get_view_result('Catalogs_Search')).' items</h3>'.$output.'</div>';
   return $output;
 
 }
@@ -600,7 +600,7 @@ function sorting_options()
     
    $options=array('title'=>'Title','type'=>'Type','updated'=>'Last Updated','rating'=>'Rating','popularity'=>'Most Accessed','recent'=>'Most Recent');
    $default_direction=array('title'=>'asc','type'=>'asc','updated'=>'desc','rating'=>'desc','popularity'=>'desc','recent'=>'asc');
-   $output='<ul>';
+   $output='<div class="item-list"><ul>';
    foreach($options as $type=>$sort)
    {  $image='';
      if($sort_type==$type)
@@ -616,7 +616,7 @@ function sorting_options()
      $output.='<li><a title="'.$sort.'" href="'.set_sort($type,$default_direction[$type]).'">'.$sort.'</a></li>';
 
    }
-  $output.='</ul>';
+  $output.='</ul></div>';
    }
   return $output;
 }
@@ -650,7 +650,7 @@ function agency_name_filters()
    	 $output.='<li><a title="'.$text.'" href="'.set_filters('agency',$row->name).'">'.$text.' ('.$row->count.')</a></li>';
   	}
         if($output)
-       $output='<ul>'.$output.'</ul>';  
+       $output='<div class="item-list"><ul>'.$output.'</ul></div>';  
        }
      }
   else
@@ -662,9 +662,9 @@ function agency_name_filters()
    	   $text=$node->title;
      }
 
-    $output='<ul>';
+    $output='<div class="item-list"><ul>';
     $output.='<li><a href="'.remove_filter('agency').'">(-) </a>'.$text.'</li>';
-    $output.='</ul>';
+    $output.='</ul></div>';
 
   }
   return $output;
@@ -700,15 +700,15 @@ function sub_agency_name_filters()
     $output.='<li><a title="'.$row->name.'"  href="'.set_filters('sub_agency',$row->name).'">'.$row->name.' ('.$row->count.')</a></li>';
   }
   if($output)
-    $output='<ul>'.$output.'</ul>';
+    $output='<div class="item-list"><ul>'.$output.'</ul></div>';
     }
    }
    else
   {  
    
-    $output='<ul>';
+    $output='<div class="item-list"><ul>';
     $output.='<li><a href="'.remove_filter('sub_agency').'">(-) </a>'.get_filter('sub_agency').'</li>';
-    $output.='</ul>';
+    $output.='</ul></div>';
 
   }
 
@@ -745,15 +745,15 @@ function file_format_filters()
   	 }
   
   	  if($output)
-          $output='<ul>'.$output.'</ul>';
+          $output='<div class="item-list"><ul>'.$output.'</ul></div>';
          }
        }
     else
   {  	$fileformat=get_filter('file');
   	$text=get_filter_value($fileformat);
-    $output='<ul>';
+    $output='<div class="item-list"><ul>';
     $output.='<li><a href="'.remove_filter('file').'">(-) </a>'.$text.'</li>';
-    $output.='</ul>';
+    $output.='</ul></div>';
 
   }
  
@@ -796,7 +796,7 @@ function catalog_type_filters()
   	 }
   
   	  if($output)
-          $output='<ul>'.$output.'</ul>';
+          $output='<div class="item-list"><ul>'.$output.'</ul></div>';
          }
        }
     else
@@ -807,9 +807,9 @@ function catalog_type_filters()
  	if ($value == 'catalog_type_data_tools') $name='Tools'; 
  	if ($value == 'catalog_type_data_service') $name='Services';
 
-    $output='<ul>';
+    $output='<div class="item-list"><ul>';
     $output.='<li><a href="'.remove_filter('catalog_type').'">(-) </a>'.$name.'</li>';
-    $output.='</ul>';
+    $output.='</ul></div>';
 
   }
  

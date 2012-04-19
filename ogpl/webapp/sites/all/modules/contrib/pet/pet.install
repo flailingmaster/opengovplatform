@@ -84,15 +84,35 @@ function pet_schema() {
       'body' => array(
         'type' => 'text',
         'not null' => FALSE,
+        'default' => '',
       ),
       'object_types' => array(
         'type' => 'text',
         'not null' => FALSE,
+        'default' => '',
       ),
       'recipient_callback' => array(
         'type' => 'varchar',
         'length' => '255',
         'not null' => FALSE,
+        'default' => '',
+      ),
+      'from_override' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+        'default' => '',
+      ),
+      'cc_default' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'size' => 'medium',
+        'default' => '',
+      ),
+      'bcc_default' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'size' => 'medium',
         'default' => '',
       ),
     ),
@@ -103,4 +123,56 @@ function pet_schema() {
   );
 
   return $schema;
+}
+
+/**
+ * It would appear this used to exist.  Do nothing.
+ */
+function pet_update_6001() {
+  return array();
+}
+
+/**
+ * Add new columns to {pets}.
+ */
+function pet_update_6002() {
+  $ret = array();
+
+  db_add_field(
+    $ret, 
+    'pets', 
+    'from_override', 
+    array(
+    'type' => 'varchar',
+    'length' => '255',
+    'not null' => FALSE,
+    'default' => '',
+    )
+  );
+
+  db_add_field(
+    $ret, 
+    'pets', 
+    'cc_default', 
+    array(
+      'type' => 'text',
+      'not null' => FALSE,
+      'size' => 'medium',
+      'default' => '',
+    )
+  );
+
+  db_add_field(
+    $ret, 
+    'pets', 
+    'bcc_default', 
+    array(
+      'type' => 'text',
+      'not null' => FALSE,
+      'size' => 'medium',
+      'default' => '',
+    )
+  );
+
+  return $ret;
 }

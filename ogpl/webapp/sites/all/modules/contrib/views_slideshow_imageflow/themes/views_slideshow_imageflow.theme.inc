@@ -78,7 +78,7 @@ function template_preprocess_views_slideshow_imageflow(&$vars) {
   $options['views_slideshow_imageflow']['scrollbarP'] = isset($options['views_slideshow_imageflow']['scrollbarP']) ? $options['views_slideshow_imageflow']['scrollbarP'] : 0.6;
   $options['views_slideshow_imageflow']['imageFocusMax'] = isset($options['views_slideshow_imageflow']['imageFocusMax']) ? $options['views_slideshow_imageflow']['imageFocusMax'] : 4;
   $options['views_slideshow_imageflow']['buttons'] = isset($options['views_slideshow_imageflow']['buttons']) ? $options['views_slideshow_imageflow']['buttons'] : FALSE;
- $options['views_slideshow_imageflow']['circular'] = isset($options['views_slideshow_imageflow']['circular']) ? $options['views_slideshow_imageflow']['circular'] : FALSE;
+  $options['views_slideshow_imageflow']['circular'] = isset($options['views_slideshow_imageflow']['circular']) ? $options['views_slideshow_imageflow']['circular'] : FALSE;
   $settings = array(
     'aspectRatio' => $options['views_slideshow_imageflow']['aspect_ratio'],
     'imagesHeight' => $options['views_slideshow_imageflow']['images_height'],

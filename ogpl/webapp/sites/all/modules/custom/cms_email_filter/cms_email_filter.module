@@ -1,0 +1,64 @@
+<?php
+// $Id: cms_email_filter.module,v 1.1.4.5 2009/06/13 19:08:00 pvhee Exp $
+
+/**
+ * @file
+ * Allows token values to be used as filters.
+ */
+
+/**
+ * Implementation of hook_filter.
+ * 
+ * Adds the Token filter to the input format options.
+ */
+function cms_email_filter_filter($op, $delta = 0, $format = -1, $text = '' ) {
+
+  switch ($op) {
+    case 'list':
+      return array(0 => t('Email Filter'));
+    case 'description':
+      return t('Converts the email (example@example.com) address to example[at]example[dot]com.');
+    case 'settings':
+      break;
+    case 'no cache':
+      return TRUE;
+    case 'prepare':
+		$text = preg_replace("`(<p>|<li>|<br\s*/?>|[ \n\r\t\(])([A-Za-z0-9._-]+@[A-Za-z0-9._+-]+\.[A-Za-z]{2,4})([.,?!]*?)(?=(</p>|</li>|<br\s*/?>|[ \n\r\t\)]))`i", '\1\2\3', $text);
+      return $text;
+    case 'process':
+		// Match e-mail addresses.
+		  
+		preg_match_all("/[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})/i", $text, $matches);
+		$letters = array('@','.');
+		$replace = array('[at]','[dot]');
+		foreach($matches[0] as $val)
+		{
+			$old[] = $val;
+			$new[] = str_replace($letters,$replace,$val);
+		}
+		
+		if(count($old) > 0)
+		{
+			return str_replace($old,$new,$text);
+		}
+		else
+		{
+        	return $text;
+		}
+      break;
+    default:
+      return $text;
+  } 
+}
+/**** hook to off the autcomplete for password field ****/
+function cms_email_filter_form_alter(&$form, &$form_state, $form_id) 
+{
+	  switch ($form_id) 
+	  {
+        case 'user_register':
+		default;
+		      $form['#attributes']['autocomplete'] = 'off';
+	          //$form['account']['pass']['#attributes']['autocomplete'] = 'off'; //will not work
+        break;
+  }
+}

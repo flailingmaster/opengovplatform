@@ -115,7 +115,7 @@ $result=db_query("select distinct(content_id) as nid from votingapi_vote V LEFT 
    if($result)
       {
 print '<div id="big-catalog-panel" class="fRight">';
-  
+
 global $base_url;
 $this_page = $_GET['filter'];
 $search_title='Browse Datasets';
@@ -225,8 +225,8 @@ if ($result){
 <li>You can require or exclude terms using + and -: <em>big +blue drop</em> will require a match on <em>blue</em> while <em>big blue -drop</em> will exclude results that contain <em>drop</em>.</li>
 </ul></div></div>';
 
-} 
-  
+}
+
  ?>
   <?php if ($attachment_after): ?>
     <div class="attachment attachment-after">

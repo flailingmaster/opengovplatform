@@ -119,7 +119,7 @@
 	{
 	  $page_uri=substr($page_uri,0,strpos($page_uri,"&pageop=1"));
     }
-     $page_uri=str_replace("&","&amp;",$page_uri);
+       $page_uri=str_replace("&","&amp;",$page_uri);
 	print '<div  class="sort-select-box cBoth switch-js-disabled"> Results Per Page: ';
 	if($count=='10')
 	print ' 10 |';
@@ -323,7 +323,7 @@
                        if($file=='application/vnd.ms-excel') $fileformat='XLS';
 
 		  //print_r($thisNode);
-	 $filename=substr($thisNode->field_ds_file[0][filepath],strrpos($thisNode->field_ds_file[0][filepath],"/")+1);
+		  $filename=substr($thisNode->field_ds_file[0][filepath],strrpos($thisNode->field_ds_file[0][filepath],"/")+1);
 		  if($fileformat=='CSV')
 				 print '<div class="item" style="width:85px;"><a  title="CSV Download" href="'.$base_url.'/system/files/'.$filename.'"><img alt="CSV" src="'.$base_url.'/sites/all/themes/ogpl_css3/images/csv.png"/></a></div></div>';
 		   else if ($fileformat=='XLS')
@@ -341,7 +341,7 @@
 		   else if($file)
 				 print '<div class="item" style="width:85px;"><a title="Download" href="'.$base_url.'/system/files/'.$filename.'">'.$fileformat.'</a></div></div>';
 			else  print '<div class="item" style="width:85px;"></div></div>';
-			   // print_r($thisNode->field_ds_file[0]);  
+			   // print_r($thisNode->field_ds_file[0]);
 
 		  }
 	 // print '<br/><br/>';
@@ -547,7 +547,7 @@ print '<div class="heading">'.$GLOBALS['pager_total_items'][0].' Search Results<
 			
 		if($result[type]=='Dataset')
 		print '<div class="item list-bullet" style="width:220px; font-size:1em; padding-bottom:0px; "><a title="'.$thisNode->field_ds_agency_name[0][safe][title].'" href="'.$base_url.'/search/apachesolr_search/?filters=is_cck_field_ds_agency_name%3A'.$thisNode->field_ds_agency_name[0][safe][nid].'">'.$thisNode->field_ds_agency_name[0][safe][title].'</a></div>';
-		 
+
 		//FileFormat
 		//print_r($thisNode);
 		

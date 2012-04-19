@@ -120,6 +120,7 @@ function module_grants_menu_alter(&$items) {
   $items['node/%node/delete']['access callback'] = 'module_grants_node_access';
   $items['node/%node/delete']['module'] = 'module_grants';
   $items['node/%node/delete']['file'] = 'module_grants.pages.inc';
+  unset($items['node/%node/delete']['file_path']);
 
   // ---- Revision-related access callbacks
   $items['node/%node/revisions']['access callback'] = 'module_grants_node_revision_access';
@@ -227,7 +228,7 @@ function module_grants_node_access($node_op, $node = NULL, $account = NULL) {
     $may_view = module_invoke('revisioning', 'user_node_access', 'view revisions', $node)
       || user_access('view revisions');
     if (!$may_view) {
-      if ($account->uid != $node->uid) {
+      if (!$uid || $uid != $node->uid) {
         // Not the author: no permission to view this unpublished content.
         return $access["$uid:$nid:$node_op"] = FALSE;
       }
@@ -401,7 +402,7 @@ function _module_grants_user_node_access($revision_op, $node) {
       return user_access('delete revisions') || $node->num_revisions == 1 ? 'delete' : FALSE;
 
     default:
-      drupal_set_message("Unknown Module Grants operation '$revision_op'", 'warning', FALSE);
+      drupal_set_message(t('Unknown Module Grants operation %op', array('%op' => $revision_op)), 'warning', FALSE);
   }
   return 'view';
 }

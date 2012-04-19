@@ -1,0 +1,5 @@
+; $Id: email_filter.info,v 1.1.4.1 2009/05/02 23:33:19 pvhee Exp $
+name = Email Filter
+description = Converts the email (example@example.com) address to example[at]example[dot]com.
+package = Other
+core = 6.x

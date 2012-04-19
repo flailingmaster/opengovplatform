@@ -582,7 +582,8 @@ function web_tellafriend_form(&$form_state, $path = NULL, $title = NULL, $nodeap
     '#size' => 58,
     '#maxlength' => 256,
     '#required' => TRUE,
-  );
+	'#id'=> 'edit-name',
+ );
     $form['message']['email'] = array(
     '#type' => 'textfield',
     '#title' => t('Your E-mail Address'),
@@ -601,7 +602,7 @@ function web_tellafriend_form(&$form_state, $path = NULL, $title = NULL, $nodeap
     '#description' => t('Enter multiple addresses on separate lines or separate them with commas.'),
     '#required' => TRUE,
   );
- 
+
 /*
   if (($emailtype == 'page') && ($nodeapi == FALSE)) {
     $form['message']['page'] = array(
@@ -639,7 +640,7 @@ function web_tellafriend_form(&$form_state, $path = NULL, $title = NULL, $nodeap
      
     );
   }
-  
+
   $form['message']['path'] = array(
     '#type' => 'hidden',
     '#value' => $path,

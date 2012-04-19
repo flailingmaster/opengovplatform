@@ -8,13 +8,14 @@
 	$theme_name=$theme_object->name;
 	$access_denied = 0;	
 	$admin_page_urls = variable_get('admin_pages_list', '');
-
+    $flag_img=substr($site_node->field_website_header_image[0]['filepath'],strpos($site_node->field_website_header_image[0]['filepath'],"files/"));
+ 
 	if(in_array(drupal_get_path_alias($_GET['q']), explode("\r\n", $admin_page_urls)) && in_array('anonymous user', $user->roles)){
 		$access_denied = 1;
 		$head_title = "Access Denied";
 	}
     if(variable_get('file_downloads','') == 2) {		
-		$site_img = $base_url."/system/files/".$site_node->field_website_header_image[0]['filename'];
+		$site_img = $base_url."/system/".$flag_img;
 	} else {
 		$site_img = $base_url.'/'.$site_node->field_website_header_image[0]['filepath'];
 	}
@@ -339,12 +340,12 @@ function resizeTextarea(t) {
 $("#edit-recipients").attr('rows',3);
 $("#edit-recipients").keyup(function(){
 		resizeTextarea(document.getElementById('edit-recipients'));
-	
+
 });
 
 $("#edit-recipients").mouseout(function(){
-			resizeTextarea(document.getElementById('edit-recipients'));
-	
+		resizeTextarea(document.getElementById('edit-recipients'));
+
 });
 //--><!]]>
 </script>
@@ -384,6 +385,6 @@ print $closure;
             </div>
         </div>
     </div>
-</div>
+</body>
 <?php } ?>
 </html>
