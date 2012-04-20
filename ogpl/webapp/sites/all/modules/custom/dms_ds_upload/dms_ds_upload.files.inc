@@ -435,7 +435,8 @@ function dms_ds_upload_parepare_data(&$data, $key, $format = '') {
         $data = NULL;
       }
       elseif (count($data) == 1) {
-        $data = $data[0];
+        //if there is "," inside the value, we add double quote to protect it.
+        $data = strrpos($data[0], ",") === FALSE ? $data[0] : '"' . $data[0] . '"';
       }
       else {
         $data = '"' . implode('","', $data) . '"';

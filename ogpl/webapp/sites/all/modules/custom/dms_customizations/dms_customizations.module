@@ -579,15 +579,18 @@ function dms_customizations_file_download($filepath) {
     $row = db_fetch_object($result);
     $nid = $row->nid;
 
-    if (($node = node_load($nid)) && (node_access('view', $node))) {
-      $denied = FALSE;
-    } else {
-      $denied = TRUE;
+    //Check if node is of type dataset
+    if (($node = node_load($nid)) && $node->type == 'dataset') {
+      if (node_access('view', $node)) {
+        $denied = FALSE;
+      } else {
+        $denied = TRUE;
+      }
     }
   }
 
   if ($denied) {
-    return NULL;
+    return -1;
   } else {
     //access granted
     $name = mime_header_encode($file->filename);
