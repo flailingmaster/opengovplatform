@@ -98,7 +98,7 @@ function dms_customizations_subsector_populate_callback_ahah() {
   drupal_get_messages('error');
   form_set_error(null, '', true);
 
-  drupal_json(array(
+  dms_customizations_json_output(array(
     'status'   => TRUE,
     'data'     => $cat_sub,
   ));
@@ -135,7 +135,7 @@ function dms_customizations_subagency_populate_callback_ahah() {
     $cat_sub .= "<option value={$obj->nid}>{$obj->title}</option>";
   }
 
-  drupal_json(array(
+  dms_customizations_json_output(array(
     'status'   => TRUE,
     'data'     => $cat_sub,
   ));
@@ -604,3 +604,18 @@ function dms_customizations_file_download($filepath) {
   }
 }
 
+/**
+ * This function fixes Drupal JSON header issues that relate to IE9. More information is found here http://drupal.org/node/952220
+ * Issue is fixed in the equivalent function for Drupal 7.  http://api.drupal.org/api/drupal/includes!common.inc/function/drupal_json_output/7
+ */
+function dms_customizations_json_output($var = NULL) {
+  // We are returning JavaScript, so tell the browser.
+  // drupal_set_header('Content-Type: text/javascript; charset=utf-8');
+
+  // Changed to text/html from text/javascript to work in all browsers.
+  drupal_set_header('Content-Type: text/html; charset=utf-8');
+
+  if (isset($var)) {
+    echo drupal_to_js($var);
+  }
+}
