@@ -19,10 +19,6 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
       ),
       'display' => array(
         'weight' => '6',
-        '4' => array(
-          'format' => 'fieldset',
-          'exclude' => 1,
-        ),
         'label' => 'above',
         'teaser' => array(
           'format' => 'fieldset',
@@ -31,6 +27,10 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
         'full' => array(
           'format' => 'simple',
           'exclude' => 0,
+        ),
+        '4' => array(
+          'format' => 'fieldset',
+          'exclude' => 1,
         ),
         'description' => '',
         '2' => array(
@@ -54,7 +54,6 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
     'weight' => '6',
     'fields' => array(
       '0' => 'field_ds_access_method',
-      '1' => 'field_ds_datafile',
     ),
   );
 
@@ -140,11 +139,7 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
         'description' => '',
       ),
       'display' => array(
-        'weight' => '7',
-        '4' => array(
-          'format' => 'fieldset',
-          'exclude' => 0,
-        ),
+        'weight' => '8',
         'label' => 'above',
         'teaser' => array(
           'format' => 'fieldset',
@@ -152,6 +147,10 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
         ),
         'full' => array(
           'format' => 'simple',
+          'exclude' => 0,
+        ),
+        '4' => array(
+          'format' => 'fieldset',
           'exclude' => 0,
         ),
         'description' => '',
@@ -177,9 +176,64 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
         'block' => 1,
       ),
     ),
-    'weight' => '7',
+    'weight' => '8',
     'fields' => array(
       '0' => 'field_ds_catlog_type',
+    ),
+  );
+
+  // Exported group: group_ds_data_store
+  $groups['dataset-group_ds_data_store'] = array(
+    'group_type' => 'standard',
+    'type_name' => 'dataset',
+    'group_name' => 'group_ds_data_store',
+    'label' => 'Data File',
+    'settings' => array(
+      'form' => array(
+        'style' => 'fieldset',
+        'description' => '',
+      ),
+      'display' => array(
+        'weight' => '7',
+        'label' => 'above',
+        'teaser' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        'full' => array(
+          'format' => 'simple',
+          'exclude' => 0,
+        ),
+        'description' => '',
+        '4' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        '2' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        '3' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        '5' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        'token' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+      ),
+      'multistep' => array(
+        'step' => '2',
+        'block' => 0,
+      ),
+    ),
+    'weight' => '7',
+    'fields' => array(
+      '0' => 'field_ds_datafile',
     ),
   );
 
@@ -195,11 +249,7 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
         'description' => 'Identify the policies and/or programs the data asset is required to comply with or is intended to advance.',
       ),
       'display' => array(
-        'weight' => '8',
-        '4' => array(
-          'format' => 'fieldset',
-          'exclude' => 1,
-        ),
+        'weight' => '9',
         'label' => 'above',
         'teaser' => array(
           'format' => 'fieldset',
@@ -208,6 +258,10 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
         'full' => array(
           'format' => 'simple',
           'exclude' => 0,
+        ),
+        '4' => array(
+          'format' => 'fieldset',
+          'exclude' => 1,
         ),
         'description' => '',
         '2' => array(
@@ -228,7 +282,7 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
         'block' => 1,
       ),
     ),
-    'weight' => '8',
+    'weight' => '9',
     'fields' => array(
       '0' => 'field_ds_policy_program_goal',
     ),
@@ -354,11 +408,7 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
         'description' => '',
       ),
       'display' => array(
-        'weight' => '10',
-        '4' => array(
-          'format' => 'fieldset',
-          'exclude' => 1,
-        ),
+        'weight' => '11',
         'label' => 'above',
         'teaser' => array(
           'format' => 'fieldset',
@@ -367,6 +417,10 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
         'full' => array(
           'format' => 'simple',
           'exclude' => 0,
+        ),
+        '4' => array(
+          'format' => 'fieldset',
+          'exclude' => 1,
         ),
         'description' => '',
         '2' => array(
@@ -387,7 +441,7 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
         'block' => 1,
       ),
     ),
-    'weight' => '10',
+    'weight' => '11',
     'fields' => array(),
   );
 
@@ -396,6 +450,7 @@ function ogpl_metadata_template_fieldgroup_default_groups() {
   t('Access Type');
   t('Catalog Type');
   t('Core metadata');
+  t('Data File');
   t('Policy/Program Goal');
   t('Upload');
   t('Workflow Submission');
