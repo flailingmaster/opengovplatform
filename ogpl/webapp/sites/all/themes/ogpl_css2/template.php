@@ -73,7 +73,7 @@ function phptemplate_breadcrumb($breadcrumb) {
 	unset($breadcrumb['3']);
 	unset($breadcrumb['4']);
 	$breadcrumb['2']=l('OGPL With CSS2 Theme Blocks','admin/build/block/list/ogpl_css2');}
-	return '<div class="breadcrumb">'. implode(' › ', $breadcrumb) .'</div>';
+	return '<div class="breadcrumb">'. implode(' ', $breadcrumb) .'</div>';
   }
 }
 
@@ -427,4 +427,26 @@ function ogpl_css2_theme() {
       'arguments' => array('element' => NULL, 'name' => NULL),
     ),
   );
+}
+function ogpl_css2_filefield_icon($file) {
+    global $base_url;
+    if (is_object($file)) {
+        $file = (array) $file;
+    }
+    $mime = check_plain($file['filemime']);
+    $file_name=substr($file['filepath'],strrpos($file['filepath'],"/")+1);
+	$dashed_mime = strtr($mime, array('/' => '-'));
+    switch($mime)
+	{
+	   case 'application/vnd.ms-excel':$icon_url = $base_url . '/' . path_to_theme() . '/images/xls.png';break;
+	   case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':$icon_url = $base_url . '/' . path_to_theme() . '/images/xlsx.png';break;
+	   case 'text/plain':$icon_url = $base_url . '/' . path_to_theme() . '/images/text.png';break;
+	   case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':$icon_url = $base_url . '/' . path_to_theme() . '/images/docx.png';break;
+	   case 'application/vnd.ms-word':$icon_url = $base_url . '/' . path_to_theme() . '/images/doc.png';break;
+	   case 'application/msword':$icon_url = $base_url . '/' . path_to_theme() . '/images/doc.png';break;
+	   case 'application/pdf':$icon_url = $base_url . '/' . path_to_theme() . '/images/pdf.png';break;
+	   default:$icon_url = $base_url . '/' . path_to_theme() . '/images/text.png';
+	}
+    $icon = '<a title="'. $file_name .'" href="'.$base_url.'/system/files/'.$file_name.'"><img class="field-icon-'. $dashed_mime .'"  alt="'. $mime .' icon" src="'. $icon_url .'" /></a>';
+    return $icon;
 }

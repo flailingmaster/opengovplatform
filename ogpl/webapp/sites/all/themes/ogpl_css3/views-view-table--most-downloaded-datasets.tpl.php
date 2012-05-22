@@ -19,7 +19,7 @@ switch($current_view_name) {
 	case 'most_rated_datasets' :$compare_field = 'phpcode_1'; break;
 	case 'most_viewed_10_datasets' :$compare_field = 'totalcount_1'; break;
 	case 'recently_added_10_datasets':$compare_field = 'phpcode_1'; break;
-	default: $compare_field = 'dcid';
+	default: $compare_field = 'downloads';
 }
 ?>
 <table class="header-width <?php print $class; ?> cBoth"<?php print $attributes; ?>>
@@ -41,14 +41,18 @@ switch($current_view_name) {
 		    print $label;
 		   	   
 		   }
-		   if($field==='title'||$field==='field_ds_sector_nid')
+		   else if($field==='title'||$field==='field_ds_sector_nid')
 		   {print '<th class="views-field views-field-<?php print $fields[$field]; ?> ds-list-head-new">';
 		    print $label;
 		   }
-		  if($field==$compare_field) 
+		  else if($field==$compare_field) 
 		  {  print '<th class="views-field views-field-<?php print $fields[$field]; ?> ds-list-head-new-last" style="text-align:center;">';
 		    print $label; 
 		  }
+		  else{
+		    print '<th class="views-field views-field-.$fields[$field]; ?> ds-list-head-new" style="text-align:center;">';
+		    print $label;
+			}
 			?>        
 	</th>
       <?php endforeach; ?>
@@ -83,7 +87,7 @@ switch($current_view_name) {
     <?php foreach ($rows as $count => $row): ?>
       <tr class="<?php print implode(' ', $row_classes[$count]); ?> ">
         <?php foreach ($row as $field => $content): ?>
-          <?php if($field=='rownumber' || $field==$compare_field || $field=='field_ds_agency_short_name_value')
+          <?php if($field=='rownumber' || $field==$compare_field || $field=='field_agency_short_name_value')
 				 {
 				   print '<td class="views-field views-field-<?php print $fields[$field]; ?> ds-list-item-new-center"  >';
 				  }

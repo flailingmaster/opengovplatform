@@ -1,0 +1,96 @@
+Index: apachesolr.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- apachesolr.js	(revision )
++++ apachesolr.js	(revision 7171)
+@@ -4,10 +4,12 @@
+   $('<a href="#" class="apachesolr-showhide"></a>').text(Drupal.t('Show more')).click(function() {
+     if ($(this).parent().find('.apachesolr-hidden-facet:visible').length == 0) {
+       $(this).parent().find('.apachesolr-hidden-facet').show();
++      $(this).attr('title','Show fewer');
+       $(this).text(Drupal.t('Show fewer'));
+     }
+     else {
+       $(this).parent().find('.apachesolr-hidden-facet').hide();
++      $(this).attr('title','Show more');
+       $(this).text(Drupal.t('Show more'));
+     }
+     return false;
+Index: apachesolr_search.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- apachesolr_search.module	(revision )
++++ apachesolr_search.module	(revision 7171)
+@@ -186,11 +186,11 @@
+ }
+ 
+ function apachesolr_search_noresults() {
+-      return t('<ul>
++      return t('<div class="box"><div class="content"><ul>
+ <li>Check if your spelling is correct, or try removing filters.</li>
+ <li>Remove quotes around phrases to match each word individually: <em>"blue drop"</em> will match less than <em>blue drop</em>.</li>
+ <li>You can require or exclude terms using + and -: <em>big +blue drop</em> will require a match on <em>blue</em> while <em>big blue -drop</em> will exclude results that contain <em>drop</em>.</li>
+-</ul>');
++</ul></div></div>');
+ 
+ }
+ 
+@@ -999,7 +999,7 @@
+   }
+   $form_state['redirect'] = array($base . $keys, $get);
+   if ($keys == '' && !$queryvalues) {
+-    form_set_error('keys', t('Please enter some keywords.'));
++    form_set_error('keys', t('<ul><li><label>Please enter some keywords.</label></li></ul>'));
+   }
+ }
+ 
+Index: Solr_Base_Query.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Solr_Base_Query.php	(revision )
++++ Solr_Base_Query.php	(revision 7171)
+@@ -10,6 +10,7 @@
+     $name = preg_quote($name, '/');
+     // Range queries.  The "TO" is case-sensitive.
+     $patterns[] = '/(^| |-)'. $name .':([\[\{](\S+) TO (\S+)[\]\}])/';
++	$patterns[] = '/(^| |-)'. $name .':([\[\{](\S+) (\S+)[\]\}])/';
+     // Match quoted values.
+     $patterns[] = '/(^| |-)'. $name .':"([^"]*)"/';
+     // Match unquoted values.
+Index: apachesolr.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- apachesolr.module	(revision )
++++ apachesolr.module	(revision 7171)
+@@ -1799,13 +1799,13 @@
+ function apachesolr_l($text, $path, $options = array()) {
+   // Merge in defaults.
+   $options += array(
+-    'attributes' => array(),
++    'attributes' => array('title'=> $text),
+     'html' => FALSE,
+     'query' => array(),
+   );
+ 
+   // Don't need this, and just to be safe.
+-  unset($options['attributes']['title']);
++ // unset($options['attributes']['title']);
+   // Double encode + characters for clean URL Apache quirks.
+   if (variable_get('clean_url', '0')) {
+     $path = str_replace('+', '%2B', $path);
+@@ -1837,6 +1837,7 @@
+     $icon = ' '. theme('tablesort_indicator', $direction);
+   }
+   if ($active) {
++      $options['attributes']['title']=$text;
+     if (isset($options['attributes']['class'])) {
+       $options['attributes']['class'] .= ' active';
+     }

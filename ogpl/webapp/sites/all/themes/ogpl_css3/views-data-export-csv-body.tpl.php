@@ -28,7 +28,13 @@ if($view->name == 'agency_wise_report') {
 	  print implode($separator, $item_row) . "\r\n";
 	endforeach;
 	
-} else {
+} else if($view->name == 'month_wise_agency_report')
+{
+   foreach ($themed_rows as $count => $item_row):
+   if(!strlen(strstr($item_row['phpcode_12'],"--")))
+	  print implode($separator, $item_row) . "\r\n";
+	endforeach;
+}else {
 
 	foreach ($themed_rows as $count => $item_row):
 	  print implode($separator, $item_row) . "\r\n";

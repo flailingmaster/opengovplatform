@@ -1,5 +1,5 @@
 <?php global $base_url, $site_name;
-
+if($base_url == "http://demodata.nic.in") { header("location: http://demodata.nic.in"); exit; }
 if(!empty($_GET['iprestricted'])){
 	$show_messages = true;
 	$messages = "<div class=\"messages error\">Your IP:".$_SERVER['REMOTE_ADDR']." is restricted for super user login</div>";

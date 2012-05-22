@@ -1,0 +1,13 @@
+<?php
+// $Id: decounter.install,v 1.1.2.1 2009/05/09 13:39:28 ivanjaros Exp $
+
+/* 
+*  Implementation of hook_uninstall().
+*  http://api.drupal.org/api/function/hook_uninstall/6
+*/
+function decounter_uninstall() {
+  variable_del('decounter_roles');
+  variable_del('decounter_exclude_admin');
+}
+
+?>

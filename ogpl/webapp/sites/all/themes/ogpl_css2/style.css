@@ -883,6 +883,7 @@ float:left;
 	border-bottom:1px solid #e0e6d5;
 	padding:0 19px 3px 19px;
 	margin-bottom:3px;
+	font-size:1.3em;
 	}
 .breadcrumb ul {
 	}
@@ -910,6 +911,17 @@ float:left;
 	color:#000;
 	background-color:transparent;
 	}
+.breadcrumb a {
+		background:url("images/blt-bread.png") no-repeat scroll 99% 50% transparent;
+		padding:0px 10px 0 4px;
+		color:#1A55A5;
+		background-color:transparent;
+		font-weight:bold;
+		cursor: pointer !important;
+	}
+.breadcrumb a:last-child {
+    margin-right: 4px;
+}
 /* ++++++++++++++++++++++ breadcrumb end here ++++++++++++++++++++++ */
 
 /* ++++++++++++++++++++++ main heading start here ++++++++++++++++++++++ */
@@ -2276,7 +2288,9 @@ padding: 0 5px 5px 0;
 .captcha .form-item {
     margin: 0.25em 0;
 }
-.captcha {float:left; width:70%;}
+.captcha {
+
+ width:70%;}
 .verification-msg .captcha-text{
 	padding: 5px 0 0 !important;
 }
@@ -4136,4 +4150,25 @@ margin-bottom:0!important;
 }
 #web-contact-owner-form #edit-cc-wrapper{
 margin-top:0!important;
+}
+.download-stat{
+    background: none repeat scroll 0 0 #F3F3F3;
+    border: 1px solid #B4B4B4;
+    margin:6px 0 0 0;
+    padding: 2px 5px;
+	display:block;
+	width:130px;
+}
+.filefield-file acronym {
+    border-bottom-width: 0;
+}
+.filefield-file{
+display:inline;
+}
+.dataset .filefield-file a{
+	margin-right: 4px;
+}
+.access-denied-error{
+color:#FF0000;
+font:bold 1.3em Arial,Helvetica,sans-serif;
 }

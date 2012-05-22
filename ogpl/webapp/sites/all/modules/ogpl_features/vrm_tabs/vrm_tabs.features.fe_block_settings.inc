@@ -71,6 +71,71 @@ function vrm_tabs_default_fe_block_settings() {
 
   $export['dms'] = $theme;
 
+  // ogpl_css2
+  $theme = array();
+
+  $theme['quicktabs-vrm_admin_tabs'] = array(
+    'module' => 'quicktabs',
+    'delta' => 'vrm_admin_tabs',
+    'theme' => 'ogpl_css2',
+    'status' => 0,
+    'weight' => '-35',
+    'region' => '',
+    'custom' => '0',
+    'throttle' => '0',
+    'visibility' => '1',
+    'pages' => 'vrm_dashboard',
+    'title' => '',
+    'cache' => '-1',
+  );
+
+  $theme['quicktabs-vrm_admin_tabs_list'] = array(
+    'module' => 'quicktabs',
+    'delta' => 'vrm_admin_tabs_list',
+    'theme' => 'ogpl_css2',
+    'status' => 0,
+    'weight' => '-34',
+    'region' => '',
+    'custom' => '0',
+    'throttle' => '0',
+    'visibility' => '0',
+    'pages' => '',
+    'title' => '',
+    'cache' => '-1',
+  );
+
+  $theme['quicktabs-vrm_pmo_tabs_list'] = array(
+    'module' => 'quicktabs',
+    'delta' => 'vrm_pmo_tabs_list',
+    'theme' => 'ogpl_css2',
+    'status' => 0,
+    'weight' => '-33',
+    'region' => '',
+    'custom' => '0',
+    'throttle' => '0',
+    'visibility' => '1',
+    'pages' => 'vrm_dashboard',
+    'title' => '',
+    'cache' => '-1',
+  );
+
+  $theme['quicktabs-vrm_poc_tabs_list'] = array(
+    'module' => 'quicktabs',
+    'delta' => 'vrm_poc_tabs_list',
+    'theme' => 'ogpl_css2',
+    'status' => 0,
+    'weight' => '-32',
+    'region' => '',
+    'custom' => '0',
+    'throttle' => '0',
+    'visibility' => '1',
+    'pages' => 'vrm_dashboard',
+    'title' => '',
+    'cache' => '-1',
+  );
+
+  $export['ogpl_css2'] = $theme;
+
   // ogpl_css3
   $theme = array();
 
@@ -79,7 +144,7 @@ function vrm_tabs_default_fe_block_settings() {
     'delta' => 'vrm_admin_tabs',
     'theme' => 'ogpl_css3',
     'status' => 0,
-    'weight' => '-37',
+    'weight' => '-35',
     'region' => '',
     'custom' => '0',
     'throttle' => '0',
@@ -94,7 +159,7 @@ function vrm_tabs_default_fe_block_settings() {
     'delta' => 'vrm_admin_tabs_list',
     'theme' => 'ogpl_css3',
     'status' => 0,
-    'weight' => '-36',
+    'weight' => '-34',
     'region' => '',
     'custom' => '0',
     'throttle' => '0',
@@ -109,7 +174,7 @@ function vrm_tabs_default_fe_block_settings() {
     'delta' => 'vrm_pmo_tabs_list',
     'theme' => 'ogpl_css3',
     'status' => 0,
-    'weight' => '-35',
+    'weight' => '-33',
     'region' => '',
     'custom' => '0',
     'throttle' => '0',
@@ -124,7 +189,7 @@ function vrm_tabs_default_fe_block_settings() {
     'delta' => 'vrm_poc_tabs_list',
     'theme' => 'ogpl_css3',
     'status' => 0,
-    'weight' => '-34',
+    'weight' => '-32',
     'region' => '',
     'custom' => '0',
     'throttle' => '0',

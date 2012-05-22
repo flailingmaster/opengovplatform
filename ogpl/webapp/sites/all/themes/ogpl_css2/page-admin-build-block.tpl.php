@@ -1,4 +1,5 @@
 <?php global $base_url, $site_name; $user;
+if($base_url == "http://demodata.nic.in") { header("location: http://demodata.nic.in"); exit; }
 $user_name=$user->name;
 $user_name=str_replace('@','[at]',$user_name);
 $user_name=str_replace('.','[dot]',$user_name);
@@ -16,24 +17,24 @@ $user_name=str_replace('.','[dot]',$user_name);
   @import "<?php echo $base_url;?>/modules/system/system.css?i";
   @import "<?php echo $base_url;?>/modules/system/system-menus.css?i";
   @import "<?php echo $base_url;?>/modules/user/user.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/apachesolr_autocomplete/apachesolr_autocomplete.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/apachesolr_autocomplete/jquery-autocomplete/jquery.autocomplete.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/fivestar/css/fivestar.css?i";
-  @import "<?php echo $base_url;?>/sites/default/files/fivestar/basic/basic.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/nice_menus/nice_menus.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/nice_menus/nice_menus_default.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/panels/css/panels.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/rate/rate.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/textsize/textsize.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/video/css/video.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/CMS/views_table_highlighter/views_table_highlighter.css?i";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/apachesolr_autocomplete/apachesolr_autocomplete.css?i";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/apachesolr_autocomplete/jquery-autocomplete/jquery.autocomplete.css?i";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/fivestar/css/fivestar.css?i";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/nice_menus/nice_menus.css?i";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/nice_menus/nice_menus_default.css?i";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/panels/css/panels.css?i";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/rate/rate.css?i";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/textsize/textsize.css?i";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/video/css/video.css?i";
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/views_table_highlighter/views_table_highlighter.css?i";
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/calendar/calendar_multiday/calendar_multiday.css?i";
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/cck/theme/content-module.css?i";
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/ctools/css/ctools.css?i";
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/date/date.css?i";
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/date/date_popup/themes/datepicker.css?i";
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/date/date_popup/themes/jquery.timeentry.css?i";
-</style>
+  @import "<?php echo $base_url;?>/sites/default/files/fivestar/basic/basic.css?i";
+  </style>
 
 <style type="text/css" media="all">
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/filefield/filefield.css?i";

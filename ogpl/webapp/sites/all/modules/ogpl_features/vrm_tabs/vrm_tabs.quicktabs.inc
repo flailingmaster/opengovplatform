@@ -73,6 +73,15 @@ function vrm_tabs_quicktabs_default_quicktabs() {
       'weight' => '-95',
       'type' => 'qtabs',
     ),
+    5 => array(
+      'vid' => 'VRM_all_feedback_list',
+      'display' => 'page_19',
+      'args' => '',
+      'get_displays' => 'vdisp_5',
+      'title' => 'Bulk Print',
+      'weight' => '-95',
+      'type' => 'view',
+    ),
   );
   $quicktabs->style = 'nostyle';
   $export['vrm_admin_tabs'] = $quicktabs;

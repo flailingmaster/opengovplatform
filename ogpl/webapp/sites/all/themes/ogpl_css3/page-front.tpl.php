@@ -1,5 +1,6 @@
 <?php
     global $base_url;
+	if($base_url == "http://demodatacms.nic.in" || $base_url == "https://demodatacms.nic.in") { drupal_goto("user"); }
 	global $theme_key;
     $themes = list_themes();
     $theme_object = $themes[$theme_key];
@@ -23,7 +24,7 @@
 	$theme_file_path=file_directory_path().'/themes/';
 	while($result=db_fetch_object($query))
     {
-	if($result->field_theme_type_value==1)
+	if($result->field_theme_type_value=='color')
 	{     
 		$color[]=$result->title;
 		$image_result=db_query("select filename from content_type_theme_file_uploader T LEFT JOIN files F on T.field_theme_logo_image_fid=F.fid where T.nid=$result->nid");
@@ -129,10 +130,10 @@
                 	<!--color options -->
                 	<!--<li><a href="#content" title="Skip to Main Content">Skip to Main Content</a></li> -->
                     <li class="colorOptions">
-						<a href="<?php echo $base_url."?switch=style&amp;refURL=".$refURL;?>"   onclick="chooseStyle('grey', 60,'standard');" title="Grey Theme"><img src="<?php echo $base_url."/".path_to_theme();?>/images/grey.jpg" alt="Grey"/></a>
-						<a href="<?php echo $base_url."?switch=blue&amp;refURL=".$refURL;?>"  onclick="chooseStyle('blue', 60,'standard');" title="Blue Theme"><img src="<?php echo $base_url."/".path_to_theme();?>/images/blue.jpg" alt="Blue"/></a>
+						<a href="<?php echo $base_url."?switch=style&amp;refURL=".$refURL;?>"   onclick="chooseStyle('grey', 60,'standard');" title="Default Theme"><img src="<?php echo $base_url."/".path_to_theme();?>/images/grey.jpg" alt="Grey"/></a>
+					<!--	<a href="<?php echo $base_url."?switch=blue&amp;refURL=".$refURL;?>"  onclick="chooseStyle('blue', 60,'standard');" title="Blue Theme"><img src="<?php echo $base_url."/".path_to_theme();?>/images/blue.jpg" alt="Blue"/></a>
 						<a href="<?php echo $base_url."?switch=pink&amp;refURL=".$refURL;?>"   onclick="chooseStyle('pink', 60,'standard');" title="Pink Theme"><img src="<?php echo $base_url."/".path_to_theme();?>/images/pink.jpg" alt="Pink"/></a>
-						<a href="<?php echo $base_url."?switch=green&amp;refURL=".$refURL;?>" onclick="chooseStyle('green', 60,'standard');" title="Green Theme"><img src="<?php echo $base_url."/".path_to_theme();?>/images/green.jpg" alt="Green"/></a>             
+						<a href="<?php echo $base_url."?switch=green&amp;refURL=".$refURL;?>" onclick="chooseStyle('green', 60,'standard');" title="Green Theme"><img src="<?php echo $base_url."/".path_to_theme();?>/images/green.jpg" alt="Green"/></a>   -->          
 						<?php foreach($color as $color_title) echo '<a title="'.$color_title.'" href="'.$base_url."?switch=".$color_title."&amp;refURL=".$refURL.'" onclick="chooseStyle(\''.$color_title.'\', 60,\'standard\')"><img  alt="'.$color_title.'" width="14" height="12" src="'.$image_color[$color_title].'"/>  </a>';    ?>
 			</li>
 					<!--color options -->
@@ -142,7 +143,7 @@
                                         
                     <!--color contrast options -->
                     <li class="contrast">
-                    	<a href="<?php echo $base_url."?contrast=change&amp;refURL=".$refURL;?>" class="dark" onclick="chooseStyle('change', 60,'contrast');" title="High Contrast"><img src="<?php echo $base_url."/".path_to_theme();?>/images/texthighContrast.gif" alt="High Contrast View"/></a>
+                    <!--	<a href="<?php echo $base_url."?contrast=change&amp;refURL=".$refURL;?>" class="dark" onclick="chooseStyle('change', 60,'contrast');" title="High Contrast"><img src="<?php echo $base_url."/".path_to_theme();?>/images/texthighContrast.gif" alt="High Contrast View"/></a> -->
                         <a href="<?php echo $base_url."?contrast=none&amp;refURL=".$refURL;?>" class="light" onclick="chooseStyle('none', 60,'contrast');" title="Standard Contrast"><img src="<?php echo $base_url."/".path_to_theme();?>/images/textNormal.gif" alt="Standard Contrast View"/></a>
 						<?php foreach($contrast as $contrast_title) echo '<a title="'.$contrast_title.'" href="'.$base_url."?contrast=".$contrast_title."&amp;refURL=".$refURL.'" onclick="chooseStyle(\''.$contrast_title.'\', 60,\'contrast\')"><img alt="'.$color_title.'" width="21" height="18" src="'.$image_contrast[$contrast_title].'"/>  </a>';    ?>
 			</li>

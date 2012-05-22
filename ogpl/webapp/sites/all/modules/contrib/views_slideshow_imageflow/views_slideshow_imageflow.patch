@@ -1,0 +1,139 @@
+Index: themes/js/views_slideshow_imageflow.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- themes/js/views_slideshow_imageflow.js	(revision )
++++ themes/js/views_slideshow_imageflow.js	(revision 7171)
+@@ -10,6 +10,7 @@
+ 
+   Drupal.behaviors.viewsSlideshowImageFlow = function (context) {
+     $('.views-slideshow-imageflow-images:not(.viewsSlideshowImageFlow-processed)', context).addClass('viewsSlideshowImageFlow-processed').each(function () {
++	
+       var imageflow = new ImageFlow();
+       var id = $(this).attr('id');
+       var flow = Drupal.settings.viewsSlideshowImageFlow[id];
+@@ -19,7 +20,12 @@
+       if (!flow['captions']) {
+         flow['captions'] = false;
+       }
++	 if(flow['circular']) {
++       // can't have an imageFocusMax if you want circular
++       flow['imageFocusMax'] = undefined;
++     }
+-
++	  
++	  //alert(id);
+       var _settings = {
+         ImageFlowID: id,
+         reflections: false,
+@@ -32,7 +38,14 @@
+         captions: flow['captions'],
+         imageFocusM : flow['imageFocusM'],
+         scrollbarP : flow['scrollbarP'],
+-        imageFocusMax : flow['imageFocusMax']
++        imageFocusMax : flow['imageFocusMax'],
++		buttons: flow['buttons'],
++		 circular: flow['circular'],
++		//buttons:true,
++		//circular:true,
++		//glideToStartID:true,           /* Toggle glide animation to start ID */
++		//startAnimation:true
++		
+       };
+ 
+       if (flow['onClick']) {
+Index: themes/views_slideshow_imageflow.theme.inc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- themes/views_slideshow_imageflow.theme.inc	(revision )
++++ themes/views_slideshow_imageflow.theme.inc	(revision 7171)
+@@ -77,6 +77,8 @@
+   $options['views_slideshow_imageflow']['imageFocusM'] = isset($options['views_slideshow_imageflow']['imageFocusM']) ? $options['views_slideshow_imageflow']['imageFocusM'] : 1.0;
+   $options['views_slideshow_imageflow']['scrollbarP'] = isset($options['views_slideshow_imageflow']['scrollbarP']) ? $options['views_slideshow_imageflow']['scrollbarP'] : 0.6;
+   $options['views_slideshow_imageflow']['imageFocusMax'] = isset($options['views_slideshow_imageflow']['imageFocusMax']) ? $options['views_slideshow_imageflow']['imageFocusMax'] : 4;
++  $options['views_slideshow_imageflow']['buttons'] = isset($options['views_slideshow_imageflow']['buttons']) ? $options['views_slideshow_imageflow']['buttons'] : FALSE;
++  $options['views_slideshow_imageflow']['circular'] = isset($options['views_slideshow_imageflow']['circular']) ? $options['views_slideshow_imageflow']['circular'] : FALSE;
+   $settings = array(
+     'aspectRatio' => $options['views_slideshow_imageflow']['aspect_ratio'],
+     'imagesHeight' => $options['views_slideshow_imageflow']['images_height'],
+@@ -89,6 +91,9 @@
+     'scrollbarP' => $options['views_slideshow_imageflow']['scrollbarP'],
+     'imageFocusMax' => $options['views_slideshow_imageflow']['imageFocusMax'],
+     'onClick' => $options['views_slideshow_imageflow']['onClick'],
++	'buttons'=>$options['views_slideshow_imageflow']['buttons'],
++	'circular' => $options['views_slideshow_imageflow']['circular'],
++	
+   );
+   drupal_add_js(array('viewsSlideshowImageFlow' => array('views-slideshow-imageflow-images-'. $vars['id'] => $settings)), 'setting');
+ }
+Index: includes/views_slideshow_imageflow.variables.inc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- includes/views_slideshow_imageflow.variables.inc	(revision )
++++ includes/views_slideshow_imageflow.variables.inc	(revision 7171)
+@@ -116,6 +116,8 @@
+       'scrollbarP' => '0.6',
+       'imageFocusMax' => '4',
+       'onClick' => 'function() { document.location = this.url; }',
++	  'buttons'=>FALSE,
++	  'circular' => FALSE,
+     );
+   }
+ 
+Index: views_slideshow_imageflow.views_slideshow.inc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- views_slideshow_imageflow.views_slideshow.inc	(revision )
++++ views_slideshow_imageflow.views_slideshow.inc	(revision 7171)
+@@ -34,6 +34,8 @@
+       'scrollbarP' => views_slideshow_imageflow_variable_get('scrollbarP'),
+       'imageFocusMax' => views_slideshow_imageflow_variable_get('imageFocusMax'),
+       'onClick' => views_slideshow_imageflow_variable_get('onClick'),
++	  'buttons' => views_slideshow_imageflow_variable_get('buttons'),
++	  'circular' => views_slideshow_imageflow_variable_get('circular'),
+     ),
+   );
+   return $options;
+@@ -132,5 +134,18 @@
+     '#title' => t('onClick override'),
+     '#description' => t('You may override the onClick JavaScript function of slide show image frames here.'),
+     '#default_value' => $view->options['views_slideshow_imageflow']['onClick'],
++  );
++  
++    $form['views_slideshow_imageflow']['buttons'] = array(
++  '#type' => 'checkbox',
++  '#title' => t('Buttons'),
++  '#description' => t('Enables scrollbar previous and next buttons'),
++  '#default_value' => $view->options['views_slideshow_imageflow']['buttons'],
++  );
++  $form['views_slideshow_imageflow']['circular'] = array(
++   '#type' => 'checkbox',
++  '#title' => t('Circular'),
++  '#description' => t('Enables circular mode (ignores image focus multiplier)'),
++  '#default_value' => $view->options['views_slideshow_imageflow']['circular'],
+-  );
++ );
+ }
+Index: themes/views-slideshow-imageflow.tpl.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- themes/views-slideshow-imageflow.tpl.php	(revision )
++++ themes/views-slideshow-imageflow.tpl.php	(revision 7171)
+@@ -23,7 +23,7 @@
+       <h3><?php print $title; ?></h3>
+     <?php endif; ?>
+ 
+-    <div id="views-slideshow-imageflow-images-<?php print $id; ?>" class="views-slideshow-imageflow-images imageflow">
++    <div id="views-slideshow-imageflow-images-<?php print $id; ?>" class="views-slideshow-imageflow-images imageflow imageflow-visible">
+       <?php foreach ($images as $image): ?>
+        <?php print $image ."\n"; ?>
+       <?php endforeach; ?>

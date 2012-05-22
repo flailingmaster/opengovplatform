@@ -1,0 +1,11 @@
+; $Id: decounter.info,v 1.2.2.3 2009/05/09 13:12:11 ivanjaros Exp $
+
+name = Decounter
+description = Decreases views count when admin or user role is viewing a node.
+dependencies[] = statistics
+; Information added by drupal.org packaging script on 2009-05-09
+version = "6.x-1.3"
+core = "6.x"
+project = "decounter"
+datestamp = "1241878525"
+

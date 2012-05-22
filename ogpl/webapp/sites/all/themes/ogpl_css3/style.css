@@ -2098,9 +2098,9 @@ padding-left: 31px;
     background-color: #f4f4f4;
 }
 #contact-mail-page #edit-name-wrapper label , #feedback-form #username-wrapper label ,#web-contact-owner-form #edit-cc-wrapper label,
-#feedback-form #feedbacktext-wrapper label,#web-tellafriend-form  #edit-name-wrapper label ,#web-tellafriend-form  #edit-recipients-wrapper label ,#edit-message-wrapper label,#edit-purpose-wrapper label,#edit-subject-wrapper label,#edit-emailid-wrapper label,#edit-feedback-comment-wrapper label,#node-form label,#print-mail-form label{
+#feedback-form #feedbacktext-wrapper label,#web-tellafriend-form  #edit-name-wrapper label ,#web-tellafriend-form  #edit-recipients-wrapper label ,#edit-message-wrapper label,#edit-purpose-wrapper label,#edit-subject-wrapper label,#edit-emailid-wrapper label,#edit-feedback-comment-wrapper label,#node-form label,#print-mail-form label,#web-tellafriend-form #edit-captcha-response-wrapper label,#web-contact-owner-form #edit-captcha-response-wrapper label{
     color: #2B2B2B;
-	padding: 16px 0px 5px 0px;
+	padding: 16px 0px 5px 0px !important;
 	width: 100%;
 	font-size: 1.3em;
 }
@@ -4271,7 +4271,7 @@ font: bold 1.1em Arial,Helvetica,sans-serif;
 }
 /* CSS for Suggested Dataset ends here*/
 /*css for contact owner */
-#web-contact-owner-form #edit-subject-wrapper #edit-subject , #web-contact-owner-form #edit-emailid-wrapper #edit-emailid , #web-contact-owner-form #edit-message-wrapper textarea{
+#web-contact-owner-form #edit-subject-wrapper #edit-subject , #web-contact-owner-form #edit-emailid-wrapper #edit-emailid , #web-contact-owner-form #edit-message-wrapper textarea,#web-contact-owner-form #edit-captcha-response,#block-vrm_customization-0 #node-form #edit-captcha-response{
     background-color: #ffffff;
 }
 #web-contact-owner-form #contactowner-id{

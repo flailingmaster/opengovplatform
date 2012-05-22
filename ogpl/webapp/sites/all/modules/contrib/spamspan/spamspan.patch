@@ -1,0 +1,17 @@
+Index: spamspan.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- spamspan.module	(revision 7027)
++++ spamspan.module	(revision )
+@@ -125,7 +125,7 @@
+  */
+ function spamspan_init() {
+   // Add the javascript to each page
+-  drupal_add_js(drupal_get_path("module", "spamspan") .'/spamspan.compressed.js');
++  // drupal_add_js(drupal_get_path("module", "spamspan") .'/spamspan.compressed.js');
+   // pass necessary variables to the javascript
+   drupal_add_js(array(
+     'spamspan' => array(
+\ No newline at end of file

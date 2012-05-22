@@ -9,10 +9,15 @@ $(document).ready(function(){
 
 			rules: {
 				"field_feedback_body[0][value]":"required",
+				"captcha_response":"required",
+
 			},
 			messages: {
 				"field_feedback_body[0][value]": {
 					required: "Comments field is required."
+				},
+				"captcha_response":{
+					required: "Verification field is required."	
 				}
 			},
 			invalidHandler: function(form, validator) {
@@ -41,6 +46,8 @@ $(document).ready(function(){
 				"subject":"required",
 				"message":"required",
 				"emailid":{required:true,email: true},
+				"captcha_response":"required",
+
 			},
 			messages: {
 				"purpose": {
@@ -55,6 +62,9 @@ $(document).ready(function(){
 				"emailid": {
 					email: "Please enter a valid email id in Your E-mail Address field eg. sam@xyz.com",
 					required: "Your E-mail Address field is required."
+				},
+				"captcha_response":{
+					required: "Verification field is required."	
 				}
 			},
 			invalidHandler: function(form, validator) {

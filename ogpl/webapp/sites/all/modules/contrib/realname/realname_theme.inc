@@ -52,14 +52,9 @@ function realname_username($object, $options = array()) {
 
     // Shorten the name when it is too long or it will break many tables.
     $max_name = $options['max_length'];
-
-      //show fullname for notes
-      $notes_url = request_uri();
-      if (!strpos($notes_url, "/print")) {
           if (drupal_strlen($name) > $max_name) {
               $name = drupal_substr($name, 0, $max_name - 3) .'...';
           }
-      }
 
     if (user_access('access user profiles') && !$options['plain']) {
       $l_opts = array('absolute' => TRUE);

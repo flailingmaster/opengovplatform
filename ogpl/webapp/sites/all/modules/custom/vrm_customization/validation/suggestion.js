@@ -11,6 +11,8 @@ $(document).ready(function(){
 				"field_sender_name[0][value]":"required",
 				"field_email[0][email]":{email: true},
 				"field_feedback_body[0][value]":"required",
+				"captcha_response":"required",
+
 			},
 			messages: {
 				"field_sender_name[0][value]": {
@@ -21,6 +23,9 @@ $(document).ready(function(){
 				},
 				"field_feedback_body[0][value]": {
 					required: "Suggestion field is required."
+				},
+				"captcha_response":{
+					required: "Verification field is required."	
 				}
 			},
 			invalidHandler: function(form, validator) {

@@ -61,7 +61,6 @@
 	
 	
 	);
-    
 	$form['page-results1']=array(
 	'#type' => 'select',
 	'#title' => t(''),

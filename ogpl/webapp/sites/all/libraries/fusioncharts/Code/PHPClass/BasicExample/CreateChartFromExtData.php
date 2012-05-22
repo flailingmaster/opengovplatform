@@ -57,7 +57,7 @@ include("../Includes/FusionCharts_Gen.php");
 	# Create object of FusionCharts class of single series 
  	$FC = new FusionCharts("Column3D","600","300"); 
 
-	# Set Relative Path of swf file. default path is ï¿½charts/ï¿½
+	# Set Relative Path of swf file. default path is “charts/”
  	$FC->setSwfPath("../../FusionCharts/");
 	//Create the chart - Column 3D Chart with data from strXML 
 	# Create the Chart 

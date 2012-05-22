@@ -197,6 +197,16 @@ print '<div  style="display:none;" class="sort-select-box switch-js-enabled ">';
 	print '</div>';
   }
 ?>
+<?php
+
+$breadcrumb = array();
+$breadcrumb[] = l('Home', '<front>');
+$breadcrumb[] = l('Data Catalogs', 'catalogs');
+$breadcrumb[] = drupal_get_title();
+
+drupal_set_breadcrumb($breadcrumb);
+?>
+
 </div>
   <?php if ($rows): ?>
     <div class="view-content">

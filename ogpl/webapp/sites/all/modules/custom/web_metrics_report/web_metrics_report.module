@@ -32,6 +32,15 @@ function web_metrics_report_views_pre_execute(&$view)
         $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
         $view->build_info['count_query'] = $view->build_info['query'];
 
+		$search = array('ORDER BY');
+		$replace = array('GROUP BY node_node_data_field_ds_sector_nid,node_node_data_field_ds_sector.type ORDER BY');
+    	$view->build_info['query'] = str_replace($search,$replace,$view->build_info['query']);
+    	$view->build_info['count_query'] = str_replace($search,$replace,$view->build_info['count_query']);
+	
+		$search = array('(SELECT COUNT(dc.fid) FROM {download_count} dc WHERE dc.fid = files_node_data_field_ds_datafile.fid)');
+    	$replace = array('sum((SELECT COUNT(dc.fid) FROM {download_count} dc WHERE dc.fid = files_node_data_field_ds_datafile.fid))');
+    	$view->build_info['query'] = str_replace($search,$replace,$view->build_info['query']);
+    	$view->build_info['count_query'] = str_replace($search,$replace,$view->build_info['count_query']);
 
         $itemCount = $_GET['itemcount'];
         if (empty($itemCount)) {
@@ -114,7 +123,16 @@ function web_metrics_report_views_pre_execute(&$view)
         $view->build_info['query'] = str_replace($search, $replace, $view->build_info['query']);
         $view->build_info['count_query'] = $view->build_info['query'];
 
-
+		$search = array('ORDER BY');
+		$replace = array('GROUP BY node_node_data_field_ds_agency_name_nid,node_node_data_field_ds_agency_name.type ORDER BY');
+    	$view->build_info['query'] = str_replace($search,$replace,$view->build_info['query']);
+    	$view->build_info['count_query'] = str_replace($search,$replace,$view->build_info['count_query']);
+	
+		$search = array('(SELECT COUNT(dc.fid) FROM {download_count} dc WHERE dc.fid = files_node_data_field_ds_datafile.fid)');
+    	$replace = array('sum((SELECT COUNT(dc.fid) FROM {download_count} dc WHERE dc.fid = files_node_data_field_ds_datafile.fid))');
+    	$view->build_info['query'] = str_replace($search,$replace,$view->build_info['query']);
+    	$view->build_info['count_query'] = str_replace($search,$replace,$view->build_info['count_query']);
+ 
         //str_replace($search,$replace,$view->build_info['count_query']);
         //print_r($view->build_info['query']);
         //$search = array('(SELECT COUNT(dc.fid) FROM {download_count} dc WHERE dc.fid = files_node_data_field_ds_file.fid)');

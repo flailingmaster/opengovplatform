@@ -1,0 +1,18 @@
+Index: autologout.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- autologout.module	(revision )
++++ autologout.module	(revision 7171)
+@@ -82,8 +82,8 @@
+     $jquery_ui = module_exists('jquery_ui');
+     if ($jquery_ui) {
+       jquery_ui_add(array('ui.dialog'));
+-      // add default css. @todo: not sure if this is the best approach
+-      drupal_add_css(drupal_get_path('module', 'jquery_ui') . '/jquery.ui/themes/default/ui.all.css');
++      // add default css
++	  drupal_add_css(jquery_ui_get_path() . '/themes/default/ui.all.css');
+     }
+     
+     // return all the drupal settings we'll need

@@ -308,7 +308,6 @@ if(count($agency_data) > 0){
 $country_coord = $node->field_country_latitude[0]['value'].','.$node->field_country_longitude[0]['value'];
 ?>
 <script type="text/javascript">
-<!--//--><![CDATA[//><!--
     var map;
     function loadMap() {
         if (GBrowserIsCompatible()) {
@@ -381,7 +380,6 @@ $country_coord = $node->field_country_latitude[0]['value'].','.$node->field_coun
             map.setZoom(4);
         });
     });
-//--><!]]>
 </script>
 
 <?php
@@ -396,8 +394,8 @@ if(strlen(trim($country_dataset_links)) > 0){
 }
 global $base_url;
 if(variable_get('file_downloads','') == 2) {
-   // $flag_img = explode('/', $node->field_open_data_site_image[0]['filepath']);
-    $flag_img=substr($node->field_open_data_site_image[0]['filepath'],strpos($node->field_open_data_site_image[0]['filepath'],"files/"));
+   //$flag_img = explode('/', $node->field_open_data_site_image[0]['filepath']);
+	$flag_img=substr($node->field_open_data_site_image[0]['filepath'],strpos($node->field_open_data_site_image[0]['filepath'],"files/"));
     $image_path = $base_url."/system/".$flag_img;
 } else {
     $image_path = $node->field_open_data_site_image[0]['filepath'];
@@ -441,9 +439,7 @@ if(variable_get('file_downloads','') == 2) {
 <?php print $state_static_data; ?>
         </div>
         <script type="text/javascript">
-		<!--//--><![CDATA[//><!--
         $('#static-map').remove();
-		//--><!]]>
         </script>
     </div>
 

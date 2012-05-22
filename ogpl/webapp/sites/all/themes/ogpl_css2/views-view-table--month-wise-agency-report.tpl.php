@@ -89,7 +89,11 @@ if(strpos($view_name, "page_2"))
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach ($rows as $count => $row): ?>
+		<?php foreach ($rows as $count => $row):
+               if(!strlen(strstr($row['phpcode_12'],">-<")))
+		  {
+                ?>
+                    
 			<tr class="<?php print implode(' ', $row_classes[$count]); ?> ">
 				<?php 
 				$month=12;
@@ -117,7 +121,7 @@ if(strpos($view_name, "page_2"))
 				</td>
 				<?php endforeach; ?>
 			</tr>
-		<?php endforeach; ?>
+		<?php } endforeach; ?>
 		<tr><td class="ds-list-head-new ds-list-head-btm-left" <?php if($page == 1) echo 'style="border-right:1px solid"'; ?>>Total Datasets published per month</td> 
 		<?php
 		for($i=12;$i>0;$i--)

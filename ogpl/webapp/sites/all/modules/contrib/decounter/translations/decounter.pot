@@ -1,0 +1,20 @@
+#: decounter.module:14
+msgid "Select roles"
+msgstr ""
+
+
+#: decounter.module:15
+msgid "Select user roles to exclude from node views counting."
+msgstr ""
+
+#: decounter.module:24
+msgid "Exclude admin"
+msgstr ""
+
+#: decounter.module:25
+msgid "Check to exclude admin from node views counting."
+msgstr ""
+
+#: decounter.module:43
+msgid "Administer Decounter module."
+msgstr ""

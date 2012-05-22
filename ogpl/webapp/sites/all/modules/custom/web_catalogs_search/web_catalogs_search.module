@@ -274,7 +274,7 @@ function get_filter_value($value)
  	if($value=='application/vnd.openxmlformats-officedocument.wordprocessingml.document' )$name="DOCX";
   	if($value=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ) $name="XLSX";
   	if($value == 'application/vnd.openxmlformats-officedocument.presentationml.presentation') $name="PPTX";
-  	if($value=='application/vnd.ms-document')$name="DOC";
+  	if($value=='application/vnd.ms-document' ||$value=='application/msword')$name="DOC";
   	if($value=='application/vnd.ms-excel')$name="XLS";
        if(is_numeric($value))
        { $nid=$value;
@@ -428,7 +428,7 @@ function web_catalogs_search_views_pre_execute(&$view)
        {
       	  $query=web_catalogs_search_set_query_filters();
       	  $search = array('WHERE');
-      	  $replace = array(" LEFT JOIN files F ON F.fid=node_data_field_ds_description.field_ds_file_fid WHERE ".$query);
+      	  $replace = array(" LEFT JOIN files F ON F.fid=node_data_field_ds_description.field_ds_datafile_fid WHERE ".$query);
       	  $view->build_info['query'] = str_replace($search,$replace,$view->build_info['query']);
      	   $view->build_info['count_query'] = str_replace($search,$replace,$view->build_info['count_query']);
 	}
@@ -500,7 +500,7 @@ function web_catalogs_search_set_query_filters()
              else if($type=='agency')
                $filter_query.="(node_data_field_ds_description.field_ds_agency_name_nid='".$value."') AND";
 	      else if($type=='sub_agency')
-               $filter_query.="(node_data_field_ds_description.field_ds_sub_agency_name_value='".$value."') AND";
+               $filter_query.="(node_data_field_ds_description.field_ds_sub_agency_nid='".$value."') AND";
              else if($type=='file')
                $filter_query.="(F.filemime='".$value."') AND";
 
@@ -686,7 +686,7 @@ function sub_agency_name_filters()
  	}
   	$nid=substr($nid,0,strlen($nid)-1);
     if($nid!='') $nid_query='ds.nid IN ('.$nid.') AND';
-  $subagency=db_query("select distinct(ds.field_ds_sub_agency_name_value) as name ,count(ds.field_ds_sub_agency_name_value) as count from content_type_dataset ds LEFT JOIN node n on ds.nid=n.nid LEFT JOIN workflow_node wf on ds.nid=wf.nid  WHERE ".$nid_query."  n.status=1 AND wf.sid=10 AND ds.field_ds_sub_agency_name_value IS NOT NULL GROUP BY ds.field_ds_sub_agency_name_value order by count desc");
+  $subagency=db_query("select distinct(ds.field_ds_sub_agency_nid) as nid, sa.field_sa_subagency_name_value as name ,count(ds.field_ds_sub_agency_nid) as count from content_type_dataset ds LEFT JOIN node n on ds.nid=n.nid LEFT JOIN workflow_node wf on ds.nid=wf.nid LEFT JOIN content_type_sub_agency sa on sa.nid=ds.field_ds_sub_agency_nid WHERE ".$nid_query."  n.status=1 AND wf.sid=10 AND ds.field_ds_sub_agency_nid IS NOT NULL GROUP BY ds.field_ds_sub_agency_nid order by count desc");
   $old_filters='';
   if($_GET['filter'])
   {  
@@ -697,7 +697,7 @@ function sub_agency_name_filters()
   while($row=db_fetch_object($subagency))
   {  
     
-    $output.='<li><a title="'.$row->name.'"  href="'.set_filters('sub_agency',$row->name).'">'.$row->name.' ('.$row->count.')</a></li>';
+    $output.='<li><a href="'.set_filters('sub_agency',$row->nid).'">'.$row->name.' ('.$row->count.')</a></li>';
   }
   if($output)
     $output='<div class="item-list"><ul>'.$output.'</ul></div>';
@@ -705,15 +705,22 @@ function sub_agency_name_filters()
    }
    else
   {  
+    if (is_numeric(get_filter('sub_agency')))
+    {
+    	  $nid=(int)get_filter('sub_agency');
+   	   $node=node_load($nid);
+   	   $text=$node->title;
+     }
    
     $output='<div class="item-list"><ul>';
-    $output.='<li><a href="'.remove_filter('sub_agency').'">(-) </a>'.get_filter('sub_agency').'</li>';
+    $output.='<li><a href="'.remove_filter('sub_agency').'">(-) </a>'.$text;
     $output.='</ul></div>';
 
   }
 
   return $output;
 }
+
 
 function file_format_filters()
 {
@@ -730,7 +737,7 @@ function file_format_filters()
   	$nid=substr($nid,0,strlen($nid)-1);
          if($nid!='') $nid_query='ds.nid IN ('.$nid.') AND';
        
-  	$files=db_query("select distinct(F.filemime) as name ,count(F.filemime) as count from content_type_dataset ds LEFT JOIN node n on ds.nid=n.nid LEFT JOIN workflow_node wf on ds.nid=wf.nid LEFT JOIN files F on ds.field_ds_file_fid=F.fid WHERE ".$nid_query."  n.status=1 AND wf.sid=10 AND F.filemime IS NOT NULL GROUP BY F.filemime order by count desc");
+  	$files=db_query("select distinct(F.filemime) as name ,count(F.filemime) as count from content_type_dataset ds LEFT JOIN node n on ds.nid=n.nid LEFT JOIN workflow_node wf on ds.nid=wf.nid LEFT JOIN files F on ds.field_ds_datafile_fid=F.fid WHERE ".$nid_query."  n.status=1 AND wf.sid=10 AND F.filemime IS NOT NULL GROUP BY F.filemime order by count desc");
   	$old_filters='';
  	 if($_GET['filter'])
 	  {  

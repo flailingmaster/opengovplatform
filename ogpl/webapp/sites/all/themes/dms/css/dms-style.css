@@ -2278,3 +2278,6 @@ width:850px;
 .field-icon-text-css {
 	display:none !important;
 }
+.view-id-Theme_Files_Dashboard table{
+	margin-top:15px;
+}

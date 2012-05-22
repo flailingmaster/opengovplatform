@@ -124,7 +124,10 @@ if($page == 1) {
 		</tr>
 	</thead>
 	<tbody>
-	<?php foreach ($rows as $count => $row): ?>
+	<?php foreach ($rows as $count => $row):
+            if(!strlen(strstr($row['phpcode_12'],">-<")))
+		  {
+         ?>
 		<tr class="<?php print implode(' ', $row_classes[$count]); ?> ">
 		<?php 
 			foreach ($row as $field => $content):
@@ -142,9 +145,9 @@ if($page == 1) {
 					print $content; 
 				  ?>
 		  </td>
-		<?php endforeach; ?>
+		<?php  endforeach; ?>
 		</tr>
-	<?php endforeach; ?>
+	<?php }endforeach; ?>
 	<tr><td class="ds-list-head-new-center" <?php if($page == 1){ echo 'style="border-radius:0 0 0 8px;"'; } ?>>Total Datasets published per month</td> 
 	<?php
 		$days=array(1=>31,28,31,30,31,30,31,31,30,31,30,31);

@@ -1,4 +1,5 @@
 <?php global $base_url, $site_name; $user;
+if($base_url == "http://demodata.nic.in") { header("location: http://demodata.nic.in"); exit; }
 $user_name=$user->name;
 $user_name=str_replace('@','[at]',$user_name);
 $user_name=str_replace('.','[dot]',$user_name);
@@ -38,7 +39,7 @@ $user_name=str_replace('.','[dot]',$user_name);
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/views_slideshow/contrib/views_slideshow_singleframe/views_slideshow.css?i";
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/views_slideshow/contrib/views_slideshow_thumbnailhover/views_slideshow.css?i";
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/extlink/extlink.css?i";
-  @import "<?php echo $base_url;?>/sites/all/modules/contrib/cck/modules/fieldgroup/fieldgroup.css?i"; 
+  @import "<?php echo $base_url;?>/sites/all/modules/contrib/cck/modules/fieldgroup/fieldgroup.css?i";
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/views/css/views.css?i";
   @import "<?php echo $base_url;?>/sites/all/modules/contrib/context/plugins/context_reaction_block.css?i";
   @import "<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/style.css?i";
@@ -58,7 +59,7 @@ $user_name=str_replace('.','[dot]',$user_name);
  
 	
   <?php //print $styles; ?>
-  <link type="text/css" rel="stylesheet" media="all" href="<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/grid16-fluid.css?i"/>
+<link type="text/css" rel="stylesheet" media="all" href="<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/grid16-fluid.css?i"/>
   <!--[if IE 8]>
   <link type="text/css" rel="stylesheet" media="all" href="<?php echo $base_url.'/'.drupal_get_path('theme', 'ogpl_css3');?>/css/ie8-fixes.css?i" />
   <![endif]-->

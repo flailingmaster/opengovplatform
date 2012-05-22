@@ -117,7 +117,7 @@ class PHPlot
     public $label_format = array('x' => array(), 'xd' => array(), 'y' => array(), 'yd' => array());
     // data_units_text is retained for backward compatibility, because there was never a function
     // to set it. Use the 'suffix' argument to Set[XY]LabelType instead.
-    public $data_units_text = '';              // Units text for 'data' labels (i.e: 'ï¿½', '$', etc.)
+    public $data_units_text = '';              // Units text for 'data' labels (i.e: '¤', '$', etc.)
 
 // Legend
     public $legend = '';                       // An array with legend titles

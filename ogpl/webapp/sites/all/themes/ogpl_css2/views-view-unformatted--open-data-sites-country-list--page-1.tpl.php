@@ -32,6 +32,7 @@
             $country_dataset_count++;
         }
     }
+	if(!$country_dataset_count) continue;
     foreach($node_data->field_state_data as $key => $state_data){
         if(isset($state_data['value']['field_state_dataset_link'])){
             foreach($state_data['value']['field_state_dataset_link'] as $k => $state_data_links){

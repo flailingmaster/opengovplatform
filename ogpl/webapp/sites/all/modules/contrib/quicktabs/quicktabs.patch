@@ -1,0 +1,34 @@
+Index: quicktabs.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- quicktabs.module	(revision )
++++ quicktabs.module	(revision 7171)
+@@ -380,7 +380,11 @@
+       if (module_exists('i18nstrings')) {
+         $tab['title'] = tt("quicktabs:tab:{$quicktabs['machine_name']}--$tabkey:title", $tab['title']);
+       }
++      if(trim($quicktabs['machine_name']) == 'catalog_tab'){
++        $output .= '<li'. $attributes_li .'>'. l('<span>'.$tab['title'].'</span>', $_GET['q'], $options) .'</li>';
++      } else {
+             $output .= '<li'. $attributes_li .'>'. l($tab['title'], $_GET['q'], $options) .'</li>';
++      }
+       $index++;
+     }
+   }
+@@ -415,10 +419,14 @@
+     'attributes' => array(
+       'id' => $id,
+       'class' => $class,
++      'title'=>$quicktabs['tabs'][$tabkey]['title'],
+     ),
+     'query' => $query,
+     'fragment' => 'quicktabs-'. $qt_name,
+   );
++  if(trim($quicktabs['machine_name']) == 'catalog_tab'){
++    $link_options['html'] = TRUE;
++  }
+ 
+   return $link_options;
+ }

@@ -1,5 +1,6 @@
 <?php
 	global $base_url;
+	if($base_url == "http://demodatacms.nic.in" || $base_url == "https://demodatacms.nic.in") { drupal_goto("user"); }
 	    global $theme_key;
     $themes = list_themes();
     $theme_object = $themes[$theme_key];

@@ -1,0 +1,40 @@
+<?php
+
+function web_download_count_install()
+{
+    drupal_install_schema('web_download_count');
+}
+
+function web_download_count_uninstall()
+{
+    drupal_uninstall_schema('web_download_count');
+}
+
+function web_download_count_schema()
+{
+    $schema['web_download_count'] = array(
+        'description' => 'stores download count of acess point from metadata page.',
+        'fields' => array(
+            'nid' => array(
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0
+            ),
+            'access_point_url' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => FALSE,
+                'default' => null,
+            ),
+            'download_count' => array(
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => FALSE,
+                'default' => null,
+            ),
+         ),
+        'primary key' => array('nid'),
+    );
+    return $schema;
+}

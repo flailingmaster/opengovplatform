@@ -1,0 +1,16 @@
+Index: recaptchalib.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/ogpl_sec_up/sites/all/modules/contrib/recaptcha/recaptcha/recaptchalib.php	(revision )
++++ branches/ogpl_sec_up/sites/all/modules/contrib/recaptcha/recaptcha/recaptchalib.php	(revision 7171)
+@@ -78,7 +78,7 @@
+ 
+         $response = '';
+         if( false == ( $fs = @fsockopen($host, $port, $errno, $errstr, 10) ) ) {
+-                die ('Could not open socket');
++           form_set_error('captcha_response', t('Captcha failed due to no response from server. Please try after some time.'));
+         }
+ 
+         fwrite($fs, $http_request);

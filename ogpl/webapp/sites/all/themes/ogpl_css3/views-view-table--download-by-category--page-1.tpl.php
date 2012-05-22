@@ -28,7 +28,7 @@
 		   print '<th class="views-field views-field-'.$fields[$field].' ds-list-head-new-first">';
 		   print $label; 
 		   }
-		 if($field=='dcid')
+		 if($field=='downloads')
 		  {
 		   print '<th class="views-field views-field-'.$fields[$field].' ds-list-head-new-last" style="text-align:center; ">';
 		   print $label; 

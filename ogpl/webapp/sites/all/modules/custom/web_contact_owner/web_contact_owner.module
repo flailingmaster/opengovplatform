@@ -98,7 +98,7 @@ function web_contact_owner_form_submit($form,&$form_state){
 	if($form_state['values']['cc'])
 		$headers.= 'Cc: '.$form_state['values']['emailid'];
 	mail($email,$subject,$message,$headers);
-	drupal_goto('contact-ownerack',array('dest'=>$form_state['values']['url']));
+	drupal_goto('contact-ownerack');
 }
 /*function web_contact_owner_ack ()
 {

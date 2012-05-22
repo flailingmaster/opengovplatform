@@ -3,164 +3,176 @@
 /**
  * Implementation of hook_menu_alter().
  */
-function cms_customizations_menu_alter(&$items) {
-  //This entry corrects an AHAH access callback bug in the contributed module flexifield_filefield.module.
-  //The menu item 'flexifield-filefield…' access callback 'filefield_edit_access' expects at least 2 parameters.
-  //More information is found here; http://drupal.org/node/853742#comment-3210312.
-  $items['flexifield-filefield/ahah/%/%/%/%']['access arguments'] = array(2, 3);
+function cms_customizations_menu_alter(&$items)
+{
+    //This entry corrects an AHAH access callback bug in the contributed module flexifield_filefield.module.
+    //The menu item 'flexifield-filefield…' access callback 'filefield_edit_access' expects at least 2 parameters.
+    //More information is found here; http://drupal.org/node/853742#comment-3210312.
+    $items['flexifield-filefield/ahah/%/%/%/%']['access arguments'] = array(2, 3);
 }
 
 /**
  * Implementation of hook_views_api().
  */
-function cms_customizations_views_api() {
-  return array('api' => 2);
+function cms_customizations_views_api()
+{
+    return array('api' => 2);
 }
 
 /**
  * Implementation of hook_form_alter().
  */
-function cms_customizations_form_alter(&$form, &$form_state, $form_id) {
-  switch ($form_id) {
-    case 'views_exposed_form':
-      switch ($form['#id']) {
-        /*case 'views-exposed-form-content-mgmt-cmsadmin-block-path-1': // CMS Admin
-          if (empty($_REQUEST['sid'])) { $form_state['input']['sid'] = array('5' => '5'); }
-          break;*/
+function cms_customizations_form_alter(&$form, &$form_state, $form_id)
+{
+	$form['#attributes']['autocomplete'] = 'off';
+    switch ($form_id) {
+        case 'user_login':
+            $form['#after_build'][] = 'cms_customizations_reorder_login_form';
+            break;
+        case 'views_exposed_form':
+            switch ($form['#id']) {
+                case 'views-exposed-form-content-mgmt-contentcreator-block-path-1': // Content Creator
+                    if (empty($_REQUEST['sid'])) {
+                        $form_state['input']['sid'] = array('17' => '17');
+                    }
+                    break;
 
-        case 'views-exposed-form-content-mgmt-contentcreator-block-path-1': // Content Creator
-          if (empty($_REQUEST['sid'])) { $form_state['input']['sid'] = array('17' => '17'); }
-          break;
+                case 'views-exposed-form-content-mgmt-moderator-block-path-1': // Moderator
+                    if (empty($_REQUEST['sid'])) {
+                        $form_state['input']['sid'] = array('18' => '18');
+                    }
+                    break;
 
-        case 'views-exposed-form-content-mgmt-moderator-block-path-1': // Moderator
-          if (empty($_REQUEST['sid'])) { $form_state['input']['sid'] = array('18' => '18'); }
-          break;
-		  
-		case 'views-exposed-form-content-management-block-path-2': // Publisher
-          if (empty($_REQUEST['sid'])) { $form_state['input']['sid'] = array('22' => '22'); }
-          break;
+                case 'views-exposed-form-content-management-block-path-2': // Publisher
+                    if (empty($_REQUEST['sid'])) {
+                        $form_state['input']['sid'] = array('22' => '22');
+                    }
+                    break;
 
-        default:
-          break;
-      }
-      break;
-
-    case 'views-bulk-operations-form--1':
-      //Configure Views Bulk OPeration Settings
-      if (isset($form['select']['operation']['#options'])) {
-        global $user;
-        $roles = $user->roles;
-
-        if ($user->uid == 1) {
-          //User 1 has access to all actions
-        }
-        else if (isset($roles['10']) || isset($roles['18'])) {
-          //Select actions for Administrator and CMS Administrator roles
-          unset($form['select']['operation']['#options']['workflow_select_next_state_action']);
-        }
-        else if (isset($roles['11'])) { 
-          //Select actions for 'Content Creator' role
-          unset($form['select']['operation']['#options']['workflow_select_given_state_action']);
-          if (isset($form['select']['operation']['#options']['workflow_select_next_state_action'])) {
-            $form['select']['operation']['#options']['workflow_select_next_state_action'] = 'Submit';
-          }
-        }
-        else if (isset($roles['12'])) { 
-          //Select actions for 'Moderator' role
-          unset($form['select']['operation']['#options']['workflow_select_given_state_action']);
-          unset($form['select']['operation']['#options']['workflow_select_next_state_action']);
-          unset($form['select']['operation']['#options']['views_bulk_operations_delete_node_action']);
-        }   
-		else if (isset($roles['13'])) { 
-          //Select actions for 'Publisher' role
-          unset($form['select']['operation']['#options']['workflow_select_given_state_action']);
-          unset($form['select']['operation']['#options']['workflow_select_next_state_action']);
-          unset($form['select']['operation']['#options']['views_bulk_operations_delete_node_action']);
-        } 
-      }
-
-      $form['select']['#weight'] = '50';
-
-      if (isset($form['actions']['cancel']['#value'])) {
-        $form['actions']['cancel']['#value'] = str_replace('class="active">Cancel</a>', 'class="active cancel-button">Cancel</a>', $form['actions']['cancel']['#value']);
-      }
-
-      if (isset($form['cancel']['#value'])) {
-        $form['cancel']['#value'] = str_replace('class="active">Cancel</a>', 'class="active cancel-button">Cancel</a>', $form['cancel']['#value']);
-      }
-
-      if ($form['target_sid']) {
-        $states = workflow_customizations_non_system_workflow_states(); 
-        foreach($form['target_sid']['#options'] as $wid => $value) {
-          foreach($value as $sid => $name) {
-            if (empty($states[$sid])) {
-              unset($form['target_sid']['#options'][$wid][$sid]);
+                default:
+                    break;
             }
-          }
+            break;
+        case 'views-bulk-operations-form--1':
+            //Configure Views Bulk Operation Settings
+            if (isset($form['select']['operation']['#options'])) {
+                global $user;
+                $roles = $user->roles;
+
+                if ($user->uid == 1) {
+                    //User 1 has access to all actions
+                }
+                else if (isset($roles['10']) || isset($roles['18'])) {
+                    //Select actions for Administrator and CMS Administrator roles
+                    unset($form['select']['operation']['#options']['workflow_select_next_state_action']);
+                }
+                else if (isset($roles['11'])) {
+                    //Select actions for 'Content Creator' role
+                    unset($form['select']['operation']['#options']['workflow_select_given_state_action']);
+                    if (isset($form['select']['operation']['#options']['workflow_select_next_state_action'])) {
+                        $form['select']['operation']['#options']['workflow_select_next_state_action'] = 'Submit';
+                    }
+                }
+                else if (isset($roles['12'])) {
+                    //Select actions for 'Moderator' role
+                    unset($form['select']['operation']['#options']['workflow_select_given_state_action']);
+                    unset($form['select']['operation']['#options']['workflow_select_next_state_action']);
+                    unset($form['select']['operation']['#options']['views_bulk_operations_delete_node_action']);
+                }
+                else if (isset($roles['13'])) {
+                    //Select actions for 'Publisher' role
+                    unset($form['select']['operation']['#options']['workflow_select_given_state_action']);
+                    unset($form['select']['operation']['#options']['workflow_select_next_state_action']);
+                    unset($form['select']['operation']['#options']['views_bulk_operations_delete_node_action']);
+                }
+            }
+
+            $form['select']['#weight'] = '50';
+
+            if (isset($form['actions']['cancel']['#value'])) {
+                $form['actions']['cancel']['#value'] = str_replace('class="active">Cancel</a>', 'class="active cancel-button">Cancel</a>', $form['actions']['cancel']['#value']);
+            }
+
+            if (isset($form['cancel']['#value'])) {
+                $form['cancel']['#value'] = str_replace('class="active">Cancel</a>', 'class="active cancel-button">Cancel</a>', $form['cancel']['#value']);
+            }
+
+            if ($form['target_sid']) {
+                $states = workflow_customizations_non_system_workflow_states();
+                foreach ($form['target_sid']['#options'] as $wid => $value) {
+                    foreach ($value as $sid => $name) {
+                        if (empty($states[$sid])) {
+                            unset($form['target_sid']['#options'][$wid][$sid]);
+                        }
+                    }
+                }
+            }
+            break;
+        case 'menu_edit_menu':
+            global $user;
+
+
+            if (!in_array('Administrator', $user->roles) && !strpos($_SERVER['REQUEST_URI'], "/edit")) {
+                unset($form['title']);
+                unset($form['menu_name']);
+                unset($form['description']);
+                unset($form['submit']);
+                $form['label'] = array(
+                    '#value' => t('Kindly ') . l('Contact Admin ', 'content/contact-us') . t('to add the menu'),
+                    '#attributes' => array('class' => 'label1'),);
+
+            }
+
+            break;
+        default:
+            break;
+    }
+
+    // Limit role filter for POC(4) and Data Steward(3) users
+    if ($form_id == 'views_exposed_form' && isset($form['rid'])) {
+        global $user;
+        if (array_intersect(array(3, 4), array_keys($user->roles))) {
+            $form['rid']['#options'] = array(
+                '4' => 'Organization POC',
+                '3' => 'Data Steward',
+            );
         }
-      }
-      break;
-	 case 'menu_edit_menu':global $user;
+    }
 
-				
-				if(!in_array('Administrator', $user->roles) && !strpos($_SERVER['REQUEST_URI'], "/edit")){
-				unset($form['title']);
-				unset($form['menu_name']);
-				unset($form['description']);
-				unset($form['submit']);
-				$form['label'] = array(
-				'#value' =>t('Kindly ').l('Contact Admin ','content/contact-us').t('to add the menu'),
-				'#attributes' => array('class' => 'label1'),);
-
-				}
-
-		break;	
-    default:
-      break;
-  }
-
-  // Limit role filter for POC(4) and Data Steward(3) users
-  if ($form_id == 'views_exposed_form' && isset($form['rid'])) {
-     global $user;
-     if (array_intersect(array(3,4), array_keys($user->roles))) {
-        $form['rid']['#options'] = array(
-           '4' => 'Organization POC',
-           '3' => 'Data Steward',
+    // If form is editable we add a cancel button that redirects to $base_url.
+    if (isset($form['buttons'])) {
+        $base = $GLOBALS['base_url'];
+        $form['buttons']['cancel'] = array(
+            '#type' => 'button',
+            '#value' => t('Cancel'),
+            '#weight' => '15',
+            '#attributes' => array('onClick' => 'location.replace(\'' . $base . '\'); return false;'),
         );
-     }
-  }
-
-  // If form is editable we add a cancel button that redirects to $base_url.
-  if (isset($form['buttons'])) {
-     $base = $GLOBALS['base_url'];
-     $form['buttons']['cancel'] = array(
-        '#type' => 'button',
-        '#value' => t('Cancel'),
-        '#weight' => '15',
-        '#attributes' => array('onClick' => 'location.replace(\''.$base.'\'); return false;'),
-     );
-  }
+    }
 }
 
-/*
- *	Implementation of hook_user
- *
+/**
+ * Implementation of hook_user().
  */
-function cms_customizations_user($op, &$edit, &$account, $category = NULL) {
-  switch ($op) {
-    case 'logout':
-      if (!$_REQUEST['destination']) $_REQUEST['destination'] = "user/login";
-      global $user ;
-      $user_temp = $user;
-      $user = user_load(0);
-      $item = menu_get_item($_REQUEST['destination']);
-      if (!$item['access']) $_REQUEST['destination'] =  '';
+function cms_customizations_user($op, &$edit, &$account, $category = NULL)
+{
+    switch ($op) {
+        case 'logout':
+            if (!$_REQUEST['destination']) $_REQUEST['destination'] = "user/login";
+            global $user;
+            $user_temp = $user;
+            $user = user_load(0);
+            $item = menu_get_item($_REQUEST['destination']);
+            if (!$item['access']) $_REQUEST['destination'] = '';
 
-      $user = $user_temp;
-    break;
-  }
+            $user = $user_temp;
+            break;
+    }
 }
 
+/**
+ * Implementation of hook_menu().
+ */
 function cms_customizations_menu()
 {
     $items['cms/reports/visitors'] = array(
@@ -187,6 +199,173 @@ function cms_customizations_menu()
     return $items;
 }
 
+/**
+ * Implementation of hook_help().
+ */
+function cms_customizations_help($path, $arg)
+{
+    global $user;
+    $alias = drupal_get_path_alias($_GET['q']);
+    switch ($path) {
+
+        case 'admin/build/mini-panels/add':
+            return '<p>' . t('You can add a new Mini Panel and specify its layout.  You can also save the Mini Panel layout as a template and use the template when you create other Mini Panels.To follow the steps click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../../sites/default/files/WebHelp/ogpl_admin_guide.htm#adding_mini_panels.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help...</a>]</div>') . '</p>';
+        case 'admin/reports/access-denied':
+            return '<p>' . t('The Access Denied Pages/Datasets report lists the pages or datasets that displayed the Access Denied error message to the visitors to the OGPL Web site and the users of the OGPL Control Panel application. This report also displays the number of times that the error message was displayed for each page or dataset.') . '</p>';
+        case 'admin/reports/page-not-found':
+            return '<p>' . t('The Page Not Found Error report lists the pages that displayed the Page Not Found error message to the visitors to the OGPL Web site and the users of the OGPL Control Panel application. The report also lists the number of times that the error message was displayed for every page. ') . '</p>';
+
+        case 'cms/reports/pages':
+            return '<p>' . t('The Top Pages report lists the OGPL Web pages that the visitors accessed the most number of times. To increase traffic to other pages of the OGPL Web site, you can insert other OGPL page links within these top-accessed pages.') . '</p>';
+
+        case 'admin/reports/search':
+            return '<p>' . t('The Top Search Phrases report lists all the words or phrases that the visitors searched for on the OGPL Web site.') . '</p>';
+
+        case 'cms/reports/visitors':
+            return '<p>' . t('The Top Visitors report lists the IP address of the visitors and the number of times that each visitor accessed a page on the OGPL Web site. This report also lists the total  time that the OGPL Web site took to load these pages.') . '</p>';
+
+        case 'cms/reports/referrers':
+            return '<p>' . t('The Top Referrer report lists the referrer URLs that redirected the visitors to the OGPL Web site. This report also provides information about the last time when an OGPL page was accessed from a referrer.') . '</p>';
+
+
+        case 'user/%/edit':
+            return '<p>' . t('You can update the information about a user, such as the username, password, roles,etc.For more info click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#updating_user_details.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+
+        case 'vrm-category-metrics':
+        case 'vrm-category-metrics-poc':
+            return '<p>' . t('The VRM Category Metrics report lists the total number of feedback that is in a specific state, for each feedback category. This report enables you to analyze and track the statistics for each feedback category.') . '</p>';
+
+        case 'assigneewise-vrm-listing':
+        case 'assigneewise-vrm-listing-poc':
+            return '<p>' . t('The Assignee Wise VRM Statistics report lists the total number of feedback for each assignee. This report enables you to track the number of feedback that each assignee has replied to, reviewed, closed, and archived.') . '</p>';
+
+        case 'admin/settings/date-time/formats':
+            return '<p>' . t('The format of the date and time that must be displayed on the OGPL Web site can be configured here.For more info click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../../sites/default/files/WebHelp/ogpl_admin_guide.htm#configuring_date_and_time_formats.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+
+        case 'admin/settings/votingapi':
+            return '<p>' . t('The Open Government Platform Control Panel application computes the ratings for three criterias:Quality,Accessibility and Usability and displays the overall rating for the dataset, on the Raw Dataset page of the OGPL Web site.To know about configuring voting API click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#configuring_the_voting_api.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+
+        case 'node/add/upload-docs':
+            return '<p>' . t('The Reference Documents are only available on the OGPL Control Panel application and do not appear on the OGPL Web site.To know more about uploading a reference document click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#uploading_reference_documents.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+
+        case 'node/add/theme-file-uploader':
+            return '<p>' . t('You can upload new color or contrast theme for any enabled theme. According to the setting of that theme, additional color or contrast theme will appear on front end and Anonymous users can switch according to their requirement.<br><br>Uploaded files will be saved as below:<ul><li>css - /sites/all/themes/{theme-name}/css/{color or contrast}/title/{title-name.css}</li><li>images - /sites/all/themes/{theme-name}/css/{color or contrast}/title/images/</li><li>logo - /sites/all/themes/{theme-name}/css/{color or contrast}/title/{title-name.extension}</li></ul><br>Note: The themes folder (/sites/all/themes) and its sub-folders must have write permission.') . '</p>';
+    }
+    if ($path == 'admin/build/mini-panels' && !strpos($_SERVER['REQUEST_URI'], "/list")) {
+        return '<p>' . t('Mini panels serve as containers for content to be published on the OGPL Web site. A Mini panel can have several pieces of content within it, and each piece can have its own layout styles. Mini panels also provide a predefined collection of layouts for the content. A layout might have two columns, a header, footer, and three columns in the middle, or even a stack of several mini-panels. You can add a mini panel inside another, or create a mini panel with various pieces of content, and then put it inside a panels-page or panels-node.For more information click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#managing_mini_panels.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+
+    }
+    if ($path == 'admin/settings/date-time' && !strpos($_SERVER['REQUEST_URI'], "/configure")) {
+        return '<p>' . t('The date and time settings for the OGPL Web site can be configures here.For more info click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#configuring_date_and_time_settings.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+
+    }
+    switch ($alias) {
+        case 'action-metrics':
+        case 'poc-action-metrics':
+            return '<p>' . t('The VRM Action Metrics report displays the percentage of feedback that is currently in a specific action status. This report enables you to analyze the feasibility of the feedback that the visitors provided. By default, the VRM Action Metrics report displays the metrics for all the feedback received till date.') . '</p>';
+
+        case 'source-metrics':
+        case 'poc-source-metrics':
+            return '<p>' . t('The VRM Source Metrics report displays the percentage of feedback that is received from a specific feedback source page, such as the Contact Us page, Feedback page, Ratings page, or Suggest Dataset page on the OGPL Web site. This report enables you to analyze the pattern of feedback received from every source.') . '</p>';
+
+        case 'status-metrics':
+        case 'poc-status-metrics':
+            return '<p>' . t('The VRM Status Metrics report displays the percentage of feedback that is currently in a specific status. This report enables you to analyze and track work progress.') . '</p>';
+
+        case 'vrm-delay-analysis':
+        case 'poc-vrm-delay-analysis':
+            return '<p>' . t('The VRM Delay Analysis report lists the username of the feedback owners who did not review the feedback or send the feedback reply within the default delay time. This report enables you to analyze and track the number of late reviews or late feedback replies for each feedback owner.') . '</p>';
+
+        case 'content/contact-us':
+            return '<p>' . t('You can send your queries, views, or suggestions to the Super Administrator of OGPL Web site. An e-mail message, containing the information that you provide, is sent to the Super Administrator.') . '</p>';
+    }
+
+    $roles = $user->roles;
+    //help for PMO
+    if ($path == 'vrm_dashboard' && isset($roles['6'])) {
+        return '<p>' . t('The PMO can perform the following tasks for each feedback:<ul><li>View the list of feedback assigned by the VRM Administrator.</li><li>Update the feedback category of a feedback.</li><li>Reply to a feedback.</li><li>Forward a feedback to another Program Management Office  or Point of Contact.</li><li>Add notes to a feedback.</li><li>Revert a feedback to the VRM Administrator.</li><li>Assign a feedback category to a feedback.</li></ul><br>For more information click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#program_management_office_overview.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+
+    }
+    //help for POC
+    if ($path == 'vrm_dashboard' && isset($roles['4'])) {
+        return '<p>' . t('The POC can perform the following tasks for each feedback:<ul><li>View the list of feedback assigned by the VRM Administrator.</li><li>Update the feedback category of a feedback.</li><li>Reply to a feedback.</li><li>Forward a feedback to another Program Management Office  or Point of Contact.</li><li>Add notes to a feedback.</li><li>Revert a feedback to the VRM Administrator.</li><li>Assign a feedback category to a feedback.</li></ul><br>For more information click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#point_of_contact_overview.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+
+    }
+    //help for vrm admin
+    if ($path == 'vrm_dashboard' && isset($roles['15'])) {
+        return '<p>' . t('Users can provide feedback through various pages of the OGPL Web site, such as the Contact Us page, Feedback page, Ratings page, and Suggest Dataset page.The VRM admin can perform the following tasks for each feedback:<ul><li>View the list of feedback.</li><li>Assign a feedback to the Program Management Office, Point of Contact, or VRM Administrator.</li><li>Reassign feedback that the Program Management Office or Point of Contact reverted.</li><li>Forward a feedback to the Program Management Office or Point of Contact.</li><li>Assign a feedback category to a feedback.</li><li>Assign an action status for the feedback.</li><li>Reply to a feedback.</li><li>Mark a feedback as Irrelevant</li></ul><br>For more information click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#managing_feedback.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+
+    }
+    //help for publisher
+    if ($alias == 'home' && isset($roles['13'])) {
+        return '<p>' . t('CMS Publishers can view the list of content that the CMS Moderators have submitted for review and approval. If the content is appropriate, the Publisher approves the content and publishes it on the OGPL Web site. If the content is inappropriate, the Publisher assigns the content back to the Content Creator or the Moderator, with appropriate review comments.For more information about the tasks click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#publisher.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+    }
+    //help for content creator
+    if ($alias == 'home' && isset($roles['11'])) {
+        return '<p>' . t('Content Creators update the content that the CMS Administrator has created and assigned for update. After updating the content, Content Creator sends it to the Moderator for review. If the content is inappropriate, the moderator, the publisher or the CMS Administrator can assign the content back to the Content Creator for further update.For more information about the tasks click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#content_creator.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+    }
+    //help for moderator
+    if ($alias == 'home' && isset($roles['12'])) {
+        return '<p>' . t('CMS moderators can view the list of content that the CMS Administrator has assigned for review. If the content is appropriate, the CMS Moderator approves the content. If the content is inappropriate, the CMS Moderator must assign the content back to the Content Creator.For more information about the tasks click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#content_management_system_moderator.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+    }
+    //help for cms admin
+    if ($alias == 'user-management' && isset($roles['18'])) {
+        return '<p>' . t('A Content Management System (CMS) Administrator manages the content management workflow.The CMS Administrator can create users of roles Content Creator,Moderator and Publisher.To know more about various operations click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#managing_users.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+
+    }
+    if (isset($roles['18'])) {
+        switch ($path) {
+            case 'node/add/block':
+                return '<p>' . t('A block is a box of content that is rendered into a region of the OGPL Web site.Whenever new content is required, you must create a block, and assign the block to a Content Creator and a Moderator. The Content Creator updates the block by adding the required content, and the Moderator reviews the content to verify whether the content is appropriate for the OGPL Web site.To know more about creating and updating a block click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#creating_blocks.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+            case 'node/add/faq':
+                return '<p>' . t('You can create a Frequently Asked Question (FAQ), and assign it to a Content Creator and a Moderator. The Content Creator updates the FAQ by adding the required content, and the Moderator reviews the content to verify whether the content is appropriate for the OGPL Web site. When the FAQ is published, it appears in the FAQ section of the OGPL Web site.To know more about creating and updating a FAQ click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#creating_faq.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+            case 'node/add/imageflow':
+                return '<p>' . t('The Featured Gallery displays a slide show of dataset images that you want to highlight on the OGPL Web site. You or a Content Creator can upload an image of a dataset to the Featured Gallery, and link the image to the appropriate dataset. The Moderator reviews the content to verify whether the content is appropriate for the OGPL Web site. When a visitor clicks an image on the Featured Gallery, the appropriate dataset page appears and displays information about the dataset.To know more about uploading an image to featured gallery click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/adding_images_to_the_featured_gallery.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+            case 'node/add/page':
+                return '<p>' . t('You can create a page to display information that does not change often.You can create a page and assign it to a Content Creator and a Moderator. The Content Creator updates the page by adding the required content, and the Moderator reviews the content to verify whether the content is appropriate for the OGPL Web site.To know more about creating and updating the pages click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#creating_pages.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+            case 'agency-management':
+                return '<p>' . t('You can view the list of various government agencies and departments that are associated with the OGPL Web site. You can also edit the agency details, such as the agency name and short name and the configuration settings, such as the menu settings, visibility settings, and file attachment settings for an agency.') . '</p>';
+            case 'admin/settings/site-information':
+                return '<p>' . t('In Site Information you can configure OGPL Web site settings, such as the site name, e-mail address for automated e-mails, and home page URL') . '</p>';
+            case 'admin/settings/textsize':
+                return '<p>' . t('Accessibility options help visitors who have visual disabilities to view text on the OGPL Web site. Using these options, a visitor can increase or decrease the size of the text on the OGPL Web page. You can also specify whether the text size updates must be applied across the entire OGPL Web site or within a particular section, such as a paragraph or a table.') . '</p>';
+            case 'admin/settings/apachesolr':
+                return '<p>' . t('The visitors of the OGPL Web site can use the global and advanced search functionality to search for a specific dataset or document. The OGPL Web site uses Apache Solr as the search server to scan the search index and display the results that matches the search criteria.<br>You can perform the following tasks to make the content on the OGPL Web site searchable:<ul><li>Configure the Apache Solr search server.</li><li>Index all the content on OGPL Web site by executing the cron job.</li><li>Enable filters to create search filter blocks.</li><li>Give bias to certain properties of the content when ordering the search results.</li><li>Specify weightage for the content fields that you want to give priority while searching</li></ul>') . '</p>';
+            case 'node/add/rotating-panel':
+                return '<p>' . t('The Rotating Panel on the home page of the OGPL Web site is a series of images of various government-related Web sites or government-initiated programs and schemes. When a visitor clicks an image on the rotating panel, the corresponding Web site appears. A Content Creator can upload an image for a Web site to the Rotating Panel, and specify the URL for that Web site.For more information about creating a Rotating Panel click on "more help"<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#creating_rotating_panels.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+            case 'node/add/country-data':
+                return '<p>' . t('You can add links of the OGPL Web site and the Open Data Site of another country in the OGPL Web site of your country. The links allows visitors to navigate to other government-related Web sites with minimal time and effort. The links are displayed as flags in the home page, and the URLs are listed in the World Wide Data Site page of the OGPL Web site. When a visitor clicks a flag or URL, the corresponding OGPL Web site or the World Wide Data Site page of that country appears.To know more about creating Country data click on "more help"<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#creating_country_data.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+        }
+        switch ($alias) {
+            case 'home':
+                return '<p>' . t('The CMS Administrator manages the complete content management workflow, from creating users and adding user roles to CMS workflow, configuring various Web site options required for the OGPL Web site, to generating reports.To know more about the various tasks click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#cms_administrator.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') . '</p>';
+        }
+    }
+
+}
+
+/**
+ * Implementation of hook_init().
+ */
+function cms_customizations_init() {
+  header("Cache-Control = 'private'");
+  header("Cache-Control = 'no-cache'");
+  header("Cache-Control = 'no-store'");
+  header("Cache-Control = 'Must-revalidate'");
+  header("Cache-Control = 'Proxy-revalidate'");
+  header('Pragma: no-cache');
+  header("Expires: Fri, 30 Nov 1984 11:30:00 IST");
+}
+
+function cms_customizations_reorder_login_form($form, &$form_state) {
+  $form['name']['#weight'] = -5;
+  $form['pass']['#weight'] = -4;
+  $form["verification"]['#weight'] = -3;
+  $form['captcha']['#weight'] = -2;
+  $form['submit']['#weight'] = -1;
+  return $form;
+}
+
 function cms_statistics_top_visitors()
 {
     module_load_include('admin.inc', 'statistics');
@@ -209,161 +388,4 @@ function cms_statistics_top_pages()
     $html = statistics_top_pages();
     drupal_set_title('Top Accessed Pages');
     return $html;
-}
-
-function cms_customizations_help($path, $arg) {
- global $base_url;
-global $user;
-$alias=drupal_get_path_alias($_GET['q']);
-  switch ($path) {
-    
-      case 'admin/build/mini-panels/add':
-	return '<p>' .t('You can add a new Mini Panel and specify its layout.  You can also save the Mini Panel layout as a template and use the template when you create other Mini Panels.To follow the steps click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../../sites/default/files/WebHelp/ogpl_admin_guide.htm#adding_mini_panels.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help...</a>]</div>') .'</p>';
-     case 'admin/reports/access-denied':
-	return '<p>' .t('The Access Denied Pages/Datasets report lists the pages or datasets that displayed the Access Denied error message to the visitors to the OGPL Web site and the users of the OGPL Control Panel application. This report also displays the number of times that the error message was displayed for each page or dataset.') .'</p>';    
-      case 'admin/reports/page-not-found':
-	return '<p>' .t('The Page Not Found Error report lists the pages that displayed the Page Not Found error message to the visitors to the OGPL Web site and the users of the OGPL Control Panel application. The report also lists the number of times that the error message was displayed for every page. ') .'</p>';    
-     	
-	case 'cms/reports/pages':
-       return '<p>' .t('The Top Pages report lists the OGPL Web pages that the visitors accessed the most number of times. To increase traffic to other pages of the OGPL Web site, you can insert other OGPL page links within these top-accessed pages.'). '</p>';
-	
-	case 'admin/reports/search':
-	return '<p>' .t('The Top Search Phrases report lists all the words or phrases that the visitors searched for on the OGPL Web site.') .'</p>';
-
-	case 'cms/reports/visitors':
-	return '<p>' .t('The Top Visitors report lists the IP address of the visitors and the number of times that each visitor accessed a page on the OGPL Web site. This report also lists the total  time that the OGPL Web site took to load these pages.') .'</p>';
-
-	case 'cms/reports/referrers':
-	return '<p>' .t('The Top Referrer report lists the referrer URLs that redirected the visitors to the OGPL Web site. This report also provides information about the last time when an OGPL page was accessed from a referrer.') .'</p>';
-
-	
-	case 'user/%/edit':
-	return '<p>' .t('You can update the information about a user, such as the username, password, roles,etc.For more info click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#updating_user_details.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-	
-	case 'vrm-category-metrics':
-	case 'vrm-category-metrics-poc':
-	return '<p>' .t('The VRM Category Metrics report lists the total number of feedback that is in a specific state, for each feedback category. This report enables you to analyze and track the statistics for each feedback category.') .'</p>';
-	
-	case 'assigneewise-vrm-listing':
-	case 'assigneewise-vrm-listing-poc':
-	return '<p>' .t('The Assignee Wise VRM Statistics report lists the total number of feedback for each assignee. This report enables you to track the number of feedback that each assignee has replied to, reviewed, closed, and archived.') .'</p>';
-	
-	case 'admin/settings/date-time/formats':
-	return '<p>' .t('The format of the date and time that must be displayed on the OGPL Web site can be configured here.For more info click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../../sites/default/files/WebHelp/ogpl_admin_guide.htm#configuring_date_and_time_formats.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-	
-	case 'admin/settings/votingapi':
-	return '<p>' .t('The Open Government Platform Control Panel application computes the ratings for three criterias:Quality,Accessibility and Usability and displays the overall rating for the dataset, on the Raw Dataset page of the OGPL Web site.To know about configuring voting API click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#configuring_the_voting_api.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-	
-	case 'node/add/upload-docs':
-	return '<p>' .t('The Reference Documents are only available on the OGPL Control Panel application and do not appear on the OGPL Web site.To know more about uploading a reference document click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#uploading_reference_documents.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-	
-	case 'node/add/theme-file-uploader':
-	return '<p>' .t('You can upload new color or contrast theme for any enabled theme. According to the setting of that theme, additional color or contrast theme will appear on front end and Anonymous users can switch according to their requirement.<br><br>Uploaded files will be saved as below:<ul><li>css - /sites/all/themes/{theme-name}/css/{color or contrast}/title/{title-name.css}</li><li>images - /sites/all/themes/{theme-name}/css/{color or contrast}/title/images/</li><li>logo - /sites/all/themes/{theme-name}/css/{color or contrast}/title/{title-name.extension}</li></ul><br>Note: The themes folder (/sites/all/themes) and its sub-folders must have write permission.') .'</p>';
-	//case 'admin/build/mini-panels':
-	//return '<p>' .t('Mini panels serve as containers for content to be published on the OGPL Web site. A Mini panel can have several pieces of content within it, and each piece can have its own layout styles. Mini panels also provide a predefined collection of layouts for the content. A layout might have two columns, a header, footer, and three columns in the middle, or even a stack of several mini-panels. You can add a mini panel inside another, or create a mini panel with various pieces of content, and then put it inside a panels-page or panels-node.For more information click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#managing_mini_panels.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-	
-	//case 'admin/build/mini-panels/list':
-	//return '<p>' .t('Mini panels serve as containers for content to be published on the OGPL Web site. A Mini panel can have several pieces of content within it, and each piece can have its own layout styles. Mini panels also provide a predefined collection of layouts for the content. A layout might have two columns, a header, footer, and three columns in the middle, or even a stack of several mini-panels. You can add a mini panel inside another, or create a mini panel with various pieces of content, and then put it inside a panels-page or panels-node.For more information click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../../sites/default/files/WebHelp/ogpl_admin_guide.htm#managing_mini_panels.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-	
-	
-	
-	
-}
-	if($path=='admin/build/mini-panels' && !strpos($_SERVER['REQUEST_URI'], "/list"))
-	{
-			return '<p>' .t('Mini panels serve as containers for content to be published on the OGPL Web site. A Mini panel can have several pieces of content within it, and each piece can have its own layout styles. Mini panels also provide a predefined collection of layouts for the content. A layout might have two columns, a header, footer, and three columns in the middle, or even a stack of several mini-panels. You can add a mini panel inside another, or create a mini panel with various pieces of content, and then put it inside a panels-page or panels-node.For more information click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#managing_mini_panels.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-
-	}
-	if($path=='admin/settings/date-time' && !strpos($_SERVER['REQUEST_URI'], "/configure"))
-	{
-		return '<p>' .t('The date and time settings for the OGPL Web site can be configures here.For more info click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#configuring_date_and_time_settings.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-
-	}
- switch($alias){
-	case 'action-metrics':
-	case 'poc-action-metrics':
-	return '<p>' .t('The VRM Action Metrics report displays the percentage of feedback that is currently in a specific action status. This report enables you to analyze the feasibility of the feedback that the visitors provided. By default, the VRM Action Metrics report displays the metrics for all the feedback received till date.') .'</p>';
-
-	case 'source-metrics':
-	case 'poc-source-metrics':
-	return '<p>' .t('The VRM Source Metrics report displays the percentage of feedback that is received from a specific feedback source page, such as the Contact Us page, Feedback page, Ratings page, or Suggest Dataset page on the OGPL Web site. This report enables you to analyze the pattern of feedback received from every source.') .'</p>';
-
-	case 'status-metrics':
-	case 'poc-status-metrics':
-	return '<p>' .t('The VRM Status Metrics report displays the percentage of feedback that is currently in a specific status. This report enables you to analyze and track work progress.') .'</p>';
-	
-	case 'vrm-delay-analysis':
-	case 'poc-vrm-delay-analysis':
-	return '<p>' .t('The VRM Delay Analysis report lists the username of the feedback owners who did not review the feedback or send the feedback reply within the default delay time. This report enables you to analyze and track the number of late reviews or late feedback replies for each feedback owner.') .'</p>';
-
-	case 'content/contact-us':
-	return '<p>' .t('You can send your queries, views, or suggestions to the Super Administrator of OGPL Web site. An e-mail message, containing the information that you provide, is sent to the Super Administrator.') .'</p>';
-}
-
-	$roles=$user->roles;
-	//help for PMO
-	if($path=='vrm_dashboard' && isset($roles['6'])){
-		return '<p>' .t('The PMO can perform the following tasks for each feedback:<ul><li>View the list of feedback assigned by the VRM Administrator.</li><li>Update the feedback category of a feedback.</li><li>Reply to a feedback.</li><li>Forward a feedback to another Program Management Office  or Point of Contact.</li><li>Add notes to a feedback.</li><li>Revert a feedback to the VRM Administrator.</li><li>Assign a feedback category to a feedback.</li></ul><br>For more information click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#program_management_office_overview.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-
-	}
-	//help for POC
-	if($path=='vrm_dashboard' && isset($roles['4'])){
-		return '<p>' .t('The POC can perform the following tasks for each feedback:<ul><li>View the list of feedback assigned by the VRM Administrator.</li><li>Update the feedback category of a feedback.</li><li>Reply to a feedback.</li><li>Forward a feedback to another Program Management Office  or Point of Contact.</li><li>Add notes to a feedback.</li><li>Revert a feedback to the VRM Administrator.</li><li>Assign a feedback category to a feedback.</li></ul><br>For more information click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#point_of_contact_overview.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-
-	}
-	//help for vrm admin
-	if($path=='vrm_dashboard' && isset($roles['15'])){
-		return '<p>' .t('Users can provide feedback through various pages of the OGPL Web site, such as the Contact Us page, Feedback page, Ratings page, and Suggest Dataset page.The VRM admin can perform the following tasks for each feedback:<ul><li>View the list of feedback.</li><li>Assign a feedback to the Program Management Office, Point of Contact, or VRM Administrator.</li><li>Reassign feedback that the Program Management Office or Point of Contact reverted.</li><li>Forward a feedback to the Program Management Office or Point of Contact.</li><li>Assign a feedback category to a feedback.</li><li>Assign an action status for the feedback.</li><li>Reply to a feedback.</li><li>Mark a feedback as Irrelevant</li></ul><br>For more information click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#managing_feedback.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-
-	}
-	//help for publisher
-	if($alias=='home' && isset($roles['13'])){
-		return '<p>' .t('CMS Publishers can view the list of content that the CMS Moderators have submitted for review and approval. If the content is appropriate, the Publisher approves the content and publishes it on the OGPL Web site. If the content is inappropriate, the Publisher assigns the content back to the Content Creator or the Moderator, with appropriate review comments.For more information about the tasks click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#publisher.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-	}
-	//help for content creator
-	if($alias=='home' && isset($roles['11'])){
-		return '<p>' .t('Content Creators update the content that the CMS Administrator has created and assigned for update. After updating the content, Content Creator sends it to the Moderator for review. If the content is inappropriate, the moderator, the publisher or the CMS Administrator can assign the content back to the Content Creator for further update.For more information about the tasks click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#content_creator.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-	}
-	//help for moderator
-	if($alias=='home' && isset($roles['12'])){
-		return '<p>' .t('CMS moderators can view the list of content that the CMS Administrator has assigned for review. If the content is appropriate, the CMS Moderator approves the content. If the content is inappropriate, the CMS Moderator must assign the content back to the Content Creator.For more information about the tasks click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#content_management_system_moderator.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-	}
-	//help for cms admin
-	if($alias=='user-management' && isset($roles['18'])){
-		return '<p>' .t('A Content Management System (CMS) Administrator manages the content management workflow.The CMS Administrator can create users of roles Content Creator,Moderator and Publisher.To know more about various operations click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#managing_users.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-
-	}
-  if(isset($roles['18'])){
-	switch($path){
-	   case 'node/add/block':
-		return '<p>' .t('A block is a box of content that is rendered into a region of the OGPL Web site.Whenever new content is required, you must create a block, and assign the block to a Content Creator and a Moderator. The Content Creator updates the block by adding the required content, and the Moderator reviews the content to verify whether the content is appropriate for the OGPL Web site.To know more about creating and updating a block click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#creating_blocks.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-	   case 'node/add/faq':
-		return '<p>' .t('You can create a Frequently Asked Question (FAQ), and assign it to a Content Creator and a Moderator. The Content Creator updates the FAQ by adding the required content, and the Moderator reviews the content to verify whether the content is appropriate for the OGPL Web site. When the FAQ is published, it appears in the FAQ section of the OGPL Web site.To know more about creating and updating a FAQ click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#creating_faq.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-	   case 'node/add/imageflow':
-		return '<p>' .t('The Featured Gallery displays a slide show of dataset images that you want to highlight on the OGPL Web site. You or a Content Creator can upload an image of a dataset to the Featured Gallery, and link the image to the appropriate dataset. The Moderator reviews the content to verify whether the content is appropriate for the OGPL Web site. When a visitor clicks an image on the Featured Gallery, the appropriate dataset page appears and displays information about the dataset.To know more about uploading an image to featured gallery click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/adding_images_to_the_featured_gallery.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-	   case 'node/add/page':
-      		return '<p>'. t('You can create a page to display information that does not change often.You can create a page and assign it to a Content Creator and a Moderator. The Content Creator updates the page by adding the required content, and the Moderator reviews the content to verify whether the content is appropriate for the OGPL Web site.To know more about creating and updating the pages click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#creating_pages.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-	   case 'agency-management':
-		return '<p>' .t('You can view the list of various government agencies and departments that are associated with the OGPL Web site. You can also edit the agency details, such as the agency name and short name and the configuration settings, such as the menu settings, visibility settings, and file attachment settings for an agency.') .'</p>';
-	   case 'admin/settings/site-information':
-		return '<p>' .t('In Site Information you can configure OGPL Web site settings, such as the site name, e-mail address for automated e-mails, and home page URL') .'</p>';
-	   case 'admin/settings/textsize':
-		return '<p>' .t('Accessibility options help visitors who have visual disabilities to view text on the OGPL Web site. Using these options, a visitor can increase or decrease the size of the text on the OGPL Web page. You can also specify whether the text size updates must be applied across the entire OGPL Web site or within a particular section, such as a paragraph or a table.') .'</p>';
-	   case 'admin/settings/apachesolr':
-		return '<p>' .t('The visitors of the OGPL Web site can use the global and advanced search functionality to search for a specific dataset or document. The OGPL Web site uses Apache Solr as the search server to scan the search index and display the results that matches the search criteria.<br>You can perform the following tasks to make the content on the OGPL Web site searchable:<ul><li>Configure the Apache Solr search server.</li><li>Index all the content on OGPL Web site by executing the cron job.</li><li>Enable filters to create search filter blocks.</li><li>Give bias to certain properties of the content when ordering the search results.</li><li>Specify weightage for the content fields that you want to give priority while searching</li></ul>') .'</p>';
-	  case 'node/add/rotating-panel':
-		return '<p>' .t('The Rotating Panel on the home page of the OGPL Web site is a series of images of various government-related Web sites or government-initiated programs and schemes. When a visitor clicks an image on the rotating panel, the corresponding Web site appears. A Content Creator can upload an image for a Web site to the Rotating Panel, and specify the URL for that Web site.For more information about creating a Rotating Panel click on "more help"<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#creating_rotating_panels.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>'; 
-	  case 'node/add/country-data':
-		return '<p>' .t('You can add links of the OGPL Web site and the Open Data Site of another country in the OGPL Web site of your country. The links allows visitors to navigate to other government-related Web sites with minimal time and effort. The links are displayed as flags in the home page, and the URLs are listed in the World Wide Data Site page of the OGPL Web site. When a visitor clicks a flag or URL, the corresponding OGPL Web site or the World Wide Data Site page of that country appears.To know more about creating Country data click on "more help"<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'../../sites/default/files/WebHelp/ogpl_admin_guide.htm#creating_country_data.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';		
-	}
-	switch($alias){
-			case 'home':
-				return '<p>' .t('The CMS Administrator manages the complete content management workflow, from creating users and adding user roles to CMS workflow, configuring various Web site options required for the OGPL Web site, to generating reports.To know more about the various tasks click on "more help".<div class="more-help-link">[ <a href="javascript:void(0);" onclick="window.open(\'sites/default/files/WebHelp/ogpl_admin_guide.htm#cms_administrator.htm\',\'help_window\',\'menubar=1,resizable=1,width=900,height=900\')" title="more help">more help..</a>]</div>') .'</p>';
-		//case 'admin/build/quicktabs/catalog_tab/edit':
-	//return '<p>' .t('Homepage Tabs allow you to display tabbed content on the home page of the OGPL Web site. Homepage Tabs appear on the home page of the OGPL Web site when the Super Administrator changes the Rotating Panel from full to half banner .The Front End Home Page Rotating Tabs is a Drupal Quicktab block which contains 3 Homepage Tabs. Homepage Tabs use Views to fetch information from the Drupal content source and then display the dataset lists in slide show fashion on the home page of the OGPL Web site.For more information click on "more help"') .'</p>';
-	
-	}
-	
-	}
-  
 }

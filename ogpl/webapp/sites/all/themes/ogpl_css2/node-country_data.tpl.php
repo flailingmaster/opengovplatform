@@ -394,8 +394,8 @@ if(strlen(trim($country_dataset_links)) > 0){
 }
 global $base_url;
 if(variable_get('file_downloads','') == 2) {
-    //$flag_img = explode('/', $node->field_open_data_site_image[0]['filepath']);
-	$flag_img=substr($node->field_open_data_site_image[0]['filepath'],strpos($node->field_open_data_site_image[0]['filepath'],"files/")); 
+   //$flag_img = explode('/', $node->field_open_data_site_image[0]['filepath']);
+	$flag_img=substr($node->field_open_data_site_image[0]['filepath'],strpos($node->field_open_data_site_image[0]['filepath'],"files/"));
     $image_path = $base_url."/system/".$flag_img;
 } else {
     $image_path = $node->field_open_data_site_image[0]['filepath'];
@@ -405,7 +405,7 @@ if(variable_get('file_downloads','') == 2) {
 <div class="country-details">
     <div class="ods-leftPanel">
         <div>
-            <div class="country-flag"><img width="157" height="105" title="<?php echo $node->field_union_govt_name[0]['value']; ?>" alt="<?php echo $node->field_union_govt_name[0]['value']; ?>" src="<?php echo $image_path; ?>" border="0" class="imgflag"></div>
+            <div class="country-flag"><img width="157" height="105" title="<?php echo $node->field_union_govt_name[0]['value']; ?>" alt="<?php echo $node->field_union_govt_name[0]['value']; ?>" src="<?php echo $image_path; ?>" border="0" class="imgflag"/></div>
             <div class="country-info">
                 <div class="country-title"><a href="<?php echo $parent_page_url; ?>" class="country-name" title="<?php echo $node->title; ?>"><?php echo $node->title; ?></a></div>
                 <?php if(!empty($node->field_country_latitude[0]['value'])){ ?>
@@ -434,7 +434,7 @@ if(variable_get('file_downloads','') == 2) {
     </div>
     <div class="ods-rightPanel">
         <div><div id="map"></div></div>
-        <div id="static-map"><img src="<?php echo $static_image_map; ?>" /></div>
+        <div id="static-map"><img src="<?php echo $static_image_map; ?>" alt="static-map"/></div>
         <div class="region-data">
 <?php print $state_static_data; ?>
         </div>

@@ -1,11 +1,14 @@
 <?php
 	global $base_url;
+	if($base_url == "http://demodatacms.nic.in" || $base_url == "https://demodatacms.nic.in") { drupal_goto("user"); }
 	  global $theme_key;
     $themes = list_themes();
     $theme_object = $themes[$theme_key];
     $site_var = variable_get('site_country','');
     $site_node = node_load($site_var);
 	$theme_name=$theme_object->name;
+	$access_denied = 0;	
+	$admin_page_urls = variable_get('admin_pages_list', '');
     $flag_img=substr($site_node->field_website_header_image[0]['filepath'],strpos($site_node->field_website_header_image[0]['filepath'],"files/"));
  
     if(variable_get('file_downloads','') == 2) {		
@@ -16,6 +19,10 @@
 
     $portal_url = $site_node->field_country_portal_url[0]['url'];
     $gov_name = $site_node->field_union_govt_name[0]['value'];
+    if(in_array(drupal_get_path_alias($_GET['q']), explode("\r\n", $admin_page_urls)) && in_array('anonymous user', $user->roles)){
+		$access_denied = 1;
+		$head_title = "Access Denied";
+	}
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php print $language->language ?>" xml:lang="<?php print $language->language ?>" dir="<?php print $language->dir ?>">
 <head>
@@ -152,11 +159,21 @@
 				<!--content panel start here -->
 				<div id="contentPanel">
 					<div class="mainContent">
+					<?php print $breadcrumb; ?>
+					<?php
+			if($access_denied == 1) {
+				echo '<div class="mainHeading"><h1 class="page-title">'.t('Access denied').'</h1></div>';
+					
+			} else {
+			?>
+					
 						<!--main heading start here -->
 						<div class="mainHeading">
 						<?php if ($title){ print '<h1'. ' class="page-title"' .'>'. $title .'</h1>';}?>
 						</div>
-						<!--main heading end here -->                    
+						<!--main heading end here -->
+                    				<?php } ?>
+
 						<div class="contentArea mainContainer">
 							<div class="top">
 								<div class="mid"></div>
@@ -166,7 +183,12 @@
 							<div class="bottom <?php print " content-height";?>">
 							<?php if ($metrics_menu){ print '<div class="metrics-menu">'. $metrics_menu .'<div class="page-title-border"></div></div>';} ?>
 							<?php if ($show_messages && $messages): print '<div class="error-block">'. $messages .'</div>'; endif; ?>
-							<?php print $content;?>
+							<?php
+							if($access_denied == 1) {
+								echo '<div class="access-denied-error">'.t('You are not authorized to access this page.').'</div>';
+							}
+							else{
+							print $content; } ?>
 							<?php
 							if($node->type=='dataset')  {
 							print '<div id="suggest-cp-block"><div style="text-align:center;margin-right:20px;" class="suggest-cp">';	  

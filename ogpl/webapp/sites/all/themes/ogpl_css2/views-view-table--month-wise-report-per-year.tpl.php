@@ -86,9 +86,9 @@ if($page == 1) {
 	?>
 	<thead>
 		<tr>
-			<th class="ds-list-head-new" rowspan="2" style=" border-right:1px solid; <?php if($page == 1) { echo ' min-width:220px;'; } ?> vertical-align:center;">Agency Name</th>
+			<th class="ds-list-head-new" rowspan="2" style=" border-right:1px solid; <?php if($page == 1) { echo 'border-radius:8px 0 0 0; min-width:220px;'; } ?> vertical-align:center;">Agency Name</th>
 			<th colspan="12" class="ds-list-head-new" style="text-align:center; <?php if($page == 1) { echo 'border-bottom:1px solid; border-right:1px solid;'; } ?>"> Number of Datasets published by month </th>
-			<th class="ds-list-head-new" rowspan="2"  style=" <?php if($page == 1) { echo 'border-right:1px solid;  min-width:180px;'; } else { echo 'border-left:1px solid;'; } ?> vertical-align:center; text-align:center;">Total in <?php print $display_year ?></th>
+			<th class="ds-list-head-new" rowspan="2"  style=" <?php if($page == 1) { echo 'border-right:1px solid; border-radius:0 8px 0 0; min-width:180px;'; } else { echo 'border-left:1px solid;'; } ?> vertical-align:center; text-align:center;">Total in <?php print $display_year ?></th>
 		</tr>
 	
 		<tr>
@@ -124,7 +124,10 @@ if($page == 1) {
 		</tr>
 	</thead>
 	<tbody>
-	<?php foreach ($rows as $count => $row): ?>
+	<?php foreach ($rows as $count => $row):
+            if(!strlen(strstr($row['phpcode_12'],">-<")))
+		  {
+         ?>
 		<tr class="<?php print implode(' ', $row_classes[$count]); ?> ">
 		<?php 
 			foreach ($row as $field => $content):
@@ -142,10 +145,10 @@ if($page == 1) {
 					print $content; 
 				  ?>
 		  </td>
-		<?php endforeach; ?>
+		<?php  endforeach; ?>
 		</tr>
-	<?php endforeach; ?>
-	<tr><td class="ds-list-head-new-center" >Total Datasets published per month</td> 
+	<?php }endforeach; ?>
+	<tr><td class="ds-list-head-new-center" <?php if($page == 1){ echo 'style="border-radius:0 0 0 8px;"'; } ?>>Total Datasets published per month</td> 
 	<?php
 		$days=array(1=>31,28,31,30,31,30,31,31,30,31,30,31);
 		for($i=1;$i<13;$i++)
@@ -170,7 +173,7 @@ if($page == 1) {
 
 		$result=db_query("SELECT count(*) as  cnt FROM content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid  INNER JOIN workflow_node wf ON ds.nid=wf.nid WHERE wf.sid=10 AND wf.stamp BETWEEN $starttime AND $endtime");
 		if($page == 1)
-			print '<td class="ds-list-head-new-center"   >';
+			print '<td class="ds-list-head-new-center"  style="border-radius:0 0 8px 0;" >';
 		else
 			print '<td class="ds-list-head-new-center"  style="text-align:center;" >';	
 		if($row=mysql_fetch_object($result))

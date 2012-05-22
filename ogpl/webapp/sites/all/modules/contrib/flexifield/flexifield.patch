@@ -1,0 +1,53 @@
+Index: branches/ogpl_sec_up/sites/all/modules/contrib/flexifield/flexifield-widget.inc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- branches/ogpl_sec_up/sites/all/modules/contrib/flexifield/flexifield-widget.inc	(revision )
++++ branches/ogpl_sec_up/sites/all/modules/contrib/flexifield/flexifield-widget.inc	(revision 7171)
+@@ -62,6 +62,8 @@
+     $aElement['#flexifield_value_original'] = isset($aElement['#value']) ? $aElement['#value'] : null;
+     if (!isset($aElement['#type'])) {
+       $aElement['#type'] = 'markup';
++      // Prevent erroneous validation errors
++      $aElement['#validated'] = TRUE;
+     }
+   }
+ }
+@@ -228,7 +230,35 @@
+     $aElement = $aElement[$sParent];
+   }
+   $aElement = $aElement['value'];
++  
++  // Preserve the default value for each field.
++  $aFields = content_types($aElement['#flexifield_item_type']);
++  $aFields = $aFields['fields'];
++  if (!empty($aFields)) {
++    foreach ($aFields as $sField => $aContent) {
++      if ($aContent['widget']['default_value_php']) {
++        $aDefaultValues = eval($aContent['widget']['default_value_php']);
++      }
++      else {
++        $aDefaultValues = $aContent['widget']['default_value'];
++      }
++
++      // For now, we only deal with text and nodereference types.
++      // More will be handled if needed.
++      switch ($aContent['type']) {
++
++        case 'nodereference':
++          $aElement[$sField]['nid']['nid']['#value'] = $aDefaultValues[0]['nid'];
++          break;
++
++        case 'text':
++          $aElement[$sField][0]['value']['#value'] = $aDefaultValues[0]['value'];
++          break;
++
++      }
++    }
++  }
+-  
++
+   // Return the rendered element as an ahah response
+   $aElement['#flexifield_from_ahah'] = TRUE;
+   print theme('ahah_response', drupal_render($aElement));

@@ -1,0 +1,145 @@
+Index: comment.tpl.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- comment.tpl.php	(revision )
++++ comment.tpl.php	(revision 7171)
+@@ -1,33 +1,50 @@
+ <?php
+-?>
++$notes_url = request_uri();
+ 
++if ($node->type == "feedback" && (strpos($notes_url, '/print/') == FALSE)) {
++    $date_to_format = strstr($submitted, ',');
++    $date1 = str_replace(",", "", $date_to_format);
++    $date = str_replace(".", "", $date1);
++
++    $user1 = str_replace("Submitted by", "", $submitted);
++    $arr = explode(" ", $user1);
++    $arr1 = explode(">", $arr[5]);
++    ?>
++<tr class="odd">
++    <th><?php print $content ?></th>
++    <th><?php echo $arr1[1]; ?></th>
++    <th><?php print $date ?></th>
++</tr>
++<?php } else { ?>
+ <div class="comment <?php print $comment_classes;?> clear-block">
+-  <?php print $picture ?>
+-  
+-  <?php if ($comment->new): ?>
+-  <a id="new"></a>
+-  <span class="new"><?php print $new ?></span>
+-  <?php endif; ?>
+-  
++    <?php print $picture ?>
++
++    <?php if ($comment->new): ?>
++    <a id="new"></a>
++    <span class="new"><?php print $new ?></span>
++    <?php endif; ?>
++
+-  <h3 class="title"><?php print $title ?></h3>
++    <h3 class="title"><?php //print $title ?></h3>
++
+-  <div class="submitted">
+-    <?php print $submitted ?>
+-  </div>
+-  
+-  <div class="content">
+-    <?php print $content ?>
+-    
+-    <?php if ($signature): ?>
+-    <div class="signature">
+-      <?php print $signature ?>
+-    </div>
+-    <?php endif; ?>
+-  </div>
+-  
+-  <?php if ($links): ?>
+-  <div class="links">
+-    <?php print $links ?>
+-  </div>
+-  <?php endif; ?>
+-  
+-</div><!-- /comment -->
+\ No newline at end of file
++    <div class="submitted">
++        <?php print $submitted ?>
++    </div>
++
++    <div class="content">
++        <?php print $content ?>
++
++        <?php if ($signature): ?>
++        <div class="signature">
++            <?php print $signature ?>
++        </div>
++        <?php endif; ?>
++    </div>
++
++    <?php if ($links): ?>
++    <div class="links">
++        <?php print $links ?>
++    </div>
++    <?php endif; ?>
++
++</div><!-- /comment -->
++<?php } ?>
+\ No newline at end of file
+Index: comment-wrapper.tpl.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- comment-wrapper.tpl.php	(revision )
++++ comment-wrapper.tpl.php	(revision 7171)
+@@ -30,12 +30,42 @@
+  * @see theme_comment_wrapper()
+  */
+ ?>
++<?php
++$notes_url = request_uri();
++?>
+ 
+ <?php if ($content) : ?>
+ <div id="comments" class="comments block <?php print $skinr; ?>">
+-  <h2 class="comments-header">
++    <h2 class="comments-header">
+-    <?php print t('Comments'); ?>
++        <?php
++        if ($node->type != "feedback") {
++            print t('Comments');
++        } else if ($node->type == "feedback" && (strpos($notes_url, '/print/') != FALSE)) {
++            print t('Notes');
++        }
++        ?>
+-  </h2>
++    </h2>
++    <?php
++    if ($node->type == "feedback" && (strpos($notes_url, '/print/') == FALSE)) {
++        ?>
++        <script>
++            var txtlength = $('#edit-comment').val().length;
++            var desc = 'note-textarea-limit-count';
++            $('#'+desc).html(parseInt(3000)-txtlength) ;
++        </script>
++    <table id="feedback-note" class="feedback-table">
++      <tbody>
++        <tr>
++            <th style="width:800px;">Note</th>
++            <th>Author</th>
++            <th>Date</th>
++        </tr>
++        <?php } ?>
++
+-  <?php print $content; ?>
++    <?php print $content; ?>
++    <?php if ($node->type == "feedback" && (strpos($notes_url, '/print/') == FALSE)) { ?>
++    </tbody>
++  </table>
++  <?php } ?>
+ </div>
+-<?php endif; ?><!-- /comments -->
++    <?php endif; ?><!-- /comments -->

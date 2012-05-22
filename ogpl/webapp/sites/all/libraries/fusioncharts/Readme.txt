@@ -4,7 +4,7 @@ FusionCharts Free v2.2
 Released: Aug 2009
 http://www.fusioncharts.com/free
 
-Copyright (c) 2009 InfoSoft Global (P) Ltd.ï¿½
+Copyright (c) 2009 InfoSoft Global (P) Ltd. 
 www.infosoftglobal.com
 
 Dual licensed under the MIT (X11) and GNU GPL licenses.
@@ -14,30 +14,30 @@ MIT License: http://www.opensource.org/licenses/mit-license.php
 GPL License: http://www.gnu.org/copyleft/gpl.html
 
 ===========================**=====**=====**===============================
-IMPORTANT NOTE:ï¿½
+IMPORTANT NOTE: 
 ===========================**=====**=====**===============================
 
 FusionCharts Free is not the evaluation of FusionCharts v3.
 
 FusionCharts Free is an open-source Flash charting component which originally
-was FusionCharts v2.3. It is intended to take care of all your basic charting needs.ï¿½
+was FusionCharts v2.3. It is intended to take care of all your basic charting needs. 
 FusionCharts v3, on the other hand, has a lot more features and chart types that
 you may see and download from http://www.fusioncharts.com
 
 FusionCharts Free and FusionCharts v3 can both be used for personal or
-commercial purposes. However, if you have downloaded FusionCharts Free forï¿½
-evaluation purposes, we recommend that you download FusionCharts v3 evaluationï¿½
-from www.fusioncharts.com/download. This is because the feature set is moreï¿½
-advanced in FusionCharts v3. Additionally, FusionCharts v3 provides ï¿½
-seamless upgrade from all previous versions of FusionCharts, includingï¿½
+commercial purposes. However, if you have downloaded FusionCharts Free for 
+evaluation purposes, we recommend that you download FusionCharts v3 evaluation 
+from www.fusioncharts.com/download. This is because the feature set is more 
+advanced in FusionCharts v3. Additionally, FusionCharts v3 provides  
+seamless upgrade from all previous versions of FusionCharts, including 
 FusionCharts Free.
 
 ===========================**=====**=====**===============================
 
 How do I install?
 ==================
-Please run Index.html to launch the documentation. Then, browse toï¿½
-"Installation" page to get instructions on how to install FusionChartsï¿½
+Please run Index.html to launch the documentation. Then, browse to 
+"Installation" page to get instructions on how to install FusionCharts 
 Free and use it in your projects.
 
 I'm a non-technical user. How do I get started?
@@ -62,20 +62,20 @@ for your blogs, without having to write a line of code.
 
 Where can I get support on this?
 ================================
-At this point in time, we do not provide personalized support forï¿½
-FusionCharts Free. However, you may visit our forums atï¿½
+At this point in time, we do not provide personalized support for 
+FusionCharts Free. However, you may visit our forums at 
 www.fusioncharts.com/forum to get support from our vibrant community.
 
 I've started using FusionCharts Free. Can I upgrade to FusionCharts v3?
 =======================================================================
-Yes - very much. FusionCharts v3 is totally backward compatible withï¿½
+Yes - very much. FusionCharts v3 is totally backward compatible with 
 FusionCharts Free. So all code that you've written with FusionCharts Free
 will work with FusionCharts v3. All you need to do is download/purchase
 FusionCharts v3 from www.fusioncharts.com and replace the old SWF files
 with new ones, and then rename either the SWF itself, or the file names in 
 your code.
 
-How can I build some of the advanced charts, gauges and maps that Iï¿½
+How can I build some of the advanced charts, gauges and maps that I 
 see in your gallery at www.fusioncharts.com/gallery?
 =======================================================================
 To use advanced charts, gauges or maps as in our gallery, you will have to buy the apt
@@ -83,13 +83,13 @@ license of our products. We offer 4 core products that provide different types o
 and maps:
 
 - FusionCharts v3 at www.fusioncharts.com. Advanced version of FusionCharts
-ï¿½ï¿½with features like gradients, intelligent labels, export as image/PDF/CSV etc.
-- FusionWidgets v3 at www.fusioncharts.com/widgets for gauges, funnel/pyramidï¿½
-ï¿½ï¿½charts, sparklines, bullet graphs etc.
-- PowerCharts v3 at www.fusioncharts.com/PowerCharts for rich internetï¿½
-ï¿½ï¿½application charts for specialized domains
+  with features like gradients, intelligent labels, export as image/PDF/CSV etc.
+- FusionWidgets v3 at www.fusioncharts.com/widgets for gauges, funnel/pyramid 
+  charts, sparklines, bullet graphs etc.
+- PowerCharts v3 at www.fusioncharts.com/PowerCharts for rich internet 
+  application charts for specialized domains
 - FusionMaps v3 at www.fusioncharts.com/maps for data-driven maps. FusionMaps
-ï¿½ï¿½offers over 550 maps including all continents, countries, US states and more.
+  offers over 550 maps including all continents, countries, US states and more.
 
 I'm an Adobe Flex developer. Can I use FusionCharts Free in my projects?
 =======================================================================

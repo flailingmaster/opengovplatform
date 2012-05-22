@@ -2,11 +2,9 @@
 
   <div class="clear-block">
   <?php if ($submitted): ?>
-     <div class="author">Submitted by <span class="author_name"><?php print t('!username',array('!username' => theme('username', $comment)));?></span>
+    <div class="author">Submitted by <span class="author_name"><?php print t('!username',array('!username' => theme('username', $comment)));?></span>
     <span class="submitted">On <?php print t('!date', array('!date' => format_date($comment->timestamp))); ?></span></div>
   <?php endif; ?>
-
-
 
   <?php if ($comment->new) : ?>
     <a id="new"></a>

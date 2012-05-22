@@ -50,15 +50,3 @@ function cms_email_filter_filter($op, $delta = 0, $format = -1, $text = '' ) {
       return $text;
   } 
 }
-/**** hook to off the autcomplete for password field ****/
-function cms_email_filter_form_alter(&$form, &$form_state, $form_id) 
-{
-	  switch ($form_id) 
-	  {
-        case 'user_register':
-		default;
-		      $form['#attributes']['autocomplete'] = 'off';
-	          //$form['account']['pass']['#attributes']['autocomplete'] = 'off'; //will not work
-        break;
-  }
-}

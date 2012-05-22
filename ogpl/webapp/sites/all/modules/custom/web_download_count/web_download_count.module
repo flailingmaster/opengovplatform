@@ -1,0 +1,31 @@
+<?php
+
+function web_download_count_menu()
+{
+    $items['access-point-download-count']=array(
+         'title' => 'Access Point Download Count ',
+         'page callback' => 'access_point_download_count',
+         'access callback' => true,
+         'access arguments' => true,
+         'type' => MENU_CALLBACK,
+     );
+
+   return $items;
+}
+
+function access_point_download_count()
+{   
+    $url=$_GET['url'];
+    $nid=$_GET['nid'];
+    $result=db_query('select * from web_download_count where web_download_count.nid='.$nid);
+    $row=db_fetch_object($result);
+    
+    if($row)
+    {  $result= db_query("update {web_download_count} set download_count=download_count+1  where web_download_count.nid=$nid");    }
+    else 
+    { $result=db_query("insert into {web_download_count} (nid,access_point_url,download_count) values ($nid,'$url',1)" );  }  	
+     $path=url($url);
+     drupal_goto($path);       
+    }
+
+

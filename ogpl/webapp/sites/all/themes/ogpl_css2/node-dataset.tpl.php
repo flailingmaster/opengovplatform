@@ -6,18 +6,41 @@
 	drupal_add_js(drupal_get_path('theme', 'ogpl_css2') . '/js/validation.js');	
 	?>	
     <?php
-    function curPageURL() {
-        $pageURL = 'http';
+   	global $base_path;
+    function embedURL() {
+		global $base_path;
+		$pageURL = 'http';
         if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
         $pageURL .= "://";
-        if ($_SERVER["SERVER_PORT"] != "80") {
-            $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-        } else {
-            $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
-        }
-        $pageURL .= '/?embed=1';
+		$pageURL .= $_SERVER["SERVER_NAME"].$base_path;
+        $pageURL .= 'embed-preview/';
         return $pageURL;
     }
+	function getFileIcon($format)
+    {
+        if($format=="CSV")
+		  return 'csv.png';
+		else if($format=="XML") 
+		  return 'xml.png';
+		else if($format=="XLS") 
+		  return 'xls.png'; 
+		else if($format=="KML/KMZ") 
+		  return 'kml.png';  
+        else if($format=="Shapefile") 
+		  return 'shp.png';
+        else if($format=="Map") 
+		  return 'map.png';
+		      		  
+     }	
+
+	function get_string_between($string, $start, $end){
+   	 $string = " ".$string;
+   	 $ini = strpos($string,$start);
+   	 if ($ini == 0) return "";
+   	 $ini += strlen($start);
+   	 $len = strpos($string,$end,$ini) - $ini;
+   	 return substr($string,$ini,$len);
+	}
     ?>
     <?php /*if ($submitted): ?>
     <span class="submitted"><?php print $submitted; //print format_date($node->created, 'custom', "d.m.Y"); ?></span>
@@ -45,10 +68,9 @@
 	 <a class="addthis_button_email at300b" title="Email" href="#">
      <span class="at300bs at15nc at15t_email"></span>
 	 </a>
-	 <?php if(empty($_GET['embed'])&& empty($_GET['print'])){
-          $this_page=$_SERVER['REQUEST_URI']; ?>
-	 <a target="_blank" title="Print" href="<?php print $this_page ?>?print=1">
-       <img src="<?php echo $base_url."/".path_to_theme();?>/images/print.png" width="16" height="13" id="print-icon" alt="Print this dataset" title="Print this dataset" width="" />
+	 <?php if(empty($_GET['embed'])&& empty($_GET['print'])){ ?>
+	 <a target="_blank" title="Print" href="<?php print $base_url."/print-dataset/".$node->path; ?>">
+       <img src="<?php echo $base_url."/".path_to_theme();?>/images/print.png" width="16" height="13" id="print-icon" alt="Print this dataset" title="Print this dataset"  />
 	 </a>
 	 <?php } ?>
 	 </div>
@@ -56,7 +78,37 @@
   <div class="cBoth"></div>
     <div class="content">
 	<div class="dataset">
-    <?php print $content ?>
+    <?php
+
+		$pattern = "/\b\w+\@\w+[\.\w+]+\b/";
+		preg_match_all($pattern,$content,$matches);
+		$matchedArr = array_unique($matches[0]);
+		foreach($matchedArr as $key=> $values){
+			unset($match_email);
+			for($i=0;$i<strlen($values);$i++){
+				$match_email.= "&#".ord($values{$i}).";";
+			}
+			$content = str_replace($values,$match_email,$content);
+		}
+
+        $fileicon=getFileIcon($node->field_ds_access_method[0]['value']['field_atd_file_format'][0]['value']);
+	      $img='<a href="'.$base_url.'/access-point-download-count?url='.$node->field_ds_access_method[0]['value']['field_atd_access_point'][0]['url'].'&nid='.$node->nid.'"><img alt="'.$node->field_ds_access_method[0]['value']['field_atd_file_format'][0]['value'].'" src="'.$base_url.'/sites/all/themes/ogpl_css3/images/'.$fileicon.'"/></a>';
+      $download_count=db_result(db_query("Select download_count from web_download_count where nid=$node->nid"));
+      if ($download_count==0) $download_count='<span class="download-stat"> Never Downloaded </span>';
+	  else if ($download_count==1) $download_count='<span class="download-stat">Downloaded '.$download_count.' time </span>';
+      else $download_count='<span class="download-stat"> Downloaded '.$download_count.' times </span>';
+
+      $access_type_url=$node->field_ds_access_method[0]['value']['field_atd_access_point'][0]['url'];
+           
+      $search=get_string_between($content,'<div class="field-label">Access point:&nbsp;</div>','</div>');
+     
+      $search='<div class="field-label">Access point:&nbsp;</div>'.$search;
+      $replace='<div class="field-label">Access point:&nbsp;</div> <div class="field-items"> <div class="field-item odd">'.$img. $download_count;
+      $content=str_replace($search,$replace,$content);
+    
+	  print $content;
+
+	?>
 	<?php if(empty($_GET['embed'])&& empty($_GET['print'])){ ?>
 	<div id="tabs-block" class="js-disable-hide">
 		<ul class="list">
@@ -77,7 +129,7 @@
     <div class="tabs-cont embed-block">
 	    <div class="textblock">
 		<label for="embed_code" style="display:none">Embed code</label>
-        <textarea class="textbx" name="embed_code" id="embed_code"><div><iframe width="500px" title="<?php echo $node->title; ?>" height="425px" src="<?php echo curPageURL(); ?>" frameborder="1" scrolling="auto"></iframe></div></textarea>
+        <textarea rows="5" cols="60" class="textbx" name="embed_code" id="embed_code"><div><iframe width="500px" title="<?php echo $node->title; ?>" height="425px" src="<?php echo embedURL().$node->path; ?>" frameborder="1" scrolling="auto"></iframe></div></textarea>
     </div>    
     <div class="econf-block">
         <div style="float:right;">
@@ -106,6 +158,9 @@
          </div>
          <div style="clear:both">&nbsp;</div>
          <input type="submit" class="form-submit" name="preview" value="Preview" id="preview" title="Click here to preview" />
+         <input type="hidden" name="embed-url" title="embed-url-hidden" value="<?php print htmlspecialchars($node->path); ?>" />
+         <input type="hidden" name="js-embed-url" class="hidden-embed-url" title="embed-url-hidden" value="<?php echo embedURL().$node->path; ?>" />
+         <input type="hidden" name="embed-title" title="embed-title-hidden" value="<?php echo $node->title; ?>" />
     </div>
 	
 	</div>
@@ -159,7 +214,6 @@ $("#print-icon").hover(function(){
 	$(this).css('opacity','1');
 	$(this).css('filter','alpha(opacity=100)');
 });
-
 
 <?php if($_GET['print']){ ?>
 $(window).bind('load',function(){

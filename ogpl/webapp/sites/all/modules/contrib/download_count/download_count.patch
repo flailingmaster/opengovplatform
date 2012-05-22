@@ -1,0 +1,29 @@
+Index: download_count.theme.inc
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- download_count.theme.inc	(revision )
++++ download_count.theme.inc	(revision 4540)
+@@ -45,12 +45,18 @@
+   if ($output) {
+ 
+     if (user_access('view all download counts') || user_access('view own download counts')) {
+-      $text = ' &mdash; ';
++      //$text = ' &mdash; ';
++	  $split = explode(".",$file['filename']);
++	  $ext = strtoupper($split[count($split)-1]);
++	  $extension = theme('download_file_extension_accessible', $ext);
++  	  $file_size = theme('download_file_bytes_accessible', $file['filesize']);
++      $text = ''.variable_get('download_file_accessible_format', '(!extension / !file_size)').'';
++	  $text = t($text, array('!extension' => $extension, '!file_size' => $file_size));
+       if ($count) {
+-        $text .= format_plural($count, 'Downloaded 1 time', 'Downloaded @count times');
++      $text .='<span class="download-stat">'.format_plural($count, 'Downloaded 1 time', 'Downloaded @count times').'</span>';
+       }
+       else {
+-        $text .= t('Never downloaded');
++        $text .= '<span class="download-stat">Never Downloaded</span>';
+       }
+     }
+     else {

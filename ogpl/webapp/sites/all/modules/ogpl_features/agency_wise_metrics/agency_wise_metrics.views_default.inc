@@ -16,6 +16,26 @@ function agency_wise_metrics_views_default_views() {
   $view->api_version = '2';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
   $handler = $view->new_display('default', 'Defaults', 'default');
+  $handler->override_option('relationships', array(
+    'field_ds_agency_name_nid' => array(
+      'label' => 'Agency Name',
+      'required' => 0,
+      'delta' => -1,
+      'id' => 'field_ds_agency_name_nid',
+      'table' => 'node_data_field_ds_agency_name',
+      'field' => 'field_ds_agency_name_nid',
+      'relationship' => 'none',
+    ),
+    'field_ds_sub_agency_nid' => array(
+      'label' => 'Sub Agency Name',
+      'required' => 0,
+      'delta' => -1,
+      'id' => 'field_ds_sub_agency_nid',
+      'table' => 'node_data_field_ds_sub_agency',
+      'field' => 'field_ds_sub_agency_nid',
+      'relationship' => 'none',
+    ),
+  ));
   $handler->override_option('fields', array(
     'phpcode_1' => array(
       'label' => 'High Value',
@@ -265,7 +285,7 @@ else return \'No\';
         'button' => 'Override',
       ),
     ),
-    'field_ds_agency_short_name_value' => array(
+    'field_agency_short_name_value' => array(
       'label' => 'Agency Short Name',
       'alter' => array(
         'alter_text' => 0,
@@ -291,7 +311,7 @@ else return \'No\';
       'hide_empty' => 0,
       'empty_zero' => 0,
       'link_to_node' => 0,
-      'label_type' => 'custom',
+      'label_type' => 'widget',
       'format' => 'default',
       'multiple' => array(
         'group' => TRUE,
@@ -300,15 +320,12 @@ else return \'No\';
         'multiple_reversed' => FALSE,
       ),
       'exclude' => 0,
-      'id' => 'field_ds_agency_short_name_value',
-      'table' => 'node_data_field_ds_agency_short_name',
-      'field' => 'field_ds_agency_short_name_value',
-      'relationship' => 'none',
-      'override' => array(
-        'button' => 'Override',
-      ),
+      'id' => 'field_agency_short_name_value',
+      'table' => 'node_data_field_agency_short_name',
+      'field' => 'field_agency_short_name_value',
+      'relationship' => 'field_ds_agency_name_nid',
     ),
-    'field_ds_sub_agency_short_name_value' => array(
+    'field_sa_subagency_short_name_value' => array(
       'label' => 'Sub-Agency Short Name',
       'alter' => array(
         'alter_text' => 0,
@@ -334,7 +351,7 @@ else return \'No\';
       'hide_empty' => 0,
       'empty_zero' => 0,
       'link_to_node' => 0,
-      'label_type' => 'custom',
+      'label_type' => 'widget',
       'format' => 'default',
       'multiple' => array(
         'group' => TRUE,
@@ -343,10 +360,10 @@ else return \'No\';
         'multiple_reversed' => FALSE,
       ),
       'exclude' => 0,
-      'id' => 'field_ds_sub_agency_short_name_value',
-      'table' => 'node_data_field_ds_sub_agency_short_name',
-      'field' => 'field_ds_sub_agency_short_name_value',
-      'relationship' => 'none',
+      'id' => 'field_sa_subagency_short_name_value',
+      'table' => 'node_data_field_sa_subagency_short_name',
+      'field' => 'field_sa_subagency_short_name_value',
+      'relationship' => 'field_ds_sub_agency_nid',
     ),
     'field_ds_sector_nid' => array(
       'label' => 'Category',
@@ -597,12 +614,12 @@ return "node_data_field_ds_agency_name.field_ds_catlog_type_type=\'catalog_type_
       'php_filter' => '',
       'sql_filter' => 'if($view->args[1]==\'-\')
 {
-return "node_data_field_ds_agency_name.field_ds_sub_agency_name_value IS NULL";
+return "node_data_field_ds_agency_name.field_ds_sub_agency_nid IS NULL";
 }
 
 if(!strlen(strstr($view->args[1], "main_"))>0 )
 {
-return "node_data_field_ds_agency_name.field_ds_sub_agency_name_value=\'".$view->args[1]."\' ";
+return "node_data_field_ds_agency_name.field_ds_sub_agency_nid=\'".$view->args[1]."\' ";
 }',
       'id' => 'php_1',
       'table' => 'views',
@@ -1164,9 +1181,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
-
-  $votes=\'<span>(\'.$vote.\' votes)</span>\';
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
+  		           
+  $votes=\'<span>(\'.$vote.\' votes)</span>\'; 
 return theme(\'fivestar_static\',$value).$votes;
 ?>',
       'exclude' => 0,
@@ -1178,8 +1195,8 @@ return theme(\'fivestar_static\',$value).$votes;
         'button' => 'Use default',
       ),
     ),
-    'field_ds_agency_short_name_value' => array(
-      'label' => 'Agency/Sub-Agency',
+    'field_agency_short_name_value' => array(
+      'label' => 'Agency/Sub-Agency ',
       'alter' => array(
         'alter_text' => 0,
         'text' => '',
@@ -1213,10 +1230,56 @@ return theme(\'fivestar_static\',$value).$votes;
         'multiple_reversed' => FALSE,
       ),
       'exclude' => 0,
-      'id' => 'field_ds_agency_short_name_value',
-      'table' => 'node_data_field_ds_agency_short_name',
-      'field' => 'field_ds_agency_short_name_value',
-      'relationship' => 'none',
+      'id' => 'field_agency_short_name_value',
+      'table' => 'node_data_field_agency_short_name',
+      'field' => 'field_agency_short_name_value',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'field_ds_agency_name_nid',
+    ),
+    'field_sa_subagency_short_name_value' => array(
+      'label' => 'Sub-Agency Short Name',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'absolute' => 0,
+        'link_class' => '',
+        'alt' => '',
+        'rel' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_node' => 0,
+      'label_type' => 'widget',
+      'format' => 'default',
+      'multiple' => array(
+        'group' => TRUE,
+        'multiple_number' => '',
+        'multiple_from' => '',
+        'multiple_reversed' => FALSE,
+      ),
+      'exclude' => 0,
+      'id' => 'field_sa_subagency_short_name_value',
+      'table' => 'node_data_field_sa_subagency_short_name',
+      'field' => 'field_sa_subagency_short_name_value',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'field_ds_sub_agency_nid',
     ),
     'field_ds_sector_nid' => array(
       'label' => 'Category',
@@ -1260,46 +1323,6 @@ return theme(\'fivestar_static\',$value).$votes;
       'override' => array(
         'button' => 'Use default',
       ),
-    ),
-    'field_ds_sub_agency_short_name_value' => array(
-      'label' => 'Sub-Agency Short Name',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'absolute' => 0,
-        'link_class' => '',
-        'alt' => '',
-        'rel' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'link_to_node' => 0,
-      'label_type' => 'widget',
-      'format' => 'default',
-      'multiple' => array(
-        'group' => TRUE,
-        'multiple_number' => '',
-        'multiple_from' => '',
-        'multiple_reversed' => FALSE,
-      ),
-      'exclude' => 0,
-      'id' => 'field_ds_sub_agency_short_name_value',
-      'table' => 'node_data_field_ds_sub_agency_short_name',
-      'field' => 'field_ds_sub_agency_short_name_value',
-      'relationship' => 'none',
     ),
     'field_ds_description_value' => array(
       'label' => 'Description',
@@ -1516,12 +1539,12 @@ return "node_data_field_ds_agency_name.field_ds_catlog_type_type=\'catalog_type_
       'php_filter' => '',
       'sql_filter' => 'if($view->args[1]==\'-\')
 {
-return "node_data_field_ds_agency_name.field_ds_sub_agency_name_value IS NULL";
+return "node_data_field_ds_agency_name.field_ds_sub_agency_nid IS NULL";
 }
 
 if(!strlen(strstr($view->args[1], "main_"))>0 )
 {
-return "node_data_field_ds_agency_name.field_ds_sub_agency_name_value=\'".$view->args[1]."\' ";
+return "node_data_field_ds_agency_name.field_ds_sub_agency_nid=\'".$view->args[1]."\' ";
 }',
       'id' => 'php_1',
       'table' => 'views',
@@ -1558,7 +1581,7 @@ return "node_data_field_ds_agency_name.field_ds_sub_agency_name_value=\'".$view-
      $sum=$sum+get_average_ratings($row->nid);
      $count++;
   }
-
+  
   $AR=$sum/$count;
   //print "AR=".$AR;
 
@@ -1567,26 +1590,21 @@ $result=db_query("select distinct(content_id) as nid from votingapi_vote V LEFT 
 
   $sum=0;
   while($row=db_fetch_object($result))
-  {
+  {   
      $sum=$sum+get_average_rating_votes($row->nid);
   }
   $AV=$sum/$count;
   $AV=round($AV);
 
  variable_set(\'average_rating\',$AR);
- variable_set(\'average_votes\',$AV);
-
+ variable_set(\'average_votes\',$AV); 
+       
         $this_page = $_SERVER[\'REQUEST_URI\'];
 	$last =substr($this_page,0,strripos($this_page,\'/\'));
         $slast =substr($last,0,strripos($last,\'/\'));
 	$third_last=strripos($slast,\'/\');
 	$argument=substr($this_page,$third_last);
 	
-	//print_r($a);
-	//$node=node_load($nid);
-	//$title1=$node->title;
-
-	//print \'<h2 class="page-title">\'.$title1.\'</h2>\';	
 		$qpos;
      if(strlen(strstr($this_page,"?")))
       {
@@ -1611,30 +1629,30 @@ $arg0 = $view->args[0];
 $arg1 = $view->args[1];
 
 if($arg1==\'-\') $sub_agency=\'IS NULL\';
-else $sub_agency="= \'$arg1\'";
+else $sub_agency="= $arg1";
 
 if(!strlen(strstr($view->args[1], "main_"))>0 )
-$raw=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid  INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_raw_data\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value $sub_agency AND n.status=1"));
+$raw=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid  INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_raw_data\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $sub_agency AND n.status=1"));
 else
 $raw=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_raw_data\' AND field_ds_agency_name_nid=$arg0 AND n.status=1 "));
 
 if(!strlen(strstr($view->args[1], "main_"))>0 )
-$doc=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid  where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_document\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value $sub_agency AND n.status=1"));
+$doc=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid  where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_document\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $sub_agency AND n.status=1"));
 else
 $doc=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_document\' AND field_ds_agency_name_nid=$arg0 AND n.status=1"));
 
 if(!strlen(strstr($view->args[1], "main_"))>0 )
-$apps=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type IN (\'catalog_type_data_apps\') AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value $sub_agency AND n.status=1"));
+$apps=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type IN (\'catalog_type_data_apps\') AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $sub_agency AND n.status=1"));
 else
 $apps=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type IN (\'catalog_type_data_apps\')  AND field_ds_agency_name_nid=$arg0 AND n.status=1"));
 
 if(!strlen(strstr($view->args[1], "main_"))>0 )
-$tool=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid  where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_tools\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value $sub_agency AND n.status=1 "));
+$tool=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid  where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_tools\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $sub_agency AND n.status=1 "));
 else
 $tool=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid  INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_tools\' AND field_ds_agency_name_nid=$arg0 AND n.status=1 "));
 
 if(!strlen(strstr($view->args[1], "main_"))>0 )
-$ser=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_service\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value $sub_agency AND n.status=1 "));
+$ser=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_service\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $sub_agency AND n.status=1 "));
 else
 $ser=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid  INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_service\' AND field_ds_agency_name_nid=$arg0 AND n.status=1 "));
 
@@ -1706,9 +1724,9 @@ print \'<div style="font:bold 1.3em arial; padding-top:10px">No matching records
       'phpcode_1' => 'phpcode_1',
       'title' => 'title',
       'phpcode' => 'phpcode',
-      'field_ds_agency_short_name_value' => 'field_ds_agency_short_name_value',
+      'field_agency_short_name_value' => 'field_agency_short_name_value',
+      'field_sa_subagency_short_name_value' => 'field_agency_short_name_value',
       'field_ds_sector_nid' => 'field_ds_sector_nid',
-      'field_ds_sub_agency_short_name_value' => 'field_ds_agency_short_name_value',
       'field_ds_description_value' => 'title',
     ),
     'info' => array(
@@ -1722,15 +1740,15 @@ print \'<div style="font:bold 1.3em arial; padding-top:10px">No matching records
       'phpcode' => array(
         'separator' => '',
       ),
-      'field_ds_agency_short_name_value' => array(
+      'field_agency_short_name_value' => array(
         'sortable' => 1,
         'separator' => '/',
       ),
-      'field_ds_sector_nid' => array(
+      'field_sa_subagency_short_name_value' => array(
+        'sortable' => 0,
         'separator' => '',
       ),
-      'field_ds_sub_agency_short_name_value' => array(
-        'sortable' => 0,
+      'field_ds_sector_nid' => array(
         'separator' => '',
       ),
       'field_ds_description_value' => array(
@@ -1909,9 +1927,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
-
-  $votes=\'<span style="margin-left: 20px;"> (\'.$vote.\' votes)</span>\';
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
+  		           
+  $votes=\'<span style="margin-left: 20px;"> (\'.$vote.\' votes)</span>\'; 
 return theme(\'fivestar_static\',$value).$votes;
 ?>',
       'exclude' => 0,
@@ -1923,7 +1941,7 @@ return theme(\'fivestar_static\',$value).$votes;
         'button' => 'Use default',
       ),
     ),
-    'field_ds_agency_short_name_value' => array(
+    'field_agency_short_name_value' => array(
       'label' => 'Agency Short Name',
       'alter' => array(
         'alter_text' => 0,
@@ -1949,7 +1967,7 @@ return theme(\'fivestar_static\',$value).$votes;
       'hide_empty' => 0,
       'empty_zero' => 0,
       'link_to_node' => 0,
-      'label_type' => 'custom',
+      'label_type' => 'widget',
       'format' => 'default',
       'multiple' => array(
         'group' => TRUE,
@@ -1958,15 +1976,15 @@ return theme(\'fivestar_static\',$value).$votes;
         'multiple_reversed' => FALSE,
       ),
       'exclude' => 0,
-      'id' => 'field_ds_agency_short_name_value',
-      'table' => 'node_data_field_ds_agency_short_name',
-      'field' => 'field_ds_agency_short_name_value',
-      'relationship' => 'none',
+      'id' => 'field_agency_short_name_value',
+      'table' => 'node_data_field_agency_short_name',
+      'field' => 'field_agency_short_name_value',
       'override' => array(
-        'button' => 'Override',
+        'button' => 'Use default',
       ),
+      'relationship' => 'field_ds_agency_name_nid',
     ),
-    'field_ds_sub_agency_short_name_value' => array(
+    'field_sa_subagency_short_name_value' => array(
       'label' => 'Sub-Agency Short Name',
       'alter' => array(
         'alter_text' => 0,
@@ -1992,7 +2010,7 @@ return theme(\'fivestar_static\',$value).$votes;
       'hide_empty' => 0,
       'empty_zero' => 0,
       'link_to_node' => 0,
-      'label_type' => 'custom',
+      'label_type' => 'widget',
       'format' => 'default',
       'multiple' => array(
         'group' => TRUE,
@@ -2001,10 +2019,13 @@ return theme(\'fivestar_static\',$value).$votes;
         'multiple_reversed' => FALSE,
       ),
       'exclude' => 0,
-      'id' => 'field_ds_sub_agency_short_name_value',
-      'table' => 'node_data_field_ds_sub_agency_short_name',
-      'field' => 'field_ds_sub_agency_short_name_value',
-      'relationship' => 'none',
+      'id' => 'field_sa_subagency_short_name_value',
+      'table' => 'node_data_field_sa_subagency_short_name',
+      'field' => 'field_sa_subagency_short_name_value',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'field_ds_sub_agency_nid',
     ),
     'field_ds_sector_nid' => array(
       'label' => 'Category',
@@ -2288,9 +2309,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
-
-  $votes=\'<span style="margin-left: 20px;"> (\'.$vote.\' votes)</span>\';
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
+  		           
+  $votes=\'<span style="margin-left: 20px;"> (\'.$vote.\' votes)</span>\'; 
 return theme(\'fivestar_static\',$value).$votes;
 ?>',
       'exclude' => 0,
@@ -2302,7 +2323,7 @@ return theme(\'fivestar_static\',$value).$votes;
         'button' => 'Use default',
       ),
     ),
-    'field_ds_agency_short_name_value' => array(
+    'field_agency_short_name_value' => array(
       'label' => 'Agency Short Name',
       'alter' => array(
         'alter_text' => 0,
@@ -2328,7 +2349,7 @@ return theme(\'fivestar_static\',$value).$votes;
       'hide_empty' => 0,
       'empty_zero' => 0,
       'link_to_node' => 0,
-      'label_type' => 'custom',
+      'label_type' => 'widget',
       'format' => 'default',
       'multiple' => array(
         'group' => TRUE,
@@ -2337,15 +2358,15 @@ return theme(\'fivestar_static\',$value).$votes;
         'multiple_reversed' => FALSE,
       ),
       'exclude' => 0,
-      'id' => 'field_ds_agency_short_name_value',
-      'table' => 'node_data_field_ds_agency_short_name',
-      'field' => 'field_ds_agency_short_name_value',
-      'relationship' => 'none',
+      'id' => 'field_agency_short_name_value',
+      'table' => 'node_data_field_agency_short_name',
+      'field' => 'field_agency_short_name_value',
       'override' => array(
-        'button' => 'Override',
+        'button' => 'Use default',
       ),
+      'relationship' => 'field_ds_agency_name_nid',
     ),
-    'field_ds_sub_agency_short_name_value' => array(
+    'field_sa_subagency_short_name_value' => array(
       'label' => 'Sub-Agency Short Name',
       'alter' => array(
         'alter_text' => 0,
@@ -2371,7 +2392,7 @@ return theme(\'fivestar_static\',$value).$votes;
       'hide_empty' => 0,
       'empty_zero' => 0,
       'link_to_node' => 0,
-      'label_type' => 'custom',
+      'label_type' => 'widget',
       'format' => 'default',
       'multiple' => array(
         'group' => TRUE,
@@ -2380,10 +2401,13 @@ return theme(\'fivestar_static\',$value).$votes;
         'multiple_reversed' => FALSE,
       ),
       'exclude' => 0,
-      'id' => 'field_ds_sub_agency_short_name_value',
-      'table' => 'node_data_field_ds_sub_agency_short_name',
-      'field' => 'field_ds_sub_agency_short_name_value',
-      'relationship' => 'none',
+      'id' => 'field_sa_subagency_short_name_value',
+      'table' => 'node_data_field_sa_subagency_short_name',
+      'field' => 'field_sa_subagency_short_name_value',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'field_ds_sub_agency_nid',
     ),
     'field_ds_sector_nid' => array(
       'label' => 'Category',
@@ -2619,9 +2643,9 @@ $value=calculate_ratings($data->nid,$avg_rating,$avg_votes);
   $vote3=rate_get_results(\'node\', $data->nid, 3);
   $vote=$vote1[\'count\'];
   if($vote2[\'count\']>$vote) $vote=$vote2[\'count\'];
-  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];
-
-  $votes=\'<span> (\'.$vote.\' votes)</span>\';
+  if($vote3[\'count\']>$vote)$vote=$vote3[\'count\'];                 
+  		           
+  $votes=\'<span> (\'.$vote.\' votes)</span>\'; 
 return ($value/20).$votes;
 ?>',
       'exclude' => 0,
@@ -2633,8 +2657,8 @@ return ($value/20).$votes;
         'button' => 'Use default',
       ),
     ),
-    'field_ds_agency_short_name_value' => array(
-      'label' => 'Agency/Sub-Agency',
+    'field_agency_short_name_value' => array(
+      'label' => 'Agency/Sub-Agency ',
       'alter' => array(
         'alter_text' => 0,
         'text' => '',
@@ -2668,10 +2692,56 @@ return ($value/20).$votes;
         'multiple_reversed' => FALSE,
       ),
       'exclude' => 0,
-      'id' => 'field_ds_agency_short_name_value',
-      'table' => 'node_data_field_ds_agency_short_name',
-      'field' => 'field_ds_agency_short_name_value',
-      'relationship' => 'none',
+      'id' => 'field_agency_short_name_value',
+      'table' => 'node_data_field_agency_short_name',
+      'field' => 'field_agency_short_name_value',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'field_ds_agency_name_nid',
+    ),
+    'field_sa_subagency_short_name_value' => array(
+      'label' => 'Sub-Agency Short Name',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'absolute' => 0,
+        'link_class' => '',
+        'alt' => '',
+        'rel' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_node' => 0,
+      'label_type' => 'widget',
+      'format' => 'default',
+      'multiple' => array(
+        'group' => TRUE,
+        'multiple_number' => '',
+        'multiple_from' => '',
+        'multiple_reversed' => FALSE,
+      ),
+      'exclude' => 0,
+      'id' => 'field_sa_subagency_short_name_value',
+      'table' => 'node_data_field_sa_subagency_short_name',
+      'field' => 'field_sa_subagency_short_name_value',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'field_ds_sub_agency_nid',
     ),
     'field_ds_sector_nid' => array(
       'label' => 'Category',
@@ -2715,46 +2785,6 @@ return ($value/20).$votes;
       'override' => array(
         'button' => 'Use default',
       ),
-    ),
-    'field_ds_sub_agency_short_name_value' => array(
-      'label' => 'Sub-Agency Short Name',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'absolute' => 0,
-        'link_class' => '',
-        'alt' => '',
-        'rel' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'link_to_node' => 0,
-      'label_type' => 'widget',
-      'format' => 'default',
-      'multiple' => array(
-        'group' => TRUE,
-        'multiple_number' => '',
-        'multiple_from' => '',
-        'multiple_reversed' => FALSE,
-      ),
-      'exclude' => 0,
-      'id' => 'field_ds_sub_agency_short_name_value',
-      'table' => 'node_data_field_ds_sub_agency_short_name',
-      'field' => 'field_ds_sub_agency_short_name_value',
-      'relationship' => 'none',
     ),
     'field_ds_description_value' => array(
       'label' => 'Description',
@@ -2971,12 +3001,12 @@ return "node_data_field_ds_agency_name.field_ds_catlog_type_type=\'catalog_type_
       'php_filter' => '',
       'sql_filter' => 'if($view->args[1]==\'-\')
 {
-return "node_data_field_ds_agency_name.field_ds_sub_agency_name_value IS NULL";
+return "node_data_field_ds_agency_name.field_ds_sub_agency_nid IS NULL";
 }
 
 if(!strlen(strstr($view->args[1], "main_"))>0 )
 {
-return "node_data_field_ds_agency_name.field_ds_sub_agency_name_value=\'".$view->args[1]."\' ";
+return "node_data_field_ds_agency_name.field_ds_sub_agency_nid=\'".$view->args[1]."\' ";
 }',
       'id' => 'php_1',
       'table' => 'views',
@@ -3040,32 +3070,32 @@ $arg0 = $view->args[0];
 $arg1 = $view->args[1];
 
 if($arg1==\'-\') $sub_agency=\'IS NULL\';
-else $sub_agency="= \'$arg1\'";
+else $sub_agency="= $arg1";
 
 if(!strlen(strstr($view->args[1], "main_"))>0 )
-$raw=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_raw_data\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value $sub_agency"));
+$raw=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid  INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_raw_data\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $sub_agency AND n.status=1"));
 else
-$raw=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_raw_data\' AND field_ds_agency_name_nid=$arg0"));
+$raw=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_raw_data\' AND field_ds_agency_name_nid=$arg0 AND n.status=1 "));
 
 if(!strlen(strstr($view->args[1], "main_"))>0 )
-$doc=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_document\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value $sub_agency"));
+$doc=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid  where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_document\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $sub_agency AND n.status=1"));
 else
-$doc=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_document\' AND field_ds_agency_name_nid=$arg0"));
+$doc=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_document\' AND field_ds_agency_name_nid=$arg0 AND n.status=1"));
 
 if(!strlen(strstr($view->args[1], "main_"))>0 )
-$apps=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type IN (\'catalog_type_data_apps\') AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value $sub_agency"));
+$apps=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type IN (\'catalog_type_data_apps\') AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $sub_agency AND n.status=1"));
 else
-$apps=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type IN (\'catalog_type_data_apps\')  AND field_ds_agency_name_nid=$arg0"));
+$apps=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type IN (\'catalog_type_data_apps\')  AND field_ds_agency_name_nid=$arg0 AND n.status=1"));
 
 if(!strlen(strstr($view->args[1], "main_"))>0 )
-$tool=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_tools\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value $sub_agency"));
+$tool=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid  where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_tools\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $sub_agency AND n.status=1 "));
 else
-$tool=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_tools\' AND field_ds_agency_name_nid=$arg0"));
+$tool=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid  INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_tools\' AND field_ds_agency_name_nid=$arg0 AND n.status=1 "));
 
 if(!strlen(strstr($view->args[1], "main_"))>0 )
-$ser=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_service\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value $sub_agency"));
+$ser=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_service\' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $sub_agency AND n.status=1 "));
 else
-$ser=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_service\' AND field_ds_agency_name_nid=$arg0"));
+$ser=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid  INNER JOIN node n on ds.nid=n.nid where wf.sid=10 and field_ds_catlog_type_type=\'catalog_type_data_service\' AND field_ds_agency_name_nid=$arg0 AND n.status=1 "));
 
  print \'<div class="catalog-tabs-menu fLeft" style="margin-top:7px;">\';
 	 print \'<ul class="catalog-tabs">\';
@@ -3116,9 +3146,9 @@ print \'<div style="font:bold 1.3em arial; padding-top:10px">No matching records
       'phpcode_1' => 'phpcode_1',
       'title' => 'title',
       'phpcode' => 'phpcode',
-      'field_ds_agency_short_name_value' => 'field_ds_agency_short_name_value',
+      'field_agency_short_name_value' => 'field_agency_short_name_value',
+      'field_sa_subagency_short_name_value' => 'field_agency_short_name_value',
       'field_ds_sector_nid' => 'field_ds_sector_nid',
-      'field_ds_sub_agency_short_name_value' => 'field_ds_agency_short_name_value',
       'field_ds_description_value' => 'title',
     ),
     'info' => array(
@@ -3132,15 +3162,15 @@ print \'<div style="font:bold 1.3em arial; padding-top:10px">No matching records
       'phpcode' => array(
         'separator' => '',
       ),
-      'field_ds_agency_short_name_value' => array(
+      'field_agency_short_name_value' => array(
         'sortable' => 0,
         'separator' => '/',
       ),
-      'field_ds_sector_nid' => array(
+      'field_sa_subagency_short_name_value' => array(
+        'sortable' => 0,
         'separator' => '',
       ),
-      'field_ds_sub_agency_short_name_value' => array(
-        'sortable' => 0,
+      'field_ds_sector_nid' => array(
         'separator' => '',
       ),
       'field_ds_description_value' => array(
@@ -3637,7 +3667,7 @@ else return $total
 global $base_url;
 $total=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid   where ds.field_ds_agency_name_nid=$data->nid AND  ds.field_ds_catlog_type_type IS NOT NULL  AND WF.sid=10  "));
 
-$result=db_query("SELECT  distinct ds.field_ds_sub_agency_name_value as sub FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid where ds.field_ds_agency_name_nid=$data->nid AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL order by ds.field_ds_sub_agency_name_value asc  ");	
+$result=db_query("SELECT  distinct ds.field_ds_sub_agency_nid as sub,sa.field_sa_subagency_name_value as name FROM content_type_dataset ds LEFT JOIN content_type_sub_agency as sa On sa.nid=ds.field_ds_sub_agency_nid INNER JOIN workflow_node WF on WF.nid=ds.nid where ds.field_ds_agency_name_nid=$data->nid AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL order by sa.field_sa_subagency_name_value asc  ");	
 
 $sub_agency="";
 $null_agency=\'\';
@@ -3655,7 +3685,7 @@ while ($row = mysql_fetch_object($result))
         $latest_sub=\'\';
 
 if($null_agency)
-{ if(strcmp($row->sub,$null_agency)>0)
+{ if(strcmp($row->name,$null_agency)>0)
     {  $sub_agency.=$null_sub_agency_row ;
      $null_agency=\'\';
      }
@@ -3663,13 +3693,13 @@ if($null_agency)
 
 if($row->sub==null){ $sub_ag=\' IS NULL\' ;}
 
-else  {$sub_ag=" = \'$row->sub\'"; }
+else  {$sub_ag=" = $row->sub"; }
 
-$short_sub=db_result(db_query("SELECT  field_ds_sub_agency_short_name_value as sub FROM content_type_dataset ds where ds.field_ds_agency_name_nid=$data->nid  AND ds.field_ds_sub_agency_name_value $sub_ag AND ds.field_ds_sub_agency_short_name_value IS NOT NULL "));	
+$short_sub=db_result(db_query("SELECT  field_sa_subagency_short_name_value as sub FROM content_type_sub_agency sa where sa.field_sa_subagency_agency_nid=$data->nid  AND sa.nid $sub_ag "));	
 
 if($short_sub!=\'\') $short_name=\' (\'.$short_sub.\')\'; else $short_name=\'\';
 
-if($row->sub!=null){ $agency=$row->sub;  $link=$row->sub;}
+if($row->sub!=null){ $agency=$row->name;  $link=$row->sub;}
 else
 {$null_agency=$data->node_title;
  $short_name=db_result(db_query("Select field_agency_short_name_value from content_type_agency where nid=$data->nid"));
@@ -3683,9 +3713,9 @@ $cat_val=\'\';
 for($i=0;$i<5;$i++)
 {
 $raw_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON   ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid WHERE ( ds.field_ds_catlog_type_type = \'$catalog_type[$i]\') 
-AND ds.field_ds_agency_name_nid =$data->nid  AND ds.field_ds_sub_agency_name_value $sub_ag  AND WF.sid=10  "));
+AND ds.field_ds_agency_name_nid =$data->nid  AND ds.field_ds_sub_agency_nid $sub_ag  AND WF.sid=10  "));
 
-$raw_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid LEFT JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid INNER JOIN workflow_node WF On WF.nid=ds.nid where ( ds.field_ds_catlog_type_type =\'$catalog_type[$i]\') AND ds.field_ds_agency_name_nid=$data->nid AND ppog.	field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_name_value $sub_ag AND WF.sid=10  "));
+$raw_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid LEFT JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid INNER JOIN workflow_node WF On WF.nid=ds.nid where ( ds.field_ds_catlog_type_type =\'$catalog_type[$i]\') AND ds.field_ds_agency_name_nid=$data->nid AND ppog.	field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_nid $sub_ag AND WF.sid=10  "));
 if($raw_sub_val!=0) $raw_sub_val=\'<span style="color:red;"> (\'.$raw_sub_val.\')</span>\'; else $raw_sub_val=\'\';
 
 if($flag==0){
@@ -3704,21 +3734,21 @@ if($row->sub!=null)
 $sub_agency.=\'<td style="padding-left:20px"><a href="\'.$base_url.\'/agency-publications/datasets-agency/\'.$data->nid.\'/\'.$link.\'/\'.$default.\'">\'.$agency.$short_name.\'</a></td>\'.$cat_val;
 
 else
-$null_sub_agency_row=\'<tr><td style="padding-left:20px"><a href="\'.$base_url.\'/agency-publications/datasets-agency/\'.$data->nid.\'/\'.$link.\'/\'.$default.\'">\'.$null_agency.$short_name.\'</a></td>\'.$null_sub_agency_row; 
+$null_sub_agency_row=\'<tr class="ds-list-item-new  sub-agency-font" ><td style="padding-left:20px"><a href="\'.$base_url.\'/agency-publications/datasets-agency/\'.$data->nid.\'/\'.$link.\'/\'.$default.\'">\'.$null_agency.$short_name.\'</a></td>\'.$null_sub_agency_row; 
 
-$total_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid WHERE ds.field_ds_agency_name_nid =$data->nid AND ds.field_ds_sub_agency_name_value  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 "));
+$total_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid WHERE ds.field_ds_agency_name_nid =$data->nid AND ds.field_ds_sub_agency_nid  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 "));
 
-$total_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid  INNER JOIN workflow_node WF On WF.nid=ds.nid  where  ds.field_ds_agency_name_nid=$data->nid AND ppog.field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_name_value  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 "));
+$total_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid  INNER JOIN workflow_node WF On WF.nid=ds.nid  where  ds.field_ds_agency_name_nid=$data->nid AND ppog.field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_nid  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 "));
 
-$latest_sub=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid  where ds.field_ds_agency_name_nid=$data->nid AND ds.field_ds_sub_agency_name_value $sub_ag AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL "));
+$latest_sub=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid  where ds.field_ds_agency_name_nid=$data->nid AND ds.field_ds_sub_agency_nid $sub_ag AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL "));
 
 if($latest_sub==0) $latest_sub=\'\';
 if($total_sub_val!=0) $total_sub_val=\' <span style="color:red;">(\'.$total_sub_val.\')</span>\'; else $total_sub_val=\'\';
 
 if($row->sub==null)
-$null_sub_agency_row.=\'<td style="text-align:center;">\'.$total_sub.$total_sub_val.\'</td><td style="text-align:center;">\'.date(\'d/m/Y\',$latest_sub).\'</td></tr>\';
+$null_sub_agency_row.=\'<td style="text-align:center;">\'.$total_sub.$total_sub_val.\'</td><td style="text-align:center;">\'.format_date($latest_sub,\'custom\',variable_get(\'date_format_front_date_format\',\'\'),NULL,NULL).\'</td></tr>\';
 else
-$sub_agency.=\'<td style="text-align:center;">\'.$total_sub.$total_sub_val.\'</td><td style="text-align:center;">\'.date(\'d/m/Y\',$latest_sub).\'</td></tr>\';
+$sub_agency.=\'<td style="text-align:center;">\'.$total_sub.$total_sub_val.\'</td><td style="text-align:center;">\'.format_date($latest_sub,\'custom\',variable_get(\'date_format_front_date_format\',\'\'),NULL,NULL).\'</td></tr>\';
 
 $last_sub=$row->sub;
 }
@@ -3730,7 +3760,7 @@ if($null_agency)
      }
   }
 
-if ($total) $date=date(\'d/m/Y\',$total);
+if ($total) $date=format_date($total,\'custom\',variable_get(\'date_format_front_date_format\',\'\'),NULL,NULL);
 else $date=\'\';
 return $date.$sub_agency;
 ?>',
@@ -4331,11 +4361,11 @@ else return $total
       'empty_zero' => 0,
       'value' => '<?php
 global $base_url;
-$total=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid  INNER JOIN node n on ds.nid=n.nid  where ds.field_ds_agency_name_nid=$data->nid AND  ds.field_ds_catlog_type_type IS NOT NULL  AND WF.sid=10 AND n.status=1  "));
+$total=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid   where ds.field_ds_agency_name_nid=$data->nid AND  ds.field_ds_catlog_type_type IS NOT NULL  AND WF.sid=10  "));
 
-$result=db_query("SELECT  distinct ds.field_ds_sub_agency_name_value as sub FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid where ds.field_ds_agency_name_nid=$data->nid AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL  AND n.status=1 order by ds.field_ds_sub_agency_name_value asc  ");	
+$result=db_query("SELECT  distinct ds.field_ds_sub_agency_nid as sub,sa.field_sa_subagency_name_value as name FROM content_type_dataset ds LEFT JOIN content_type_sub_agency as sa On sa.nid=ds.field_ds_sub_agency_nid INNER JOIN workflow_node WF on WF.nid=ds.nid where ds.field_ds_agency_name_nid=$data->nid AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL order by sa.field_sa_subagency_name_value asc  ");	
 
-$sub_agency="</td></tr>";
+$sub_agency="";
 $null_agency=\'\';
 $null_sub_agency_row=\'\';
 $last_sub=\'\';
@@ -4351,7 +4381,7 @@ while ($row = mysql_fetch_object($result))
         $latest_sub=\'\';
 
 if($null_agency)
-{ if(strcmp($row->sub,$null_agency)>0)
+{ if(strcmp($row->name,$null_agency)>0)
     {  $sub_agency.=$null_sub_agency_row ;
      $null_agency=\'\';
      }
@@ -4359,13 +4389,13 @@ if($null_agency)
 
 if($row->sub==null){ $sub_ag=\' IS NULL\' ;}
 
-else  {$sub_ag=" = \'$row->sub\'"; }
+else  {$sub_ag=" = $row->sub"; }
 
-$short_sub=db_result(db_query("SELECT  field_ds_sub_agency_short_name_value as sub FROM content_type_dataset ds where ds.field_ds_agency_name_nid=$data->nid  AND ds.field_ds_sub_agency_name_value $sub_ag AND ds.field_ds_sub_agency_short_name_value IS NOT NULL "));	
+$short_sub=db_result(db_query("SELECT  field_sa_subagency_short_name_value as sub FROM content_type_sub_agency sa where sa.field_sa_subagency_agency_nid=$data->nid  AND sa.nid $sub_ag "));	
 
 if($short_sub!=\'\') $short_name=\' (\'.$short_sub.\')\'; else $short_name=\'\';
 
-if($row->sub!=null){ $agency=$row->sub;  $link=$row->sub;}
+if($row->sub!=null){ $agency=$row->name;  $link=$row->sub;}
 else
 {$null_agency=$data->node_title;
  $short_name=db_result(db_query("Select field_agency_short_name_value from content_type_agency where nid=$data->nid"));
@@ -4378,18 +4408,16 @@ $sub_agency.= \'\';
 $cat_val=\'\';
 for($i=0;$i<5;$i++)
 {
-$raw_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON   ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid  INNER JOIN node n on ds.nid=n.nid WHERE ( ds.field_ds_catlog_type_type = \'$catalog_type[$i]\') 
-AND ds.field_ds_agency_name_nid =$data->nid  AND ds.field_ds_sub_agency_name_value $sub_ag  AND WF.sid=10  AND n.status=1  "));
+$raw_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON   ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid WHERE ( ds.field_ds_catlog_type_type = \'$catalog_type[$i]\') 
+AND ds.field_ds_agency_name_nid =$data->nid  AND ds.field_ds_sub_agency_nid $sub_ag  AND WF.sid=10  "));
 
-$raw_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid LEFT JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid where ( ds.field_ds_catlog_type_type =\'$catalog_type[$i]\') AND ds.field_ds_agency_name_nid=$data->nid AND ppog.	field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_name_value $sub_ag AND WF.sid=10 AND n.status=1 "));
+$raw_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid LEFT JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid INNER JOIN workflow_node WF On WF.nid=ds.nid where ( ds.field_ds_catlog_type_type =\'$catalog_type[$i]\') AND ds.field_ds_agency_name_nid=$data->nid AND ppog.	field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_nid $sub_ag AND WF.sid=10  "));
 if($raw_sub_val!=0) $raw_sub_val=\'<span style="color:red;"> (\'.$raw_sub_val.\')</span>\'; else $raw_sub_val=\'\';
 
 if($flag==0){
 if($raw_sub!=0 && $i==0) {$default=1; $flag=1;}
 else if($raw_sub!=0 && $i==1){ $default=2; $flag=1;}
-else if($raw_sub!=0 && $i==2) {$default=3; $flag=1;}
-else if($raw_sub!=0 && $i==3) {$default=4; $flag=1;}
-else if($raw_sub!=0 && $i==4) {$default=5; $flag=1;}
+else if($raw_sub!=0 && $i>=2) {$default=3; $flag=1;}
 }
 if($row->sub==null)
 $null_sub_agency_row.=\'<td style="text-align:center;">\'.$raw_sub.$raw_sub_val.\'</td>\';
@@ -4399,16 +4427,16 @@ $cat_val.=\'<td style="text-align:center;">\'.$raw_sub.$raw_sub_val.\'</td>\';
 }
 
 if($row->sub!=null)
-$sub_agency.=\'<tr class="ds-list-item-new  sub-agency-font" ><td style="padding-left:20px"><a title="\'.$agency.\'" href="\'.$base_url.\'/agency-publications/datasets-agency/\'.$data->nid.\'/\'.$link.\'/\'.$default.\'">\'.$agency.$short_name.\'</a></td>\'.$cat_val;
+$sub_agency.=\'<tr class="ds-list-item-new  sub-agency-font" ><td style="padding-left:20px"><a href="\'.$base_url.\'/agency-publications/datasets-agency/\'.$data->nid.\'/\'.$link.\'/\'.$default.\'">\'.$agency.$short_name.\'</a></td>\'.$cat_val;
 
 else
-$null_sub_agency_row=\'<tr  class="ds-list-item-new  sub-agency-font" ><td style="padding-left:20px"><a title="\'.$null_agency.\'" href="\'.$base_url.\'/agency-publications/datasets-agency/\'.$data->nid.\'/\'.$link.\'/\'.$default.\'">\'.$null_agency.$short_name.\'</a></td>\'.$null_sub_agency_row; 
+$null_sub_agency_row=\'<tr class="ds-list-item-new  sub-agency-font" ><td style="padding-left:20px"><a href="\'.$base_url.\'/agency-publications/datasets-agency/\'.$data->nid.\'/\'.$link.\'/\'.$default.\'">\'.$null_agency.$short_name.\'</a></td>\'.$null_sub_agency_row; 
 
-$total_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid WHERE ds.field_ds_agency_name_nid =$data->nid AND ds.field_ds_sub_agency_name_value  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 AND n.status=1"));
+$total_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid WHERE ds.field_ds_agency_name_nid =$data->nid AND ds.field_ds_sub_agency_nid  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 "));
 
-$total_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid  INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid  where  ds.field_ds_agency_name_nid=$data->nid AND ppog.field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_name_value  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 AND n.status=1 "));
+$total_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid  INNER JOIN workflow_node WF On WF.nid=ds.nid  where  ds.field_ds_agency_name_nid=$data->nid AND ppog.field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_nid  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 "));
 
-$latest_sub=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid where ds.field_ds_agency_name_nid=$data->nid AND ds.field_ds_sub_agency_name_value $sub_ag AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL AND n.status=1 "));
+$latest_sub=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid  where ds.field_ds_agency_name_nid=$data->nid AND ds.field_ds_sub_agency_nid $sub_ag AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL "));
 
 if($latest_sub==0) $latest_sub=\'\';
 if($total_sub_val!=0) $total_sub_val=\' <span style="color:red;">(\'.$total_sub_val.\')</span>\'; else $total_sub_val=\'\';
@@ -4427,7 +4455,7 @@ if($null_agency)
      $null_agency=\'\';
      }
   }
-$sub_agency=substr($sub_agency,0,strlen($sub_agency)-10);
+
 if ($total) $date=format_date($total,\'custom\',variable_get(\'date_format_front_date_format\',\'\'),NULL,NULL);
 else $date=\'\';
 return $date.$sub_agency;
@@ -5073,9 +5101,9 @@ else return $total
       'empty_zero' => 0,
       'value' => '<?php
 global $base_url;
-$total=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid  INNER JOIN node n on ds.nid=n.nid  where ds.field_ds_agency_name_nid=$data->nid AND  ds.field_ds_catlog_type_type IS NOT NULL  AND WF.sid=10 AND n.status=1 "));
+$total=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid   where ds.field_ds_agency_name_nid=$data->nid AND  ds.field_ds_catlog_type_type IS NOT NULL  AND WF.sid=10  "));
 
-$result=db_query("SELECT  distinct ds.field_ds_sub_agency_name_value as sub FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid where ds.field_ds_agency_name_nid=$data->nid AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL  AND n.status=1 order by ds.field_ds_sub_agency_name_value asc  ");	
+$result=db_query("SELECT  distinct ds.field_ds_sub_agency_nid as sub,sa.field_sa_subagency_name_value as name FROM content_type_dataset ds LEFT JOIN content_type_sub_agency as sa On sa.nid=ds.field_ds_sub_agency_nid INNER JOIN workflow_node WF on WF.nid=ds.nid where ds.field_ds_agency_name_nid=$data->nid AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL order by sa.field_sa_subagency_name_value asc  ");	
 
 $sub_agency="";
 $null_agency=\'\';
@@ -5093,7 +5121,7 @@ while ($row = mysql_fetch_object($result))
         $latest_sub=\'\';
 
 if($null_agency)
-{ if(strcmp($row->sub,$null_agency)>0)
+{ if(strcmp($row->name,$null_agency)>0)
     {  $sub_agency.=$null_sub_agency_row ;
      $null_agency=\'\';
      }
@@ -5101,13 +5129,13 @@ if($null_agency)
 
 if($row->sub==null){ $sub_ag=\' IS NULL\' ;}
 
-else  {$sub_ag=" = \'$row->sub\'"; }
+else  {$sub_ag=" = $row->sub"; }
 
-$short_sub=db_result(db_query("SELECT  field_ds_sub_agency_short_name_value as sub FROM content_type_dataset ds where ds.field_ds_agency_name_nid=$data->nid  AND ds.field_ds_sub_agency_name_value $sub_ag AND ds.field_ds_sub_agency_short_name_value IS NOT NULL "));	
+$short_sub=db_result(db_query("SELECT  field_sa_subagency_short_name_value as sub FROM content_type_sub_agency sa where sa.field_sa_subagency_agency_nid=$data->nid  AND sa.nid $sub_ag "));	
 
 if($short_sub!=\'\') $short_name=\' ,\'.$short_sub.\'\'; else $short_name=\',\';
 
-if($row->sub!=null){ $agency=$row->sub;  $link=$row->sub;}
+if($row->sub!=null){ $agency=$row->name;  $link=$row->sub;}
 else
 {$null_agency=$data->node_title;
  $short_name=db_result(db_query("Select field_agency_short_name_value from content_type_agency where nid=$data->nid"));
@@ -5120,10 +5148,10 @@ $sub_agency.= \'\';
 $cat_val=\'\';
 for($i=0;$i<5;$i++)
 {
-$raw_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON   ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid  WHERE ( ds.field_ds_catlog_type_type = \'$catalog_type[$i]\') 
-AND ds.field_ds_agency_name_nid =$data->nid  AND ds.field_ds_sub_agency_name_value $sub_ag  AND WF.sid=10  AND n.status=1 "));
+$raw_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON   ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid WHERE ( ds.field_ds_catlog_type_type = \'$catalog_type[$i]\') 
+AND ds.field_ds_agency_name_nid =$data->nid  AND ds.field_ds_sub_agency_nid $sub_ag  AND WF.sid=10  "));
 
-$raw_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid LEFT JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid  where ( ds.field_ds_catlog_type_type =\'$catalog_type[$i]\') AND ds.field_ds_agency_name_nid=$data->nid AND ppog.	field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_name_value $sub_ag AND WF.sid=10 AND n.status=1 "));
+$raw_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid LEFT JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid INNER JOIN workflow_node WF On WF.nid=ds.nid where ( ds.field_ds_catlog_type_type =\'$catalog_type[$i]\') AND ds.field_ds_agency_name_nid=$data->nid AND ppog.	field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_nid $sub_ag AND WF.sid=10  "));
 if($raw_sub_val!=0) $raw_sub_val=\'<span style="color:red;"> (\'.$raw_sub_val.\')</span>\'; else $raw_sub_val=\'\';
 
 if($flag==0){
@@ -5146,19 +5174,19 @@ else
 $null_sub_agency_row=\'
 , ,<tr  class="ds-list-item-new  sub-agency-font" ><td style="padding-left:20px"><a href="\'.$base_url.\'/agency-publications/datasets-agency/\'.$data->nid.\'/\'.$link.\'/\'.$default.\'">\'.$null_agency.$short_name.\'</a></td>,\'.$null_sub_agency_row; 
 
-$total_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid  WHERE ds.field_ds_agency_name_nid =$data->nid AND ds.field_ds_sub_agency_name_value  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 AND n.status=1 "));
+$total_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid WHERE ds.field_ds_agency_name_nid =$data->nid AND ds.field_ds_sub_agency_nid  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 "));
 
-$total_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid  INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid   where  ds.field_ds_agency_name_nid=$data->nid AND ppog.field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_name_value  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 AND n.status=1"));
+$total_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid  INNER JOIN workflow_node WF On WF.nid=ds.nid  where  ds.field_ds_agency_name_nid=$data->nid AND ppog.field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_nid  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 "));
 
-$latest_sub=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid  INNER JOIN node n on ds.nid=n.nid where ds.field_ds_agency_name_nid=$data->nid AND ds.field_ds_sub_agency_name_value $sub_ag AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL  AND n.status=1"));
+$latest_sub=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid  where ds.field_ds_agency_name_nid=$data->nid AND ds.field_ds_sub_agency_nid $sub_ag AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL "));
 
 if($latest_sub==0) $latest_sub=\'\';
 if($total_sub_val!=0) $total_sub_val=\' <span style="color:red;">(\'.$total_sub_val.\')</span>\'; else $total_sub_val=\'\';
 
 if($row->sub==null)
-$null_sub_agency_row.=\'<td style="text-align:center;">\'.$total_sub.$total_sub_val.\'</td>,<td style="text-align:center;">\'.format_date($latest_sub,\'custom\',variable_get(\'date_format_front_date_format\',\'\'),NULL,NULL).\'</td></tr>\';
+$null_sub_agency_row.=\'<td style="text-align:center;">\'.$total_sub.$total_sub_val.\'</td><td style="text-align:center;">\'.format_date($latest_sub,\'custom\',variable_get(\'date_format_front_date_format\',\'\'),NULL,NULL).\'</td></tr>\';
 else
-$sub_agency.=\'<td style="text-align:center;">\'.$total_sub.$total_sub_val.\'</td>,<td style="text-align:center;">\'.format_date($latest_sub,\'custom\',variable_get(\'date_format_front_date_format\',\'\'),NULL,NULL).\'</td></tr>\';
+$sub_agency.=\'<td style="text-align:center;">\'.$total_sub.$total_sub_val.\'</td><td style="text-align:center;">\'.format_date($latest_sub,\'custom\',variable_get(\'date_format_front_date_format\',\'\'),NULL,NULL).\'</td></tr>\';
 
 $last_sub=$row->sub;
 }
@@ -5712,9 +5740,9 @@ else return $total
       'empty_zero' => 0,
       'value' => '<?php
 global $base_url;
-$total=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid  where ds.field_ds_agency_name_nid=$data->nid AND  ds.field_ds_catlog_type_type IS NOT NULL  AND WF.sid=10 AND n.status=1  "));
+$total=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid   where ds.field_ds_agency_name_nid=$data->nid AND  ds.field_ds_catlog_type_type IS NOT NULL  AND WF.sid=10  "));
 
-$result=db_query("SELECT  distinct ds.field_ds_sub_agency_name_value as sub FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid where ds.field_ds_agency_name_nid=$data->nid AND WF.sid=10 AND n.status=1  AND ds.field_ds_catlog_type_type IS NOT NULL order by ds.field_ds_sub_agency_name_value asc  ");	
+$result=db_query("SELECT  distinct ds.field_ds_sub_agency_nid as sub,sa.field_sa_subagency_name_value as name FROM content_type_dataset ds LEFT JOIN content_type_sub_agency as sa On sa.nid=ds.field_ds_sub_agency_nid INNER JOIN workflow_node WF on WF.nid=ds.nid where ds.field_ds_agency_name_nid=$data->nid AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL order by sa.field_sa_subagency_name_value asc  ");	
 
 $sub_agency="";
 $null_agency=\'\';
@@ -5732,7 +5760,7 @@ while ($row = mysql_fetch_object($result))
         $latest_sub=\'\';
 
 if($null_agency)
-{ if(strcmp($row->sub,$null_agency)>0)
+{ if(strcmp($row->name,$null_agency)>0)
     {  $sub_agency.=$null_sub_agency_row ;
      $null_agency=\'\';
      }
@@ -5740,13 +5768,13 @@ if($null_agency)
 
 if($row->sub==null){ $sub_ag=\' IS NULL\' ;}
 
-else  {$sub_ag=" = \'$row->sub\'"; }
+else  {$sub_ag=" = $row->sub"; }
 
-$short_sub=db_result(db_query("SELECT  field_ds_sub_agency_short_name_value as sub FROM content_type_dataset ds INNER JOIN node n on ds.nid=n.nid  where ds.field_ds_agency_name_nid=$data->nid  AND ds.field_ds_sub_agency_name_value $sub_ag AND ds.field_ds_sub_agency_short_name_value IS NOT NULL "));	
+$short_sub=db_result(db_query("SELECT  field_sa_subagency_short_name_value as sub FROM content_type_sub_agency sa where sa.field_sa_subagency_agency_nid=$data->nid  AND sa.nid $sub_ag "));	
 
 if($short_sub!=\'\') $short_name=\'\'.$short_sub.\'\'; else $short_name=\'\';
 
-if($row->sub!=null){ $agency=$row->sub;  $link=$row->sub;}
+if($row->sub!=null){ $agency=$row->name;  $link=$row->sub;}
 else
 {$null_agency=$data->node_title;
  $short_name=db_result(db_query("Select field_agency_short_name_value from content_type_agency where nid=$data->nid"));
@@ -5759,10 +5787,10 @@ $sub_agency.= \'\';
 $cat_val=\'\';
 for($i=0;$i<5;$i++)
 {
-$raw_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON   ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid WHERE ( ds.field_ds_catlog_type_type = \'$catalog_type[$i]\') 
-AND ds.field_ds_agency_name_nid =$data->nid  AND ds.field_ds_sub_agency_name_value $sub_ag  AND WF.sid=10 AND n.status=1   "));
+$raw_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON   ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid WHERE ( ds.field_ds_catlog_type_type = \'$catalog_type[$i]\') 
+AND ds.field_ds_agency_name_nid =$data->nid  AND ds.field_ds_sub_agency_nid $sub_ag  AND WF.sid=10  "));
 
-$raw_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid LEFT JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid where ( ds.field_ds_catlog_type_type =\'$catalog_type[$i]\') AND ds.field_ds_agency_name_nid=$data->nid AND ppog.	field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_name_value $sub_ag AND WF.sid=10 AND n.status=1  "));
+$raw_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid LEFT JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid INNER JOIN workflow_node WF On WF.nid=ds.nid where ( ds.field_ds_catlog_type_type =\'$catalog_type[$i]\') AND ds.field_ds_agency_name_nid=$data->nid AND ppog.	field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_nid $sub_ag AND WF.sid=10  "));
 if($raw_sub_val!=0) $raw_sub_val=\'<span style="color:red;"> (\'.$raw_sub_val.\')</span>\'; else $raw_sub_val=\'\';
 
 if($flag==0){
@@ -5783,11 +5811,11 @@ $sub_agency.=\'<tr class="ds-list-item-new  sub-agency-font" ><td></td><td></td>
 else
 $null_sub_agency_row=\'<tr  class="ds-list-item-new  sub-agency-font" ><td></td><td></td><td style="padding-left:20px"><a href="\'.$base_url.\'/agency-publications/datasets-agency/\'.$data->nid.\'/\'.$link.\'/\'.$default.\'">\'.$null_agency.\'</td><td>\'.$short_name.\'</a></td>\'.$null_sub_agency_row; 
 
-$total_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid  INNER JOIN node n on ds.nid=n.nid WHERE ds.field_ds_agency_name_nid =$data->nid AND ds.field_ds_sub_agency_name_value  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 AND n.status=1 "));
+$total_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid WHERE ds.field_ds_agency_name_nid =$data->nid AND ds.field_ds_sub_agency_nid  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 "));
 
-$total_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid  INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid  where  ds.field_ds_agency_name_nid=$data->nid AND ppog.field_ppog_high_value_dataset_value=\'Yes\' AND  ds.field_ds_sub_agency_name_value  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 AND n.status=1 "));
+$total_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid  INNER JOIN workflow_node WF On WF.nid=ds.nid  where  ds.field_ds_agency_name_nid=$data->nid AND ppog.field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_nid  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 "));
 
-$latest_sub=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid  INNER JOIN node n on ds.nid=n.nid where ds.field_ds_agency_name_nid=$data->nid  AND  ds.field_ds_sub_agency_name_value $sub_ag AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL  AND n.status=1  "));
+$latest_sub=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid  where ds.field_ds_agency_name_nid=$data->nid AND ds.field_ds_sub_agency_nid $sub_ag AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL "));
 
 if($latest_sub==0) $latest_sub=\'\';
 if($total_sub_val!=0) $total_sub_val=\' <span style="color:red;">(\'.$total_sub_val.\')</span>\'; else $total_sub_val=\'\';
@@ -5806,9 +5834,7 @@ if($null_agency)
      $null_agency=\'\';
      }
   }
-
-if ($total) $date=format_date($total,\'custom\',variable_get(\'date_format_front_date_format\',\'\'),NULL,NULL);
-else $date=\'\';
+$date=format_date($total,\'custom\',variable_get(\'date_format_front_date_format\',\'\'),NULL,NULL);
 return $date.$sub_agency;
 ?>',
       'exclude' => 0,
@@ -6340,9 +6366,9 @@ else return $total
       'empty_zero' => 0,
       'value' => '<?php
 global $base_url;
-$total=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid  INNER JOIN node n on ds.nid=n.nid  where ds.field_ds_agency_name_nid=$data->nid AND  ds.field_ds_catlog_type_type IS NOT NULL  AND WF.sid=10 AND n.status=1  "));
+$total=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid   where ds.field_ds_agency_name_nid=$data->nid AND  ds.field_ds_catlog_type_type IS NOT NULL  AND WF.sid=10  "));
 
-$result=db_query("SELECT  distinct ds.field_ds_sub_agency_name_value as sub FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid where ds.field_ds_agency_name_nid=$data->nid AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL  AND n.status=1 order by ds.field_ds_sub_agency_name_value asc  ");	
+$result=db_query("SELECT  distinct ds.field_ds_sub_agency_nid as sub,sa.field_sa_subagency_name_value as name FROM content_type_dataset ds LEFT JOIN content_type_sub_agency as sa On sa.nid=ds.field_ds_sub_agency_nid INNER JOIN workflow_node WF on WF.nid=ds.nid where ds.field_ds_agency_name_nid=$data->nid AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL order by sa.field_sa_subagency_name_value asc  ");	
 
 $sub_agency="";
 $null_agency=\'\';
@@ -6360,7 +6386,7 @@ while ($row = mysql_fetch_object($result))
         $latest_sub=\'\';
 
 if($null_agency)
-{ if(strcmp($row->sub,$null_agency)>0)
+{ if(strcmp($row->name,$null_agency)>0)
     {  $sub_agency.=$null_sub_agency_row ;
      $null_agency=\'\';
      }
@@ -6368,13 +6394,13 @@ if($null_agency)
 
 if($row->sub==null){ $sub_ag=\' IS NULL\' ;}
 
-else  {$sub_ag=" = \'$row->sub\'"; }
+else  {$sub_ag=" = $row->sub"; }
 
-$short_sub=db_result(db_query("SELECT  field_ds_sub_agency_short_name_value as sub FROM content_type_dataset ds where ds.field_ds_agency_name_nid=$data->nid  AND ds.field_ds_sub_agency_name_value $sub_ag AND ds.field_ds_sub_agency_short_name_value IS NOT NULL "));	
+$short_sub=db_result(db_query("SELECT  field_sa_subagency_short_name_value as sub FROM content_type_sub_agency sa where sa.field_sa_subagency_agency_nid=$data->nid  AND sa.nid $sub_ag "));	
 
 if($short_sub!=\'\') $short_name=\' (\'.$short_sub.\')\'; else $short_name=\'\';
 
-if($row->sub!=null){ $agency=$row->sub;  $link=$row->sub;}
+if($row->sub!=null){ $agency=$row->name;  $link=$row->sub;}
 else
 {$null_agency=$data->node_title;
  $short_name=db_result(db_query("Select field_agency_short_name_value from content_type_agency where nid=$data->nid"));
@@ -6387,18 +6413,16 @@ $sub_agency.= \'\';
 $cat_val=\'\';
 for($i=0;$i<5;$i++)
 {
-$raw_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON   ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid  INNER JOIN node n on ds.nid=n.nid WHERE ( ds.field_ds_catlog_type_type = \'$catalog_type[$i]\') 
-AND ds.field_ds_agency_name_nid =$data->nid  AND ds.field_ds_sub_agency_name_value $sub_ag  AND WF.sid=10  AND n.status=1  "));
+$raw_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON   ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid WHERE ( ds.field_ds_catlog_type_type = \'$catalog_type[$i]\') 
+AND ds.field_ds_agency_name_nid =$data->nid  AND ds.field_ds_sub_agency_nid $sub_ag  AND WF.sid=10  "));
 
-$raw_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid LEFT JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid where ( ds.field_ds_catlog_type_type =\'$catalog_type[$i]\') AND ds.field_ds_agency_name_nid=$data->nid AND ppog.	field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_name_value $sub_ag AND WF.sid=10 AND n.status=1 "));
+$raw_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid LEFT JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid INNER JOIN workflow_node WF On WF.nid=ds.nid where ( ds.field_ds_catlog_type_type =\'$catalog_type[$i]\') AND ds.field_ds_agency_name_nid=$data->nid AND ppog.	field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_nid $sub_ag AND WF.sid=10  "));
 if($raw_sub_val!=0) $raw_sub_val=\'<span style="color:red;"> (\'.$raw_sub_val.\')</span>\'; else $raw_sub_val=\'\';
 
 if($flag==0){
 if($raw_sub!=0 && $i==0) {$default=1; $flag=1;}
 else if($raw_sub!=0 && $i==1){ $default=2; $flag=1;}
-else if($raw_sub!=0 && $i==2) {$default=3; $flag=1;}
-else if($raw_sub!=0 && $i==3) {$default=4; $flag=1;}
-else if($raw_sub!=0 && $i==4) {$default=5; $flag=1;}
+else if($raw_sub!=0 && $i>=2) {$default=3; $flag=1;}
 }
 if($row->sub==null)
 $null_sub_agency_row.=\'<td style="text-align:center;">\'.$raw_sub.$raw_sub_val.\'</td>\';
@@ -6408,16 +6432,16 @@ $cat_val.=\'<td style="text-align:center;">\'.$raw_sub.$raw_sub_val.\'</td>\';
 }
 
 if($row->sub!=null)
-$sub_agency.=\'<tr class="ds-list-item-new  sub-agency-font" ><td style="padding-left:20px"><a title="\'.$agency.\'" href="\'.$base_url.\'/agency-publications/datasets-agency/\'.$data->nid.\'/\'.$link.\'/\'.$default.\'">\'.$agency.$short_name.\'</a></td>\'.$cat_val;
+$sub_agency.=\'<tr class="ds-list-item-new  sub-agency-font" ><td style="padding-left:20px"><a href="\'.$base_url.\'/agency-publications/datasets-agency/\'.$data->nid.\'/\'.$link.\'/\'.$default.\'">\'.$agency.$short_name.\'</a></td>\'.$cat_val;
 
 else
-$null_sub_agency_row=\'<tr  class="ds-list-item-new  sub-agency-font" ><td style="padding-left:20px"><a title="\'.$null_agency.\'" href="\'.$base_url.\'/agency-publications/datasets-agency/\'.$data->nid.\'/\'.$link.\'/\'.$default.\'">\'.$null_agency.$short_name.\'</a></td>\'.$null_sub_agency_row; 
+$null_sub_agency_row=\'<tr class="ds-list-item-new  sub-agency-font" ><td style="padding-left:20px"><a href="\'.$base_url.\'/agency-publications/datasets-agency/\'.$data->nid.\'/\'.$link.\'/\'.$default.\'">\'.$null_agency.$short_name.\'</a></td>\'.$null_sub_agency_row; 
 
-$total_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid WHERE ds.field_ds_agency_name_nid =$data->nid AND ds.field_ds_sub_agency_name_value  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 AND n.status=1"));
+$total_sub=db_result(db_query("SELECT count( DISTINCT ds.nid ) FROM content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN workflow_node WF On WF.nid=ds.nid WHERE ds.field_ds_agency_name_nid =$data->nid AND ds.field_ds_sub_agency_nid  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 "));
 
-$total_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid  INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid  where  ds.field_ds_agency_name_nid=$data->nid AND ppog.field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_name_value  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 AND n.status=1 "));
+$total_sub_val=db_result(db_query("SELECT count( DISTINCT ds.nid )  FROM  content_type_dataset ds INNER JOIN content_type_agency a ON ds.field_ds_agency_name_nid = a.nid INNER JOIN content_type_policy_program_open_government ppog ON ds.nid=ppog.nid  INNER JOIN workflow_node WF On WF.nid=ds.nid  where  ds.field_ds_agency_name_nid=$data->nid AND ppog.field_ppog_high_value_dataset_value=\'Yes\' AND ds.field_ds_sub_agency_nid  $sub_ag AND ds.field_ds_catlog_type_type IS NOT NULL AND WF.sid=10 "));
 
-$latest_sub=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid INNER JOIN node n on ds.nid=n.nid where ds.field_ds_agency_name_nid=$data->nid AND ds.field_ds_sub_agency_name_value $sub_ag AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL AND n.status=1 "));
+$latest_sub=db_result(db_query("SELECT max(WF.stamp) FROM content_type_dataset ds INNER JOIN workflow_node WF On WF.nid=ds.nid  where ds.field_ds_agency_name_nid=$data->nid AND ds.field_ds_sub_agency_nid $sub_ag AND WF.sid=10 AND ds.field_ds_catlog_type_type IS NOT NULL "));
 
 if($latest_sub==0) $latest_sub=\'\';
 if($total_sub_val!=0) $total_sub_val=\' <span style="color:red;">(\'.$total_sub_val.\')</span>\'; else $total_sub_val=\'\';

@@ -32,7 +32,9 @@ $(document).ready(function(){
 			rules: {
 				"name":"required",
 				"email":{email: true,required: true},
-				"recipients":{required: true,validMultipleEmails: true},				 
+				"recipients":{required: true,validMultipleEmails: true},
+				"captcha_response":"required",
+
 			},
 			messages: {
 				"name": {
@@ -44,6 +46,9 @@ $(document).ready(function(){
 				},
 				"recipients": {
 					required: "Send To field is required.",
+				},
+				"captcha_response":{
+					required: "Verification field is required."	
 				}
 			},
 			invalidHandler: function(form, validator) {

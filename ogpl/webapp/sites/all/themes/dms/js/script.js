@@ -265,18 +265,19 @@ $('#node-form').ajaxComplete(state_data_site_eventbind);
 		  this.title = this.text;
 		})
 	
-		$( "#edit-date-filter-min-date" ).attr('class','form-text');
+		try {
+        $( "#edit-date-filter-min-date" ).attr('class','form-text');
 		$( "#edit-date-filter-max-date" ).attr('class','form-text');
 		$( "#edit-date-filter-min-date" ).datepicker({ dateFormat: 'yy-mm-dd' });
         $( "#edit-date-filter-max-date" ).datepicker({ dateFormat: 'yy-mm-dd' });
-		for(i=1;i<19;i++){
+		for(i=1;i<=19;i++){
 		  $( "#min-date-page-"+i).attr('class','form-text');
 		  $( "#max-date-page-"+i).attr('class','form-text');
           $("#min-date-page-"+i).datepicker({ dateFormat: 'yy-mm-dd' });
           $("#max-date-page-"+i).datepicker({ dateFormat: 'yy-mm-dd' });
 		}
-		
-
+        }catch (e)
+        {}
 });
 
 
@@ -457,4 +458,29 @@ function show_para_hostip_para(val){
 			$("#edit-hostip-database-name-wrapper").show();
 		break;
 	}	
+}
+
+function printSelectedFeedback(sitename) {
+    var selected = $("input:checked");
+    counter = selected.length;
+    var separator = '<p style="page-break-after: always">&nbsp;</p>';
+
+    if (selected.length == 0) alert("Please select one or more feedbacks to print.");
+    else{
+    $("#print-waiting").show();
+    $("#printable-content").contents().find("body").html('');
+    $.each(selected, function (index, element) {
+        $.get(sitename + '/print/' + element.value, function (html) {
+            $("#printable-content").contents().find("body").append(html + '<br>' + separator);
+            counter--;
+
+            if (counter == 0) {
+                 $("#print-waiting").hide();
+                var objFrame = window.frames["printable-content"];
+                objFrame.focus();
+                objFrame.print();
+            }
+        });
+    });
+    }
 }

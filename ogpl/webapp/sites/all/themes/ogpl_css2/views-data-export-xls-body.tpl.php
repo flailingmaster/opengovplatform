@@ -3,7 +3,7 @@ $view = views_get_current_view();
 if($view->name == 'agency_wise_report') {
 	foreach ($themed_rows as $count => $item_row):
         $row='<tr><td>'.implode('<td>', $item_row) .'</tr>';
-		if(!$item_row[phpcode_5]=='0')
+		if(!strlen(strstr($row,"1970"))>0)
 			print $row;
 	endforeach;
 	

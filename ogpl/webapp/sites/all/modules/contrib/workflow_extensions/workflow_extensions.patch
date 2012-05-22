@@ -1,0 +1,33 @@
+Index: workflow_extensions.install
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- workflow_extensions.install	(revision )
++++ workflow_extensions.install	(revision 4540)
+@@ -9,6 +9,7 @@
+  * Implementation of hook_install().
+  */
+ function workflow_extensions_install() {
++  db_query("UPDATE {system} SET weight = 21 WHERE name = 'workflow_extensions'");
+ }
+ 
+ /**
+Index: workflow_extensions.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- workflow_extensions.module	(revision )
++++ workflow_extensions.module	(revision 4540)
+@@ -155,6 +155,10 @@
+     return;
+   }
+ 
++    if (!variable_get('workflow_extensions_enable_for_' . workflow_extensions_extract_workflow_name($form), FALSE)) {
++        return;
++    }
++
+   // 4) Add form validator
+   if (empty($form['#validate'])) {
+     $form['#validate'] = array();

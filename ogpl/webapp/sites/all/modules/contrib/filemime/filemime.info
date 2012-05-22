@@ -1,0 +1,11 @@
+; $Id: filemime.info,v 1.1.2.3 2008/08/15 09:29:08 mfb Exp $
+name = File MIME
+description = Rewrite the MIME type for each file upload based on a server-side mime.types file and/or custom settings.
+core = 6.x
+
+; Information added by drupal.org packaging script on 2008-08-15
+version = "6.x-1.1"
+core = "6.x"
+project = "filemime"
+datestamp = "1218794416"
+

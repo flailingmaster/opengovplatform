@@ -166,7 +166,8 @@ function theme_revisioning_revisions_summary($form) {
   $revision_ids = element_children($form['info']);
 
   $show_diff = count($revision_ids) >= 2 && module_exists('diff');
-  $show_taxonomy_terms = 0;
+  $show_taxonomy_terms = module_exists('taxonomy') &&
+    (count(taxonomy_get_vocabularies()) > 0) && variable_get("show_taxonomy_terms", TRUE);
 
   // Set up the table header
   $header = array(t('Revision'));

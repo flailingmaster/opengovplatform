@@ -52,6 +52,8 @@
 			case 1: $arg0 = $view->args[0];
 					$arg1 = $view->args[1];
 					$arg2 = $view->args[2];
+					if($arg2=='-') $arg2="IS NULL";
+					else  $arg2="=".$arg2;	
 					if($arg1<13){
 						$start=mktime(0,0,0,date('m'),1,date('Y'))-$arg1*30*24*3600;
 						$end=mktime(0,0,0,date('m'),1,date('Y'))-($arg1-1)*30*24*3600;
@@ -62,35 +64,35 @@
 						$end=mktime(0,0,0,date('m'),1,date('Y'));
 					}
 					if(!strlen(strstr($view->args[2], "main_"))>0 )
-						$raw=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type='catalog_type_raw_data' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value='$arg2' AND wf.stamp between $start AND $end"));
+						$raw=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type='catalog_type_raw_data' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $arg2 AND wf.stamp between $start AND $end"));
 					else
 						$raw=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type='catalog_type_raw_data' AND field_ds_agency_name_nid=$arg0 AND wf.stamp between $start AND $end "));
 
 					if($raw && $default!=0 ) { $catalog="Raw Dataset Catalogs"; $default=0; }
 
 					if(!strlen(strstr($view->args[2], "main_"))>0 )
-						$doc=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type='catalog_type_document' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value='$arg2' AND wf.stamp between $start AND $end"));
+						$doc=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type='catalog_type_document' AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $arg2 AND wf.stamp between $start AND $end"));
 					else
 						$doc=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type='catalog_type_document' AND field_ds_agency_name_nid=$arg0 AND wf.stamp between $start AND $end "));
 
 					if($doc && $default!=0) { $catalog="Document Catalogs"; $default=0; }
 
 					if(!strlen(strstr($view->args[2], "main_"))>0 )
-						$apps=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type IN('catalog_type_data_apps') AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value='$arg2' AND wf.stamp between $start AND $end"));
+						$apps=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type IN('catalog_type_data_apps') AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $arg2 AND wf.stamp between $start AND $end"));
 					else
 						$apps=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type IN('catalog_type_data_apps' ) AND field_ds_agency_name_nid=$arg0 AND wf.stamp between $start AND $end "));
 
 					if($apps && $default!=0) { $catalog="App Catalogs"; $default=0;}
 
 					if(!strlen(strstr($view->args[2], "main_"))>0 )
-						$tool=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type IN('catalog_type_data_tools') AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value='$arg2' AND wf.stamp between $start AND $end"));
+						$tool=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type IN('catalog_type_data_tools') AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $arg2 AND wf.stamp between $start AND $end"));
 					else
 						$tool=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type IN('catalog_type_data_tools' ) AND field_ds_agency_name_nid=$arg0 AND wf.stamp between $start AND $end "));
 
 					if($tool && $default!=0) { $catalog="Tool Catalogs"; $default=0; }
 
 					if(!strlen(strstr($view->args[2], "main_"))>0 )
-						$ser=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type IN('catalog_type_data_service') AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_name_value='$arg2' AND wf.stamp between $start AND $end"));
+						$ser=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type IN('catalog_type_data_service') AND field_ds_agency_name_nid=$arg0 AND field_ds_sub_agency_nid $arg2 AND wf.stamp between $start AND $end"));
 					else
 						$ser=db_result(db_query("select count( ds.nid) from content_type_dataset ds Left join workflow_node wf on ds.nid=wf.nid where wf.sid=10 and field_ds_catlog_type_type IN('catalog_type_data_service' ) AND field_ds_agency_name_nid=$arg0 AND wf.stamp between $start AND $end "));
 
